@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Upcomming_User
 from django.db.models import Q
 from .forms import *
+from django.utils import timezone
 # Create your views here.
 
 
@@ -18,12 +19,20 @@ def register(request):
     if not user_data.exists():
         return render(request, 'login/register/link_error.html')
 
+    user_data = user_data.first()
+
     if request.method == 'POST':
         form = Register_OTP(request.POST)
 
         if form.is_valid():
-            if user_data.first().otp != form.cleaned_data['otp']:
+            if user_data.otp != form.cleaned_data['otp']:
                 print("eror")  # hier muss zurück kommen, dass der Pin flasch ist
+            else:
+                print(user_data)
+                user_data.otp_verified = True
+                user_data.otp_verified_date = timezone.now()
+                user_data.save()
+                print("Login")
 
     else:
         form = Register_OTP()

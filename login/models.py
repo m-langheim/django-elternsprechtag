@@ -2,8 +2,34 @@ from django.db import models
 import string
 import random
 from datetime import datetime
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
+
+from .managers import CustomUserManager
 
 # Create your models here.
+
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+
+    CHOCES_ROLES = ((0, "Parent"), (1, "Teacher"), (2, "Others"))
+
+    email = models.EmailField("Email", unique=True)
+    first_name = models.CharField(max_length=48, default="")
+    last_name = models.CharField(max_length=48, default="")
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    role = models.IntegerField(choices=CHOCES_ROLES, default=2)
+    date_joined = models.DateTimeField(default=timezone.now)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
+
 
 def generate_unique_code():
 
@@ -46,7 +72,9 @@ class Upcomming_User(models.Model):
     access_key = models.CharField(max_length=12, default=generate_unique_code)
     child_email = models.EmailField(max_length=200, null=True)
     otp = models.IntegerField(default=generate_unique_otp)
-    created = models.DateTimeField(default=datetime.now)
+    otp_verified = models.BooleanField(default=False)
+    otp_verified_date = models.DateTimeField(default=timezone.now)
+    created = models.DateTimeField(default=timezone.now)
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
 
     def __str__(self):
