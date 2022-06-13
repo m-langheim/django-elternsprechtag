@@ -21,6 +21,9 @@ def register(request):
 
     user_data = user_data.first()
 
+    if user_data.otp_verified:
+        print(user_data.otp_verified_date)
+
     if request.method == 'POST':
         form = Register_OTP(request.POST)
 

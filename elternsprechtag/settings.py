@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'login',
     'help',
     'dashboard',
+    'corsheaders', # just for development purposes
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # just for development
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,3 +128,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'login.CustomUser'
+
+CORS_ORIGIN_ALLOW_ALL = DEBUG
