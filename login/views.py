@@ -31,7 +31,6 @@ def register(request):
             if user_data.otp != form.cleaned_data['otp']:
                 print("eror")  # hier muss zurück kommen, dass der Pin flasch ist
             else:
-                print(user_data)
                 user_data.otp_verified = True
                 user_data.otp_verified_date = timezone.now()
                 user_data.save()

@@ -49,14 +49,16 @@ def generate_unique_code():
 
     return final_code
 
+
 def generate_unique_otp():
 
     while True:
-        final_code=''.join(random.choice(string.digits) for i in range(6))
+        final_code = ''.join(random.choice(string.digits) for i in range(6))
         if Upcomming_User.objects.filter(otp=final_code).count() == 0:
             break
-        
+
     return final_code
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=48)
@@ -67,10 +69,11 @@ class Student(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+
 class Upcomming_User(models.Model):
-    user_token = models.CharField(max_length=12, primary_key=True, default=generate_unique_code)
+    user_token = models.CharField(
+        max_length=12, primary_key=True, default=generate_unique_code)
     access_key = models.CharField(max_length=12, default=generate_unique_code)
-    child_email = models.EmailField(max_length=200, null=True)
     otp = models.IntegerField(default=generate_unique_otp)
     otp_verified = models.BooleanField(default=False)
     otp_verified_date = models.DateTimeField(default=timezone.now)
