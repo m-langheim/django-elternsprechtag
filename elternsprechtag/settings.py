@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'login',
     'help',
     'dashboard',
-    'corsheaders', # just for development purposes
+    'corsheaders',  # just for development purposes
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # just for development
+    'corsheaders.middleware.CorsMiddleware',  # just for development
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'de-de'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 
