@@ -4,6 +4,11 @@
 
 {% block content %}
 <h1>
-    Erstellung eines Elternkontos für {{ child_name }}
+    Herzlich wilkommen
 </h1>
+<form method="post">
+    {% csrf_token %}
+    {{ otp_form }}
+    <input type="submit" value="Submit">
+</form>
 {% endblock content %}

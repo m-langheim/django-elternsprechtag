@@ -1,9 +1,10 @@
-from operator import imod
 from django.shortcuts import render, redirect
 from .models import Upcomming_User
 from django.db.models import Q
 from .forms import *
 from django.utils import timezone
+from django.contrib import messages
+
 # Create your views here.
 
 
@@ -30,13 +31,15 @@ def register(request):
         if form.is_valid():
             if user_data.otp != form.cleaned_data['otp']:
                 print("eror")  # hier muss zurück kommen, dass der Pin flasch ist
+                messages.error(request, "The code is invalid")
             else:
                 user_data.otp_verified = True
                 user_data.otp_verified_date = timezone.now()
                 user_data.save()
                 print("Login")
+                return render(request, "login/register/register.html")
 
     else:
         form = Register_OTP()
 
-    return render(request, 'login/register/register.html', {'name': request.GET.get('u'), 'otp_form': form})
+    return render(request, 'login/register/register_otp.html', {'otp_form': form})

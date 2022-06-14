@@ -7,3 +7,5 @@ from .models import Student, Upcomming_User
 def add_access(sender, instance, created, **kwargs):
     if created:
         Upcomming_User.objects.create(student=instance)
+
+# signal when new Upcomming_User object saved to send email to the child
