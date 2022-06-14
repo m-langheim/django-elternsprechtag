@@ -23,21 +23,31 @@ def register(request):
     user_data = user_data.first()
 
     if user_data.otp_verified:
-        print(user_data.otp_verified_date)
+        # check if otp was set to verified in last 3 hours
+        if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
+            print(user_data.otp_verified_date +
+                  timezone.timedelta(hours=3) > timezone.now())
+
+            return render(request, "login/register/register.html", {'child_name': user_data.student})
+        else:  # otp was verified more than 3 hours ago
+            messages.warning(
+                request, "The validation has timed out, please reenter your pin")
+            user_data.otp_verified = False
+            user_data.save()
 
     if request.method == 'POST':
         form = Register_OTP(request.POST)
 
         if form.is_valid():
             if user_data.otp != form.cleaned_data['otp']:
-                print("eror")  # hier muss zurück kommen, dass der Pin flasch ist
+                # report the error to the user
                 messages.error(request, "The code is invalid")
             else:
                 user_data.otp_verified = True
                 user_data.otp_verified_date = timezone.now()
                 user_data.save()
-                print("Login")
-                return render(request, "login/register/register.html")
+                print(user_data.student)
+                return render(request, "login/register/register.html", {'child_name': user_data.student})
 
     else:
         form = Register_OTP()
