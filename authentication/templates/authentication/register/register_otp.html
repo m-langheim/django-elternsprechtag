@@ -1,10 +1,10 @@
 {% extends "authentication/base.html" %}
-
+{% load i18n %}
 {% block title %} Register {% endblock title %}
 
 {% block content %}
 <h1>
-    Herzlich wilkommen
+    {% translate 'Welcome' %}
 </h1>
 <form method="post">
     {% csrf_token %}

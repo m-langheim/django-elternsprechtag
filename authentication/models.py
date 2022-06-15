@@ -4,6 +4,7 @@ import random
 from datetime import datetime
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from .managers import CustomUserManager
 
@@ -11,8 +12,8 @@ from .managers import CustomUserManager
 
 
 class Student(models.Model):
-    first_name = models.CharField(max_length=48)
-    last_name = models.CharField(max_length=48)
+    first_name = models.CharField(_("First name"), max_length=48)
+    last_name = models.CharField(_("Last name"), max_length=48)
     child_email = models.EmailField(max_length=200, null=True)
     registered = models.BooleanField(default=False)
 
@@ -22,14 +23,16 @@ class Student(models.Model):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
-    CHOCES_ROLES = ((0, "Parent"), (1, "Teacher"), (2, "Others"))
+    CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
-    email = models.EmailField("Email", unique=True)
-    first_name = models.CharField(max_length=48, default="", blank=True)
-    last_name = models.CharField(max_length=48, default="", blank=True)
+    email = models.EmailField(_("Email"), unique=True)
+    first_name = models.CharField(
+        _("First name"), max_length=48, default="", blank=True)
+    last_name = models.CharField(
+        _("Last name"), max_length=48, default="", blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    role = models.IntegerField(choices=CHOCES_ROLES, default=2)
+    role = models.IntegerField(_("Role"), choices=CHOCES_ROLES, default=2)
     date_joined = models.DateTimeField(default=timezone.now)
 
     students = models.ManyToManyField(Student, blank=True)
@@ -83,4 +86,4 @@ class Upcomming_User(models.Model):
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Access for {self.student}'
+        return f'{_("Access for")} {self.student}'

@@ -110,12 +110,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'de-de'
 
+LANGUAGES = [
+    ('de', 'Deutsch'),
+    ('en', 'English')
+]
+
+LOCALE_PATHS = (Path.joinpath(BASE_DIR, 'locale'),)
+
 TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
