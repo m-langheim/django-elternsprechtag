@@ -18,17 +18,21 @@ def register(request):
         Q(user_token=user_token), Q(access_key=key_token))
 
     if not user_data.exists():
-        return render(request, 'login/register/link_error.html')
+        return render(request, 'âuthentication/register/link_error.html')
 
     user_data = user_data.first()
 
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
-            print(user_data.otp_verified_date +
-                  timezone.timedelta(hours=3) > timezone.now())
+            if request.GET.get('login', None):
+                print("login")
 
-            return render(request, "login/register/register.html", {'child_name': user_data.student})
+            if request.GET.get('register', None):
+                print("register")
+
+            # view to choose between registering a new user and logging in
+            return render(request, "âuthentication/register/register_choose.html", {'child_name': user_data.student, 'path': request.get_full_path()})
         else:  # otp was verified more than 3 hours ago
             messages.warning(
                 request, "The validation has timed out, please reenter your pin")
@@ -47,9 +51,9 @@ def register(request):
                 user_data.otp_verified_date = timezone.now()
                 user_data.save()
                 print(user_data.student)
-                return render(request, "login/register/register.html", {'child_name': user_data.student})
+                return render(request, "âuthentication/register/register.html", {'child_name': user_data.student})
 
     else:
         form = Register_OTP()
 
-    return render(request, 'login/register/register_otp.html', {'otp_form': form})
+    return render(request, 'âuthentication/register/register_otp.html', {'otp_form': form})

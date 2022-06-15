@@ -10,17 +10,29 @@ from .managers import CustomUserManager
 # Create your models here.
 
 
+class Student(models.Model):
+    first_name = models.CharField(max_length=48)
+    last_name = models.CharField(max_length=48)
+    child_email = models.EmailField(max_length=200, null=True)
+    registered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     CHOCES_ROLES = ((0, "Parent"), (1, "Teacher"), (2, "Others"))
 
     email = models.EmailField("Email", unique=True)
-    first_name = models.CharField(max_length=48, default="")
-    last_name = models.CharField(max_length=48, default="")
+    first_name = models.CharField(max_length=48, default="", blank=True)
+    last_name = models.CharField(max_length=48, default="", blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     role = models.IntegerField(choices=CHOCES_ROLES, default=2)
     date_joined = models.DateTimeField(default=timezone.now)
+
+    students = models.ManyToManyField(Student, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -58,16 +70,6 @@ def generate_unique_otp():
             break
 
     return final_code
-
-
-class Student(models.Model):
-    first_name = models.CharField(max_length=48)
-    last_name = models.CharField(max_length=48)
-    child_email = models.EmailField(max_length=200, null=True)
-    registered = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
 
 
 class Upcomming_User(models.Model):

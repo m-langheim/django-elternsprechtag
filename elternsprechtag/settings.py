@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'login',
+    'authentication',
     'help',
     'dashboard',
     'corsheaders',  # just for development purposes
@@ -127,6 +127,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'login.CustomUser'
+AUTH_USER_MODEL = 'authentication.CustomUser'
 
 CORS_ORIGIN_ALLOW_ALL = DEBUG
