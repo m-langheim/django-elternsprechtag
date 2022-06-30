@@ -24,10 +24,14 @@ def register(request, user_token, key_token):
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
-            if request.GET.get('login', None):
-                print("login")
+            if request.GET.get('login', False) and request.user.is_authenticated:
+                user = request.user
+                user.students.add(user_data.student)
+                user_data.delete()
 
-            if request.GET.get('register', None):
+                return redirect("home")
+
+            if request.GET.get('register', False):
                 print("register")
 
             # view to choose between registering a new user and logging in
