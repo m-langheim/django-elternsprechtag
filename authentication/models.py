@@ -11,7 +11,7 @@ from .managers import CustomUserManager
 # Create your models here.
 
 
-class Student(models.Model):
+class Student(models.Model): # Schüler
     first_name = models.CharField(_("First name"), max_length=48)
     last_name = models.CharField(_("Last name"), max_length=48)
     child_email = models.EmailField(max_length=200, null=True)
@@ -21,7 +21,7 @@ class Student(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin): # Erwachsene (also alle außer Schüler)
 
     CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
@@ -75,7 +75,7 @@ def generate_unique_otp():
     return final_code
 
 
-class Upcomming_User(models.Model):
+class Upcomming_User(models.Model): # Alle Schüler, die noch keine Eltern haben
     user_token = models.CharField(
         max_length=12, primary_key=True, default=generate_unique_code)
     access_key = models.CharField(max_length=12, default=generate_unique_code)

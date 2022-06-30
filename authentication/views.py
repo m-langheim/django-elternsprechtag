@@ -5,6 +5,7 @@ from .forms import *
 from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from .models import CustomUser
 
 # Create your views here.
 
@@ -21,41 +22,65 @@ def register(request, user_token, key_token):
 
     user_data = user_data.first()
 
+    if user_data.created + timezone.timedelta(days=30) < timezone.now():
+        studi = user_data.student
+        user_data.delete()
+        Upcomming_User.objects.create(student=studi)
+        return render(request, 'authentication/register/link_deprecated.html')
+
+
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
             if request.GET.get('login', False) and request.user.is_authenticated:
                 user = request.user
                 user.students.add(user_data.student)
+                user.save()
                 user_data.delete()
 
                 return redirect("home")
 
             if request.GET.get('register', False):
-                print("register")
+                if request.method == 'POST':
+                    form = Register_Parent_Account(request.POST)
+                    if form.is_valid():
+                        cu = CustomUser(email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'])
+                        cu.set_password(form.cleaned_data['password'])
+                        cu.students.add(user_data.student)
+                        cu.save()
+                        user_data.delete()
+                        return redirect('login')
+
+                else:
+                    form = Register_Parent_Account()
+
+                return render(request, "authentication/register/register_parent.html", {'register_parent_account': form})
 
             # view to choose between registering a new user and logging in
             return render(request, "authentication/register/register_choose.html", {'child_name': user_data.student, 'path': request.get_full_path()})
         else:  # otp was verified more than 3 hours ago
-            messages.warning(
-                request, _("The validation has timed out, please reenter your pin"))
+            # messages.warning(
+            #     request, _("The validation has timed out, please reenter your pin"))
             user_data.otp_verified = False
             user_data.save()
+            form = Register_OTP()
 
-    if request.method == 'POST':
-        form = Register_OTP(request.POST)
-
-        if form.is_valid():
-            if user_data.otp != form.cleaned_data['otp']:
-                # report the error to the user
-                messages.error(request, _("The code is invalid"))
-            else:
-                user_data.otp_verified = True
-                user_data.otp_verified_date = timezone.now()
-                user_data.save()
-                return render(request, "authentication/register/register_choose.html", {'child_name': user_data.student, 'path': request.get_full_path()})
-
+            return render(request, 'authentication/register/register_otp.html', {'otp_form': form})
     else:
-        form = Register_OTP()
+        if request.method == 'POST':
+            form = Register_OTP(request.POST)
+            if form.is_valid():
+                if user_data.otp == form.cleaned_data['otp']:
+                    user_data.otp_verified = True
+                    user_data.otp_verified_date = timezone.now()
+                    user_data.save()
+                    return render(request, "authentication/register/register_choose.html", {'child_name': user_data.student, 'path': request.get_full_path()})
+                    # report the error to the user
+                    
+                else:
+                    messages.error(request, _("The code is invalid"))
 
-    return render(request, 'authentication/register/register_otp.html', {'otp_form': form})
+        else:
+            form = Register_OTP()
+
+        return render(request, 'authentication/register/register_otp.html', {'otp_form': form})
