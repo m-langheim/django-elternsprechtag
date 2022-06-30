@@ -9,9 +9,7 @@ from django.utils.translation import gettext as _
 # Create your views here.
 
 
-def register(request):
-    user_token = request.GET.get('u')
-    key_token = request.GET.get('key')
+def register(request, user_token, key_token):
     if user_token is None or key_token is None:
         return redirect("help_register")
 
