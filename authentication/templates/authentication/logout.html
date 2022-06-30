@@ -1,0 +1,7 @@
+{% extends "authentication/base.html" %}
+
+{% block title %} Lgout {% endblock title %}
+
+{% block content %}
+<p>Sie sind nun abgemeldet. </p><a href="{% url 'login' %}">Hier anmelden!</a>
+{% endblock content %}
