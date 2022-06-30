@@ -1,2 +1,10 @@
-<h1>Public</h1>
-alle generellen informationen müssen hier hin
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+<p>{{ user }}</p>
+<p>Students</p>
+
+<p>{% for student in user.students.all %}<li>{{ student.child_email }}</li>{% endfor %}</p>
+{% endblock content %}
