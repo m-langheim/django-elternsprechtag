@@ -138,6 +138,9 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 
 CORS_ORIGIN_ALLOW_ALL = DEBUG
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login'
+LOGIN_URL = '/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
