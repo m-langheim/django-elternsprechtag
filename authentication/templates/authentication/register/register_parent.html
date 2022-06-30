@@ -1,0 +1,14 @@
+{% extends "authentication/base.html" %}
+{% load i18n %}
+{% block title %} Register {% endblock title %}
+
+{% block content %}
+<h1>
+    {% translate 'Welcome' %}
+</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ register_parent_account }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock content %}
