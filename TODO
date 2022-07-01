@@ -1,3 +1,4 @@
 E-Mail Verbindung einrichten
 weiterleitung nach login abhängig von Eltern oder Lehrer
 Übersetzungen hinzufügen
+Bei Registrierung checken, ob die Email bereits benutzt wird. Ansonsten Fehler melden
