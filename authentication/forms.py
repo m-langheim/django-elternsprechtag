@@ -1,8 +1,20 @@
 from cProfile import label
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from .models import CustomUser
 from django.utils.translation import gettext as _
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
+
+class CustomAuthForm(AuthenticationForm):
+    class Meta:
+        fields = ['username','password']
+    def __init__(self, *args, **kwargs):
+        super(CustomAuthForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget = forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'autocomplete': "off"})
+        self.fields['username'].label = False
+        self.fields['password'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}) 
+        self.fields['password'].label = False
 
 
 class CustomUserCreationForm(UserCreationForm):

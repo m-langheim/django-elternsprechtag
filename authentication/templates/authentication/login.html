@@ -3,10 +3,15 @@
 {% block title %} Login {% endblock title %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Login" />
 
-</form>
+{% load crispy_forms_tags %}
+    <form method="post">
+        <h1>Login</h1>
+        <p>Please log into your parent account</p>
+        {% csrf_token %}
+        {{ form.username|as_crispy_field }}
+        {{ form.password|as_crispy_field }}
+        <input type="submit" value="Login" class="button"/>
+      </form> 
+
 {% endblock content %}

@@ -5,7 +5,6 @@
 {% block content %}
 <h1>
     Erstellung eines Elternkontos für {{ child_name }}
-    {{ path }}
 </h1>
 <!-- Need to change to a proper link -->
 <a href="{% url 'login' %}?next={{ path }}?login=true">{% translate 'Login' %}</a>

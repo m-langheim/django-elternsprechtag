@@ -46,6 +46,7 @@ def register(request, user_token, key_token):
                     if form.is_valid():
                         cu = CustomUser(email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'])
                         cu.set_password(form.cleaned_data['password'])
+                        cu.save()
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
