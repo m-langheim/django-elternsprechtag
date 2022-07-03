@@ -7,9 +7,6 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import CustomUser
 
-# Create your views here.
-
-
 def register(request, user_token, key_token):
     if user_token is None or key_token is None:
         return redirect("help_register")

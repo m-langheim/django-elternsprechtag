@@ -3,12 +3,20 @@
 {% block title %} Register {% endblock title %}
 
 {% block content %}
-<h1>
-    {% translate 'Welcome' %}
-</h1>
+<head>
+    {% load static %}
+    <link href="{% static 'authentication/style_register_otp.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+{% load crispy_forms_tags %}
 <form method="post">
+    <h1>Welcome</h1>
+    <div class="div_name">
+        Name
+    </div>
+    <p>Please enter the given code</p>
     {% csrf_token %}
-    {{ otp_form }}
-    <input type="submit" value="Submit">
+    {{ otp_form.otp|as_crispy_field }}
+    <input type="submit" value="Submit" class="button">
 </form>
 {% endblock content %}
