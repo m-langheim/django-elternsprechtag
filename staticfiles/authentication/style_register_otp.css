@@ -16,14 +16,12 @@
 
     h1 {
         text-align: center;
-        margin-top: 20px;
-        height: 80px;
         width: 100%;
         color: black;
     }
     
     p {
-        margin-bottom: 30px;
+        /* margin-bottom: 30px; */
         text-align: center;
     }
 

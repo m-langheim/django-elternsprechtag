@@ -31,7 +31,7 @@ class CustomUserChangeForm(UserChangeForm):
 class Register_OTP(forms.Form): # one time password
     def validate_code(value):
         if len(value) != 6:
-            raise forms.ValidationError(_('The length of the code is 6 chars'))
+            raise forms.ValidationError(_('The Code consists of 6 digits'))
 
     otp = forms.CharField(label=False, widget=forms.NumberInput(attrs={'placeholder': 'Code'}), validators=[validate_code])
 

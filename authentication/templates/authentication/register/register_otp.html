@@ -11,10 +11,11 @@
 {% load crispy_forms_tags %}
 <form method="post">
     <h1>Welcome</h1>
+    <p>To add</p>
     <div class="div_name">
-        Name
+        {{ child_name }}
     </div>
-    <p>Please enter the given code</p>
+    <p>{% translate 'to a parent account please <br />enter the given code' %}</p>
     {% csrf_token %}
     {{ otp_form.otp|as_crispy_field }}
     <input type="submit" value="Submit" class="button">
