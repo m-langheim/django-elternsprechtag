@@ -1,0 +1,110 @@
+*{
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media (min-width: 350px) and (min-height: 350px) {
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    h1, input::-webkit-input-placeholder, button {
+        font-family: 'roboto', sans-serif;
+        transition: all 0.3s ease-in-out;
+    }
+
+    h1 {
+        text-align: center;
+        width: 100%;
+        color: black;
+        font-size: 35px;
+        margin-top: 10px;
+        cursor: default;
+    }
+    
+    p {
+        text-align: center;
+        cursor: default;
+    }
+
+    form {
+        margin: auto;
+        padding: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 390px;
+        width: 350px;
+        box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.2);
+        padding-bottom: 40px;
+        border-radius: 3px;
+        align-items: center;
+    }
+
+    input {
+        display: block;
+        margin: 50px 0;
+        width: 80px;
+        border: none;
+        padding: 10px 0;
+        border-bottom: solid 1px #861e32;
+        transition: all 0.3s cubic-bezier(.64,.09,.08,1);
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 96%, #861e32 4%);
+        background-position: -200px 0;
+        background-size: 200px 100%;
+        background-repeat: no-repeat;
+        color: darken(#861e32, 20%);
+    }
+
+    .form-control {
+        width: 150px;
+        font-size: 20px;
+        margin: 0 auto;
+    }
+
+    input :focus, :valid {
+        outline: none;
+        background-position: 0 0;
+    }
+
+    input ::-webkit-input-placeholder {
+        color: #861e32;
+        font-size: 20px;
+        transform: translateY(-20px);
+        visibility: visible !important;
+    }
+
+    .button {
+        position: absolute;
+        background: #861e32;
+        border-color: #861e32;
+        cursor: pointer;
+        border-radius: 3px;
+        padding: 6px;
+        width: 200px;
+        color: white;
+        box-shadow: 0 3px 6px 0 rgba(0,0,0,0.2);
+        margin-left:-100px;
+        left:50%;
+        bottom:-25px;
+    }
+    .div_name{
+        
+        font-size: 18px;
+        display: table;
+        margin: 0 auto;
+        background-color: white;
+        box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.2) inset;
+        width: 200px;
+        height: 55px;
+        margin-bottom: 15px;
+        border-radius: 7px;
+        line-height: 55px;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: default;
+    }
+}

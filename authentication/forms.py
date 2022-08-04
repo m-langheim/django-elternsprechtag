@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, Authenti
 from .models import CustomUser
 from django.utils.translation import gettext as _
 
-class CustomAuthForm(AuthenticationForm):
+class CustomAuthForm(AuthenticationForm): # login
     class Meta:
         fields = ['username','password']
     def __init__(self, *args, **kwargs):
@@ -28,11 +28,15 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('email',)
 
 
-class Register_OTP(forms.Form):
-    otp = forms.IntegerField(label='One-Time-Password')
+class Register_OTP(forms.Form): # one time password
+    def validate_code(value):
+        if len(value) != 6:
+            raise forms.ValidationError(_('The code consists of 6 digits'))
+
+    otp = forms.CharField(label=False, widget=forms.NumberInput(attrs={'placeholder': 'Code'}), validators=[validate_code])
 
 
-class Register_Parent_Account(forms.Form):
+class Register_Parent_Account(forms.Form): # register (parent account)
     def validate_the_email(value):
         if CustomUser.objects.filter(email=value).exists():
             raise forms.ValidationError(_('This email is already in use. Please select another email.'))
