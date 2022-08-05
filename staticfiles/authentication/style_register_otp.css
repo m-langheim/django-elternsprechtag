@@ -3,7 +3,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
-@media (min-width: 350px) and (min-height: 350px) {
+@media (min-width: 350px) and (min-height: 390px) {
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
