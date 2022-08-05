@@ -62,20 +62,21 @@ def register(request, user_token, key_token):
             user_data.otp_verified = False
             user_data.save()
             form = Register_OTP()
-
-            return render(request, 'authentication/register/register_otp.html', {'otp_form': form, 'child_name': name+'...'})
+            name = user_data.student
+            name = str(name)
+            if len(name) > 18:
+                name = name[:18]
+                name = name+'...'
+            return render(request, 'authentication/register/register_otp.html', {'otp_form': form, 'child_name': name})
     else:
         if request.method == 'POST':
             form = Register_OTP(request.POST)
             if form.is_valid():
-                if user_data.otp == form.cleaned_data['otp']:
+                if str(user_data.otp) == form.cleaned_data['otp']: #type muss beachtet werden (int und str)
                     user_data.otp_verified = True
                     user_data.otp_verified_date = timezone.now()
                     user_data.save()
                     name = user_data.student
-                    name = str(name)
-                    if len(name) > 18:
-                        name = name[:18]
                     return render(request, "authentication/register/register_choose.html", {'child_name': name, 'path': request.get_full_path()})
                     # report the error to the user
                     
@@ -88,4 +89,5 @@ def register(request, user_token, key_token):
         name = str(name)
         if len(name) > 18:
             name = name[:18]
-        return render(request, 'authentication/register/register_otp.html', {'otp_form': form, 'child_name': name+'...'})
+            name = name+'...'
+        return render(request, 'authentication/register/register_otp.html', {'otp_form': form, 'child_name': name})
