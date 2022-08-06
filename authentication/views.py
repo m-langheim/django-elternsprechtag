@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import CustomUser
 
+
 def register(request, user_token, key_token):
     if user_token is None or key_token is None:
         return redirect("help_register")
@@ -25,7 +26,6 @@ def register(request, user_token, key_token):
         Upcomming_User.objects.create(student=studi)
         return render(request, 'authentication/register/link_deprecated.html')
 
-
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
@@ -41,7 +41,8 @@ def register(request, user_token, key_token):
                 if request.method == 'POST':
                     form = Register_Parent_Account(request.POST)
                     if form.is_valid():
-                        cu = CustomUser(email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'])
+                        cu = CustomUser(
+                            email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'], role=0)
                         cu.set_password(form.cleaned_data['password'])
                         cu.save()
                         cu.students.add(user_data.student)
@@ -76,7 +77,8 @@ def register(request, user_token, key_token):
         if request.method == 'POST':
             form = Register_OTP(request.POST)
             if form.is_valid():
-                if str(user_data.otp) == form.cleaned_data['otp']: #type muss beachtet werden (int und str)
+                # type muss beachtet werden (int und str)
+                if str(user_data.otp) == form.cleaned_data['otp']:
                     user_data.otp_verified = True
                     user_data.otp_verified_date = timezone.now()
                     user_data.save()
@@ -87,7 +89,7 @@ def register(request, user_token, key_token):
                         name = name+'...'
                     return render(request, "authentication/register/register_choose.html", {'child_name': name, 'path': request.get_full_path()})
                     # report the error to the user
-                    
+
                 else:
                     messages.error(request, _("The code is invalid"))
 
