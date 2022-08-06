@@ -3,10 +3,26 @@
 {% block title %} Register {% endblock title %}
 
 {% block content %}
-<h1>
-    Erstellung eines Elternkontos für {{ child_name }}
-</h1>
-<!-- Need to change to a proper link -->
-<a href="{% url 'login' %}?next={{ path }}?login=true">{% translate 'Login' %}</a>
-<a href="{{ path }}?register=true">Register</a>
+<head>
+    {% load static %}
+    <link href="{% static 'authentication/style_register_choose.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<div class="box">
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>Step 2/3</h1>
+    <h2>- Link a parent account -</h2>
+    <p class="description1">Please select a method to link</p>
+    <div class="div_name">
+        {{ child_name }}
+    </div>
+    <p class="description2">to a new or an existing parent account</p>
+    <div class="strich"></div>
+    <p class="login_zusatz">to link an existing parent account</p>
+    <a href="{% url 'login' %}?next={{ path }}?login=true" class="login">{% translate 'Login' %}</a>
+    <p class="register_zusatz">to create a new parent account</p>
+    <a href="{{ path }}?register=true" class="register">Register</a>
+</div>
 {% endblock content %}

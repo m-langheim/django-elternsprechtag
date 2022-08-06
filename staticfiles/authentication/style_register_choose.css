@@ -1,0 +1,149 @@
+*{
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media (min-width: 350px) and (min-height: 370px) {
+
+    h1, input::-webkit-input-placeholder, button {
+        font-family: 'roboto', sans-serif;
+        transition: all 0.3s ease-in-out;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        height: 80px;
+        width: 100%;
+        color: black;
+    }
+
+    .box {
+        margin: auto;
+        padding: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 370px;
+        width: 350px;
+        box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.2);
+        padding-bottom: 40px;
+        border-radius: 3px;
+    }
+    .description1 {
+
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 17px;
+        text-align: center;
+        white-space: nowrap;
+
+    }
+    .description2 {
+
+        position: absolute;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 17px;
+        text-align: center;
+
+    }
+    .login {
+
+        position: absolute;
+        text-align: center;
+        width: 140px;
+        height: 85px;
+        border-radius: 3px;
+        line-height: 65px;
+        text-decoration: none;
+        color: black;
+        bottom: 20px;
+        font-size: 25px;
+        right: 20px;
+
+    }
+    .login:hover {
+
+        color: #861e32;
+
+    }
+    .login_zusatz {
+
+        position: absolute;
+        text-align: center;
+        width: 140px;
+        color: gray;
+        bottom: 10px;
+        right: 20px;
+        font-size: 15px;
+        line-height: 15px;
+
+    }
+    .register {
+
+        position: absolute;
+        text-align: center;
+        width: 140px;
+        height: 85px;
+        border-radius: 3px;
+        line-height: 65px;
+        text-decoration: none;
+        color: black;
+        bottom: 20px;
+        font-size: 25px;
+        left: 20px;
+
+    }
+    .register:hover {
+
+        color: #861e32;
+
+    }
+    .register_zusatz {
+
+        position: absolute;
+        text-align: center;
+        width: 140px;
+        color: gray;
+        bottom: 10px;
+        left: 20px;
+        font-size: 15px;
+        line-height: 15px;
+
+    }
+    .strich {
+
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: black;
+        bottom: 30px;
+        height: 65px;
+        width: 1px;
+        border-radius: 1px;
+
+    }
+    .div_name{
+        
+        position: absolute;
+        bottom: 180px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 18px;
+        background-color: white;
+        box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.2) inset;
+        width: 200px;
+        height: 55px;
+        border-radius: 7px;
+        line-height: 55px;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: default;
+    }
+}

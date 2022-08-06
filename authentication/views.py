@@ -53,9 +53,13 @@ def register(request, user_token, key_token):
                     form = Register_Parent_Account()
 
                 return render(request, "authentication/register/register_parent.html", {'register_parent_account': form})
-
+            name = user_data.student
+            name = str(name)
+            if len(name) > 18:
+                name = name[:18]
+                name = name+'...'
             # view to choose between registering a new user and logging in
-            return render(request, "authentication/register/register_choose.html", {'child_name': user_data.student, 'path': request.get_full_path()})
+            return render(request, "authentication/register/register_choose.html", {'child_name': name, 'path': request.get_full_path()})
         else:  # otp was verified more than 3 hours ago
             # messages.warning(
             #     request, _("The validation has timed out, please reenter your pin"))
@@ -77,6 +81,10 @@ def register(request, user_token, key_token):
                     user_data.otp_verified_date = timezone.now()
                     user_data.save()
                     name = user_data.student
+                    name = str(name)
+                    if len(name) > 18:
+                        name = name[:18]
+                        name = name+'...'
                     return render(request, "authentication/register/register_choose.html", {'child_name': name, 'path': request.get_full_path()})
                     # report the error to the user
                     
