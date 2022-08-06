@@ -1,8 +1,9 @@
 {% extends "authentication/base.html" %}
-{% load i18n %}
+
 {% block title %} Login {% endblock title %}
 
 {% block content %}
+
 <head>
     {% load static %}
     <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet">
@@ -18,7 +19,7 @@
     {% csrf_token %}
     {{ form.username|as_crispy_field }}
     {{ form.password|as_crispy_field }}
-    <input type="submit" value="Login" class="button"/>
-</form> 
+    <input type="submit" value="{% translate 'Login' %}" class="button" />
+</form>
 
 {% endblock content %}

@@ -6,7 +6,5 @@ border-bottom färbt sich erst, wenn das passwort mit dem ersten übereinstimmt
 better warning if the otp is 
 fix the submit button of otp even if there is an invalid type of code
 
+register-choose fertig machen: text und design
 jeweils bei den einzelnen schritten des registrierens einen fortschritt aufschreiben: Schritt 1/5 (o.ä.) und dazu ggf einen Fortschrittsbalken
-login and register müssen überarbeitet werden: fortschrittsbalken, kleiner bzw kompakter und ggf genauere beschreibung
-
-übersetzungstag zu html (innerhalb von buttons etc, rest ist schon) und zu py 

@@ -1,8 +1,9 @@
 {% extends "authentication/base.html" %}
 {% load i18n %}
-{% block title %} Register {% endblock title %}
+{% block title %} {% translate 'Register' %} {% endblock title %}
 
 {% block content %}
+
 <head>
     {% load static %}
     <link href="{% static 'authentication/style_register_choose.css' %}" rel="stylesheet">
@@ -12,7 +13,8 @@
     <div class="fortschritt_balken">
         <div class="fortschritt"></div>
     </div>
-    <h1>{% translate 'Link a parent account' %}</h1>
+    <h1>Step 2/3</h1>
+    <h2>- {% translate 'Link a parent account' %} -</h2>
     <p class="description1">{% translate 'Please select a method to link' %}</p>
     <div class="div_name">
         {{ child_name }}
