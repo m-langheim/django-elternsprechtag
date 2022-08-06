@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-15 23:31+0000\n"
+"POT-Creation-Date: 2022-08-06 20:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,38 @@ msgstr ""
 
 #: authentication/admin.py:20
 msgid "Permissions"
+msgstr ""
+
+#: authentication/forms.py:34
+msgid "The code consists of 6 digits"
+msgstr ""
+
+#: authentication/forms.py:42
+msgid "This email is already in use. Please select another email."
+msgstr ""
+
+#: authentication/forms.py:44 authentication/models.py:28
+msgid "Email"
+msgstr ""
+
+#: authentication/forms.py:45
+msgid "First Name"
+msgstr ""
+
+#: authentication/forms.py:46
+msgid "Last Name"
+msgstr ""
+
+#: authentication/forms.py:47
+msgid "Password"
+msgstr ""
+
+#: authentication/forms.py:48
+msgid "Confirm Password"
+msgstr ""
+
+#: authentication/forms.py:56
+msgid "a fuckin error."
 msgstr ""
 
 #: authentication/models.py:15 authentication/models.py:30
@@ -42,36 +74,98 @@ msgstr ""
 msgid "Others"
 msgstr ""
 
-#: authentication/models.py:28
-msgid "Email"
-msgstr ""
-
 #: authentication/models.py:35
 msgid "Role"
 msgstr ""
 
+#: authentication/templates/authentication/login.html:4
+#: authentication/templates/authentication/login.html:15
+#: authentication/templates/authentication/login.html:20
+#: authentication/templates/authentication/register/register_choose.html:25
+msgid "Login"
+msgstr ""
+
+#: authentication/templates/authentication/login.html:16
+msgid "Please log into your parent account"
+msgstr ""
+
+#: authentication/templates/authentication/logout.html:4
+#: dashboard/templates/dashboard/base.html:48
+msgid "Logout"
+msgstr ""
+
+#: authentication/templates/authentication/logout.html:7
+msgid "You are logged out now."
+msgstr ""
+
+#: authentication/templates/authentication/logout.html:7
+msgid "Login again!"
+msgstr ""
+
+#: authentication/templates/authentication/register/link_deprecated.html:4
 #: authentication/templates/authentication/register/link_error.html:4
 msgid "Invalid link"
+msgstr ""
+
+#: authentication/templates/authentication/register/link_deprecated.html:8
+msgid "This link isnt valid anymore. You got an email with a new one."
 msgstr ""
 
 #: authentication/templates/authentication/register/link_error.html:8
 msgid "This link is not valid. Please correct your link or ask for a new one!"
 msgstr ""
 
-#: authentication/templates/authentication/register/register_choose.html:11
-msgid "Login"
+#: authentication/templates/authentication/register/register_choose.html:3
+#: authentication/templates/authentication/register/register_choose.html:27
+#: authentication/templates/authentication/register/register_otp.html:3
+msgid "Register"
 msgstr ""
 
-#: authentication/templates/authentication/register/register_otp.html:7
-msgid "Welcome"
+#: authentication/templates/authentication/register/register_otp.html:19
+msgid "to a parent account please <br />enter the given code"
 msgstr ""
 
-#: authentication/views.py:39
-msgid "The validation has timed out, please reenter your pin"
-msgstr ""
-
-#: authentication/views.py:49
+#: authentication/views.py:94
 msgid "The code is invalid"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:30
+msgid "Home"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:31
+msgid "Events"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:39
+msgid "Students"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:55
+msgid "Type Something to Search..."
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:67
+msgid "Close"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
+msgid "This field is required."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
+msgid "i18n text"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
+msgid "i18n legend"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
+#: venv/lib/python3.10/site-packages/django/core/validators.py:23
+msgid "Enter a valid value."
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:7
@@ -106,10 +200,6 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/core/paginator.py:57
 msgid "That page contains no results"
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/django/core/validators.py:23
-msgid "Enter a valid value."
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:105
@@ -508,10 +598,6 @@ msgstr ""
 #. characters will prevent the default label_suffix to be appended to the label
 #: venv/lib/python3.10/site-packages/django/forms/boundfield.py:176
 msgid ":?.!"
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
-msgid "This field is required."
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/forms/fields.py:298
