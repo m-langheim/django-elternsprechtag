@@ -8,3 +8,5 @@ fix the submit button of otp even if there is an invalid type of code
 
 register-choose fertig machen: text und design
 jeweils bei den einzelnen schritten des registrierens einen fortschritt aufschreiben: Schritt 1/5 (o.ä.) und dazu ggf einen Fortschrittsbalken
+
+Passwort ändern in authentication mit typischem Aussehen
