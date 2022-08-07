@@ -1,5 +1,5 @@
 {% extends "authentication/base.html" %}
-
+{% load i18n %}
 {% block title %} Login {% endblock title %}
 
 {% block content %}
@@ -10,8 +10,11 @@
 </head>
 {% load crispy_forms_tags %}
 <form method="post">
-    <h1>Login</h1>
-    <p>Please log into your parent account</p>
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>{% translate 'Login' %}</h1>
+    <p>{% translate 'Please log into your parent account' %}</p>
     {% csrf_token %}
     {{ form.username|as_crispy_field }}
     {{ form.password|as_crispy_field }}

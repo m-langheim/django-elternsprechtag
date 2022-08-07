@@ -10,15 +10,17 @@
 </head>
 {% load crispy_forms_tags %}
 <form method="post">
-    <h1>Welcome</h1>
-    <p>To add</p>
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>{% translate 'Verify your identity' %}</h1>
+    <p class="description1">{% translate 'To create a parent account for' %}</p>
     <div class="div_name">
         {{ child_name }}
     </div>
-    <p>{% translate 'to a parent account please <br />enter the given code' %}</p>
+    <p class="description2">{% translate 'please enter the verification code' %}</p>
     {% csrf_token %}
     {{ otp_form.otp|as_crispy_field }}
     <input type="submit" value="Submit" class="button">
 </form>
 {% endblock content %}
-<!-- To proceed creating a parent account for ... please enter the verification code -->

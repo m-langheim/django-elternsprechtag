@@ -10,8 +10,8 @@
 </head>
 {% load crispy_forms_tags %}
 <form method="post">
-    <h1>Sign up</h1>
-    <p>Please sign up your parent account</p>
+    <h1>{% translate 'Sign up' %}</h1>
+    <p>{% translate 'Please sign up your parent account' %}</p>
     {% csrf_token %}
     {{ register_parent_account.email|as_crispy_field }}
     {{ register_parent_account.first_name|as_crispy_field }}

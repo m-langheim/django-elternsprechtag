@@ -11,23 +11,16 @@
     }
 
     h1 {
-        text-align: center;
-        margin-top: 16px;
-        height: 80px;
-        width: 100%;
-        color: black;
-        cursor: default;
-    }
-    h2 {
         position: absolute;
         text-align: center;
-        top: 75px;
-        font-size: 22px;
+        margin-top: 22px;
+        height: 80px;
+        color: black;
+        cursor: default;
+        white-space: nowrap;
         left: 50%;
         transform: translateX(-50%);
-        white-space: nowrap;
-        cursor: default;
-        color: black;
+        font-size: 33px;
     }
     .box {
         margin: auto;
@@ -45,7 +38,7 @@
     .description1 {
 
         position: absolute;
-        top: 115px;
+        top: 100px;
         left: 50%;
         transform: translateX(-50%);
         font-size: 17px;
@@ -57,7 +50,7 @@
     .description2 {
 
         position: absolute;
-        top: 215px;
+        top: 200px;
         left: 50%;
         transform: translateX(-50%);
         font-size: 17px;
@@ -144,7 +137,7 @@
     .div_name{
         
         position: absolute;
-        bottom: 165px;
+        bottom: 180px;
         left: 50%;
         transform: translateX(-50%);
         font-size: 18px;
@@ -174,7 +167,7 @@
     .fortschritt {
 
         position:absolute;
-        width: 66%;
+        width: 33%;
         top: 0px;
         left: 0px;
         height: 7px;
