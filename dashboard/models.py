@@ -20,6 +20,8 @@ class Event(models.Model):  # Termin
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 
+    room = models.IntegerField(default=None, blank=True, null=True)
+
     occupied = models.BooleanField(default=False)
 
 

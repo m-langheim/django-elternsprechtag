@@ -1,0 +1,10 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+<h1>Test</h1>
+<p>{{ teachera }}</p>
+<p>{% for teacher in teachers %}<li>{{ teacher.email }}</li>{% endfor %}</p>
+{% endblock content %}
