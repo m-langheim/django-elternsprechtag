@@ -32,13 +32,13 @@
                     <li>
                         <a href="#" class="desktop-link">{{ user.get_username }}</a>
                         <input type="checkbox" id="show-services">
-                        <label for="show-services">Services</label>
+                        <label for="show-services">{{ user.get_username }}</label>
                         <ul>
-                            <li><a href="#">Profil</a></li>
+                            <li><a href="#">{% translate 'Profil' %}</a></li>
                             <li>
                                 <a href="#" class="desktop-link">{% translate 'Students' %}</a>
                                 <input type="checkbox" id="show-items">
-                                <label for="show-items">More Items</label>
+                                <label for="show-items">{% translate 'Students' %}</label>
                                 <ul>
                                     {% for student in user.students.all %}
                                     <li><a href="#">{{ student.first_name }} {{ student.last_name }}</a></li>
