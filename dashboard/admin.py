@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, TeacherStudentInquiry
+from .models import Event, TeacherStudentInquiry, SiteSettings
 
 # Register your models here.
 
@@ -10,3 +10,4 @@ class EventAdmin(admin.ModelAdmin):
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(TeacherStudentInquiry)
+admin.site.register(SiteSettings)

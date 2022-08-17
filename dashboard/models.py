@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.core.cache import cache
 from authentication.models import CustomUser, Student
 from django.utils import timezone
 
@@ -36,3 +37,32 @@ class TeacherStudentInquiry(models.Model):
 
     event = models.ForeignKey(
         Event, on_delete=models.SET_NULL, blank=True, null=True, default=None)
+
+
+########################################################################### Settings ###################################################
+
+
+class SingletonModel(models.Model):  # set all general setting for Singleton models
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super(SingletonModel, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    def set_cache(self):
+        cache.set(self.__class__.__name__, self)
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class SiteSettings(SingletonModel):
+    leed_days = models.IntegerField(default=7)
+    leed_inquiry_days = models.IntegerField(default=14)
