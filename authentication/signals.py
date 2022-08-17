@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Student, Upcomming_User
+from .models import Student, Upcomming_User, CustomUser, TeacherExtraData
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -10,6 +10,12 @@ from django.template.loader import render_to_string
 def add_access(sender, instance, created, **kwargs):
     if created:
         Upcomming_User.objects.create(student=instance)
+
+
+@receiver(post_save, sender=CustomUser)
+def add_teacher_data(sender, instance, created, **kwargs):
+    if created and instance.role == 1:
+        TeacherExtraData.objects.create(teacher=instance)
 
 # signal when new Upcomming_User object saved to send email to the child
 

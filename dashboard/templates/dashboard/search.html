@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>Test</h1>
+<h2>Your search results for "{{ search }}"</h2>
 <p>{{ teachera }}</p>
-<p>{% for teacher in teachers %}<li>{{ teacher.email }}</li>{% endfor %}</p>
+<p>{% for teacher in teachers %}<li>{{ teacher.last_name }}</li>{% endfor %}</p>
 {% endblock content %}

@@ -48,6 +48,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
         return self.email
 
 
+class TeacherExtraData(models.Model):
+    teacher = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1})
+    tags = models.TextField()
+
+
 def generate_unique_code():
 
     while True:
