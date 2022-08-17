@@ -64,5 +64,5 @@ class SingletonModel(models.Model):  # set all general setting for Singleton mod
 
 
 class SiteSettings(SingletonModel):
-    leed_days = models.IntegerField(default=7)
-    leed_inquiry_days = models.IntegerField(default=14)
+    lead_start = models.DateField(default=timezone.now)
+    lead_inquiry_start = models.DateField(default=timezone.now)
