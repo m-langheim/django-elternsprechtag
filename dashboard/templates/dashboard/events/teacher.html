@@ -1,0 +1,9 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+<h2>Events from {{ teacher.last_name }}</h2>
+{% for event in events %}<li><a href="{{ event.url }}">{{ event.event.start }}</a></li>{% endfor %}
+{% endblock content %}

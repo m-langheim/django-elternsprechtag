@@ -52,6 +52,7 @@ class TeacherExtraData(models.Model):
     teacher = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1})
     tags = models.TextField()
+    room = models.IntegerField(blank=True, null=True)
 
 
 def generate_unique_code():
