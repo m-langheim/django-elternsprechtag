@@ -17,8 +17,7 @@ from django.contrib import messages
 @login_required
 def public_dashboard(request):
     students = request.user.students.all()
-    print(students)
-    return render(request, 'dashboard/public_dashboard.html')
+    return render(request, 'dashboard/public_dashboard.html', {'events': Event.objects.filter(parent=request.user)})
 
 
 @login_required

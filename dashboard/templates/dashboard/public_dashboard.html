@@ -7,4 +7,6 @@
 <p>Students</p>
 
 <p>{% for student in user.students.all %}<li>{{ student.child_email }}</li>{% endfor %}</p>
+<h1>Events</h1>
+<p>{% for event in events %}<li>{{ event }}</li>{% endfor %}</p>
 {% endblock content %}
