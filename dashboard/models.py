@@ -18,6 +18,9 @@ class Event(models.Model):  # Termin
     parent = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, limit_choices_to={'role': 0}, default=None, null=True, blank=True, related_name='%(class)s_parent')  # limit_choices_to={'role': 0} besagt, dass nur Nutzer, wo der Wert role glwich 0 ist eingesetzt werden können, also es wird verhindert, dass Lehrer oder andere als Eltern in Terminen gespeichert werden
 
+    student = models.ManyToManyField(
+        Student, default=None, null=True, blank=True)
+
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 

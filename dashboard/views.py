@@ -8,6 +8,9 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
+from .forms import BookForm
+from django.contrib import messages
+
 # Create your views here.
 
 
@@ -65,4 +68,21 @@ def bookEventTeacherList(request, teacher_id):
 
 @login_required
 def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
-    return render(request, 'dashboard/events/book.html', {'event_id': event_id})
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.MultipleObjectsReturned:
+        print("error")
+    except Event.DoesNotExist:
+        print("error")
+    else:
+        if request.method == 'POST':
+            form = BookForm(request.POST, request=request)
+            if form.is_valid():
+                event.parent = request.user
+                event.student.set(form.cleaned_data['student'])
+                event.occupied = True
+                event.save()
+                messages.success(request, "Gebucht")
+        else:
+            form = BookForm(request=request)
+        return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
