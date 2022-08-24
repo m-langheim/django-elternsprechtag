@@ -25,8 +25,9 @@ def search(request):
     teachers = CustomUser.objects.filter(role=1)
     teacherExtraData = TeacherExtraData.objects.all()
     request_search = request.GET.get('q', None)
+    state = 0
     if request_search is None:
-        print('None')
+        state = 0
     elif request_search.startswith('#'):
         request_search = request_search[1:]
         extraData = teacherExtraData.filter(tags__icontains=request_search)
@@ -34,8 +35,10 @@ def search(request):
         for data in extraData:
             teacher = data.teacher
             result.append(teacher)
+        state = 1
     else:
         result = teachers.filter(last_name__icontains=request_search)
+        state = 2
 
     custom_result = []
 
@@ -44,7 +47,7 @@ def search(request):
         custom_result.append({'first_name': teacher.first_name,
                              'last_name': teacher.last_name, 'email': teacher.email, 'url': reverse('event_teacher_list', args=[teacher_id])})  # notwendig um den Url parameter zu dem queryset hinzu zu fügen
     # return render(request, 'dashboard/search.html', {'teachers': result, 'search': request_search})
-    return render(request, 'dashboard/search.html', {'teachers': custom_result, 'search': request_search})
+    return render(request, 'dashboard/search.html', {'teachers': custom_result, 'state': state, 'request_search': request_search})
 
 
 @login_required
