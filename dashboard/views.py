@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
 from .forms import BookForm
+from .decorators import lead_started
 from django.contrib import messages
 
 # Create your views here.
@@ -71,6 +72,7 @@ def bookEventTeacherList(request, teacher_id):
 
 
 @login_required
+@lead_started
 def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
     try:
         event = Event.objects.get(id=event_id)
