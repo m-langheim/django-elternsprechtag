@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+<h2>{{ event_id }}</h2>
+{% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    {{ book_form }}
+    <input type="submit" class="button" value="Book" />
+</form>
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+<h2>
+    {% if state is 0 %}
+        Please enter a search request!
+    {% elif state is 1 %}
+        This are the results for teachers with the subject {{ request_search }}
+    {% else %}
+        {% if not teachers %}
+            There are no results for teachers containing the string {{ request_search }}
+        {% else %}
+            This are the results for teachers containing the string {{ request_search }}
+        {% endif %}
+    {% endif %}
+</h2>
+<p>{% for teacher in teachers %}<li><a href="{{ teacher.url }}">{{ teacher.last_name }}</a></li>{% endfor %}</p>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends "authentication/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Register' %} {% endblock title %}
+
+{% block content %}
+
+<head>
+    {% load static %}
+    <link href="{% static 'authentication/style_register_otp.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+{% load crispy_forms_tags %}
+<form method="post">
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>{% translate 'Verify your identity' %}</h1>
+    <p class="description1">{% translate 'To create a parent account for' %}</p>
+    <div class="div_name">
+        {{ child_name }}
+    </div>
+    <p class="description2">{% translate 'please enter the verification code' %}</p>
+    {% csrf_token %}
+    {{ otp_form.otp|as_crispy_field }}
+    <input type="submit" value="Submit" class="button">
+</form>
+{% endblock content %}

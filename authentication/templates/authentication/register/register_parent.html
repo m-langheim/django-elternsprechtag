@@ -1,0 +1,23 @@
+{% extends "authentication/base.html" %}
+{% load i18n %}
+{% block title %} Register {% endblock title %}
+
+{% block content %}
+<head>
+    {% load static %}
+    <link href="{% static 'authentication/style_register_parent.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+{% load crispy_forms_tags %}
+<form method="post">
+    <h1>{% translate 'Sign up' %}</h1>
+    <p>{% translate 'Please sign up your parent account' %}</p>
+    {% csrf_token %}
+    {{ register_parent_account.email|as_crispy_field }}
+    {{ register_parent_account.first_name|as_crispy_field }}
+    {{ register_parent_account.last_name|as_crispy_field }}
+    {{ register_parent_account.password|as_crispy_field }}
+    {{ register_parent_account.confirm_password|as_crispy_field }}
+    <input type="submit" value="Submit" class="button">
+</form>
+{% endblock content %}

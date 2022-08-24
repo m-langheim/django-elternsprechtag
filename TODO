@@ -1,0 +1,14 @@
+E-Mail Verbindung einrichten
+weiterleitung nach login abhängig von Eltern oder Lehrer
+Übersetzungen hinzufügen
+Bei Registrierung checken, ob die Email bereits benutzt wird. Ansonsten Fehler melden
+border-bottom färbt sich erst, wenn das passwort mit dem ersten übereinstimmt
+better warning if the otp is 
+fix the submit button of otp even if there is an invalid type of code
+
+register-choose fertig machen: text und design
+jeweils bei den einzelnen schritten des registrierens einen fortschritt aufschreiben: Schritt 1/5 (o.ä.) und dazu ggf einen Fortschrittsbalken
+
+Passwort ändern in authentication mit typischem Aussehen
+
+Ladebalken beim Login muss weg

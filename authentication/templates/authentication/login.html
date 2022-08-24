@@ -1,0 +1,26 @@
+{% extends "authentication/base.html" %}
+{% load i18n %}
+
+{% block title %} {% translate 'Login' %} {% endblock title %}
+
+{% block content %}
+
+<head>
+    {% load static %}
+    <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+{% load crispy_forms_tags %}
+<form method="post">
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>{% translate 'Login' %}</h1>
+    <p>{% translate 'Please log into your parent account' %}</p>
+    {% csrf_token %}
+    {{ form.username|as_crispy_field }}
+    {{ form.password|as_crispy_field }}
+    <input type="submit" value="{% translate 'Login' %}" class="button" />
+</form>
+
+{% endblock content %}
