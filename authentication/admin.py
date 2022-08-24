@@ -58,11 +58,17 @@ class StudentAdmin(admin.ModelAdmin):
             csv_file = request.FILES["csv_file"].read().decode('utf-8')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
             for lines in reader:
-                print(lines["eindeutige Nummer (GUID)"])
-                Student.objects.create(
-                    shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"],)
-            # Create Hero objects from passed in data
-            # ...
+                try:
+                    student = Student.objects.get(
+                        shield_id=lines["eindeutige Nummer (GUID)"])
+                except Student.DoesNotExist:
+                    Student.objects.create(
+                        shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], child_email=lines["Mailadresse"])
+                else:
+                    student.child_email = lines["Mailadresse"]
+                    student.first_name = lines["Vorname"]
+                    student.last_name = lines["Nachname"]
+                    student.save()
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")
         form = AdminCsvImportForm()
