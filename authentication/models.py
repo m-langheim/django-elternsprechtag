@@ -51,7 +51,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
 class TeacherExtraData(models.Model):
     teacher = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1})
-    tags = models.TextField()
+    acronym = models.CharField(max_length=3, default="")
+    tags = models.TextField(null=True, blank=True)
     room = models.IntegerField(blank=True, null=True)
 
 
