@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from authentication.models import CustomUser
+from authentication.models import CustomUser, TeacherExtraData
 from .models import Event
 
 from django.urls import reverse
@@ -23,12 +23,17 @@ def public_dashboard(request):
 @login_required
 def search(request):
     teachers = CustomUser.objects.filter(role=1)
+    teacherExtraData = TeacherExtraData.objects.all()
     request_search = request.GET.get('q', None)
     if request_search is None:
         print('None')
     elif request_search.startswith('#'):
         request_search = request_search[1:]
-        result = teachers.filter(tags__icontains=request_search)
+        extraData = teacherExtraData.filter(tags__icontains=request_search)
+        result = []
+        for data in extraData:
+            teacher = data.teacher
+            result.append(teacher)
     else:
         result = teachers.filter(last_name__icontains=request_search)
 

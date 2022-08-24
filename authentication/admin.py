@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 
-from .models import Upcomming_User, Student, CustomUser
+from .models import Upcomming_User, Student, CustomUser, TeacherExtraData
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 # Register your models here.
@@ -33,3 +33,4 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 admin.site.register(Upcomming_User)
 admin.site.register(Student)
+admin.site.register(TeacherExtraData)
