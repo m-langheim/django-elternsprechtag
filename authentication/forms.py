@@ -54,3 +54,6 @@ class Register_Parent_Account(forms.Form): # register (parent account)
         if password == confirm_password:
             return self.cleaned_data
         raise forms.ValidationError(_("a fuckin error."))
+
+class AdminCsvImportForm(forms.Form):
+    csv_file = forms.FileField()
