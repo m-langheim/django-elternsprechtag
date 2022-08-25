@@ -38,7 +38,14 @@ def search(request):
             result.append(teacher)
         state = 1
     else:
-        result = teachers.filter(last_name__icontains=request_search)
+        result = []
+        for data in teachers.filter(last_name__icontains=request_search):
+            if not data in result:
+                result.append(data)
+        # result = teachers.filter(last_name__icontains=request_search)
+        for data in teacherExtraData.filter(acronym__icontains=request_search):
+            if not data.teacher in result:
+                result.append(data.teacher)
         state = 2
 
     custom_result = []
