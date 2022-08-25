@@ -12,7 +12,7 @@ def lead_started(view_func):
     @functools.wraps(view_func)
     def wrapper(request, event_id, *args, **kwargs):
         if SiteSettings.objects.all().first().lead_start <= timezone.now().date():
-            return view_func(request, *args, **kwargs)
+            return view_func(request, event_id, *args, **kwargs)
         else:
             try:
                 event = Event.objects.get(id=event_id)
