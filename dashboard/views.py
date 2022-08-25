@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData
-from .models import Event
+from .models import Event, TeacherStudentInquiry
 
 from django.urls import reverse
 
@@ -18,7 +18,12 @@ from django.contrib import messages
 @login_required
 def public_dashboard(request):
     students = request.user.students.all()
-    return render(request, 'dashboard/public_dashboard.html', {'events': Event.objects.filter(parent=request.user)})
+    inquiries = []
+    for inquiry in TeacherStudentInquiry.objects.filter(parent=request.user):
+        teacher_id = urlsafe_base64_encode(force_bytes(inquiry.teacher.id))
+        inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
+                         'teacher_link': reverse('event_teacher_list', args=[teacher_id])})
+    return render(request, 'dashboard/public_dashboard.html', {'events': Event.objects.filter(parent=request.user), 'inquiries': inquiries})
 
 
 @login_required

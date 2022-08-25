@@ -9,4 +9,11 @@
 <p>{% for student in user.students.all %}<li>{{ student.child_email }}</li>{% endfor %}</p>
 <h1>Events</h1>
 <p>{% for event in events %}<li>{{ event }}</li>{% endfor %}</p>
+
+<h1>Inquiries</h1>
+<p>
+    {% for inquiry in inquiries %}
+    <li><a href="{{ inquiry.teacher_link }}">{{ inquiry.teacher.last_name }}</a></li>
+    {% endfor %}
+</p>
 {% endblock content %}
