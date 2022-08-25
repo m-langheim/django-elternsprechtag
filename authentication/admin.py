@@ -1,11 +1,10 @@
+import io
+import csv
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.urls import path
-
-import io
-import csv
 
 from .models import Upcomming_User, Student, CustomUser, TeacherExtraData
 from .forms import CustomUserCreationForm, CustomUserChangeForm, AdminCsvImportForm
@@ -62,12 +61,13 @@ class StudentAdmin(admin.ModelAdmin):
                     student = Student.objects.get(
                         shield_id=lines["eindeutige Nummer (GUID)"])
                 except Student.DoesNotExist:
-                    Student.objects.create(
-                        shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], child_email=lines["Mailadresse"])
+                    student = Student.objects.create(
+                        shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], class_name=lines["Klasse"], child_email=lines["Mailadresse"])
                 else:
                     student.child_email = lines["Mailadresse"]
                     student.first_name = lines["Vorname"]
                     student.last_name = lines["Nachname"]
+                    student.class_name = lines["Klasse"]
                     student.save()
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")

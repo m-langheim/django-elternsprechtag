@@ -17,6 +17,7 @@ class Student(models.Model):  # Schüler
     first_name = models.CharField(_("First name"), max_length=48)
     last_name = models.CharField(_("Last name"), max_length=48)
     child_email = models.EmailField(max_length=200, null=True)
+    class_name = models.CharField(max_length=2, default="")
     registered = models.BooleanField(default=False)
 
     def __str__(self):
