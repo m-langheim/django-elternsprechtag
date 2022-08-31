@@ -1,3 +1,4 @@
+from asyncio import events
 import datetime
 from os import times_result
 from tracemalloc import start
@@ -9,6 +10,8 @@ from .models import Event, TeacherStudentInquiry, SiteSettings
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.urls import path
+
+from dashboard.tasks import async_create_events
 # Register your models here.
 
 
@@ -24,21 +27,7 @@ class EventAdmin(admin.ModelAdmin):
         return my_urls + urls
 
     def add_events(self, request):
-        teachers = CustomUser.objects.filter(role=1)
-
-        time_start = SiteSettings.objects.all().first().time_start
-        time_end = SiteSettings.objects.all().first().time_end
-        duration = SiteSettings.objects.all().first().event_duration
-        for teacher in teachers:
-            start = datetime.datetime.combine(
-                datetime.date.today(), time_start)
-            while start + duration <= datetime.datetime.combine(datetime.date.today(), time_end):
-                try:
-                    Event.objects.get(teacher=teacher, start=start)
-                except Event.DoesNotExist:
-                    Event.objects.create(
-                        teacher=teacher, start=start, end=start+duration)
-                start = start + duration
+        async_create_events.delay()
         return redirect("..")
 
 
