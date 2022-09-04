@@ -13,7 +13,7 @@
 <h1>Inquiries</h1>
 <p>
     {% for inquiry in inquiries %}
-    <li><a href="{{ inquiry.teacher_link }}">{{ inquiry.teacher.last_name }}</a></li>
+    <li><a href="{{ inquiry.inquiry_link }}">{{ inquiry.teacher.last_name }}</a></li>
     {% endfor %}
 </p>
 {% endblock content %}

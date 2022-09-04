@@ -9,3 +9,4 @@ class DashboardConfig(AppConfig):
 
         from .models import SiteSettings
         # SiteSettings.objects.create()
+        import dashboard.signals

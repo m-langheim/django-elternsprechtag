@@ -1,16 +1,19 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from authentication.models import CustomUser, TeacherExtraData
-from .models import Event, TeacherStudentInquiry
+from authentication.models import CustomUser, TeacherExtraData, Student
+from .models import Event, TeacherStudentInquiry, SiteSettings
+from django.db.models import Q
+from django.utils import timezone
 
 from django.urls import reverse
 
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
-from .forms import BookForm
+from .forms import BookForm, InquiryForm
 from .decorators import lead_started
 from django.contrib import messages
+from django.http import Http404
 
 # Create your views here.
 
@@ -19,10 +22,10 @@ from django.contrib import messages
 def public_dashboard(request):
     students = request.user.students.all()
     inquiries = []
-    for inquiry in TeacherStudentInquiry.objects.filter(parent=request.user):
-        teacher_id = urlsafe_base64_encode(force_bytes(inquiry.teacher.id))
+    for inquiry in TeacherStudentInquiry.objects.filter(Q(parent=request.user), Q(event=None)):
+        inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
-                         'teacher_link': reverse('event_teacher_list', args=[teacher_id])})
+                         'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
     return render(request, 'dashboard/public_dashboard.html', {'events': Event.objects.filter(parent=request.user), 'inquiries': inquiries})
 
 
@@ -94,16 +97,125 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
     except Event.MultipleObjectsReturned:
         print("error")
     except Event.DoesNotExist:
-        print("error")
+        return Http404("This event was not found")
     else:
+        if event.occupied:
+            return render(request, "dashboard/events/occupied.html")
         if request.method == 'POST':
-            form = BookForm(request.POST, request=request)
+            form = BookForm(request.POST, request=request,
+                            teacher=event.teacher)
             if form.is_valid():
+                # #! Aktuell ist nur eine Lehreranfrage pro Schüler möglich
+                # inquiries = TeacherStudentInquiry.objects.filter(
+                #     Q(parent=request.user), Q(teacher=event.teacher))
+
+                # if inquiries:
+                students = []
+                for student in form.cleaned_data['student']:
+                    try:
+                        model_student = Student.objects.get(
+                            shield_id=student)
+                    except Student.DoesNotExist:
+                        Http404("Error")
+                    else:
+                        students.append(model_student)
+                # ? validation of students needed or given through the form
                 event.parent = request.user
-                event.student.set(form.cleaned_data['student'])
+                event.student.set(students)
                 event.occupied = True
                 event.save()
                 messages.success(request, "Gebucht")
+                return redirect('home')
+                #     students_valid = True
+                #     students = []
+                #     for inquiry in inquiries:
+                #         students.append(inquiry.student)
+
+                #     students_valid = True
+                #     if SiteSettings.objects.all().first().lead_start > timezone.now().date():
+                #         for data_student in form.cleaned_data['student']:
+                #             if not data_student in students:
+                #                 students_valid = False
+                #         if not students_valid:
+                #             messages.warning(
+                #                 request, "Die allgemeine Buchung hat noch nicht begonnen, Sie können nur angefragte Schüler wählen")
+                #     if students_valid:
+                #         event.parent = request.user
+                #         event.student.set(form.cleaned_data['student'])
+                #         event.occupied = True
+                #         event.save()
+                #         for inquiry in inquiries:
+                #             if inquiry.student in form.cleaned_data['student']:
+                #                 inquiry.event = event
+                #                 inquiry.save()
+                #         messages.success(request, "Gebucht")
+                #         return redirect('home')
+                # else:
+                #     event.parent = request.user
+                #     event.student.set(form.cleaned_data['student'])
+                #     event.occupied = True
+                #     event.save()
+                #     messages.success(request, "Gebucht")
+                #     return redirect('home')
+                # try:
+                #     inquiry = TeacherStudentInquiry.objects.get(
+                #         Q(parent=request.user), Q(teacher=event.teacher))
+                # except TeacherStudentInquiry.DoesNotExist:  # Es ist keine Anfrage eines Lehrers verfügbar
+
+                # else:
+                #     if inquiry.student in form.cleaned_data['student']:
+                #         if SiteSettings.objects.all().first().lead_start > timezone.now().date() and form.cleaned_data['student'].length > 1:
+                #             messages.warning(
+                #                 request, "Die allgemeine Buchung hat noch nicht begonnen, Sie können nur angefragte Schüler wählen")
+                #         else:
+                #             event.parent = request.user
+                #             event.student.set(form.cleaned_data['student'])
+                #             event.occupied = True
+                #             event.save()
+                #             inquiry.event = event
+                #             inquiry.save()
+                #             messages.success(request, "Gebucht")
+                #             return redirect('home')
+                #     else:
+                #         messages.warning(
+                #             request, "You have to select the inquiry student")
+                #         form = BookForm(request=request, teacher=event.teacher)
         else:
-            form = BookForm(request=request)
+            form = BookForm(request=request, teacher=event.teacher)
         return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
+
+
+@login_required
+def inquiryView(request, inquiry_id):
+    try:
+        inquiry = TeacherStudentInquiry.objects.get(
+            id=force_str(urlsafe_base64_decode(inquiry_id)))
+    except TeacherStudentInquiry.DoesNotExist:
+        return Http404("Inquiry does not exist.")
+
+    else:
+        if inquiry.event != None:
+            return render(request, "dashboard/error/inquiry_ocupied.html")
+        elif request.method == 'POST':
+            form = InquiryForm(request.POST,
+                               request=request, selected_student=inquiry.student, teacher=inquiry.teacher, parent=inquiry.parent)
+            if form.is_valid():
+                event = form.cleaned_data['event']
+                event.parent = inquiry.parent
+                students = []
+                for student in form.cleaned_data['student']:
+                    try:
+                        model_student = Student.objects.get(shield_id=student)
+                    except Student.DoesNotExist:
+                        Http404("Error")
+                    else:
+                        students.append(model_student)
+                event.student.set(students)
+                event.occupied = True
+                event.save()
+                messages.success(request, "Gebucht")
+                return redirect('home')
+        else:
+            form = InquiryForm(
+                request=request, selected_student=inquiry.student, teacher=inquiry.teacher, parent=inquiry.parent)
+        return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})

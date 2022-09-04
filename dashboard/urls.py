@@ -8,4 +8,5 @@ urlpatterns = [
          bookEventTeacherList, name='event_teacher_list'),
     path('event/<event_id>',
          bookEvent, name='event_per_id'),
+    path('inquiry/<inquiry_id>', inquiryView, name="inquiry_detail_view")
 ]
