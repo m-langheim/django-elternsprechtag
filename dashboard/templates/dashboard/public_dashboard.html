@@ -8,7 +8,9 @@
 
 <p>{% for student in user.students.all %}<li>{{ student.child_email }}</li>{% endfor %}</p>
 <h1>Events</h1>
-<p>{% for event in events %}<li>{{ event }}</li>{% endfor %}</p>
+<p>{% for event in booked_events %}<li><a href="{{ event.url }}">{{ event.event.start }} +
+            {{event.event.teacher.last_name }}</a>
+    </li>{% endfor %}</p>
 
 <h1>Inquiries</h1>
 <p>

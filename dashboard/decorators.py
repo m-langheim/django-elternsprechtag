@@ -29,9 +29,9 @@ def lead_started(view_func):
                         return view_func(request, event_id, *args, **kwargs)
                     else:
                         return render(request, "dashboard/error/inquiry_ocupied.html")
-                else:
-                    messages.error(request, "lead not started")
-                    print("lead not started")
-                    return render(request, "dashboard/error/lead_not_started.html", status=401)
+        else:
+            messages.error(request, "lead not started")
+            print("lead not started")
+            return render(request, "dashboard/error/lead_not_started.html", status=401)
 
     return wrapper

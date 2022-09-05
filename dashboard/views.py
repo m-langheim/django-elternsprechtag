@@ -26,7 +26,11 @@ def public_dashboard(request):
         inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
                          'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
-    return render(request, 'dashboard/public_dashboard.html', {'events': Event.objects.filter(parent=request.user), 'inquiries': inquiries})
+    booked_events = []
+    for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
+        booked_events.append({'event': event, 'url': reverse(
+            'event_per_id', args=[event.id])})
+    return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
 
 
 @login_required
@@ -71,22 +75,22 @@ def search(request):
 def bookEventTeacherList(request, teacher_id):
 
     try:
-        teacher = CustomUser.objects.filter(role=1).get(id=force_str(
+        teacher = CustomUser.objects.filter(role=1).get(id__exact=force_str(
             urlsafe_base64_decode(teacher_id)))  # get the teacher for the id
     except CustomUser.DoesNotExist:
-        print("error")
+        return Http404("Lehrer wurde nicht gefunden")
     except CustomUser.MultipleObjectsReturned:
         print("Error")
     else:
-        print(teacher)
-        print(Event.objects.filter(teacher=teacher))
         events = []
-        for event in Event.objects.filter(teacher=teacher).filter(occupied=False):
+        for event in Event.objects.filter(Q(teacher=teacher), Q(occupied=False)):
             events.append({'event': event, 'url': reverse(
+                'book_event_per_id', args=[event.id])})
+        booked_events = []
+        for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
+            booked_events.append({'event': event, 'url': reverse(
                 'event_per_id', args=[event.id])})
-
-        print(events)
-    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events})
+    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'booked_events': booked_events})
 
 
 @login_required
@@ -100,16 +104,14 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
         return Http404("This event was not found")
     else:
         if event.occupied:
-            return render(request, "dashboard/events/occupied.html")
-        if request.method == 'POST':
+            if event.parent == request.user:
+                return render(request, "dashboard/events/self_occupied.html")
+            else:
+                return render(request, "dashboard/events/occupied.html")
+        elif request.method == 'POST':
             form = BookForm(request.POST, request=request,
                             teacher=event.teacher)
             if form.is_valid():
-                # #! Aktuell ist nur eine Lehreranfrage pro Schüler möglich
-                # inquiries = TeacherStudentInquiry.objects.filter(
-                #     Q(parent=request.user), Q(teacher=event.teacher))
-
-                # if inquiries:
                 students = []
                 for student in form.cleaned_data['student']:
                     try:
@@ -126,60 +128,6 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
                 event.save()
                 messages.success(request, "Gebucht")
                 return redirect('home')
-                #     students_valid = True
-                #     students = []
-                #     for inquiry in inquiries:
-                #         students.append(inquiry.student)
-
-                #     students_valid = True
-                #     if SiteSettings.objects.all().first().lead_start > timezone.now().date():
-                #         for data_student in form.cleaned_data['student']:
-                #             if not data_student in students:
-                #                 students_valid = False
-                #         if not students_valid:
-                #             messages.warning(
-                #                 request, "Die allgemeine Buchung hat noch nicht begonnen, Sie können nur angefragte Schüler wählen")
-                #     if students_valid:
-                #         event.parent = request.user
-                #         event.student.set(form.cleaned_data['student'])
-                #         event.occupied = True
-                #         event.save()
-                #         for inquiry in inquiries:
-                #             if inquiry.student in form.cleaned_data['student']:
-                #                 inquiry.event = event
-                #                 inquiry.save()
-                #         messages.success(request, "Gebucht")
-                #         return redirect('home')
-                # else:
-                #     event.parent = request.user
-                #     event.student.set(form.cleaned_data['student'])
-                #     event.occupied = True
-                #     event.save()
-                #     messages.success(request, "Gebucht")
-                #     return redirect('home')
-                # try:
-                #     inquiry = TeacherStudentInquiry.objects.get(
-                #         Q(parent=request.user), Q(teacher=event.teacher))
-                # except TeacherStudentInquiry.DoesNotExist:  # Es ist keine Anfrage eines Lehrers verfügbar
-
-                # else:
-                #     if inquiry.student in form.cleaned_data['student']:
-                #         if SiteSettings.objects.all().first().lead_start > timezone.now().date() and form.cleaned_data['student'].length > 1:
-                #             messages.warning(
-                #                 request, "Die allgemeine Buchung hat noch nicht begonnen, Sie können nur angefragte Schüler wählen")
-                #         else:
-                #             event.parent = request.user
-                #             event.student.set(form.cleaned_data['student'])
-                #             event.occupied = True
-                #             event.save()
-                #             inquiry.event = event
-                #             inquiry.save()
-                #             messages.success(request, "Gebucht")
-                #             return redirect('home')
-                #     else:
-                #         messages.warning(
-                #             request, "You have to select the inquiry student")
-                #         form = BookForm(request=request, teacher=event.teacher)
         else:
             form = BookForm(request=request, teacher=event.teacher)
         return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
@@ -202,14 +150,8 @@ def inquiryView(request, inquiry_id):
             if form.is_valid():
                 event = form.cleaned_data['event']
                 event.parent = inquiry.parent
-                students = []
-                for student in form.cleaned_data['student']:
-                    try:
-                        model_student = Student.objects.get(shield_id=student)
-                    except Student.DoesNotExist:
-                        Http404("Error")
-                    else:
-                        students.append(model_student)
+                students = form.cleaned_data['student']
+
                 event.student.set(students)
                 event.occupied = True
                 event.save()
@@ -219,3 +161,13 @@ def inquiryView(request, inquiry_id):
             form = InquiryForm(
                 request=request, selected_student=inquiry.student, teacher=inquiry.teacher, parent=inquiry.parent)
         return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
+
+
+@login_required
+def eventView(request, event_id):
+    try:
+        event = Event.objects.get(id=event_id)
+    except Event.DoesNotExist:
+        return Http404("No event")
+    else:
+        return render(request, "dashboard/events/view.html", {'event': event})
