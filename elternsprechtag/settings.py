@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'help',
     'dashboard',
+    'teacher',
     'corsheaders',  # just for development purposes
 ]
 
