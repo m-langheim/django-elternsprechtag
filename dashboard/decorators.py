@@ -1,5 +1,5 @@
 import functools
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, HttpResponse
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
@@ -33,5 +33,18 @@ def lead_started(view_func):
             messages.error(request, "lead not started")
             print("lead not started")
             return render(request, "dashboard/error/lead_not_started.html", status=401)
+
+    return wrapper
+
+
+def parent_required(view_func):
+    @functools.wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.role == 0 or request.user.is_superuser:
+            return view_func(request, *args, **kwargs)
+        elif request.user.role == 1:
+            return redirect("teacher_dashboard")
+        else:
+            return HttpResponse({'error': 'Unauthorized'}, status=401)
 
     return wrapper

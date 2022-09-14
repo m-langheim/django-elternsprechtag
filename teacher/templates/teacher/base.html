@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 {% load i18n %}
+{% load static %}
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="{% static 'teacher/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <title>{% block title %}{% endblock %}</title>
 
-    {% load static %}
-    <link href="{% static 'dashboard/style.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    {% block head %}{% endblock head %}
 </head>
 
 <body>
@@ -21,13 +26,13 @@
             <input type="checkbox" id="show-menu">
             <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
             <div class="content">
-                <div class="logo"><a href="{% url 'home' %}">Elternsprechtag</a></div>
+                <div class="logo"><a href="{% url 'teacher_dashboard' %}">Elternsprechtag-Lehrer</a></div>
             </div>
 
             <div class="content">
 
                 <ul class="links">
-                    <li><a href="{% url 'home' %}">{% translate 'Home' %}</a></li>
+                    <li><a href="{% url 'teacher_dashboard' %}">{% translate 'Home' %}</a></li>
                     <li><a href="#">{% translate 'Events' %}</a></li>
                     <li>
                         <a href="#" class="desktop-link">{{ user.get_username }}</a>
@@ -35,7 +40,7 @@
                         <label for="show-services">{{ user.get_username }}</label>
                         <ul>
                             <li><a href="#">{% translate 'Profil' %}</a></li>
-                            <li>
+                            <!-- <li>
                                 <a href="#" class="desktop-link">{% translate 'Students' %}</a>
                                 <input type="checkbox" id="show-items">
                                 <label for="show-items">{% translate 'Students' %}</label>
@@ -44,14 +49,14 @@
                                     <li><a href="#">{{ student.first_name }} {{ student.last_name }}</a></li>
                                     {% endfor %}
                                 </ul>
-                            </li>
+                            </li> -->
                             <li><a href="{% url 'logout' %}">{% translate 'Logout' %}</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
             <label for="show-search" class="search-icon"><i class="fas fa-search"></i></label>
-            <form action="{% url 'search' %}" class="search-box">
+            <form action="{% url 'teacher_students_list' %}" class="search-box">
                 <input type="text" placeholder="{% translate 'Type Something to Search...' %}" required name="q">
                 <button type="submit" class="go-icon"><i class="fas fa-long-arrow-alt-right"></i></button>
             </form>
@@ -77,8 +82,6 @@
             {% block content %}{% endblock %}
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

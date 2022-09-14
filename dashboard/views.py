@@ -11,7 +11,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
 from .forms import BookForm, InquiryForm
-from .decorators import lead_started
+from .decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
 
@@ -19,6 +19,7 @@ from django.http import Http404
 
 
 @login_required
+@parent_required
 def public_dashboard(request):
     students = request.user.students.all()
     inquiries = []
@@ -34,6 +35,7 @@ def public_dashboard(request):
 
 
 @login_required
+@parent_required
 def search(request):
     teachers = CustomUser.objects.filter(role=1)
     teacherExtraData = TeacherExtraData.objects.all()
@@ -71,6 +73,7 @@ def search(request):
 
 
 @login_required
+@parent_required
 # man erhält eine Liste mit allen freien Terminen des Lehrers
 def bookEventTeacherList(request, teacher_id):
 
@@ -94,6 +97,7 @@ def bookEventTeacherList(request, teacher_id):
 
 
 @login_required
+@parent_required
 @lead_started
 def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
     try:
@@ -134,6 +138,7 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
 
 
 @login_required
+@parent_required
 def inquiryView(request, inquiry_id):
     try:
         inquiry = TeacherStudentInquiry.objects.get(
@@ -164,6 +169,7 @@ def inquiryView(request, inquiry_id):
 
 
 @login_required
+@parent_required
 def eventView(request, event_id):
     try:
         event = Event.objects.get(id=event_id)
