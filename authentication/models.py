@@ -13,7 +13,7 @@ from .managers import CustomUserManager
 
 class Student(models.Model):  # Schüler
     shield_id = models.CharField(
-        max_length=38, unique=True, primary_key=True)
+        max_length=38, unique=True)
     first_name = models.CharField(_("First name"), max_length=48)
     last_name = models.CharField(_("Last name"), max_length=48)
     child_email = models.EmailField(max_length=200, null=True)
