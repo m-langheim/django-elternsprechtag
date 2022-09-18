@@ -91,6 +91,6 @@ class InquiryView(View):
 
 
 class CreateInquiryView(View):
-    def get(self, request):
+    def get(self, request, id):
         form = createInquiryForm(request=request)
         return render(request, "teacher/createInquiry.html", {'form': form})
