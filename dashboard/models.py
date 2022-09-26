@@ -32,11 +32,11 @@ class Event(models.Model):  # Termin
 
 # Anfragen, die der Lehrer an einen Schüler schickt. Muss einzelnd sein, weil es auch möglich ist, dass es noch keinen Elternaccount zum Schüler gibt
 class TeacherStudentInquiry(models.Model):
-    teacher = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 1})
+    requester = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 1}, related_name='%(class)s_requester')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    parent = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 0}, default=None, null=True, blank=True, related_name='%(class)s_parent')  # limit_choices_to={'role': 0} besagt, dass nur Nutzer, wo der Wert role glwich 0 ist eingesetzt werden können, also es wird verhindert, dass Lehrer oder andere als Eltern in Terminen gespeichert werden
+    respondent = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 0}, default=None, null=True, blank=True, related_name='%(class)s_respondent')  # limit_choices_to={'role': 0} besagt, dass nur Nutzer, wo der Wert role glwich 0 ist eingesetzt werden können, also es wird verhindert, dass Lehrer oder andere als Eltern in Terminen gespeichert werden
     reason = models.TextField()
 
     event = models.ForeignKey(
