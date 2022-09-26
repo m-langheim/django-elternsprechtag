@@ -5,8 +5,8 @@
 {% block content %}
 <div class="list-group">
     {% for student in page_obj %}
-    <a href="#" class="list-group-item list-group-item-action">{{ student.first_name }} {{ student.last_name }}
-        {{ student.id }}</a>
+    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}" class="list-group-item list-group-item-action">
+        {{ student.first_name }} {{ student.last_name }}</a>
     {% endfor %}
 </div>
 

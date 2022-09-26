@@ -1,11 +1,14 @@
 {% extends "teacher/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" class="button" value="Book" />
+    {{ form.student|as_crispy_field }}
+    {{ form.parent|as_crispy_field }}
+    {{ form.reason|as_crispy_field }}
+    <input type="submit" class="btn btn-success" value="Anfrage stellen" />
 </form>
 {% endblock content %}
