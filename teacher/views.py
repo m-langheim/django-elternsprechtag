@@ -8,6 +8,7 @@ from django.views import View
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 from django.http import Http404
+from django.utils.decorators import method_decorator
 from .decorators import teacher_required
 from .forms import createInquiryForm, editInquiryForm
 
@@ -15,6 +16,9 @@ from .forms import createInquiryForm, editInquiryForm
 
 from django.urls import reverse
 from django.contrib import messages
+
+
+teacher_decorators = [login_required, teacher_required]
 
 
 @login_required
@@ -46,11 +50,14 @@ def studentList(request):
     return render(request, "teacher/studentList.html", {'page_obj': page_obj})
 
 
+@method_decorator(teacher_decorators)
 class DetailStudent(View):
+
     def get(self, request):
         return render(request, "teacher/student.html")
 
 
+@method_decorator(teacher_decorators)
 class InquiryView(View):
     form_class = editInquiryForm
 
@@ -90,7 +97,9 @@ class InquiryView(View):
             return render(request, "teacher/inquiry.html", {'form': form})
 
 
+@method_decorator(teacher_decorators)
 class CreateInquiryView(View):
+
     def get(self, request, studentID):
         try:
             student = Student.objects.get(id__exact=studentID)
