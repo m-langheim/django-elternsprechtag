@@ -15,7 +15,7 @@ def add_access(sender, instance, created, **kwargs):
 @receiver(post_save, sender=CustomUser)
 def add_teacher_data(sender, instance, created, **kwargs):
     if created and instance.role == 1:
-        TeacherExtraData.objects.create(teacher=instance)
+        TeacherExtraData.objects.create(requester=instance)
 
 # signal when new Upcomming_User object saved to send email to the child
 

@@ -23,7 +23,7 @@ def lead_started(view_func):
                 print("error")
             else:
                 inquiries = Inquiry.objects.filter(
-                    Q(parent=request.user), Q(teacher=event.teacher))
+                    Q(respondent=request.user), Q(requester=event.teacher))
                 if inquiries:
                     if inquiries.filter(event=None):
                         return view_func(request, event_id, *args, **kwargs)

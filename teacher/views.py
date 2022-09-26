@@ -24,7 +24,7 @@ teacher_decorators = [login_required, teacher_required]
 @login_required
 @teacher_required
 def dashboard(request):
-    inquiries = Inquiry.objects.filter(teacher=request.user)
+    inquiries = Inquiry.objects.filter(requester=request.user)
     # create individual link for each inquiry
     custom_inquiries = []
     for inquiry in inquiries:
@@ -67,10 +67,10 @@ class InquiryView(View):
         except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
-            print(inquiry.parent)
+            print(inquiry.respondent)
             initial = {'reason': inquiry.reason,
                        'student': inquiry.student,
-                       'parent': inquiry.parent,
+                       'parent': inquiry.respondent,
                        'event': inquiry.event}
             form = self.form_class(initial=initial)
             print(inquiry)
@@ -85,7 +85,7 @@ class InquiryView(View):
         else:
             initial = {'reason': inquiry.reason,
                        'student': inquiry.student,
-                       'parent': inquiry.parent,
+                       'parent': inquiry.respondent,
                        'event': inquiry.event}
             form = self.form_class(request.POST, initial=initial)
             if form.is_valid():
@@ -107,7 +107,7 @@ class CreateInquiryView(View):
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
             inquiry = Inquiry.objects.filter(
-                Q(student=student), Q(teacher=request.user))
+                Q(student=student), Q(requester=request.user))
             if inquiry:
                 messages.info(
                     request, "Sie haben bereits eine Anfrage für dieses Kind erstellt. Im folgenden haben Sie die Möglichkeit diese Anfrage zu bearbeiten.")
@@ -128,7 +128,7 @@ class CreateInquiryView(View):
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
             inquiry = Inquiry.objects.filter(
-                Q(student=student), Q(teacher=request.user))
+                Q(student=student), Q(requester=request.user))
             if inquiry:
                 messages.info(
                     request, "Sie haben bereits eine Anfrage für dieses Kind erstellt. Im folgenden haben Sie die Möglichkeit diese Anfrage zu bearbeiten.")
@@ -141,7 +141,7 @@ class CreateInquiryView(View):
             form = createInquiryForm(request.POST, initial=initial)
             if form.is_valid():
                 Inquiry.objects.create(
-                    teacher=request.user, student=form.cleaned_data["student"], parent=form.cleaned_data["parent"], reason=form.cleaned_data["reason"])
+                    requester=request.user, student=form.cleaned_data["student"], respondent=form.cleaned_data["parent"], reason=form.cleaned_data["reason"])
                 messages.success(request, "Anfrage erstellt")
                 return redirect('teacher_dashboard')
         return render(request, "teacher/createInquiry.html", {'form': form})

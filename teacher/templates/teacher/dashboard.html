@@ -72,7 +72,7 @@
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
                             <strong>Elternteil: </strong>
-                            {{ inquiry.inquiry.parent.first_name }} {{ inquiry.inquiry.parent.last_name }}<br />
+                            {{ inquiry.inquiry.respondent.first_name }} {{ inquiry.inquiry.respondent.last_name }}<br />
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
                             <strong>Event: </strong>
                             {% if inquiry.inquiry.event != null %}
