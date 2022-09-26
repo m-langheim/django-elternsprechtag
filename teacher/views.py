@@ -50,14 +50,13 @@ def studentList(request):
     return render(request, "teacher/studentList.html", {'page_obj': page_obj})
 
 
-@method_decorator(teacher_decorators)
+@method_decorator(teacher_decorators, name='dispatch')
 class DetailStudent(View):
-
     def get(self, request):
         return render(request, "teacher/student.html")
 
 
-@method_decorator(teacher_decorators)
+@method_decorator(teacher_decorators, name='dispatch')
 class InquiryView(View):
     form_class = editInquiryForm
 
@@ -97,7 +96,7 @@ class InquiryView(View):
             return render(request, "teacher/inquiry.html", {'form': form})
 
 
-@method_decorator(teacher_decorators)
+@method_decorator(teacher_decorators, name='dispatch')
 class CreateInquiryView(View):
 
     def get(self, request, studentID):
