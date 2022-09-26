@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, TeacherStudentInquiry, SiteSettings, Event
+from .models import Student, Inquiry, SiteSettings, Event
 from django.db.models import Q
 from django.utils import timezone
 from itertools import chain
@@ -13,7 +13,7 @@ class BookForm(forms.Form):
 
         choices = []
         if SiteSettings.objects.all().first().lead_start > timezone.now().date():  # lead not started yet
-            inquiries = TeacherStudentInquiry.objects.filter(
+            inquiries = Inquiry.objects.filter(
                 Q(teacher=self.teacher), Q(parent=self.request.user), Q(event=None))
             for inquiry in inquiries:
                 choices.append(

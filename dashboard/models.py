@@ -31,7 +31,7 @@ class Event(models.Model):  # Termin
 
 
 # Anfragen, die der Lehrer an einen Schüler schickt. Muss einzelnd sein, weil es auch möglich ist, dass es noch keinen Elternaccount zum Schüler gibt
-class TeacherStudentInquiry(models.Model):
+class Inquiry(models.Model):
     requester = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 1}, related_name='%(class)s_requester')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)

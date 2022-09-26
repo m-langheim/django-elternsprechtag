@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
 
-from dashboard.models import SiteSettings, TeacherStudentInquiry, Event
+from dashboard.models import SiteSettings, Inquiry, Event
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 

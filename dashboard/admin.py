@@ -5,7 +5,7 @@ from tracemalloc import start
 from django.contrib import admin
 
 from authentication.models import CustomUser
-from .models import Event, TeacherStudentInquiry, SiteSettings
+from .models import Event, Inquiry, SiteSettings
 
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
@@ -32,5 +32,5 @@ class EventAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(TeacherStudentInquiry)
+admin.site.register(Inquiry)
 admin.site.register(SiteSettings)

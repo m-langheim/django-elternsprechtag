@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from authentication.models import CustomUser
-from dashboard.models import TeacherStudentInquiry, Student, Event
+from dashboard.models import Inquiry, Student, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -24,7 +24,7 @@ teacher_decorators = [login_required, teacher_required]
 @login_required
 @teacher_required
 def dashboard(request):
-    inquiries = TeacherStudentInquiry.objects.filter(teacher=request.user)
+    inquiries = Inquiry.objects.filter(teacher=request.user)
     # create individual link for each inquiry
     custom_inquiries = []
     for inquiry in inquiries:
@@ -62,9 +62,9 @@ class InquiryView(View):
 
     def get(self, request, id):
         try:
-            inquiry = TeacherStudentInquiry.objects.get(id__exact=force_str(
+            inquiry = Inquiry.objects.get(id__exact=force_str(
                 urlsafe_base64_decode(id)))
-        except TeacherStudentInquiry.DoesNotExist:
+        except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
             print(inquiry.parent)
@@ -78,9 +78,9 @@ class InquiryView(View):
 
     def post(self, request, id):
         try:
-            inquiry = TeacherStudentInquiry.objects.get(id__exact=force_str(
+            inquiry = Inquiry.objects.get(id__exact=force_str(
                 urlsafe_base64_decode(id)))
-        except TeacherStudentInquiry.DoesNotExist:
+        except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
             initial = {'reason': inquiry.reason,
@@ -106,7 +106,7 @@ class CreateInquiryView(View):
             return Http404("Student not found")
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
-            inquiry = TeacherStudentInquiry.objects.filter(
+            inquiry = Inquiry.objects.filter(
                 Q(student=student), Q(teacher=request.user))
             if inquiry:
                 messages.info(
@@ -127,7 +127,7 @@ class CreateInquiryView(View):
             return Http404("Student not found")
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
-            inquiry = TeacherStudentInquiry.objects.filter(
+            inquiry = Inquiry.objects.filter(
                 Q(student=student), Q(teacher=request.user))
             if inquiry:
                 messages.info(
@@ -140,7 +140,7 @@ class CreateInquiryView(View):
             initial = {'student': student, 'parent': parent}
             form = createInquiryForm(request.POST, initial=initial)
             if form.is_valid():
-                TeacherStudentInquiry.objects.create(
+                Inquiry.objects.create(
                     teacher=request.user, student=form.cleaned_data["student"], parent=form.cleaned_data["parent"], reason=form.cleaned_data["reason"])
                 messages.success(request, "Anfrage erstellt")
                 return redirect('teacher_dashboard')

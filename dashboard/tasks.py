@@ -1,5 +1,5 @@
 from time import sleep
-from dashboard.models import Event, TeacherStudentInquiry, SiteSettings
+from dashboard.models import Event, Inquiry, SiteSettings
 import datetime
 from celery import shared_task
 

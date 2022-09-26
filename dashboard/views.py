@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData, Student
-from .models import Event, TeacherStudentInquiry, SiteSettings
+from .models import Event, Inquiry, SiteSettings
 from django.db.models import Q
 from django.utils import timezone
 
@@ -23,7 +23,7 @@ from django.http import Http404
 def public_dashboard(request):
     students = request.user.students.all()
     inquiries = []
-    for inquiry in TeacherStudentInquiry.objects.filter(Q(parent=request.user), Q(event=None)):
+    for inquiry in Inquiry.objects.filter(Q(parent=request.user), Q(event=None)):
         inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
                          'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
@@ -141,9 +141,9 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
 @parent_required
 def inquiryView(request, inquiry_id):
     try:
-        inquiry = TeacherStudentInquiry.objects.get(
+        inquiry = Inquiry.objects.get(
             id=force_str(urlsafe_base64_decode(inquiry_id)))
-    except TeacherStudentInquiry.DoesNotExist:
+    except Inquiry.DoesNotExist:
         return Http404("Inquiry does not exist.")
 
     else:
