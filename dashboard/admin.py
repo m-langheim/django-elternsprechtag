@@ -31,6 +31,10 @@ class EventAdmin(admin.ModelAdmin):
         return redirect("..")
 
 
+class InquiryAdmin(admin.ModelAdmin):
+    list_display = ('requester', 'respondent', 'type', 'processed')
+
+
 admin.site.register(Event, EventAdmin)
-admin.site.register(Inquiry)
+admin.site.register(Inquiry, InquiryAdmin)
 admin.site.register(SiteSettings)

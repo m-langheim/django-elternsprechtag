@@ -30,15 +30,19 @@ class Event(models.Model):  # Termin
     occupied = models.BooleanField(default=False)
 
 
-# Anfragen, die der Lehrer an einen Schüler schickt. Muss einzelnd sein, weil es auch möglich ist, dass es noch keinen Elternaccount zum Schüler gibt
+# Allgemeine Anfragen, also Terminanfragen von den Eltern an die Lehrer und die ufforderung für ein Termin von den Eltern an die Schüler
 class Inquiry(models.Model):
+    CHOICES_INQUIRYTYPE = ((0, "Anfrage zur Buchung eines Termins (Lehrer->Eltern)"),
+                           (1, "Anfrage zur Bestätigung eines Termins (Eltern->Lehrer)"))
     requester = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 1}, related_name='%(class)s_requester')
+        CustomUser, on_delete=models.CASCADE, related_name='%(class)s_requester')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     respondent = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 0}, default=None, null=True, blank=True, related_name='%(class)s_respondent')  # limit_choices_to={'role': 0} besagt, dass nur Nutzer, wo der Wert role glwich 0 ist eingesetzt werden können, also es wird verhindert, dass Lehrer oder andere als Eltern in Terminen gespeichert werden
+        CustomUser, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='%(class)s_respondent')
+    type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     reason = models.TextField()
 
+    processed = models.BooleanField(default=False)
     event = models.ForeignKey(
         Event, on_delete=models.SET_NULL, blank=True, null=True, default=None)
 
