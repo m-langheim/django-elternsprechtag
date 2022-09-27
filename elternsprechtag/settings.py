@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'dashboard',
     'teacher',
     'corsheaders',  # just for development purposes
+    'colorfield'
 ]
 
 MIDDLEWARE = [

@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from colorfield.fields import ColorField
 
 from .managers import CustomUserManager
 
@@ -47,6 +48,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
 
     def __str__(self):
         return self.email
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=32)
+    synonymes = models.TextField(null=True, blank=True)
+    color = ColorField(
+        default="#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)]))
 
 
 class TeacherExtraData(models.Model):
