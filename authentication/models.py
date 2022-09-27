@@ -52,7 +52,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
 
 class Tag(models.Model):
     name = models.CharField(max_length=32)
-    synonymes = models.TextField(null=True, blank=True)
+    synonyms = models.TextField(null=True, blank=True)
     color = ColorField(
         default="#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)]))
 
