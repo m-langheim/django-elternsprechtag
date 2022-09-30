@@ -10,7 +10,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
-from .forms import createInquiryForm, editInquiryForm, configureTagsForm
+from .forms import changeProfileForm, createInquiryForm, editInquiryForm, configureTagsForm
 
 # Create your views here.
 
@@ -152,4 +152,4 @@ class ProfilePage(View):
     def get(self, request):
         tagConfigurationForm = configureTagsForm(
             initial={'tags': request.user.teacherextradata.tags.all()})
-        return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': tagConfigurationForm})
+        return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': tagConfigurationForm, 'change_profile': changeProfileForm(instance=request.user)})

@@ -22,5 +22,11 @@ class editInquiryForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea, required=False)
 
 
+class changeProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ("first_name", "last_name", "email")
+
+
 class configureTagsForm(forms.Form):
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects)
