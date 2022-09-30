@@ -10,7 +10,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
-from .forms import createInquiryForm, editInquiryForm
+from .forms import createInquiryForm, editInquiryForm, configureTagsForm
 
 # Create your views here.
 
@@ -145,3 +145,11 @@ class CreateInquiryView(View):
                 messages.success(request, "Anfrage erstellt")
                 return redirect('teacher_dashboard')
         return render(request, "teacher/createInquiry.html", {'form': form})
+
+
+@method_decorator(teacher_decorators, name='dispatch')
+class ProfilePage(View):
+    def get(self, request):
+        tagConfigurationForm = configureTagsForm(
+            initial={'tags': request.user.teacherextradata.tags.all()})
+        return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': tagConfigurationForm})

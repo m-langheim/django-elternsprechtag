@@ -39,7 +39,7 @@
                         <input type="checkbox" id="show-services">
                         <label for="show-services">{{ user.get_username }}</label>
                         <ul>
-                            <li><a href="#">{% translate 'Profil' %}</a></li>
+                            <li><a href="{% url 'teacher_profile' %}">{% translate 'Profil' %}</a></li>
                             <!-- <li>
                                 <a href="#" class="desktop-link">{% translate 'Students' %}</a>
                                 <input type="checkbox" id="show-items">

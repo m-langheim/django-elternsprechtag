@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import Q
 from dashboard.models import Student, Event
-from authentication.models import CustomUser
+from authentication.models import CustomUser, Tag
 
 
 class createInquiryForm(forms.Form):
@@ -20,3 +20,7 @@ class editInquiryForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False)
     reason = forms.CharField(widget=forms.Textarea, required=False)
+
+
+class configureTagsForm(forms.Form):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects)
