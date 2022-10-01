@@ -23,6 +23,9 @@ class editInquiryForm(forms.Form):
 
 
 class changeProfileForm(forms.ModelForm):
+    change_profile = forms.BooleanField(
+        widget=forms.HiddenInput, initial=True)  # field to identify the form
+
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "email")

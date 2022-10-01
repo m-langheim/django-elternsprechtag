@@ -153,3 +153,12 @@ class ProfilePage(View):
         tagConfigurationForm = configureTagsForm(
             initial={'tags': request.user.teacherextradata.tags.all()})
         return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': tagConfigurationForm, 'change_profile': changeProfileForm(instance=request.user)})
+
+    def post(self, request):
+        if 'change_profile' in request.POST:
+            change_profile_form = changeProfileForm(
+                request.POST, instance=request.user)
+            if change_profile_form.is_valid():
+                change_profile_form.save()
+                return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
+                    initial={'tags': request.user.teacherextradata.tags.all()}), 'change_profile': changeProfileForm(instance=request.user)})
