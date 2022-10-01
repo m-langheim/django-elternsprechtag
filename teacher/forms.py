@@ -2,6 +2,9 @@ from django import forms
 from django.db.models import Q
 from dashboard.models import Student, Event
 from authentication.models import CustomUser, Tag
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class createInquiryForm(forms.Form):
@@ -30,6 +33,23 @@ class changeProfileForm(forms.ModelForm):
         model = CustomUser
         fields = ("first_name", "last_name", "email")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit('submit', 'Speichern'))
+
 
 class configureTagsForm(forms.Form):
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects)
+
+
+class changePasswordForm(PasswordChangeForm):
+    change_password = forms.BooleanField(
+        widget=forms.HiddenInput, initial=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit('submit', 'Ändern'))

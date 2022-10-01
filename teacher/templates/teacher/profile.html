@@ -3,38 +3,51 @@
 
 {% block title %} Dashboard - Lehrer {% endblock title %}
 
+{% block head %}
+<script defer>
+    $(document).ready(function () {
+        $('.nav-link').click(function () {
+            window.history.replaceState(null, null, this.href);
+        });
+    });
+</script>
+{% endblock head %}
+
 {% block content %}
 <div class="row">
     <div class="container col-lg-2">
-        <div class="nav flex-column nav-tabs p-2" style="background-color: #e9ecef; border-radius: 0.5rem;"
-            id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <button class="nav-link active" id="profile-tab" data-bs-toggle="pill" data-bs-target="#profile"
-                type="button" role="tab" aria-controls="profile" aria-selected="true"
-                style="border-radius: 0.5rem;">Mein Profil</button>
-            <button class="nav-link" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button"
-                role="tab" aria-controls="security" aria-selected="false"
-                style="border-radius: 0.5rem;">Sicherheit</button>
-            <!-- <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages"
-                type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
-                type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button> -->
-        </div>
+        <ul class="nav flex-column nav-tabs p-2" style="background-color: #e9ecef; border-radius: 0.5rem;"
+            role="tablist" aria-orientation="vertical" id="profilePageTabs">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if not request.GET.tab or request.GET.tab == 'profile-tab' %} active {% endif %}"
+                    href="?tab=profile-tab" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                    type="button" role="tab" aria-controls="profile"
+                    aria-selected="{% if not request.GET.tab or request.GET.tab == 'profile' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Mein
+                    Profil</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.GET.tab == 'security-tab' %} active {% endif %}"
+                    href="?tab=security-tab" data-bs-toggle="tab" data-bs-target="#security" role="tab" type="button"
+                    aria-controls="security"
+                    aria-selected="{% if request.GET.tab == 'security' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Sicherheit</a>
+            </li>
+        </ul>
     </div>
     <div class="container col-md-10">
-        <!-- <div class="d-flex align-items-start"> -->
         <div class="card">
             <div class="card-body">
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab"
-                        tabindex="0">
+                    <div class="tab-pane fade {% if not request.GET.tab or request.GET.tab == 'profile-tab' %} show active {% endif %}"
+                        id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                         <form method="post">
                             {% csrf_token %}
-                            {{change_profile|crispy}}
-                            <input type="submit" class="btn btn-success" value="Speichern" />
+                            {% crispy change_profile %}
                         </form>
                     </div>
-                    <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab"
-                        tabindex="0">
+                    <div class="tab-pane fade {% if request.GET.tab == 'security-tab' %} show active {% endif %}"
+                        id="security" role="tabpanel" aria-labelledby="security-tab" tabindex="0">
                         <p class="h3">Tags</p>
                         <div class="card">
                             <div class="card-body">
@@ -47,17 +60,14 @@
                                 {% endfor %}
                             </div>
                         </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% crispy change_password %}
+                        </form>
                     </div>
-                    <!-- <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
-                        aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab" tabindex="0">...</div> -->
                 </div>
             </div>
         </div>
-
-
-        <!-- </div> -->
     </div>
 </div>
 
