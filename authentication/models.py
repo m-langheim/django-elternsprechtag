@@ -67,6 +67,7 @@ class TeacherExtraData(models.Model):
     # tags = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     room = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to='uploads/', blank=True)
 
 
 def generate_unique_code():

@@ -42,7 +42,6 @@
                     <div class="tab-pane fade {% if not request.GET.tab or request.GET.tab == 'profile-tab' %} show active {% endif %}"
                         id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                         <form method="post">
-                            {% csrf_token %}
                             {% crispy change_profile %}
                         </form>
                     </div>
