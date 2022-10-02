@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from colorfield.fields import ColorField
 
+from PIL import Image
+
 from .managers import CustomUserManager
 
 # Create your models here.
@@ -67,7 +69,20 @@ class TeacherExtraData(models.Model):
     # tags = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     room = models.IntegerField(blank=True, null=True)
-    image = models.ImageField(upload_to='uploads/', blank=True)
+    image = models.ImageField(upload_to='teacher_pics/', default="default.jpg")
+
+    def __str__(self):
+        return f'{self.teacher.last_name} extraData'
+
+    def save(self):
+        super().save()
+        # resize the image
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
 
 def generate_unique_code():

@@ -1,7 +1,8 @@
+from dataclasses import field
 from django import forms
 from django.db.models import Q
 from dashboard.models import Student, Event
-from authentication.models import CustomUser, Tag
+from authentication.models import CustomUser, Tag, TeacherExtraData
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import PasswordChangeForm
@@ -26,6 +27,7 @@ class editInquiryForm(forms.Form):
 
 
 class changeProfileForm(forms.ModelForm):
+    image = forms.ImageField(required=False)
     change_profile = forms.BooleanField(
         widget=forms.HiddenInput, initial=True)  # field to identify the form
 
@@ -38,6 +40,21 @@ class changeProfileForm(forms.ModelForm):
         self.helper = FormHelper()
 
         self.helper.add_input(Submit('submit', 'Speichern'))
+
+    def save(self, commit=True):
+        if self.cleaned_data['image']:
+            extraData = self.instance.teacherextradata
+            extraData.image = self.cleaned_data['image']
+            extraData.save()
+        return super(changeProfileForm, self).save(commit=commit)
+
+
+class changeTeacherPictureForm(forms.ModelForm):
+    change_picture = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+
+    class Meta:
+        model = TeacherExtraData
+        fields = ('image',)
 
 
 class configureTagsForm(forms.Form):
