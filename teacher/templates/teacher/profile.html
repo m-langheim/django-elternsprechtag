@@ -33,6 +33,12 @@
                     aria-selected="{% if request.GET.tab == 'security' %} true {% else %} false {% endif %}"
                     style="border-radius: 0.5rem;">Sicherheit</a>
             </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.GET.tab == 'tags-tab' %} active {% endif %}" href="?tab=tags-tab"
+                    data-bs-toggle="tab" data-bs-target="#tags" role="tab" type="button" aria-controls="tags"
+                    aria-selected="{% if request.GET.tab == 'tags' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Tags</a>
+            </li>
         </ul>
     </div>
     <div class="container col-lg-10 col-md-9">
@@ -63,6 +69,13 @@
                     </div>
                     <div class="tab-pane fade {% if request.GET.tab == 'security-tab' %} show active {% endif %}"
                         id="security" role="tabpanel" aria-labelledby="security-tab" tabindex="0">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% crispy change_password %}
+                        </form>
+                    </div>
+                    <div class="tab-pane fade {% if request.GET.tab == 'tags-tab' %} show active {% endif %}" id="tags"
+                        role="tabpanel" aria-labelledby="tags-tab" tabindex="0">
                         <p class="h3">Tags</p>
                         <div class="card">
                             <div class="card-body">
@@ -75,10 +88,6 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <form method="post">
-                            {% csrf_token %}
-                            {% crispy change_password %}
-                        </form>
                     </div>
                 </div>
             </div>
