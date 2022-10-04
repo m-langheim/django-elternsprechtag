@@ -118,7 +118,7 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     user_token = models.CharField(
         max_length=12, primary_key=True, default=generate_unique_code)
     access_key = models.CharField(max_length=12, default=generate_unique_code)
-    otp = models.IntegerField(default=generate_unique_otp)
+    otp = models.CharField(max_length=6, default=generate_unique_otp)
     otp_verified = models.BooleanField(default=False)
     otp_verified_date = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(default=timezone.now)
