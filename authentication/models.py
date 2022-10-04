@@ -52,11 +52,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
         return self.email
 
 
+def generate_new_color():
+
+    while True:
+        color = "#"+''.join([random.choice('ABCDEF0123456789')
+                            for i in range(6)])
+        if not Tag.objects.filter(color=color):
+            break
+
+    return color
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=32)
     synonyms = models.TextField(null=True, blank=True)
-    color = ColorField(
-        default="#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)]))
+    color = ColorField(default=generate_new_color)
 
     def __str__(self):
         return self.name
