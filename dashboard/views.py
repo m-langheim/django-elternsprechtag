@@ -28,7 +28,7 @@ def public_dashboard(request):
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
                          'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
     booked_events = []
-    for event in Event.objects.filter(Q(occupied=True), Q(respondent=request.user)):
+    for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
         booked_events.append({'event': event, 'url': reverse(
             'event_per_id', args=[event.id])})
     return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
@@ -96,7 +96,7 @@ def bookEventTeacherList(request, teacher_id):
             events.append({'event': event, 'url': reverse(
                 'book_event_per_id', args=[event.id])})
         booked_events = []
-        for event in Event.objects.filter(Q(occupied=True), Q(respondent=request.user)):
+        for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
             booked_events.append({'event': event, 'url': reverse(
                 'event_per_id', args=[event.id])})
     return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'booked_events': booked_events})
