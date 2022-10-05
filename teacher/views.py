@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from authentication.models import CustomUser
+from authentication.models import CustomUser, TeacherExtraData
 from dashboard.models import TeacherStudentInquiry, Student, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -10,8 +10,9 @@ from django.utils.encoding import force_str, force_bytes
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
-from .forms import createInquiryForm, editInquiryForm
-
+from .forms import changePasswordForm, changeProfileForm, changeTeacherPictureForm, createInquiryForm, editInquiryForm, configureTagsForm
+from django.contrib.auth import update_session_auth_hash
+from django.core.exceptions import BadRequest
 # Create your views here.
 
 from django.urls import reverse
@@ -145,3 +146,42 @@ class CreateInquiryView(View):
                 messages.success(request, "Anfrage erstellt")
                 return redirect('teacher_dashboard')
         return render(request, "teacher/createInquiry.html", {'form': form})
+
+
+@method_decorator(teacher_decorators, name='dispatch')
+class ProfilePage(View):
+    def get(self, request):
+        tagConfigurationForm = configureTagsForm(
+            initial={'tags': request.user.teacherextradata.tags.all()})
+        # print(TeacherExtraData.objects.all().first().image.url)
+
+        context = {
+            'tags': request.user.teacherextradata.tags.all(),
+            'configure_tags': tagConfigurationForm,
+            'change_profile': changeProfileForm(instance=request.user),
+            'change_password': changePasswordForm(request.user)
+        }
+        return render(request, "teacher/profile.html", context)
+
+    def post(self, request):
+        # change the users personal information
+        if 'change_profile' in request.POST:
+            change_profile_form = changeProfileForm(
+                request.POST, request.FILES, instance=request.user)
+            if change_profile_form.is_valid():
+                change_profile_form.save()
+            return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
+                initial={'tags': request.user.teacherextradata.tags.all()}), 'change_profile': change_profile_form, 'change_password': changePasswordForm(request.user)})
+
+        # change the users pasword
+        if 'change_password' in request.POST:
+            change_password_form = changePasswordForm(
+                request.user, request.POST)
+            if change_password_form.is_valid():
+                user = change_password_form.save()
+                update_session_auth_hash(request, user)
+
+            return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
+                initial={'tags': request.user.teacherextradata.tags.all()}), 'change_profile': changeProfileForm(instance=request.user), 'change_password': change_password_form})
+
+        raise BadRequest

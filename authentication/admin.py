@@ -5,10 +5,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.urls import path
-
 from django.contrib.auth.models import Group
 
-from .models import Upcomming_User, Student, CustomUser, TeacherExtraData
+from .models import Upcomming_User, Student, CustomUser, TeacherExtraData, Tag
 from .forms import CustomUserCreationForm, CustomUserChangeForm, AdminCsvImportForm
 
 # Register your models here.
@@ -35,8 +34,12 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'color')
 
+
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Upcomming_User)
 admin.site.register(TeacherExtraData)
 

@@ -6,9 +6,8 @@ border-bottom färbt sich erst, wenn das passwort mit dem ersten übereinstimmt
 better warning if the otp is 
 fix the submit button of otp even if there is an invalid type of code
 
-register-choose fertig machen: text und design
-jeweils bei den einzelnen schritten des registrierens einen fortschritt aufschreiben: Schritt 1/5 (o.ä.) und dazu ggf einen Fortschrittsbalken
-
 Passwort ändern in authentication mit typischem Aussehen
+Möglichkeit zum Passwort Reset
+Versendung eines Reset Links an die Lehrer, sobald deren Konto erstellt wird
 
-Ladebalken beim Login muss weg
+Man muss bei jeder registrierung das Elternteil abmelden und sofort wieder bei anmelden, ohne dass das elternteil was tun muss. sonst kann das elternteil im falschen account sein
