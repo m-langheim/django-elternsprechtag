@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
 
-from .models import SiteSettings, TeacherStudentInquiry, Event
+from .models import SiteSettings, Inquiry, Event
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
@@ -22,8 +22,8 @@ def lead_started(view_func):
             except Event.DoesNotExist:
                 print("error")
             else:
-                inquiries = TeacherStudentInquiry.objects.filter(
-                    Q(parent=request.user), Q(teacher=event.teacher))
+                inquiries = Inquiry.objects.filter(Q(type=0), Q(
+                    respondent=request.user), Q(requester=event.teacher))
                 if inquiries:
                     if inquiries.filter(event=None):
                         return view_func(request, event_id, *args, **kwargs)

@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData, Student, Tag
-from .models import Event, TeacherStudentInquiry, SiteSettings
+from .models import Event, Inquiry, SiteSettings
 from django.db.models import Q
 from django.utils import timezone
 
@@ -23,19 +23,19 @@ from django.http import Http404
 def public_dashboard(request):
     students = request.user.students.all()
     inquiries = []
-    for inquiry in TeacherStudentInquiry.objects.filter(Q(parent=request.user), Q(event=None)):
+    for inquiry in Inquiry.objects.filter(Q(type=0), Q(respondent=request.user), Q(event=None)):
         inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
                          'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
     booked_events = []
-    for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
+    for event in Event.objects.filter(Q(occupied=True), Q(respondent=request.user)):
         booked_events.append({'event': event, 'url': reverse(
             'event_per_id', args=[event.id])})
     return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 def search(request):
     teachers = CustomUser.objects.filter(role=1)
     teacherExtraData = TeacherExtraData.objects.all()
@@ -78,8 +78,8 @@ def search(request):
     return render(request, 'dashboard/search.html', {'teachers': custom_result, 'state': state, 'request_search': request_search})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 # man erhält eine Liste mit allen freien Terminen des Lehrers
 def bookEventTeacherList(request, teacher_id):
 
@@ -92,19 +92,19 @@ def bookEventTeacherList(request, teacher_id):
         print("Error")
     else:
         events = []
-        for event in Event.objects.filter(Q(teacher=teacher), Q(occupied=False)):
+        for event in Event.objects.filter(Q(requester=teacher), Q(occupied=False)):
             events.append({'event': event, 'url': reverse(
                 'book_event_per_id', args=[event.id])})
         booked_events = []
-        for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
+        for event in Event.objects.filter(Q(occupied=True), Q(respondent=request.user)):
             booked_events.append({'event': event, 'url': reverse(
                 'event_per_id', args=[event.id])})
     return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'booked_events': booked_events})
 
 
-@login_required
-@parent_required
-@lead_started
+@ login_required
+@ parent_required
+@ lead_started
 def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
     try:
         event = Event.objects.get(id=event_id)
@@ -143,13 +143,13 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
         return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 def inquiryView(request, inquiry_id):
     try:
-        inquiry = TeacherStudentInquiry.objects.get(
-            id=force_str(urlsafe_base64_decode(inquiry_id)))
-    except TeacherStudentInquiry.DoesNotExist:
+        inquiry = Inquiry.objects.get(Q(type=0), Q(
+            id=force_str(urlsafe_base64_decode(inquiry_id))))
+    except Inquiry.DoesNotExist:
         return Http404("Inquiry does not exist.")
 
     else:
@@ -157,10 +157,10 @@ def inquiryView(request, inquiry_id):
             return render(request, "dashboard/error/inquiry_ocupied.html")
         elif request.method == 'POST':
             form = InquiryForm(request.POST,
-                               request=request, selected_student=inquiry.student, teacher=inquiry.teacher, parent=inquiry.parent)
+                               request=request, selected_student=inquiry.student, teacher=inquiry.requester, parent=inquiry.respondent)
             if form.is_valid():
                 event = form.cleaned_data['event']
-                event.parent = inquiry.parent
+                event.parent = inquiry.respondent
                 students = form.cleaned_data['student']
 
                 event.student.set(students)
@@ -170,7 +170,7 @@ def inquiryView(request, inquiry_id):
                 return redirect('home')
         else:
             form = InquiryForm(
-                request=request, selected_student=inquiry.student, teacher=inquiry.teacher, parent=inquiry.parent)
+                request=request, selected_student=inquiry.student, teacher=inquiry.requester, parent=inquiry.respondent)
         return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
 
 

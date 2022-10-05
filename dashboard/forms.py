@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, TeacherStudentInquiry, SiteSettings, Event
+from .models import Student, Inquiry, SiteSettings, Event
 from django.db.models import Q
 from django.utils import timezone
 from itertools import chain
@@ -13,8 +13,8 @@ class BookForm(forms.Form):
 
         choices = []
         if SiteSettings.objects.all().first().lead_start > timezone.now().date():  # lead not started yet
-            inquiries = TeacherStudentInquiry.objects.filter(
-                Q(teacher=self.teacher), Q(parent=self.request.user), Q(event=None))
+            inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=self.teacher), Q(
+                respondent=self.request.user), Q(event=None))
             for inquiry in inquiries:
                 choices.append(
                     [inquiry.student.shield_id, inquiry.student.first_name + " " + inquiry.student.last_name])  # ! shield_id can´t be exposed to the internet
@@ -38,7 +38,7 @@ class InquiryForm(forms.Form):
         self.fields['student'].queryset = self.request.user.students.all()
         self.fields['student'].initial = self.selected_student
         self.fields['event'].queryset = Event.objects.filter(
-            Q(teacher=self.teacher), Q(occupied=False))
+            Q(requester=self.teacher), Q(occupied=False))
 
     def clean(self):
         cleaned_data = super(InquiryForm, self).clean()

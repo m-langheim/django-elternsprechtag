@@ -1,5 +1,5 @@
 from time import sleep
-from dashboard.models import Event, TeacherStudentInquiry, SiteSettings
+from dashboard.models import Event, SiteSettings
 import datetime
 from celery import shared_task
 
@@ -20,8 +20,8 @@ def async_create_events():
             datetime.date.today(), time_start)
         while start + duration <= datetime.datetime.combine(datetime.date.today(), time_end):
             try:
-                Event.objects.get(teacher=teacher, start=start)
+                Event.objects.get(requester=teacher, start=start)
             except Event.DoesNotExist:
                 Event.objects.create(
-                    teacher=teacher, start=start, end=start+duration)
+                    requester=teacher, start=start, end=start+duration)
             start = start + duration
