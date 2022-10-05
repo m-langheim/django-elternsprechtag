@@ -13,8 +13,8 @@ class BookForm(forms.Form):
 
         choices = []
         if SiteSettings.objects.all().first().lead_start > timezone.now().date():  # lead not started yet
-            inquiries = Inquiry.objects.filter(
-                Q(requester=self.teacher), Q(respondent=self.request.user), Q(event=None))
+            inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=self.teacher), Q(
+                respondent=self.request.user), Q(event=None))
             for inquiry in inquiries:
                 choices.append(
                     [inquiry.student.shield_id, inquiry.student.first_name + " " + inquiry.student.last_name])  # ! shield_id can´t be exposed to the internet

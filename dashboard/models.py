@@ -34,12 +34,12 @@ class Event(models.Model):  # Termin
 class Inquiry(models.Model):
     CHOICES_INQUIRYTYPE = ((0, "Anfrage zur Buchung eines Termins (Lehrer->Eltern)"),
                            (1, "Anfrage zur Bestätigung eines Termins (Eltern->Lehrer)"))
+    type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     requester = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='%(class)s_requester')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     respondent = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='%(class)s_respondent')
-    type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     reason = models.TextField()
 
     processed = models.BooleanField(default=False)

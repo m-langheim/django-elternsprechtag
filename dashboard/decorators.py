@@ -22,8 +22,8 @@ def lead_started(view_func):
             except Event.DoesNotExist:
                 print("error")
             else:
-                inquiries = Inquiry.objects.filter(
-                    Q(respondent=request.user), Q(requester=event.teacher))
+                inquiries = Inquiry.objects.filter(Q(type=0), Q(
+                    respondent=request.user), Q(requester=event.teacher))
                 if inquiries:
                     if inquiries.filter(event=None):
                         return view_func(request, event_id, *args, **kwargs)

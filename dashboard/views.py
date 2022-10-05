@@ -23,7 +23,7 @@ from django.http import Http404
 def public_dashboard(request):
     students = request.user.students.all()
     inquiries = []
-    for inquiry in Inquiry.objects.filter(Q(respondent=request.user), Q(event=None)):
+    for inquiry in Inquiry.objects.filter(Q(type=0), Q(respondent=request.user), Q(event=None)):
         inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
         inquiries.append({'teacher': inquiry.teacher, 'student': inquiry.student,
                          'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
@@ -34,8 +34,8 @@ def public_dashboard(request):
     return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 def search(request):
     teachers = CustomUser.objects.filter(role=1)
     teacherExtraData = TeacherExtraData.objects.all()
@@ -78,8 +78,8 @@ def search(request):
     return render(request, 'dashboard/search.html', {'teachers': custom_result, 'state': state, 'request_search': request_search})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 # man erhält eine Liste mit allen freien Terminen des Lehrers
 def bookEventTeacherList(request, teacher_id):
 
@@ -102,9 +102,9 @@ def bookEventTeacherList(request, teacher_id):
     return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'booked_events': booked_events})
 
 
-@login_required
-@parent_required
-@lead_started
+@ login_required
+@ parent_required
+@ lead_started
 def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
     try:
         event = Event.objects.get(id=event_id)
@@ -143,12 +143,12 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
         return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 def inquiryView(request, inquiry_id):
     try:
-        inquiry = Inquiry.objects.get(
-            id=force_str(urlsafe_base64_decode(inquiry_id)))
+        inquiry = Inquiry.objects.get(Q(type=0), Q(
+            id=force_str(urlsafe_base64_decode(inquiry_id))))
     except Inquiry.DoesNotExist:
         return Http404("Inquiry does not exist.")
 
