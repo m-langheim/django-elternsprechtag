@@ -10,6 +10,9 @@
 </head>
 {% load crispy_forms_tags %}
 <form method="post">
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
     <h1>{% translate 'Sign up' %}</h1>
     <p>{% translate 'Please sign up your parent account' %}</p>
     {% csrf_token %}

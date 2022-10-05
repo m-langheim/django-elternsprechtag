@@ -7,5 +7,6 @@ urlpatterns = [
     path('students/', studentList, name="teacher_students_list"),
     path('inquiry/create/<studentID>', CreateInquiryView.as_view(),
          name="teacher_create_inquiry_id"),
-    path('inquiry/<id>', InquiryView.as_view(), name="teacher_show_inquiry")
+    path('inquiry/<id>', InquiryView.as_view(), name="teacher_show_inquiry"),
+    path('profile', ProfilePage.as_view(), name="teacher_profile")
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from authentication.models import CustomUser, TeacherExtraData, Student
+from authentication.models import CustomUser, TeacherExtraData, Student, Tag
 from .models import Event, Inquiry, SiteSettings
 from django.db.models import Q
 from django.utils import timezone
@@ -45,11 +45,17 @@ def search(request):
         state = 0
     elif request_search.startswith('#'):
         request_search = request_search[1:]
-        extraData = teacherExtraData.filter(tags__icontains=request_search)
+        tags = Tag.objects.filter(Q(name__icontains=request_search) | Q(
+            synonyms__icontains=request_search))  # get a list of all matching tags
+
         result = []
-        for data in extraData:
-            teacher = data.teacher
-            result.append(teacher)
+        for tag in tags:
+            extraData = teacherExtraData.filter(tags=tag)
+
+            for data in extraData:
+                teacher = data.teacher
+                if not teacher in result:
+                    result.append(teacher)
         state = 1
     else:
         result = []

@@ -1,0 +1,116 @@
+{% extends "teacher/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block head %}
+<script defer>
+    $(document).ready(function () {
+        $('.nav-link').click(function () {
+            window.history.replaceState(null, null, this.href);
+        });
+    });
+</script>
+{% endblock head %}
+
+{% block content %}
+<div class="row">
+    <div class="container col-lg-2 col-md-3">
+        <ul class="nav flex-column nav-tabs p-2" style="background-color: #e9ecef; border-radius: 0.5rem;"
+            role="tablist" aria-orientation="vertical" id="profilePageTabs">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if not request.GET.tab or request.GET.tab == 'profile-tab' %} active {% endif %}"
+                    href="?tab=profile-tab" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                    type="button" role="tab" aria-controls="profile"
+                    aria-selected="{% if not request.GET.tab or request.GET.tab == 'profile' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Mein
+                    Profil</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.GET.tab == 'security-tab' %} active {% endif %}"
+                    href="?tab=security-tab" data-bs-toggle="tab" data-bs-target="#security" role="tab" type="button"
+                    aria-controls="security"
+                    aria-selected="{% if request.GET.tab == 'security' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Sicherheit</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.GET.tab == 'tags-tab' %} active {% endif %}" href="?tab=tags-tab"
+                    data-bs-toggle="tab" data-bs-target="#tags" role="tab" type="button" aria-controls="tags"
+                    aria-selected="{% if request.GET.tab == 'tags' %} true {% else %} false {% endif %}"
+                    style="border-radius: 0.5rem;">Tags</a>
+            </li>
+        </ul>
+    </div>
+    <div class="container col-lg-10 col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade {% if not request.GET.tab or request.GET.tab == 'profile-tab' %} show active {% endif %}"
+                        id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <div class="row p-3">
+                            {% if user.teacherextradata.image %}
+                            <div class="col col-12 col-sm-5 col-lg-3">
+                                <img class="rounded-circle img-fluid" src="{{ user.teacherextradata.image.url }}">
+                            </div>
+                            <div class="col col-7 col-sm-7 col-lg-9">
+                                <p class="secondary-text">Dieses Bild ist nur für Elternteile sichtbar.</p>
+                            </div>
+                            {% else %}
+                            <div class="col col-12">
+                                <p class="heading">Sie haben kein Bild hochgeladen</p>
+                                <p class="secondary-text">Dieses Bild ist nur für Elternteile sichtbar.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% crispy change_profile %}
+                        </form>
+                    </div>
+                    <div class="tab-pane fade {% if request.GET.tab == 'security-tab' %} show active {% endif %}"
+                        id="security" role="tabpanel" aria-labelledby="security-tab" tabindex="0">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% crispy change_password %}
+                        </form>
+                    </div>
+                    <div class="tab-pane fade {% if request.GET.tab == 'tags-tab' %} show active {% endif %}" id="tags"
+                        role="tabpanel" aria-labelledby="tags-tab" tabindex="0">
+                        <p class="h3">Tags</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#configureTagsModal">Modal</button>
+                                {% for tag in tags %}
+                                <!-- <div class="container" style="color: {{tag.color}};"><strong>{{ tag.name }}</strong></div> -->
+                                <span class="badge rounded-pill" style="background-color: {{tag.color}};">
+                                    {{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configure Tags modal -->
+<div class="modal fade" id="configureTagsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Configure your Tags</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{configure_tags|crispy}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
