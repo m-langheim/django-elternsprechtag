@@ -4,6 +4,7 @@ from .models import Student, Upcomming_User, CustomUser, TeacherExtraData
 from django.template.loader import render_to_string
 
 from authentication.tasks import async_send_mail
+from django.core.mail import send_mail
 
 
 @receiver(post_save, sender=Student)
@@ -29,7 +30,7 @@ def send_email(sender, instance, created, **kwargs):
         email_body = render_to_string(
             'authentication/emails/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
 
-        async_send_mail.delay(email_subject, email_body,
-                              instance.student.child_email)
-        # send_mail(email_subject, email_body, "admin@jhgcloud.de",
-        #           [instance.student.child_email])
+        #async_send_mail.delay(email_subject, email_body,
+        #                      instance.student.child_email)
+        send_mail(email_subject, email_body, "admin@jhgcloud.de",
+                   [instance.student.child_email])
