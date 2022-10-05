@@ -129,5 +129,6 @@ dmypy.json
 .pyre/
 
 *.sqlite3
+*.rdb
 
 media/teacher_pics/*
