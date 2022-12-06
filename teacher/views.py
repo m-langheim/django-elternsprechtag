@@ -31,8 +31,22 @@ def dashboard(request):
     for inquiry in inquiries:
         custom_inquiries.append({'inquiry': inquiry, 'url': reverse(
             'teacher_show_inquiry', args=[urlsafe_base64_encode(force_bytes(inquiry.id))])})
+
+    # Hier werden alle events anhand ihres Datums aufgeteilt
     events = Event.objects.filter(Q(teacher=request.user))
-    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events})
+    dates = []
+
+    datetime_objects = events.values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if datetime_object.date() not in dates:
+            dates.append(datetime_object.date())
+
+    events_dict = {}
+    for date in dates:
+        events_dict[str(date)] = events.filter(start__date=date)
+
+    print(events_dict)
+    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict})
 
 
 @login_required
@@ -64,7 +78,7 @@ class InquiryView(View):
     def get(self, request, id):
         try:
             inquiry = Inquiry.objects.get(Q(type=0), Q(id__exact=force_str(
-                urlsafe_base64_decode(id))))
+                urlsafe_base64_decode(id))), Q(requester=request.user))
         except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
@@ -75,7 +89,7 @@ class InquiryView(View):
                        'event': inquiry.event}
             form = self.form_class(initial=initial)
             print(inquiry)
-            return render(request, "teacher/inquiry.html", {'form': form})
+            return render(request, "teacher/inquiry.html", {'form': form, "student": inquiry.student, "f_inquiry_id": urlsafe_base64_encode(force_bytes(inquiry.id))})
 
     def post(self, request, id):
         try:
@@ -94,7 +108,20 @@ class InquiryView(View):
                 inquiry.save()
                 messages.success(request, "Änderungen angenommen")
                 return redirect('teacher_dashboard')
-            return render(request, "teacher/inquiry.html", {'form': form})
+            return render(request, "teacher/inquiry.html", {'form': form, "student": inquiry.student, "f_inquiry_id": urlsafe_base64_encode(force_bytes(inquiry.id))})
+
+
+@method_decorator(teacher_decorators, name="dispatch")
+class DeleteInquiryView(View):
+    def get(self, request, inquiryID):
+        try:
+            inquiry = Inquiry.objects.get(Q(type=0), Q(id__exact=force_str(
+                urlsafe_base64_decode(inquiryID))), Q(requester=request.user))
+        except Inquiry.DoesNotExist:
+            Http404("Inquiry wurde nicht gefunden")
+        else:
+            inquiry.delete()
+            return redirect("teacher_dashboard")
 
 
 @method_decorator(teacher_decorators, name='dispatch')
@@ -119,7 +146,7 @@ class CreateInquiryView(View):
                 Q(role=0), Q(students=student)).first
             initial = {'student': student, 'parent': parent}
             form = createInquiryForm(initial=initial)
-        return render(request, "teacher/createInquiry.html", {'form': form})
+        return render(request, "teacher/createInquiry.html", {'form': form, "student": student})
 
     def post(self, request, studentID):
         try:
@@ -145,7 +172,7 @@ class CreateInquiryView(View):
                     requester=request.user, student=form.cleaned_data["student"], respondent=form.cleaned_data["parent"], reason=form.cleaned_data["reason"], type=0)
                 messages.success(request, "Anfrage erstellt")
                 return redirect('teacher_dashboard')
-        return render(request, "teacher/createInquiry.html", {'form': form})
+        return render(request, "teacher/createInquiry.html", {'form': form, "student": student})
 
 
 @method_decorator(teacher_decorators, name='dispatch')

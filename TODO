@@ -11,3 +11,5 @@ Möglichkeit zum Passwort Reset
 Versendung eines Reset Links an die Lehrer, sobald deren Konto erstellt wird
 
 Man muss bei jeder registrierung das Elternteil abmelden und sofort wieder bei anmelden, ohne dass das elternteil was tun muss. sonst kann das elternteil im falschen account sein
+
+Bei den Abfragen der Students lässt sich mit "customuser_set" das Elternteil abfragen
