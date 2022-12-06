@@ -33,7 +33,7 @@ def dashboard(request):
             'teacher_show_inquiry', args=[urlsafe_base64_encode(force_bytes(inquiry.id))])})
 
     # Hier werden alle events anhand ihres Datums aufgeteilt
-    events = Event.objects.filter(Q(teacher=request.user))
+    events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
     dates = []
 
     datetime_objects = events.values_list("start", flat=True)
