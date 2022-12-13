@@ -27,6 +27,10 @@ class Event(models.Model):  # Termin
 
     room = models.IntegerField(default=None, blank=True, null=True)
 
+    STATUS_CHOICES = ((0, "Unoccupied"), (1, "Occupied"),
+                      (2, "Inquiry pending"))
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+
     occupied = models.BooleanField(default=False)
 
 
@@ -37,7 +41,7 @@ class Inquiry(models.Model):
     type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     requester = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='%(class)s_requester')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    students = models.ManyToManyField(Student)
     respondent = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='%(class)s_respondent')
     reason = models.TextField()
@@ -45,6 +49,13 @@ class Inquiry(models.Model):
     processed = models.BooleanField(default=False)
     event = models.ForeignKey(
         Event, on_delete=models.SET_NULL, blank=True, null=True, default=None)
+
+
+class Announcments(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+
+    created = models.DateTimeField(default=timezone.now)
 
 
 ########################################################################### Settings ###################################################
