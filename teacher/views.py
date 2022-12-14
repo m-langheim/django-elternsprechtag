@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from authentication.models import CustomUser, TeacherExtraData
-from dashboard.models import Inquiry, Student, Event
+from dashboard.models import Inquiry, Student, Event, Announcments
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -45,8 +45,9 @@ def dashboard(request):
     for date in dates:
         events_dict[str(date)] = events.filter(start__date=date)
 
-    print(events_dict)
-    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict})
+    announcments = Announcments.objects.filter(user=request.user)
+
+    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict, "announcments": announcments})
 
 
 @login_required
@@ -221,6 +222,10 @@ def confirm_event(request, event):
     except Event.DoesNotExist:
         messages.error(request, "Dieser Termin konnte nicht gefunden werden")
     else:
-        event.status = 1
-        event.save()
+        # event.status = 1
+        #event.occupied = True
+        # event.save()
+        inquiry = event.inquiry_set.all().first()
+        inquiry.processed = True
+        inquiry.save()
     return redirect("teacher_dashboard")

@@ -52,6 +52,8 @@ class Inquiry(models.Model):
 
 
 class Announcments(models.Model):
+    TYPE_CHOICES = ((0, "Neue Buchungsanfrage"),)
+    announcment_type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
 

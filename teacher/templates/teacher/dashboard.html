@@ -46,7 +46,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
                                     aria-controls="event-accordion-collapse-{{ event.id }}">
-                                    {{ event.start|time }}
+                                    {{ event.start|time }} - {{event.end|time}}
                                     {% if event.status == 2 %}
                                     <span
                                         class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
@@ -62,12 +62,19 @@
                                     <strong>Startzeit: </strong>{{ event.start }} <br />
                                     <strong>Elternteil: </strong>
                                     {{ event.parent.first_name }} {{ event.parent.last_name }}<br />
-                                    <strong>Schüler:innen: </strong> {{ event.student }}
+                                    <strong>Schüler:innen: </strong>
+                                    {% for student in event.student.all %}
+                                    {{student.first_name}} {{student.last_name}}
+                                    {% if student != event.student.last %}, {% endif %}
+                                    {% endfor %}
+                                    <br />
                                     {% if event.status == 2 %}
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#eventModal{{event.id}}">
-                                        Termin bestätigen
-                                    </button>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end"><button type="button"
+                                            class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#eventModal{{event.id}}">
+                                            Termin bestätigen
+                                        </button>
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -176,7 +183,51 @@
                 <a class="btn btn-primary" role="button" href="{% url 'teacher_students_list' %}">Anfrage stellen</a>
             </div>
 
-            <div>Mitteilungen</div>
+            <!-- Ab hier geht es um Mitteilungen -->
+            <div class="container">
+                <p class="h1">Mitteilungen</p>
+            </div>
+            {% if announcments|length > 0 %}
+            <div class="accordion" id="announcment-accordion">
+                {% for announcment in announcments %}
+                <div class="accordion-item" id="announcment-accordion-item-{{ announcment.id }}">
+                    <h2 class="accordion-header" id="announcment-accordion-heading-{{ announcment.id }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#announcment-accordion-collapse-{{ announcment.id }}" aria-expanded="false"
+                            aria-controls="announcment-accordion-collapse-{{ announcment.id }}">
+                            {{ announcment.announcment_type }}
+                        </button>
+                    </h2>
+                    <div id="announcment-accordion-collapse-{{ announcment.id }}" class="accordion-collapse collapse"
+                        aria-labelledby="announcment-accordion-heading-{{ announcment.id }}"
+                        data-bs-parent="#announcment-accordion">
+                        <div class="accordion-body">
+                            <strong>Elternteil: </strong>
+                            {{ announcment.announcment.respondent.first_name }} {{
+                            announcment.announcment.respondent.last_name }}<br />
+                            <strong>Grund: </strong> {{ announcment.announcment.reason }}<br />
+                            <strong>Event: </strong>
+                            {% if announcment.announcment.event != null %}
+                            {{announcment.announcment.event.start}}
+                            {% else %}
+                            ---
+                            {% endif %}
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-primary" role="button" href="{{ announcment.url }}">Bearbeiten</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card m-1">
+                <div class="card-body">
+                    <p class="h5 card-title">Keine Mitteilungen</p>
+                    <p class="card-text">Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

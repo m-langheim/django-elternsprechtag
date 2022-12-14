@@ -19,3 +19,13 @@ def handleInquiries(sender, instance, **kwargs):
 def addAnnouncments(sender, instance, created, **kwargs):
     if created:
         Announcments.objects.create(user=instance.respondent, inquiry=instance)
+
+
+def deleteAnnouncment(sender, instance, **kwargs):
+    if instance.processed == True:
+        try:
+            announcment = instance.announcment_set.all().first()
+        except Announcments.DoesNotExist:
+            pass
+        else:
+            announcment.delete()
