@@ -6,6 +6,8 @@ from django.core.cache import cache
 from authentication.models import CustomUser, Student
 from django.utils import timezone
 
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str, force_bytes
 # Create your models here.
 
 
@@ -51,13 +53,20 @@ class Inquiry(models.Model):
         Event, on_delete=models.SET_NULL, blank=True, null=True, default=None)
 
 
-class Announcments(models.Model):
+class Announcements(models.Model):
     TYPE_CHOICES = ((0, "Neue Buchungsanfrage"),)
-    announcment_type = models.IntegerField(choices=TYPE_CHOICES, default=0)
+    announcement_type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+    message = models.TextField(null=True, blank=True)
+    action_link = models.TextField(null=True, blank=True)
+    action_name = models.CharField(max_length=200, null=True, blank=True)
+
+    read = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now)
+
+    def encodedID(self):
+        return urlsafe_base64_encode(force_bytes(self.id))
 
 
 ########################################################################### Settings ###################################################

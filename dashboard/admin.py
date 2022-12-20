@@ -5,7 +5,7 @@ from tracemalloc import start
 from django.contrib import admin
 
 from authentication.models import CustomUser
-from .models import Event, Inquiry, SiteSettings, Announcments
+from .models import Event, Inquiry, SiteSettings, Announcements
 
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
@@ -38,4 +38,4 @@ class InquiryAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 admin.site.register(Inquiry, InquiryAdmin)
 admin.site.register(SiteSettings)
-admin.site.register(Announcments)
+admin.site.register(Announcements)

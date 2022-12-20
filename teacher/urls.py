@@ -11,5 +11,7 @@ urlpatterns = [
     path('inquiry/<inquiryID>/delete', DeleteInquiryView.as_view(),
          name="teaher_delete_inquiry"),
     path('profile', ProfilePage.as_view(), name="teacher_profile"),
-    path('event/<event>/confirm', confirm_event, name="teacher_confirm_event")
+    path('event/<event>/confirm', confirm_event, name="teacher_confirm_event"),
+    path('announcement/<announcement_id>/mark_read',
+         markAnnouncementRead, name="teacher_mark_announcement_read")
 ]

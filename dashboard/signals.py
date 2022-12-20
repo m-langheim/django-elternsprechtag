@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Event, Inquiry, Announcments
+from .models import Event, Inquiry, Announcements
 from django.db.models import Q
 
 
@@ -16,16 +16,6 @@ def handleInquiries(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Inquiry)
-def addAnnouncments(sender, instance, created, **kwargs):
+def addAnnouncements(sender, instance, created, **kwargs):
     if created:
-        Announcments.objects.create(user=instance.respondent, inquiry=instance)
-
-
-def deleteAnnouncment(sender, instance, **kwargs):
-    if instance.processed == True:
-        try:
-            announcment = instance.announcment_set.all().first()
-        except Announcments.DoesNotExist:
-            pass
-        else:
-            announcment.delete()
+        Announcements.objects.create(user=instance.respondent)

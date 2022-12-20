@@ -187,33 +187,41 @@
             <div class="container">
                 <p class="h1">Mitteilungen</p>
             </div>
-            {% if announcments|length > 0 %}
-            <div class="accordion" id="announcment-accordion">
-                {% for announcment in announcments %}
-                <div class="accordion-item" id="announcment-accordion-item-{{ announcment.id }}">
-                    <h2 class="accordion-header" id="announcment-accordion-heading-{{ announcment.id }}">
+            {% if announcements|length > 0 %}
+            <div class="accordion" id="announcement-accordion">
+                {% for announcement in announcements %}
+                <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
+                    <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#announcment-accordion-collapse-{{ announcment.id }}" aria-expanded="false"
-                            aria-controls="announcment-accordion-collapse-{{ announcment.id }}">
-                            {{ announcment.announcment_type }}
+                            data-bs-target="#announcement-accordion-collapse-{{ announcement.id }}"
+                            aria-expanded="false" aria-controls="announcement-accordion-collapse-{{ announcement.id }}">
+                            {{ announcement.get_announcement_type_display }}
                         </button>
                     </h2>
-                    <div id="announcment-accordion-collapse-{{ announcment.id }}" class="accordion-collapse collapse"
-                        aria-labelledby="announcment-accordion-heading-{{ announcment.id }}"
-                        data-bs-parent="#announcment-accordion">
+                    <div id="announcement-accordion-collapse-{{ announcement.id }}" class="accordion-collapse collapse"
+                        aria-labelledby="announcement-accordion-heading-{{ announcement.id }}"
+                        data-bs-parent="#announcement-accordion">
                         <div class="accordion-body">
-                            <strong>Elternteil: </strong>
-                            {{ announcment.announcment.respondent.first_name }} {{
-                            announcment.announcment.respondent.last_name }}<br />
-                            <strong>Grund: </strong> {{ announcment.announcment.reason }}<br />
+                            {{announcement.message|safe|linebreaks}}
+                            <!-- <strong>Elternteil: </strong>
+                            {{ announcement.announcement.respondent.first_name }} {{
+                            announcement.announcement.respondent.last_name }}<br />
+                            <strong>Grund: </strong> {{ announcement.announcement.reason }}<br />
                             <strong>Event: </strong>
-                            {% if announcment.announcment.event != null %}
-                            {{announcment.announcment.event.start}}
+                            {% if announcement.announcement.event != null %}
+                            {{announcement.announcement.event.start}}
                             {% else %}
                             ---
                             {% endif %}
+                            {{announcement.encodedID}} -->
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a class="btn btn-primary" role="button" href="{{ announcment.url }}">Bearbeiten</a>
+                                <a class="btn btn-secondary" role="button"
+                                    href="{% url 'teacher_mark_announcement_read' announcement.encodedID %}">Gelesen</a>
+                                {% if announcement.action_link %}
+
+                                <a class="btn btn-primary" role="button"
+                                    href="{{ announcement.action_link }}">{{announcement.action_name}}</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

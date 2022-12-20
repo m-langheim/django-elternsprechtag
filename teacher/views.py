@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from authentication.models import CustomUser, TeacherExtraData
-from dashboard.models import Inquiry, Student, Event, Announcments
+from dashboard.models import Inquiry, Student, Event, Announcements
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -45,9 +45,10 @@ def dashboard(request):
     for date in dates:
         events_dict[str(date)] = events.filter(start__date=date)
 
-    announcments = Announcments.objects.filter(user=request.user)
+    announcements = Announcements.objects.filter(
+        Q(user=request.user), Q(read=False))
 
-    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict, "announcments": announcments})
+    return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict, "announcements": announcements})
 
 
 @login_required
@@ -216,6 +217,8 @@ class ProfilePage(View):
         raise BadRequest
 
 
+@login_required
+@teacher_required
 def confirm_event(request, event):
     try:
         event = Event.objects.get(Q(teacher=request.user), Q(id=event))
@@ -229,3 +232,17 @@ def confirm_event(request, event):
         inquiry.processed = True
         inquiry.save()
     return redirect("teacher_dashboard")
+
+
+@login_required
+@teacher_required
+def markAnnouncementRead(request, announcement_id):
+    try:
+        announcement = Announcements.objects.get(Q(id__exact=force_str(
+            urlsafe_base64_decode(announcement_id))))
+    except Announcements.DoesNotExist:
+        return Http404("Mitteilung nicht gefunden")
+    else:
+        announcement.read = True
+        announcement.save()
+        return redirect("teacher_dashboard")
