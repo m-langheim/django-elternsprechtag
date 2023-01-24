@@ -10,7 +10,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.http import Http404, JsonResponse
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
-from .forms import changePasswordForm, changeProfileForm, changeTeacherPictureForm, createInquiryForm, editInquiryForm, configureTagsForm
+from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import BadRequest
 # Create your views here.
@@ -194,26 +194,41 @@ class ProfilePage(View):
         return render(request, "teacher/profile.html", context)
 
     def post(self, request):
+        user: CustomUser = request.user
         # change the users personal information
         if 'change_profile' in request.POST:
             change_profile_form = changeProfileForm(
-                request.POST, request.FILES, instance=request.user)
+                request.POST, request.FILES, instance=user)
             if change_profile_form.is_valid():
                 change_profile_form.save()
-            return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
-                initial={'tags': request.user.teacherextradata.tags.all()}), 'change_profile': change_profile_form, 'change_password': changePasswordForm(request.user)})
+            return render(request, "teacher/profile.html", {'tags': user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
+                initial={'tags': user.teacherextradata.tags.all()}), 'change_profile': change_profile_form, 'change_password': changePasswordForm(user)})
 
         # change the users pasword
         if 'change_password' in request.POST:
             change_password_form = changePasswordForm(
-                request.user, request.POST)
+                user, request.POST)
             if change_password_form.is_valid():
                 user = change_password_form.save()
                 update_session_auth_hash(request, user)
 
-            return render(request, "teacher/profile.html", {'tags': request.user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
-                initial={'tags': request.user.teacherextradata.tags.all()}), 'change_profile': changeProfileForm(instance=request.user), 'change_password': change_password_form})
+            return render(request, "teacher/profile.html", {'tags': user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
+                initial={'tags': user.teacherextradata.tags.all()}), 'change_profile': changeProfileForm(instance=user), 'change_password': change_password_form})
 
+        if 'confiure_tags' in request.POST:
+            tagConfigurationForm = configureTagsForm(request.POST)
+            if tagConfigurationForm.is_valid():
+                extraData = user.teacherextradata
+                extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
+                extraData.save()
+
+            context = {
+                'tags': user.teacherextradata.tags.all(),
+                'configure_tags': tagConfigurationForm,
+                'change_profile': changeProfileForm(instance=user),
+                'change_password': changePasswordForm(user)
+            }
+            return render(request, "teacher/profile.html", context)
         raise BadRequest
 
 
@@ -225,9 +240,9 @@ def confirm_event(request, event):
     except Event.DoesNotExist:
         messages.error(request, "Dieser Termin konnte nicht gefunden werden")
     else:
-        # event.status = 1
-        #event.occupied = True
-        # event.save()
+        event.status = 1
+        event.occupied = True
+        event.save()
         inquiry = event.inquiry_set.all().first()
         inquiry.processed = True
         inquiry.save()
@@ -246,3 +261,70 @@ def markAnnouncementRead(request, announcement_id):
         announcement.read = True
         announcement.save()
         return redirect("teacher_dashboard")
+
+
+class EventDetailView(View):
+    cancel_form = cancelEventForm
+
+    def get(self, request, event_id):
+        try:
+            event = Event.objects.get(Q(id=event_id), Q(teacher=request.user))
+        except Event.DoesNotExist:
+            return Http404("Der Termin konnte nicht gefunden werden")
+        else:
+            cancel_form = self.cancel_form
+            return render(request, "teacher/event/detailEvent.html", context={"cancel_event": cancel_form, "event": event})
+
+    def post(self, request, event_id):
+        try:
+            event = Event.objects.get(Q(id=event_id), Q(teacher=request.user))
+        except Event.DoesNotExist:
+            return Http404("Der Termin konnte nicht gefunden werden")
+        else:
+            if 'cancel_event' in request.POST:
+                cancel_form = self.cancel_form(request.POST)
+                if cancel_form.is_valid():
+                    message = cancel_form.cleaned_data["message"]
+                    book_other = cancel_form.cleaned_data["book_other_event"]
+                    teacher_id = urlsafe_base64_encode(
+                        force_bytes(event.teacher.id))
+                    if book_other:
+                        Announcements.objects.create(
+                            announcement_type=1,
+                            user=event.parent, message='%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s \nUnter dem angegebenen Link buchen Sie bitte einen neuen Termin' % (
+                                event.teacher.first_name, event.teacher.last_name, message),
+                            action_name="Termine ansehen",
+                            action_link=reverse(
+                                "event_teacher_list", args=[teacher_id])
+                        )
+                    else:
+                        Announcements.objects.create(
+                            announcement_type=1,
+                            user=event.parent, message='%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s' % (
+                                event.teacher.first_name, event.teacher.last_name, message),
+                        )
+
+                    event.parent = None
+                    #! Es muss noch die Liste an Schüler:innen wieder geleert werden
+                    event.status = 0
+                    event.occupied = False
+                    event.save()
+                    return redirect("teacher_dashboard")
+            cancel_form = self.cancel_form
+            return render(request, "teacher/event/detailEvent.html", context={"cancel_event": cancel_form, "event": event})
+
+
+class EventListView(View):
+    def get(self, request):
+        events = Event.objects.filter(
+            Q(teacher=request.user), Q(occupied=True))
+        dates = []
+
+        datetime_objects = events.values_list("start", flat=True)
+        for datetime_object in datetime_objects:
+            if datetime_object.date() not in dates:
+                dates.append(datetime_object.date())
+
+        events_dict = {}
+        for date in dates:
+            events_dict[str(date)] = events.filter(start__date=date)

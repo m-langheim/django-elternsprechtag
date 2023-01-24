@@ -54,7 +54,8 @@ class Inquiry(models.Model):
 
 
 class Announcements(models.Model):
-    TYPE_CHOICES = ((0, "Neue Buchungsanfrage"),)
+    TYPE_CHOICES = ((0, "Neue Buchungsanfrage"),
+                    (1, "Termin absage"), (2, "Systembenachrichtigung"))
     announcement_type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     message = models.TextField(null=True, blank=True)
