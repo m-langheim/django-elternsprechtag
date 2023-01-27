@@ -1,0 +1,42 @@
+{% extends "teacher/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <p class="h1">Termin</p>
+    <p class="text-muted">{{ event.start|date}} - {{event.start|time}}</p>
+</div>
+<div class="container">
+    <div class="row">
+        <strong>Datum: </strong>{{event.start|date}}
+    </div>
+</div>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+    Termin absagen
+</button>
+<!-- Event Cancel Modal -->
+<div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="eventCancelModalLabel">Termin absagen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                {{cancel_event.cancel_event}}
+                <div class="modal-body">
+                    {{ cancel_event.message|as_crispy_field }}
+                    {{cancel_event.book_other_event|as_crispy_field}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <input type="submit" class="btn btn-primary" value="Termin absagen" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

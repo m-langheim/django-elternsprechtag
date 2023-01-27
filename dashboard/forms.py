@@ -1,8 +1,11 @@
 from django import forms
 from .models import Student, Inquiry, SiteSettings, Event
+from authentication.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
-from itertools import chain
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 
 class BookForm(forms.Form):
@@ -36,14 +39,14 @@ class InquiryForm(forms.Form):
         super(InquiryForm, self).__init__(*args, **kwargs)
 
         self.fields['student'].queryset = self.request.user.students.all()
-        self.fields['student'].initial = self.selected_student
+        self.fields['student'].initial = self.selected_student()
         self.fields['event'].queryset = Event.objects.filter(
-            Q(requester=self.teacher), Q(occupied=False))
+            Q(teacher=self.teacher), Q(occupied=False))
 
     def clean(self):
         cleaned_data = super(InquiryForm, self).clean()
         students = cleaned_data.get('student')
-        if not self.selected_student in students:
+        if not self.selected_student() in students:
             self.add_error(
                 'student', "The default selected student needs to stay selected")
 
@@ -52,3 +55,20 @@ class InquiryForm(forms.Form):
     event = forms.ModelChoiceField(queryset=None)
     student = forms.ModelMultipleChoiceField(
         queryset=None, widget=forms.CheckboxSelectMultiple)
+
+# Admin Form
+
+
+class AdminEventForm(forms.Form):
+    teacher = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.filter(role=1))
+    date = forms.DateField(widget=forms.SelectDateWidget())
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'class': 'timepicker'}))
+    end_time = forms.TimeField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit('submit', 'Speichern'))

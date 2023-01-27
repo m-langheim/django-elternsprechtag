@@ -6,6 +6,8 @@ from django.core.cache import cache
 from authentication.models import CustomUser, Student
 from django.utils import timezone
 
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str, force_bytes
 # Create your models here.
 
 
@@ -27,6 +29,10 @@ class Event(models.Model):  # Termin
 
     room = models.IntegerField(default=None, blank=True, null=True)
 
+    STATUS_CHOICES = ((0, "Unoccupied"), (1, "Occupied"),
+                      (2, "Inquiry pending"))
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+
     occupied = models.BooleanField(default=False)
 
 
@@ -37,7 +43,7 @@ class Inquiry(models.Model):
     type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     requester = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='%(class)s_requester')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    students = models.ManyToManyField(Student)
     respondent = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='%(class)s_respondent')
     reason = models.TextField()
@@ -45,6 +51,23 @@ class Inquiry(models.Model):
     processed = models.BooleanField(default=False)
     event = models.ForeignKey(
         Event, on_delete=models.SET_NULL, blank=True, null=True, default=None)
+
+
+class Announcements(models.Model):
+    TYPE_CHOICES = ((0, "Neue Buchungsanfrage"),
+                    (1, "Termin absage"), (2, "Systembenachrichtigung"))
+    announcement_type = models.IntegerField(choices=TYPE_CHOICES, default=0)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField(null=True, blank=True)
+    action_link = models.TextField(null=True, blank=True)
+    action_name = models.CharField(max_length=200, null=True, blank=True)
+
+    read = models.BooleanField(default=False)
+
+    created = models.DateTimeField(default=timezone.now)
+
+    def encodedID(self):
+        return urlsafe_base64_encode(force_bytes(self.id))
 
 
 ########################################################################### Settings ###################################################

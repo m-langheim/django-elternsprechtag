@@ -58,7 +58,9 @@ class changeTeacherPictureForm(forms.ModelForm):
 
 
 class configureTagsForm(forms.Form):
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects)
+    confiure_tags = forms.BooleanField(
+        widget=forms.HiddenInput, initial=True)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects, required=False)
 
 
 class changePasswordForm(PasswordChangeForm):
@@ -70,3 +72,9 @@ class changePasswordForm(PasswordChangeForm):
         self.helper = FormHelper()
 
         self.helper.add_input(Submit('submit', 'Ändern'))
+
+
+class cancelEventForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea)
+    book_other_event = forms.BooleanField(initial=False, required=False)
+    cancel_event = forms.BooleanField(widget=forms.HiddenInput, initial=True)

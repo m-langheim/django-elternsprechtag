@@ -1,7 +1,6 @@
 from django.db import models
 import string
 import random
-from datetime import datetime
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext as _
