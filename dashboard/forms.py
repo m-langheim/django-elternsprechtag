@@ -62,11 +62,12 @@ class InquiryForm(forms.Form):
 class AdminEventForm(forms.Form):
     teacher = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.filter(role=1))
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.SelectDateWidget())
     # start_date = forms.DateTimeField()
     # end_date = forms.DateTimeField(
     #     widget=forms.DateTimeInput(attrs={'class': 'timepicker'}))
-    start_time = forms.TimeField()
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'class': 'timepicker'}))
     end_time = forms.TimeField()
 
     def __init__(self, *args, **kwargs):
