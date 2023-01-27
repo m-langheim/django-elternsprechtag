@@ -1,6 +1,3 @@
-import datetime
-from os import times_result
-from tracemalloc import start
 from django.contrib import admin
 
 from authentication.models import CustomUser

@@ -64,6 +64,9 @@
                                     {% endfor %}
                                 </ul>
                             </li> -->
+                            {% if user.is_superuser %}
+                            <li><a href="{% url 'admin:index' %}">{% translate 'Adminpage' %}</a></li>
+                            {% endif %}
                             <li><a href="{% url 'logout' %}">{% translate 'Logout' %}</a></li>
                         </ul>
                     </li>

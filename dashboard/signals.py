@@ -16,6 +16,11 @@ def handleInquiries(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Inquiry)
-def addAnnouncements(sender, instance, created, **kwargs):
+def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
     if created:
-        Announcements.objects.create(user=instance.respondent)
+        if instance.type == 1:
+            Announcements.objects.create(
+                user=instance.respondent, message='%s bittet um den Termin am %s um %s Uhr. Bitte bestätigen Sie den Termin.' % (instance.requester, instance.event.start.date().strftime("%d.%m.%Y"), instance.event.start.time().strftime("%H:%M")))
+        elif instance.type == 0:
+            Announcements.objects.create(
+                user=instance.respondent, message='%s bittet Sie darum einen Termin zu erstellen' % (instance.requester))

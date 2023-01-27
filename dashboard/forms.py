@@ -39,14 +39,14 @@ class InquiryForm(forms.Form):
         super(InquiryForm, self).__init__(*args, **kwargs)
 
         self.fields['student'].queryset = self.request.user.students.all()
-        self.fields['student'].initial = self.selected_student
+        self.fields['student'].initial = self.selected_student()
         self.fields['event'].queryset = Event.objects.filter(
-            Q(requester=self.teacher), Q(occupied=False))
+            Q(teacher=self.teacher), Q(occupied=False))
 
     def clean(self):
         cleaned_data = super(InquiryForm, self).clean()
         students = cleaned_data.get('student')
-        if not self.selected_student in students:
+        if not self.selected_student() in students:
             self.add_error(
                 'student', "The default selected student needs to stay selected")
 
@@ -63,9 +63,6 @@ class AdminEventForm(forms.Form):
     teacher = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.filter(role=1))
     date = forms.DateField(widget=forms.SelectDateWidget())
-    # start_date = forms.DateTimeField()
-    # end_date = forms.DateTimeField(
-    #     widget=forms.DateTimeInput(attrs={'class': 'timepicker'}))
     start_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'timepicker'}))
     end_time = forms.TimeField()

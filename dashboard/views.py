@@ -162,7 +162,7 @@ def inquiryView(request, inquiry_id):
             return render(request, "dashboard/error/inquiry_ocupied.html")
         elif request.method == 'POST':
             form = InquiryForm(request.POST,
-                               request=request, selected_student=inquiry.student, teacher=inquiry.requester, parent=inquiry.respondent)
+                               request=request, selected_student=inquiry.students.first, teacher=inquiry.requester, parent=inquiry.respondent)
             if form.is_valid():
                 event = form.cleaned_data['event']
                 event.parent = inquiry.respondent
