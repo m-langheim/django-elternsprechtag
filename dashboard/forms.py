@@ -1,8 +1,11 @@
 from django import forms
 from .models import Student, Inquiry, SiteSettings, Event
+from authentication.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
-from itertools import chain
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 
 class BookForm(forms.Form):
@@ -52,3 +55,22 @@ class InquiryForm(forms.Form):
     event = forms.ModelChoiceField(queryset=None)
     student = forms.ModelMultipleChoiceField(
         queryset=None, widget=forms.CheckboxSelectMultiple)
+
+# Admin Form
+
+
+class AdminEventForm(forms.Form):
+    teacher = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.filter(role=1))
+    date = forms.DateField()
+    # start_date = forms.DateTimeField()
+    # end_date = forms.DateTimeField(
+    #     widget=forms.DateTimeInput(attrs={'class': 'timepicker'}))
+    start_time = forms.TimeField()
+    end_time = forms.TimeField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit('submit', 'Speichern'))
