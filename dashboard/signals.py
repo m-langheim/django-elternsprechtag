@@ -2,6 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Event, Inquiry, Announcements
 from django.db.models import Q
+from django.utils import timezone
 
 
 @receiver(post_save, sender=Event)
@@ -20,7 +21,7 @@ def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
     if created:
         if instance.type == 1:
             Announcements.objects.create(
-                user=instance.respondent, message='%s bittet um den Termin am %s um %s Uhr. Bitte bestätigen Sie den Termin.' % (instance.requester, instance.event.start.date().strftime("%d.%m.%Y"), instance.event.start.time().strftime("%H:%M")))
+                user=instance.respondent, message='%s bittet um den Termin am %s um %s Uhr. Bitte bestätigen Sie den Termin.' % (instance.requester, timezone.localtime(instance.event.start).date().strftime("%d.%m.%Y"), timezone.localtime(instance.event.start).time().strftime("%H:%M")))
         elif instance.type == 0:
             Announcements.objects.create(
                 user=instance.respondent, message='%s bittet Sie darum einen Termin zu erstellen' % (instance.requester))
