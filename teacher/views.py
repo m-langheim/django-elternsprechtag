@@ -305,9 +305,9 @@ class EventDetailView(View):
                         )
 
                     event.parent = None
-                    #! Es muss noch die Liste an Schüler:innen wieder geleert werden
                     event.status = 0
                     event.occupied = False
+                    event.student.clear()
                     event.save()
                     return redirect("teacher_dashboard")
             cancel_form = self.cancel_form
