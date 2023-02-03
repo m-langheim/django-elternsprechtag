@@ -91,15 +91,28 @@ def bookEventTeacherList(request, teacher_id):
     except CustomUser.MultipleObjectsReturned:
         print("Error")
     else:
+
         events = []
-        for event in Event.objects.filter(Q(teacher=teacher), Q(occupied=False)):
-            events.append({'event': event, 'url': reverse(
-                'book_event_per_id', args=[event.id])})
-        booked_events = []
+        for event in Event.objects.filter(Q(teacher=teacher)):
+            events.append({'event': event, 'url': reverse ('book_event_per_id', args=[event.id]), 'occupied': event.occupied})
+
+        personal_booked_events = []
         for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
-            booked_events.append({'event': event, 'url': reverse(
-                'event_per_id', args=[event.id])})
-    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'booked_events': booked_events})
+            personal_booked_events.append({'event': event, 'url': reverse('event_per_id', args=[event.id])})
+
+        events_dt = Event.objects.filter(Q(teacher=teacher))
+        dates = []
+        datetime_objects = events_dt.values_list("start", flat=True)
+
+        for datetime_object in datetime_objects:
+            if datetime_objects.date() not in dates:
+                dates.append(datetime_object.date())
+
+        events_dt_dict = {}
+        for date in dates:
+            events_dt_dict[str(date)] = events.filter(start__date=date)
+
+    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict})
 
 
 @ login_required
