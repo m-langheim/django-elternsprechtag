@@ -72,3 +72,8 @@ class AdminEventForm(forms.Form):
         self.helper = FormHelper()
 
         self.helper.add_input(Submit('submit', 'Speichern'))
+
+
+class cancelEventForm(forms.Form):
+    cancel_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
+    message = forms.CharField(widget=forms.Textarea)

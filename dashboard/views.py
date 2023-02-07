@@ -1,16 +1,17 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData, Student, Tag
-from .models import Event, Inquiry, SiteSettings
+from .models import Event, Inquiry, SiteSettings, Announcements
 from django.db.models import Q
 from django.utils import timezone
+from django.views import View
 
 from django.urls import reverse
 
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
-from .forms import BookForm, InquiryForm
+from .forms import BookForm, InquiryForm, cancelEventForm
 from .decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
@@ -22,16 +23,31 @@ from django.http import Http404
 @parent_required
 def public_dashboard(request):
     students = request.user.students.all()
-    inquiries = []
-    for inquiry in Inquiry.objects.filter(Q(type=0), Q(respondent=request.user), Q(event=None)):
-        inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
-        inquiries.append({'teacher': inquiry.requester, 'student': inquiry.students.first,
-                         'inquiry_link': reverse('inquiry_detail_view', args=[inquiry_id])})
-    booked_events = []
-    for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
-        booked_events.append({'event': event, 'url': reverse(
-            'event_per_id', args=[event.id])})
-    return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
+
+    inquiries = Inquiry.objects.filter(Q(type=0), Q(respondent=request.user))
+    # create individual link for each inquiry
+    custom_inquiries = []
+    for inquiry in inquiries:
+        custom_inquiries.append({'inquiry': inquiry, 'url': reverse(
+            'inquiry_detail_view', args=[urlsafe_base64_encode(force_bytes(inquiry.id))])})
+
+    # Hier werden alle events anhand ihres Datums aufgeteilt
+    events = Event.objects.filter(Q(parent=request.user), Q(occupied=True))
+    dates = []
+
+    datetime_objects = events.values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if datetime_object.date() not in dates:
+            dates.append(datetime_object.date())
+
+    events_dict = {}
+    for date in dates:
+        events_dict[str(date)] = events.filter(start__date=date)
+
+    announcements = Announcements.objects.filter(
+        Q(user=request.user), Q(read=False))
+
+    return render(request, 'dashboard/public_dashboard.html', {'inquiries': custom_inquiries, "events_dict": events_dict, 'events': events, "announcements": announcements})
 
 
 @ login_required
@@ -179,12 +195,54 @@ def inquiryView(request, inquiry_id):
         return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
 
 
+class EventView(View):
+    cancel_form = cancelEventForm
+
+    def get(self, request, event_id):
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Http404("No event")
+        else:
+            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form})
+
+    def post(self, request, event_id):
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Http404("No event")
+        else:
+            if 'cancel_event' in request.POST:
+                cancel_form = self.cancel_form(request.POST)
+                if cancel_form.is_valid():
+                    message = cancel_form.cleaned_data["message"]
+
+                    Announcements.objects.create(
+                        announcement_type=1,
+                        user=event.teacher,
+                        message='%s %s hat einen Termin abgesagt und folgende Nachricht hinterlassen: \n %s' % (
+                            request.user.first_name, request.user.last_name, message)
+                    )
+                    event.parent = None
+                    event.status = 0
+                    event.occupied = False
+                    event.student.clear()
+                    event.save()
+                    messages.success(
+                        request, "Der Termin wurde erfolgreich abgesagt")
+                    return redirect("home")
+            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form})
+
+
 @login_required
 @parent_required
-def eventView(request, event_id):
+def markAnnouncementRead(request, announcement_id):
     try:
-        event = Event.objects.get(id=event_id)
-    except Event.DoesNotExist:
-        return Http404("No event")
+        announcement = Announcements.objects.get(Q(id__exact=force_str(
+            urlsafe_base64_decode(announcement_id))))
+    except Announcements.DoesNotExist:
+        return Http404("Mitteilung nicht gefunden")
     else:
-        return render(request, "dashboard/events/view.html", {'event': event})
+        announcement.read = True
+        announcement.save()
+        return redirect("home")

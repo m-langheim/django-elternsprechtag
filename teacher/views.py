@@ -17,6 +17,7 @@ from django.core.exceptions import BadRequest
 
 from django.urls import reverse
 from django.contrib import messages
+from django.utils import timezone
 
 
 teacher_decorators = [login_required, teacher_required]
@@ -38,12 +39,12 @@ def dashboard(request):
 
     datetime_objects = events.values_list("start", flat=True)
     for datetime_object in datetime_objects:
-        if datetime_object.date() not in dates:
-            dates.append(datetime_object.date())
+        if timezone.localtime(datetime_object).date() not in dates:
+            dates.append(timezone.localtime(datetime_object).date())
 
     events_dict = {}
     for date in dates:
-        events_dict[str(date)] = events.filter(start__date=date)
+        events_dict[str(date)] = events.filter(start__date=timezone.utc(date))
 
     announcements = Announcements.objects.filter(
         Q(user=request.user), Q(read=False))
@@ -263,6 +264,7 @@ def markAnnouncementRead(request, announcement_id):
         return redirect("teacher_dashboard")
 
 
+@method_decorator(teacher_decorators, name='dispatch')
 class EventDetailView(View):
     cancel_form = cancelEventForm
 
@@ -286,9 +288,10 @@ class EventDetailView(View):
                 if cancel_form.is_valid():
                     message = cancel_form.cleaned_data["message"]
                     book_other = cancel_form.cleaned_data["book_other_event"]
-                    teacher_id = urlsafe_base64_encode(
-                        force_bytes(event.teacher.id))
+
                     if book_other:
+                        teacher_id = urlsafe_base64_encode(
+                            force_bytes(event.teacher.id))
                         Announcements.objects.create(
                             announcement_type=1,
                             user=event.parent, message='%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s \nUnter dem angegebenen Link buchen Sie bitte einen neuen Termin' % (
@@ -314,6 +317,7 @@ class EventDetailView(View):
             return render(request, "teacher/event/detailEvent.html", context={"cancel_event": cancel_form, "event": event})
 
 
+@method_decorator(teacher_decorators, name='dispatch')
 class EventListView(View):
     def get(self, request):
         events = Event.objects.filter(

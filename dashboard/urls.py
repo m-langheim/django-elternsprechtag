@@ -9,6 +9,8 @@ urlpatterns = [
     path('event/<event_id>/book',
          bookEvent, name='book_event_per_id'),
     path('event/<event_id>',
-         eventView, name='event_per_id'),
-    path('inquiry/<inquiry_id>', inquiryView, name="inquiry_detail_view")
+         EventView.as_view(), name='event_per_id'),
+    path('inquiry/<inquiry_id>', inquiryView, name="inquiry_detail_view"),
+    path('announcement/<announcement_id>/mark_read',
+         markAnnouncementRead, name="mark_annuncement_read")
 ]

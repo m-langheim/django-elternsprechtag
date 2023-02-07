@@ -1,7 +1,36 @@
 {% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-<p>{{ event.teacher }}</p>
+<a class="btn btn-secondary" href="{% url 'home' %}">
+    Abbrechen
+</a>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+    Termin absagen
+</button>
+
+<!-- Event Cancel Modal -->
+<div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="eventCancelModalLabel">Termin absagen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                {{cancel_form.cancel_event}}
+                <div class="modal-body">
+                    {{ cancel_form.message|as_crispy_field }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <input type="submit" class="btn btn-primary" value="Termin absagen" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock content %}
