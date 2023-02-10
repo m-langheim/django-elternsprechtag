@@ -204,7 +204,7 @@ class EventView(View):
         except Event.DoesNotExist:
             return Http404("No event")
         else:
-            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form})
+            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id))})
 
     def post(self, request, event_id):
         try:
@@ -231,7 +231,7 @@ class EventView(View):
                     messages.success(
                         request, "Der Termin wurde erfolgreich abgesagt")
                     return redirect("home")
-            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form})
+            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form,  "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id))})
 
 
 @login_required
