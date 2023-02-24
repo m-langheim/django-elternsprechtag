@@ -4,12 +4,6 @@
 
 {% block content %}
 
-<h2>Events from {{ teacher.last_name }}</h2>
-<!-- {% for event in events %}<li><a href="{{ event.url }}">{{ event.event.start }}</a></li>{% endfor %}
-<h1>Booked Events</h1>
-{% for event in booked_events %}<li><a href="{{ event.url }}">{{ event.event.start }}</a></li>{% endfor %}
-{% endblock content %} -->
-
 <div class="h-auto d-grid gap-3">
     {% if events|length > 0 %}
     <!-- Events-Titel -->
@@ -18,6 +12,8 @@
             <p class="h1">Events</p>
         </div>
     </div>
+
+
 
     <!-- Liste an möglichen Tabs -->
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -35,60 +31,43 @@
     <!-- Inhalt der Tabs -->
     <div class="tab-content" id="pills-tabContent">
         {%for key, events in events_dt_dict.items %}
-        <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
-            role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
+        <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}" role="tabpanel"
+            aria-labelledby="pills-{{key}}-tab" tabindex="0">
 
             <!-- ab hier für uns unnötig -->
-
-            <div class="accordion" id="event-accordion">
+            <ul class="list-group list-group-flush">
                 {% for event in events %}
-                <div class="accordion-item" id="event-accordion-item-{{ event.id }}">
-                    <h2 class="accordion-header" id="event-accordion-heading-{{ event.id }}">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
-                            aria-controls="event-accordion-collapse-{{ event.id }}">
-                            {{ event.start|time }} - {{event.end|time}}
-                            {% if event.status == 2 %}
-                            <span
-                                class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
-                                Nicht bestätigt
-                            </span>
-                            {% endif %}
-                        </button>
-                    </h2>
-                    <div id="event-accordion-collapse-{{ event.id }}" class="accordion-collapse collapse"
-                        aria-labelledby="event-accordion-heading-{{ event.id }}"
-                        data-bs-parent="#event-accordion">
-                        <div class="accordion-body">
-                            <strong>Startzeit: </strong>{{ event.start }} <br />
-                            <strong>Elternteil: </strong>
-                            {{ event.parent.first_name }} {{ event.parent.last_name }}<br />
-                            <strong>Schüler:innen: </strong>
-                            {% for student in event.student.all %}
-                            {{student.first_name}} {{student.last_name}}
-                            {% if student != event.student.last %}, {% endif %}
-                            {% endfor %}
-                            <br />
-
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a type="button" class="btn btn-primary"
-                                    href="{% url 'teacher_event_view' event.id %}">
-                                    Details
-                                </a>
-                                {% if event.status == 2 %}
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#eventModal{{event.id}}">
-                                    Termin bestätigen
-                                </button>
-                                {% endif %}
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-1 text-center">
+                                {{ event.start|time }}
+                            </div>
+                            <div class="col-8"></div>
+                            <div class="col text-center">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    {% if event.occupied %}
+                                        {% if event.parent == parent %}
+                                            <a type="button" class="btn btn-outline-success col-6" href="{% url 'teacher_event_view' event.id %}">
+                                                Gebucht
+                                            </a>
+                                        {% else %}
+                                            <a type="button" class="btn btn-outline-secondary col-6 disabled">
+                                                Belegt
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a type="button" class="btn btn-outline-danger col-6" href="{% url 'teacher_event_view' event.id %}">
+                                            Buchen
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </li>
                 {% endfor %}
-            </div>
-
-            <!-- bis hier unnötig -->
+            </ul>
 
         </div>
         {%endfor%}
@@ -102,4 +81,8 @@
     </div>
     {% endif %}
 </div>
+
+
 </div>
+
+{% endblock content %}

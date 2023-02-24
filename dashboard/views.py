@@ -105,14 +105,15 @@ def bookEventTeacherList(request, teacher_id):
         datetime_objects = events_dt.values_list("start", flat=True)
 
         for datetime_object in datetime_objects:
-            if datetime_objects.date() not in dates:
+            if datetime_object.date() not in dates:
                 dates.append(datetime_object.date())
 
         events_dt_dict = {}
         for date in dates:
-            events_dt_dict[str(date)] = events.filter(start__date=date)
+            #events_dt_dict[str(date)] = events.filter(start__date=date)
+            events_dt_dict[str(date)] = Event.objects.filter(Q(teacher=teacher), Q(start__date=date)).order_by('start')
 
-    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict})
+    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'parent': request.user})
 
 
 @ login_required
