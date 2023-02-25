@@ -110,10 +110,17 @@ def bookEventTeacherList(request, teacher_id):
 
         events_dt_dict = {}
         for date in dates:
-            #events_dt_dict[str(date)] = events.filter(start__date=date)
             events_dt_dict[str(date)] = Event.objects.filter(Q(teacher=teacher), Q(start__date=date)).order_by('start')
 
-    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'parent': request.user})
+        tags = []
+        for tag in TeacherExtraData.objects.filter(Q(teacher=teacher)).values_list("tags", flat=True):
+            tags.append(Tag.objects.filter(Q(id=tag))[0].name)
+
+        tags.sort()
+
+        image = TeacherExtraData.objects.filter(Q(teacher=teacher))[0].image.url
+
+    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'parent': request.user, 'tags': tags, 'image': image})
 
 
 @ login_required

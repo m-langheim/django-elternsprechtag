@@ -4,85 +4,220 @@
 
 {% block content %}
 
-<div class="h-auto d-grid gap-3">
-    {% if events|length > 0 %}
-    <!-- Events-Titel -->
-    <div class="row p-1">
-        <div class="col col-8">
-            <p class="h1">Events</p>
-        </div>
-    </div>
-
-
-
-    <!-- Liste an möglichen Tabs -->
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        {%for key, events in events_dt_dict.items %}
-        <li class="nav-item" role="presentation">
-            <button class="nav-link {% if forloop.counter0 == 0 %}active{%endif%}" id="pills-{{key}}-tab"
-                data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button" role="tab"
-                aria-controls="pills-{{key}}" aria-selected="true">
-                {{events.first.start|date}}</button>
-
-        </li>
-        {%endfor%}
-    </ul>
-
-    <!-- Inhalt der Tabs -->
-    <div class="tab-content" id="pills-tabContent">
-        {%for key, events in events_dt_dict.items %}
-        <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}" role="tabpanel"
-            aria-labelledby="pills-{{key}}-tab" tabindex="0">
-
-            <!-- ab hier für uns unnötig -->
-            <ul class="list-group list-group-flush">
-                {% for event in events %}
-                <li class="list-group-item">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-1 text-center">
-                                {{ event.start|time }}
-                            </div>
-                            <div class="col-8"></div>
-                            <div class="col text-center">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    {% if event.occupied %}
-                                        {% if event.parent == parent %}
-                                            <a type="button" class="btn btn-outline-success col-6" href="{% url 'teacher_event_view' event.id %}">
-                                                Gebucht
-                                            </a>
+<div class="container p-2 pt-4">
+    <div class="row">
+        <div class="column">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    <div class="d-flex text-black">
+                        <div class="flex-shrink-0">
+                            <img src="{{ image }}"
+                                alt="Generic placeholder image" class="img-fluid"
+                                style="width: 180px; border-radius: 10px;">
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1 align-items-stretch ms-3">
+                            <h3 class="mb-2">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
+                            <a class="pb-1" style="color: #2b2a2a;" href="mailto:{{ teacher.email }}">{{ teacher.email }}</a>
+                            <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1"
+                                style="background-color: #efefef;">
+                                <div>
+                                    <p class="small text-muted mb-1">Tags</p>
+                                    <div class="d-flex align-content-start flex-wrap">
+                                        {% if tags|length > 0 %}
+                                        {% for tag in tags %}
+                                        <span class="badge bg-light border border-danger text-danger rounded-pill me-1 mt-1">{{ tag }}</span>
+                                        {% endfor %}
                                         {% else %}
-                                            <a type="button" class="btn btn-outline-secondary col-6 disabled">
-                                                Belegt
-                                            </a>
+                                        <p>This teacher does not have any tags</p>
                                         {% endif %}
-                                    {% else %}
-                                        <a type="button" class="btn btn-outline-danger col-6" href="{% url 'teacher_event_view' event.id %}">
-                                            Buchen
-                                        </a>
-                                    {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </li>
-                {% endfor %}
-            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container p-2">
+    <div class="row">
+        <div class="column">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    {% if events|length > 0 %}
+                    <!-- Liste an möglichen Tabs -->
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <style>
+                            .active {border-color: red!important;}
+                        </style>
+                        {%for key, events in events_dt_dict.items %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link bg-light text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
+                                id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}"
+                                type="button" role="tab" aria-controls="pills-{{key}}" aria-selected="true">
+                                {{events.first.start|date}}</button>
+                        </li>
+                        {%endfor%}
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        {%for key, events in events_dt_dict.items %}
+                        <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
+                            role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
+
+                            <ul class="list-group list-group-flush">
+                                {% for event in events %}
+                                <li class="list-group-item">
+                                    <div class="container">
+                                        <div class="row align-items-center">
+                                            <div class="col text-start">
+                                                {{ event.start|time }}
+                                            </div>
+                                            <div class="col" style="max-width: 300px">
+                                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                    {% if event.occupied %}
+                                                    {% if event.parent == parent %}
+                                                    <a type="button" class="btn btn-outline-success col-6"
+                                                        href="{% url 'teacher_event_view' event.id %}">
+                                                        Gebucht
+                                                    </a>
+                                                    {% else %}
+                                                    <a type="button" class="btn btn-outline-secondary col-6 disabled">
+                                                        Belegt
+                                                    </a>
+                                                    {% endif %}
+                                                    {% else %}
+                                                    <a type="button" class="btn btn-outline-danger col-6"
+                                                        href="{% url 'teacher_event_view' event.id %}">
+                                                        Buchen
+                                                    </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                        {%endfor%}
+                    </div>
+                    {% else %}
+
+                    <!-- Für den Lehrer wurden noch keine Events gebucht -->
+                    <div class="container">
+                        <p class="h1">Events</p>
+                        <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
 
         </div>
-        {%endfor%}
     </div>
-    {% else %}
+</div>
+<!-- </div> -->
 
-    <!-- Für den Lehrer wurden noch keine Events gebucht -->
-    <div class="container">
-        <p class="h1">Events</p>
-        <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+
+<!-- <div class="container h-auto d-grid gap-3">
+    <div class="row d-flex  h-100"> justify-content-center h-auto d-grid gap-3 -->
+<!-- <div class="col col-md-9 col-lg-7 col-xl-5">
+            <div class="card" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <div class="d-flex text-black">
+                        <div class="flex-shrink-0">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                                alt="Generic placeholder image" class="img-fluid"
+                                style="width: 180px; border-radius: 10px;">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-1">Teacher Name</h5>
+                            <p class="mb-2 pb-1" style="color: #2b2a2a;">Email</p>
+                            <div class="d-flex justify-content-start rounded-3 p-2 mb-2"
+                                style="background-color: #efefef;">
+                                <div>
+                                    <p class="small text-muted mb-1">Tags</p>
+                                    <p class="mb-0">41</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-</div>
+    <div class="row d-flex  h-100">
+        {% if events|length > 0 %} -->
+<!-- Liste an möglichen Tabs -->
+<!-- <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            {%for key, events in events_dt_dict.items %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if forloop.counter0 == 0 %}active{%endif%}" id="pills-{{key}}-tab"
+                    data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button" role="tab"
+                    aria-controls="pills-{{key}}" aria-selected="true">
+                    {{events.first.start|date}}</button>
 
+            </li>
+            {%endfor%}
+        </ul> -->
 
-</div>
+<!-- Inhalt der Tabs -->
+<!-- <div class="tab-content" id="pills-tabContent">
+            {%for key, events in events_dt_dict.items %}
+            <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
+                role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0"> -->
+
+<!-- ab hier für uns unnötig -->
+<!-- <ul class="list-group list-group-flush">
+                    {% for event in events %}
+                    <li class="list-group-item">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-1 text-center">
+                                    {{ event.start|time }}
+                                </div>
+                                <div class="col-8"></div>
+                                <div class="col text-center">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        {% if event.occupied %}
+                                        {% if event.parent == parent %}
+                                        <a type="button" class="btn btn-outline-success col-6"
+                                            href="{% url 'teacher_event_view' event.id %}">
+                                            Gebucht
+                                        </a>
+                                        {% else %}
+                                        <a type="button" class="btn btn-outline-secondary col-6 disabled">
+                                            Belegt
+                                        </a>
+                                        {% endif %}
+                                        {% else %}
+                                        <a type="button" class="btn btn-outline-danger col-6"
+                                            href="{% url 'teacher_event_view' event.id %}">
+                                            Buchen
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            {%endfor%}
+        </div>
+        {% else %} -->
+
+<!-- Für den Lehrer wurden noch keine Events gebucht -->
+<!-- <div class="container">
+            <p class="h1">Events</p>
+            <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+        </div>
+        {% endif %}
+    </div>
+</div> -->
 
 {% endblock content %}
