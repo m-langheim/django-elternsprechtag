@@ -17,7 +17,7 @@
                         </div>
                         <div class="d-flex flex-column flex-grow-1 align-items-stretch ms-3">
                             <h3 class="mb-2">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
-                            <a class="pb-1" style="color: #2b2a2a;" href="mailto:{{ teacher.email }}">{{ teacher.email }}</a>
+                            <a class="pb-1" style="color: #2b2a2a; text-decoration: none;" href="mailto:{{ teacher.email }}">{{ teacher.email }}</a>
                             <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1"
                                 style="background-color: #efefef;">
                                 <div>
@@ -49,7 +49,7 @@
                     <!-- Liste an möglichen Tabs -->
                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <style>
-                            .active {border-color: red!important;}
+                            .active {border-color: red!important;} /* change this color */
                         </style>
                         {%for key, events in events_dt_dict.items %}
                         <li class="nav-item" role="presentation">
