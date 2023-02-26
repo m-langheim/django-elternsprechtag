@@ -114,9 +114,12 @@ def bookEventTeacherList(request, teacher_id):
 
         tags = []
         for tag in TeacherExtraData.objects.filter(Q(teacher=teacher)).values_list("tags", flat=True):
-            tags.append(Tag.objects.filter(Q(id=tag))[0].name)
+            tags.append(Tag.objects.filter(Q(id=tag))[0])
 
-        tags.sort()
+        def by_name(e):
+            return e.name
+
+        tags.sort(key=by_name)
 
         image = TeacherExtraData.objects.filter(Q(teacher=teacher))[0].image.url
 
