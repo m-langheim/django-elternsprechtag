@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-white navbar-white border-bottom text-dark">
+    <nav class="navbar navbar-expand-lg bg-white navbar-white border-bottom text-dark shadow-sm">
         <div class="container-fluid">
             <div class="content">
                 <div class="logo"><a class="text-secondary fs-2" style="text-decoration: none;" href="{% url 'home' %}">Elternsprechtag</a></div>
@@ -28,16 +28,16 @@
                 <form action="{% url 'search' %}" class="ms-4">
                     <div class="form-white input-group bg-white align-items-center" style="width: 500px;">
                         <input type="text"
-                            class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2"
+                            class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
                             placeholder="Search..." aria-label="Search" style="box-shadow: none; outline: none;" name="q" autocomplete="off">
-                        <button type="submit" class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1"><i class="fa-solid fa-arrow-right fa-xl"></i></button>
+                        <button type="submit" class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i class="fa-solid fa-arrow-right fa-xl"></i></button>
                     </div>
                 </form>
                 <ul class="navbar-nav d-flex flex-row ms-auto">
                     <li class="nav-item me-3 me-lg-0 dropdown">
                         <a class="nav-link dropdown" href="#" id="navbarDropdown1" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-regular fa-circle-user text-secondary" style="font-size: 2.5em;"></i>
+                            <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
                             <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Students</a></li>
