@@ -22,6 +22,30 @@ from django.http import Http404
 @parent_required
 def public_dashboard(request):
     students = request.user.students.all()
+
+    # inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=request.user))
+    # # create individual link for each inquiry
+    # custom_inquiries = []
+    # for inquiry in inquiries:
+    #     custom_inquiries.append({'inquiry': inquiry, 'url': reverse(
+    #         'teacher_show_inquiry', args=[urlsafe_base64_encode(force_bytes(inquiry.id))])})
+
+    # # Hier werden alle events anhand ihres Datums aufgeteilt
+    # events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
+    # dates = []
+
+    # datetime_objects = events.values_list("start", flat=True)
+    # for datetime_object in datetime_objects:
+    #     if datetime_object.date() not in dates:
+    #         dates.append(datetime_object.date())
+
+    # events_dict = {}
+    # for date in dates:
+    #     events_dict[str(date)] = events.filter(start__date=date)
+
+    # announcements = Announcements.objects.filter(
+    #     Q(user=request.user), Q(read=False))
+    
     inquiries = []
     for inquiry in Inquiry.objects.filter(Q(type=0), Q(respondent=request.user), Q(event=None)):
         inquiry_id = urlsafe_base64_encode(force_bytes(inquiry.id))
@@ -31,6 +55,7 @@ def public_dashboard(request):
     for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
         booked_events.append({'event': event, 'url': reverse(
             'event_per_id', args=[event.id])})
+
     return render(request, 'dashboard/public_dashboard.html', {'inquiries': inquiries, 'booked_events': booked_events})
 
 
