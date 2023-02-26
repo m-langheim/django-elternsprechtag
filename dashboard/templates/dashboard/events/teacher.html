@@ -25,9 +25,7 @@
                                     <div class="d-flex align-content-start flex-wrap">
                                         {% if tags|length > 0 %}
                                         {% for tag in tags %}
-                                        <span
-                                            class="badge bg-light border border-danger text-danger rounded-pill me-1 mt-1">{{
-                                            tag.name }}</span>
+                                        <span class="badge bg-light border border-danger text-danger rounded-pill me-1 mt-1">{{ tag.name }}</span>
                                         {% endfor %}
                                         {% else %}
                                         <p>This teacher does not have any tags</p>
