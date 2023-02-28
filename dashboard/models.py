@@ -27,7 +27,7 @@ class Event(models.Model):  # Termin
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 
-    room = models.IntegerField(default=None, blank=True, null=True)
+    room = models.CharField(default=None, blank=True, null=True, max_length=3)
 
     STATUS_CHOICES = ((0, "Unoccupied"), (1, "Occupied"),
                       (2, "Inquiry pending"))

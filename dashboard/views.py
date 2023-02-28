@@ -187,7 +187,9 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
                 return redirect('home')
         else:
             form = BookForm(request=request, teacher=event.teacher)
-        return render(request, 'dashboard/events/book.html', {'event_id': event_id, 'book_form': form})
+
+        print(event.room)
+        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form})
 
 
 @ login_required
