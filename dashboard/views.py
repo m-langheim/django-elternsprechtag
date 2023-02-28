@@ -117,13 +117,17 @@ def bookEventTeacherList(request, teacher_id):
         print("Error")
     else:
 
-        events = []
-        for event in Event.objects.filter(Q(teacher=teacher)):
-            events.append({'event': event, 'url': reverse ('book_event_per_id', args=[event.id]), 'occupied': event.occupied})
+        # events = []
+        # for event in Event.objects.filter(Q(teacher=teacher)):
+        #     events.append({'event': event, 'url': reverse ('book_event_per_id', args=[event.id]), 'occupied': event.occupied}) ???? wofür das ganze????
 
-        personal_booked_events = []
-        for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
-            personal_booked_events.append({'event': event, 'url': reverse('event_per_id', args=[event.id])})
+        events = Event.objects.filter(Q(teacher=teacher))
+
+        # personal_booked_events = []
+        # for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
+        #     personal_booked_events.append({'event': event, 'url': reverse('event_per_id', args=[event.id])})
+
+        personal_booked_events = Event.objects.filter(Q(occupied=True), Q(parent=request.user))
 
         events_dt = Event.objects.filter(Q(teacher=teacher))
         dates = []
@@ -230,7 +234,45 @@ def inquiryView(request, inquiry_id):
 def eventView(request, event_id):
     try:
         event = Event.objects.get(id=event_id)
+    except Event.MultipleObjectsReturned:
+        print("error")
     except Event.DoesNotExist:
-        return Http404("No event")
+        return Http404("This event was not found")
     else:
-        return render(request, "dashboard/events/view.html", {'event': event})
+        if event.occupied:
+            if event.parent == request.user:
+                return render(request, "dashboard/events/self_occupied.html")
+            else:
+                return render(request, "dashboard/events/occupied.html")
+        elif request.method == 'POST':
+            form = BookForm(request.POST, request=request,
+                            teacher=event.teacher)
+            if form.is_valid():
+                students = []
+                for student in form.cleaned_data['student']:
+                    try:
+                        model_student = Student.objects.get(
+                            shield_id=student)
+                    except Student.DoesNotExist:
+                        return Http404("Error")
+                    else:
+                        students.append(model_student)
+                # ? validation of students needed or given through the form
+                inquiry = Inquiry.objects.create(
+                    type=1, event=event, requester=request.user, respondent=event.teacher, reason="")
+                inquiry.students.set(students)
+                inquiry.save()
+                event.parent = request.user
+                event.status = 2
+                event.student.set(students)
+                event.occupied = True
+                event.save()
+                messages.success(request, "Gebucht")
+                return redirect('home')
+        else:
+            form = BookForm(request=request, teacher=event.teacher)
+
+        teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
+        url = reverse('event_teacher_list', args=[teacher_id])
+
+        return render(request, 'dashboard/events/view.html', {'event': event, 'book_form': form, 'teacher_url': url})

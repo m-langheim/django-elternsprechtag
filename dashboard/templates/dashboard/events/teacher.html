@@ -84,7 +84,7 @@
                                                     {% if event.occupied %}
                                                     {% if event.parent == parent %}
                                                     <a type="button" class="btn btn-outline-success col-6"
-                                                        href="{% url 'book_event_per_id' event.id %}">
+                                                        href="{% url 'event_per_id' event.id %}">
                                                         Gebucht
                                                     </a>
                                                     {% else %}
@@ -94,7 +94,7 @@
                                                     {% endif %}
                                                     {% else %}
                                                     <a type="button" class="btn btn-outline-danger col-6"
-                                                        href="{% url 'book_event_per_id' event.id %}">
+                                                        href="{% url 'event_per_id' event.id %}">
                                                         Buchen
                                                     </a>
                                                     {% endif %}
