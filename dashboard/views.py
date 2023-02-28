@@ -151,7 +151,7 @@ def bookEventTeacherList(request, teacher_id):
 @ login_required
 @ parent_required
 @ lead_started
-def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
+def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht // nicht mehr notwendig eventview ersetzt es
     try:
         event = Event.objects.get(id=event_id)
     except Event.MultipleObjectsReturned:
@@ -231,7 +231,7 @@ def inquiryView(request, inquiry_id):
 
 @login_required
 @parent_required
-def eventView(request, event_id):
+def eventView(request, event_id): # View of events
     try:
         event = Event.objects.get(id=event_id)
     except Event.MultipleObjectsReturned:
@@ -239,14 +239,10 @@ def eventView(request, event_id):
     except Event.DoesNotExist:
         return Http404("This event was not found")
     else:
-        if event.occupied:
-            if event.parent == request.user:
-                return render(request, "dashboard/events/self_occupied.html")
-            else:
-                return render(request, "dashboard/events/occupied.html")
+        if event.occupied and event.parent != request.user:
+            return render(request, "dashboard/events/occupied.html")
         elif request.method == 'POST':
-            form = BookForm(request.POST, request=request,
-                            teacher=event.teacher)
+            form = BookForm(request.POST, request=request, teacher=event.teacher) # , initial={"choices": event.student}
             if form.is_valid():
                 students = []
                 for student in form.cleaned_data['student']:
