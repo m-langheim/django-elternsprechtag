@@ -188,8 +188,10 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
         else:
             form = BookForm(request=request, teacher=event.teacher)
 
-        print(event.room)
-        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form})
+        teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
+        url = reverse('event_teacher_list', args=[teacher_id])
+
+        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'teacher_url': url})
 
 
 @ login_required

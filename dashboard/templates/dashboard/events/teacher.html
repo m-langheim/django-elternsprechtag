@@ -58,7 +58,7 @@
                         {%for key, events in events_dt_dict.items %}
                         <li class="nav-item" role="presentation">
                             <button
-                                class="nav-link bg-light text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
+                                class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
                                 id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}"
                                 type="button" role="tab" aria-controls="pills-{{key}}" aria-selected="true">
                                 {{events.first.start|date}}</button>
