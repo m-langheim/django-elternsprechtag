@@ -25,7 +25,7 @@
                                     <div class="d-flex align-content-start flex-wrap">
                                         {% if tags|length > 0 %}
                                         {% for tag in tags %}
-                                        <span class="badge bg-light border border-danger text-danger rounded-pill me-1 mt-1">{{ tag.name }}</span>
+                                        <span class="badge bg-light rounded-pill me-1 mt-1" style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">{{ tag.name }}</span>
                                         {% endfor %}
                                         {% else %}
                                         <p>This teacher does not have any tags</p>
@@ -84,7 +84,7 @@
                                                     {% if event.occupied %}
                                                     {% if event.parent == parent %}
                                                     <a type="button" class="btn btn-outline-success col-6"
-                                                        href="{% url 'teacher_event_view' event.id %}">
+                                                        href="{% url 'book_event_per_id' event.id %}">
                                                         Gebucht
                                                     </a>
                                                     {% else %}
@@ -94,7 +94,7 @@
                                                     {% endif %}
                                                     {% else %}
                                                     <a type="button" class="btn btn-outline-danger col-6"
-                                                        href="{% url 'teacher_event_view' event.id %}">
+                                                        href="{% url 'book_event_per_id' event.id %}">
                                                         Buchen
                                                     </a>
                                                     {% endif %}

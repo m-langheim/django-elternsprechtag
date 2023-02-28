@@ -137,14 +137,7 @@ def bookEventTeacherList(request, teacher_id):
         for date in dates:
             events_dt_dict[str(date)] = Event.objects.filter(Q(teacher=teacher), Q(start__date=date)).order_by('start')
 
-        tags = []
-        for tag in TeacherExtraData.objects.filter(Q(teacher=teacher)).values_list("tags", flat=True):
-            tags.append(Tag.objects.filter(Q(id=tag))[0])
-
-        def by_name(e):
-            return e.name
-
-        tags.sort(key=by_name)
+        tags = TeacherExtraData.objects.get(teacher=teacher).tags.all().order_by('name')
 
         image = TeacherExtraData.objects.filter(Q(teacher=teacher))[0].image.url
 
@@ -177,7 +170,7 @@ def bookEvent(request, event_id):  # hier werden final die Termine dann gebucht
                         model_student = Student.objects.get(
                             shield_id=student)
                     except Student.DoesNotExist:
-                        Http404("Error")
+                        return Http404("Error")
                     else:
                         students.append(model_student)
                 # ? validation of students needed or given through the form
