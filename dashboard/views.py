@@ -263,7 +263,7 @@ def eventView(request, event_id): # View of events
                 event.student.set(students)
                 event.occupied = True
                 event.save()
-                messages.success(request, "Gebucht")
+                messages.success(request, "Angefragt")
                 return redirect('home')
         else:
             form = BookForm(request=request, teacher=event.teacher)
