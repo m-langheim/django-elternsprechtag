@@ -44,7 +44,7 @@ def dashboard(request):
 
     events_dict = {}
     for date in dates:
-        events_dict[str(date)] = events.filter(start__date=timezone.utc(date))
+        events_dict[str(date)] = events.filter(start__date=date)
 
     announcements = Announcements.objects.filter(
         Q(user=request.user), Q(read=False))
@@ -134,7 +134,7 @@ class CreateInquiryView(View):
         try:
             student = Student.objects.get(id__exact=studentID)
         except Student.DoesNotExist:
-            return Http404("Student not found")
+            raise Http404("Student not found")
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
             inquiry = Inquiry.objects.filter(Q(type=0), Q(
@@ -155,7 +155,7 @@ class CreateInquiryView(View):
         try:
             student = Student.objects.get(id__exact=studentID)
         except Student.DoesNotExist:
-            return Http404("Student not found")
+            raise Http404("Student not found")
         else:
             # redirect the user if an inquiry already exists ==> prevent the userr to create a new one
             inquiry = Inquiry.objects.filter(Q(type=0), Q(
@@ -257,7 +257,7 @@ def markAnnouncementRead(request, announcement_id):
         announcement = Announcements.objects.get(Q(id__exact=force_str(
             urlsafe_base64_decode(announcement_id))))
     except Announcements.DoesNotExist:
-        return Http404("Mitteilung nicht gefunden")
+        raise Http404("Mitteilung nicht gefunden")
     else:
         announcement.read = True
         announcement.save()
@@ -272,7 +272,7 @@ class EventDetailView(View):
         try:
             event = Event.objects.get(Q(id=event_id), Q(teacher=request.user))
         except Event.DoesNotExist:
-            return Http404("Der Termin konnte nicht gefunden werden")
+            raise Http404("Der Termin konnte nicht gefunden werden")
         else:
             cancel_form = self.cancel_form
             return render(request, "teacher/event/detailEvent.html", context={"cancel_event": cancel_form, "event": event})
@@ -281,7 +281,7 @@ class EventDetailView(View):
         try:
             event = Event.objects.get(Q(id=event_id), Q(teacher=request.user))
         except Event.DoesNotExist:
-            return Http404("Der Termin konnte nicht gefunden werden")
+            raise Http404("Der Termin konnte nicht gefunden werden")
         else:
             if 'cancel_event' in request.POST:
                 cancel_form = self.cancel_form(request.POST)
