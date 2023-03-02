@@ -27,7 +27,7 @@ class BookForm(forms.Form):
                     [student.shield_id, student.first_name + " " + student.last_name])  # ! shield_id can´t be exposed to the internet
         self.fields['student'].choices = choices
     student = forms.MultipleChoiceField(
-        choices=[], widget=forms.CheckboxSelectMultiple)
+        choices=[], widget=forms.CheckboxSelectMultiple, label='')
 
 
 class InquiryForm(forms.Form):

@@ -21,11 +21,19 @@
 
             <!-- Liste an möglichen Tabs -->
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <style>
+                    .active {
+                        border-color: red !important;
+                    }
+
+                    /* change this color */
+                </style>
                 {%for key, events in events_dict.items %}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {% if forloop.counter0 == 0 %}active{%endif%}" id="pills-{{key}}-tab"
-                        data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button" role="tab"
-                        aria-controls="pills-{{key}}" aria-selected="true">
+                    <button
+                        class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active{%endif%}"
+                        id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button"
+                        role="tab" aria-controls="pills-{{key}}" aria-selected="true">
                         {{events.first.start|date}}</button>
 
                 </li>
@@ -70,7 +78,7 @@
                                     <br />
 
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <a type="button" class="btn btn-primary"
+                                        <a type="button" class="btn btn-outline-danger col-3"
                                             href="{% url 'event_per_id' event.id %}">
                                             Details
                                         </a>
@@ -131,7 +139,8 @@
                             ---
                             {% endif %}
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a class="btn btn-primary" role="button" href="{{ inquiry.url }}">Ansehen</a>
+                                <a class="btn btn-outline-danger col-3" role="button"
+                                    href="{{ inquiry.url }}">Ansehen</a>
                             </div>
                         </div>
                     </div>
@@ -179,12 +188,12 @@
                             {% endif %}
                             {{announcement.encodedID}} -->
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a class="btn btn-secondary" role="button"
+                                <a class="btn btn-outline-secondary col-3" role="button"
                                     href="{% url 'mark_annuncement_read' announcement.encodedID %}">Gelesen</a>
                                 <!-- Link mus noch angepasst werden! -->
                                 {% if announcement.action_link %}
 
-                                <a class="btn btn-primary" role="button"
+                                <a class="btn btn-outline-danger col-3" role="button"
                                     href="{{ announcement.action_link }}">{{announcement.action_name}}</a>
                                 {% endif %}
                             </div>

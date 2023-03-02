@@ -4,44 +4,80 @@
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-<div class="container p-2">
-    <div class="card p-2">
-        <p class="h1">Termin - {{ event.start }}</p>
-        {% if event.status == 2 %}
-        <div class="alert alert-secondary">
-            Dieser Termin wurde vom Lehrer noch nicht bestätigt. Bitte haben Sie noch etwas Geduld.
-        </div>
-        {% endif %}
-        <div class="container">
-            <p><strong>Datum:</strong> {{ event.start | date }}</p>
-            <p><strong>Uhrzeit:</strong> {{ event.start | time }} - {{event.end | time }}</p>
-            <p><strong>Lehrer:</strong> <a class="link-dark" href="{% url 'event_teacher_list' teacher_id %}">
-                    {{event.teacher.first_name}} {{event.teacher.last_name}}
-                </a>
-            </p>
-            <p>
-                <strong>Raum:</strong>
-                {% if event.room != none %}
-                {{event.room}}
-                {%else%}
-                Raum unbekannt
-                {%endif%}
-            </p>
-        </div>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-secondary" href="{% url 'home' %}">
-                Abbrechen
-            </a>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                Termin absagen
-            </button>
+
+<div class="container p-2 pt-4">
+    <div class="row">
+        <div class="column">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush">
+                        <h2>Termin</h2>
+                        <li class="list-group-item">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col text-start">
+                                        <div>
+                                            Lehrer: {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                        </div>
+                                        <div>
+                                            Uhrzeit: {{ event.start|time }} Uhr
+                                        </div>
+                                        <div>
+                                            {% if event.room %}
+                                            Raum: {{ event.room }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <form method="post">
+                            {% csrf_token %}
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="container">
+                                        <div class="row align-items-center">
+                                            <div class="col text-start">
+                                                <div class="mb-2">
+                                                    Schüler für das Gespräch wählen:
+                                                </div>
+                                                <div>
+                                                    {% load crispy_forms_tags %}
+                                                    {{ book_form|crispy }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col">
+                                                <a type="button" class="btn btn-outline-secondary col-3"
+                                                    href="{% url 'home' %}">Zurück</a>
+                                            </div>
+                                            <div class="col d-flex justify-content-end">
+                                                <button type="button" class="btn btn-outline-danger col-3"
+                                                    data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                                    Termin absagen
+                                                </button>
+                                            </div>
+                                            <!-- <div class="col d-flex justify-content-end">
+                                                <button type="submit"
+                                                    class="btn btn-outline-danger col-3">Speichern</button>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-
-
-<!-- Event Cancel Modal -->
 <div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -56,11 +92,13 @@
                     {{ cancel_form.message|as_crispy_field }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                    <input type="submit" class="btn btn-primary" value="Termin absagen" />
+                    <button type="button" class="btn btn-outline-secondary col-3"
+                        data-bs-dismiss="modal">Abbrechen</button>
+                    <input type="submit" class="btn btn-outline-danger col-3" value="Termin absagen" />
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 {% endblock content %}
