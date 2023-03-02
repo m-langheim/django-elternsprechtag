@@ -9,6 +9,8 @@ from crispy_forms.layout import Submit
 
 
 class BookForm(forms.Form):
+    book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         self.teacher = kwargs.pop('teacher')
@@ -20,11 +22,11 @@ class BookForm(forms.Form):
                 respondent=self.request.user), Q(event=None))
             for inquiry in inquiries:
                 choices.append(
-                    [inquiry.student.shield_id, inquiry.student.first_name + " " + inquiry.student.last_name])  # ! shield_id can´t be exposed to the internet
+                    [inquiry.student.id, inquiry.student.first_name + " " + inquiry.student.last_name])  # ! shield_id can´t be exposed to the internet
         else:
             for student in self.request.user.students.all():
                 choices.append(
-                    [student.shield_id, student.first_name + " " + student.last_name])  # ! shield_id can´t be exposed to the internet
+                    [student.id, student.first_name + " " + student.last_name])  # ! shield_id can´t be exposed to the internet
         self.fields['student'].choices = choices
     student = forms.MultipleChoiceField(
         choices=[], widget=forms.CheckboxSelectMultiple, label='')
