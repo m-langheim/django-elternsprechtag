@@ -51,25 +51,31 @@
                                 </li>
                                 <li class="list-group-item">
                                     <div class="container">
-                                        <div class="row">
-                                            <div class="col">
-                                                <a type="button" class="btn btn-outline-secondary col-3"
+                                        <div class="row gy-1">
+                                            <div class="d-none d-lg-block col-lg-5 col-xl-6">
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
                                                     href="{% url 'home' %}">Zurück</a>
                                             </div>
                                             <!-- Hier wird nur spacing benötigt -->
-                                            <div class="col d-flex justify-content-end">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                    data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                                    Termin absagen
-                                                </button>
-                                                <button type="submit" class="btn btn-outline-danger">
-                                                    Speichern
-                                                </button>
+                                            <div class="col-12 col-lg-7 col-xl-6 d-flex justify-content-end">
+                                                <div class="col-12 col-xl-8 row gx-1">
+                                                    <div class="col-6">
+                                                        <button type="button" class="btn btn-outline-secondary col-12"
+                                                            data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                                            Termin absagen
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="submit" class="btn btn-outline-danger col-12">
+                                                            Speichern
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <!-- <div class="col d-flex justify-content-end">
-                                                <button type="submit"
-                                                    class="btn btn-outline-danger col-3">Speichern</button>
-                                            </div> -->
+                                            <div class="d-block d-lg-none col-12">
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                                                    href="{% url 'home' %}">Zurück</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>

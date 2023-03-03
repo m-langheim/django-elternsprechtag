@@ -77,52 +77,53 @@
                             <ul class="list-group list-group-flush">
                                 {% for event in events %}
                                 <li class="list-group-item">
-                                    <div class="container">
-                                        <div class="row align-items-center">
-                                            <div class="col text-start">
-                                                {{ event.start|time }}
-                                            </div>
-                                            <div class="col" style="max-width: 300px">
-                                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                                    {% if event.occupied %}
-                                                    {% if event.parent == parent %}
-                                                    {% if event.status == 2 %}
-                                                    <style>
-                                                        .specify_color_orange {
-                                                            border-color: #FF8C00 !important;
-                                                            color: #FF8C00 !important;
-                                                        }
+                                    <div class="row gy-1 align-items-center">
+                                        <!-- <div class="row align-items-center"> -->
+                                        <div class="col-12 col-md-7 col-xl-9 text-start">
+                                            {{ event.start|time }}
+                                        </div>
+                                        <div class="col-12 col-md-5 col-xl-3">
+                                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                {% if event.occupied %}
+                                                {% if event.parent == parent %}
+                                                {% if event.status == 2 %}
+                                                <style>
+                                                    .specify_color_orange {
+                                                        border-color: #FF8C00 !important;
+                                                        color: #FF8C00 !important;
+                                                    }
 
-                                                        .specify_color_orange:hover {
-                                                            background-color: #FF8C00 !important;
-                                                            color: white !important;
-                                                        }
-                                                    </style>
-                                                    <a type="button"
-                                                        class="btn btn-outline-warning col-6 specify_color_orange"
-                                                        href="{% url 'event_per_id' event.id %}">
-                                                        Angefragt
-                                                    </a>
-                                                    {% else %}
-                                                    <a type="button" class="btn btn-outline-success col-6"
-                                                        href="{% url 'event_per_id' event.id %}">
-                                                        Gebucht
-                                                    </a>
-                                                    {% endif %}
-                                                    {% else %}
-                                                    <a type="button" class="btn btn-outline-secondary col-6 disabled">
-                                                        Belegt
-                                                    </a>
-                                                    {% endif %}
-                                                    {% else %}
-                                                    <a type="button" class="btn btn-outline-danger col-6"
-                                                        href="{% url 'book_event_per_id' event.id %}">
-                                                        Anfragen
-                                                    </a>
-                                                    {% endif %}
-                                                </div>
+                                                    .specify_color_orange:hover {
+                                                        background-color: #FF8C00 !important;
+                                                        color: white !important;
+                                                    }
+                                                </style>
+                                                <a type="button"
+                                                    class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+                                                    href="{% url 'event_per_id' event.id %}">
+                                                    Angefragt
+                                                </a>
+                                                {% else %}
+                                                <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                                    href="{% url 'event_per_id' event.id %}">
+                                                    Gebucht
+                                                </a>
+                                                {% endif %}
+                                                {% else %}
+                                                <a type="button"
+                                                    class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Belegt
+                                                </a>
+                                                {% endif %}
+                                                {% else %}
+                                                <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                                    href="{% url 'book_event_per_id' event.id %}">
+                                                    Anfragen
+                                                </a>
+                                                {% endif %}
                                             </div>
                                         </div>
+                                        <!-- </div> -->
                                     </div>
                                 </li>
                                 {% endfor %}
