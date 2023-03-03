@@ -119,7 +119,7 @@
                             data-bs-target="#inquiry-accordion-collapse-{{ inquiry.inquiry.id }}" aria-expanded="false"
                             aria-controls="inquiry-accordion-collapse-{{ inquiry.inquiry.id }}">
                             {{ inquiry.inquiry.requester.first_name }} {{ inquiry.inquiry.requester.last_name }}
-                            {% if inquiry.processed %}
+                            {% if not inquiry.inquiry.processed %}
                             <span
                                 class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-danger d-none d-sm-block"
                                 style="height: 15px; width: 15px;">

@@ -13,6 +13,7 @@ def handleInquiries(sender, instance, **kwargs):
         if inquiry.students.first().shield_id in list(
                 instance.student.values_list('shield_id', flat=True)):
             inquiry.event = instance
+            inquiry.processed = True
             inquiry.save()
 
 
