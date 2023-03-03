@@ -10,7 +10,8 @@ urlpatterns = [
          bookEventView.as_view(), name='book_event_per_id'),
     path('event/<event_id>/',
          EventView.as_view(), name='event_per_id'),
-    path('inquiry/<inquiry_id>', inquiryView, name="inquiry_detail_view"),
+    path('inquiry/<inquiry_id>', InquiryView.as_view(),
+         name="inquiry_detail_view"),
     path('announcement/<announcement_id>/mark_read',
          markAnnouncementRead, name="mark_annuncement_read")
 ]

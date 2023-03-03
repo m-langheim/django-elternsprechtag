@@ -1,5 +1,5 @@
 from time import sleep
-from dashboard.models import Event, SiteSettings
+from dashboard.models import Event, SiteSettings, Inquiry
 import datetime
 from django.db.models import Q
 from celery import shared_task

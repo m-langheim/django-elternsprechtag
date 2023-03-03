@@ -13,10 +13,12 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
-from .forms import BookForm, InquiryForm, cancelEventForm
+from .forms import BookForm, InquiryForm, cancelEventForm, EditEventForm
 from .decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
+
+from .utils import check_inquiry_reopen
 
 # Create your views here.
 
@@ -210,34 +212,39 @@ class bookEventView(View):
         return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'teacher_url': url})
 
 
-@ login_required
-@ parent_required
-def inquiryView(request, inquiry_id):
-    try:
-        inquiry = Inquiry.objects.get(Q(type=0), Q(
-            id=force_str(urlsafe_base64_decode(inquiry_id))))
-    except Inquiry.DoesNotExist:
-        raise Http404("Inquiry does not exist.")
+# Der Inquiry View wurde einmal neu gemacht, muss jetzt noch weiter so ergänzt werden, damit er schön aussieht
+@method_decorator(parent_required, name='dispatch')
+class InquiryView(View):
+    def get(self, request, inquiry_id):
+        inquiry = get_object_or_404(Inquiry, type=0, id=force_str(
+            urlsafe_base64_decode(inquiry_id)))
 
-    else:
-        if inquiry.event != None:
+        if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
             return render(request, "dashboard/error/inquiry_ocupied.html")
-        elif request.method == 'POST':
-            form = InquiryForm(request.POST,
-                               request=request, selected_student=inquiry.students.first, teacher=inquiry.requester, parent=inquiry.respondent)
-            if form.is_valid():
-                event = form.cleaned_data['event']
-                event.parent = inquiry.respondent
-                students = form.cleaned_data['student']
 
-                event.student.set(students)
-                event.occupied = True
-                event.save()
-                messages.success(request, "Gebucht")
-                return redirect('home')
-        else:
-            form = InquiryForm(
-                request=request, selected_student=inquiry.students.first, teacher=inquiry.requester, parent=inquiry.respondent)
+        form = InquiryForm(
+            request=request, selected_student=inquiry.students.first, teacher=inquiry.requester, parent=inquiry.respondent)
+        return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
+
+    def post(self, request, inquiry_id):
+        inquiry = get_object_or_404(Inquiry, type=0, id=force_str(
+            urlsafe_base64_decode(inquiry_id)))
+
+        if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
+            return render(request, "dashboard/error/inquiry_ocupied.html")
+
+        form = InquiryForm(request.POST,
+                           request=request, selected_student=inquiry.students.first, teacher=inquiry.requester, parent=inquiry.respondent)
+        if form.is_valid():
+            event = form.cleaned_data['event']
+            event.parent = inquiry.respondent
+            students = form.cleaned_data['student']
+
+            event.student.set(students)
+            event.occupied = True
+            event.save()
+            messages.success(request, "Gebucht")
+            return redirect('home')
         return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
 
 
@@ -253,19 +260,18 @@ class EventView(View):
         else:
             if event.occupied and event.parent != request.user:
                 return render(request, "dashboard/events/occupied.html")
-            book_form = BookForm(
+            edit_form = EditEventForm(
                 request=request, teacher=event.teacher, initial={'student': [student.id for student in event.student.all()]})
-            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'book_form': book_form})
+            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
 
     def post(self, request, event_id):
-        # try:
-        #     event = Event.objects.get(id=event_id)
-        # except Event.DoesNotExist:
-        #     raise Http404("No event")
-        # else:
         event = get_object_or_404(Event, id=event_id)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
+
+        edit_form = EditEventForm(request=request, teacher=event.teacher, initial={
+                                  'student': [student.id for student in event.student.all()]})
+        cancel_form = self.cancel_form()
 
         # Es wurde die Cancel-Form zurück gegeben
         if 'cancel_event' in request.POST:
@@ -279,6 +285,8 @@ class EventView(View):
                     message='%s %s hat einen Termin abgesagt und folgende Nachricht hinterlassen: \n %s' % (
                         request.user.first_name, request.user.last_name, message)
                 )
+                # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
+                check_inquiry_reopen(request.user, event.teacher)
                 event.parent = None
                 event.status = 0
                 event.occupied = False
@@ -289,36 +297,25 @@ class EventView(View):
                 return redirect("home")
 
         # Es wurde die Book-Form zurück gegeben
-        if 'book_event' in request.POST:
+        if 'edit_event' in request.POST:
+            edit_form = EditEventForm(
+                request.POST, request=request, teacher=event.teacher)
 
-            # , initial={"choices": event.student}
-            book_form = BookForm(request.POST, request=request,
-                                 teacher=event.teacher, initial={'student': [student.id for student in event.student.all()]})
-            if book_form.is_valid():
+            if edit_form.is_valid():
                 students = []
-                for student in book_form.cleaned_data['student']:
-                    # try:
-                    #     model_student = Student.objects.get(
-                    #         shield_id=student)
-                    # except Student.DoesNotExist:
-                    #     raise Http404("Error")
-                    # else:
+                for student in edit_form.cleaned_data['student']:
                     model_student = get_object_or_404(Student, id=student)
                     students.append(model_student)
                 # ? validation of students needed or given through the form
+                # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
+                check_inquiry_reopen(request.user, event.teacher)
                 event.parent = request.user
                 event.status = 2
                 event.student.set(students)
                 event.occupied = True
                 event.save()
-                messages.success(request, "Angefragt")
-            else:
-                book_form = BookForm(
-                    request=request, teacher=event.teacher, initial={'student': [student.id for student in event.student.all()]})
-
-            teacher_id = urlsafe_base64_encode(
-                force_bytes(event.teacher.id))
-        return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form,  "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'book_form': book_form})
+                messages.success(request, "Geändert")
+        return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form,  "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
 
 
 @login_required

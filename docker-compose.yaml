@@ -9,7 +9,7 @@ services:
 
   django:
     container_name: dj01
-    image: djangoelternsprechtag1:latest
+    image: djangoelternsprechtag:latest
     environment:
       - DB_HOST=db
       - DB_NAME=elternsprechtag
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   celery:
-    image: djangoelternsprechtag1:latest
+    image: djangoelternsprechtag:latest
     command: celery -A elternsprechtag worker -B --loglevel=DEBUG
     links:
       - redis
