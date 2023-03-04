@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'help',
     'dashboard',
     'teacher',
+    'profile_settings',
     'corsheaders',  # just for development purposes
     'colorfield'
 ]
