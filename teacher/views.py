@@ -179,60 +179,6 @@ class CreateInquiryView(View):
         return render(request, "teacher/createInquiry.html", {'form': form, "student": student})
 
 
-@method_decorator(teacher_decorators, name='dispatch')
-class ProfilePage(View):
-    def get(self, request):
-        tagConfigurationForm = configureTagsForm(
-            initial={'tags': request.user.teacherextradata.tags.all()})
-        # print(TeacherExtraData.objects.all().first().image.url)
-
-        context = {
-            'tags': request.user.teacherextradata.tags.all(),
-            'configure_tags': tagConfigurationForm,
-            'change_profile': changeProfileForm(instance=request.user),
-            'change_password': changePasswordForm(request.user)
-        }
-        return render(request, "teacher/profile.html", context)
-
-    def post(self, request):
-        user: CustomUser = request.user
-        # change the users personal information
-        if 'change_profile' in request.POST:
-            change_profile_form = changeProfileForm(
-                request.POST, request.FILES, instance=user)
-            if change_profile_form.is_valid():
-                change_profile_form.save()
-            return render(request, "teacher/profile.html", {'tags': user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
-                initial={'tags': user.teacherextradata.tags.all()}), 'change_profile': change_profile_form, 'change_password': changePasswordForm(user)})
-
-        # change the users pasword
-        if 'change_password' in request.POST:
-            change_password_form = changePasswordForm(
-                user, request.POST)
-            if change_password_form.is_valid():
-                user = change_password_form.save()
-                update_session_auth_hash(request, user)
-
-            return render(request, "teacher/profile.html", {'tags': user.teacherextradata.tags.all(), 'configure_tags': configureTagsForm(
-                initial={'tags': user.teacherextradata.tags.all()}), 'change_profile': changeProfileForm(instance=user), 'change_password': change_password_form})
-
-        if 'confiure_tags' in request.POST:
-            tagConfigurationForm = configureTagsForm(request.POST)
-            if tagConfigurationForm.is_valid():
-                extraData = user.teacherextradata
-                extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
-                extraData.save()
-
-            context = {
-                'tags': user.teacherextradata.tags.all(),
-                'configure_tags': tagConfigurationForm,
-                'change_profile': changeProfileForm(instance=user),
-                'change_password': changePasswordForm(user)
-            }
-            return render(request, "teacher/profile.html", context)
-        raise BadRequest
-
-
 @login_required
 @teacher_required
 def confirm_event(request, event):

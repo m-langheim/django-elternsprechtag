@@ -26,43 +26,6 @@ class editInquiryForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea, required=False)
 
 
-class changeProfileForm(forms.ModelForm):
-    image = forms.ImageField(required=False)
-    change_profile = forms.BooleanField(
-        widget=forms.HiddenInput, initial=True)  # field to identify the form
-
-    class Meta:
-        model = CustomUser
-        fields = ("first_name", "last_name", "email")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-
-        self.helper.add_input(Submit('submit', 'Speichern'))
-
-    def save(self, commit=True):
-        if self.cleaned_data['image']:
-            extraData = self.instance.teacherextradata
-            extraData.image = self.cleaned_data['image']
-            extraData.save()
-        return super(changeProfileForm, self).save(commit=commit)
-
-
-class changeTeacherPictureForm(forms.ModelForm):
-    change_picture = forms.BooleanField(widget=forms.HiddenInput, initial=True)
-
-    class Meta:
-        model = TeacherExtraData
-        fields = ('image',)
-
-
-class configureTagsForm(forms.Form):
-    confiure_tags = forms.BooleanField(
-        widget=forms.HiddenInput, initial=True)
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects, required=False)
-
-
 class changePasswordForm(PasswordChangeForm):
     change_password = forms.BooleanField(
         widget=forms.HiddenInput, initial=True)
