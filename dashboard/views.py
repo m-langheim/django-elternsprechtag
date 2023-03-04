@@ -216,7 +216,7 @@ class bookEventView(View):
 @method_decorator(parent_required, name='dispatch')
 class InquiryView(View):
     def get(self, request, inquiry_id):
-        inquiry = get_object_or_404(Inquiry, type=0, id=force_str(
+        inquiry = get_object_or_404(Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user)), type=0, id=force_str(
             urlsafe_base64_decode(inquiry_id)))
 
         if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
@@ -227,7 +227,7 @@ class InquiryView(View):
         return render(request, "dashboard/inquiry.html", {'reason': inquiry.reason, 'form': form})
 
     def post(self, request, inquiry_id):
-        inquiry = get_object_or_404(Inquiry, type=0, id=force_str(
+        inquiry = get_object_or_404(Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user)), type=0, id=force_str(
             urlsafe_base64_decode(inquiry_id)))
 
         if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
@@ -253,23 +253,19 @@ class EventView(View):
     cancel_form = cancelEventForm
 
     def get(self, request, event_id):
-        try:
-            event = Event.objects.get(id=event_id)
-        except Event.DoesNotExist:
-            raise Http404("No event")
-        else:
-            if event.occupied and event.parent != request.user:
-                return render(request, "dashboard/events/occupied.html")
-            edit_form = EditEventForm(
-                request=request, teacher=event.teacher, initial={'student': [student.id for student in event.student.all()]})
-            return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
+        event = get_object_or_404(Event, id=event_id)
+        if event.occupied and event.parent != request.user:
+            return render(request, "dashboard/events/occupied.html")
+        edit_form = EditEventForm(
+            request=request, teacher=event.teacher, event=event, initial={'student': [student.id for student in event.student.all()]})
+        return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 
-        edit_form = EditEventForm(request=request, teacher=event.teacher, initial={
+        edit_form = EditEventForm(request=request, teacher=event.teacher, event=event, initial={
                                   'student': [student.id for student in event.student.all()]})
         cancel_form = self.cancel_form()
 
@@ -299,7 +295,7 @@ class EventView(View):
         # Es wurde die Book-Form zurück gegeben
         if 'edit_event' in request.POST:
             edit_form = EditEventForm(
-                request.POST, request=request, teacher=event.teacher)
+                request.POST, request=request, teacher=event.teacher, event=event)
 
             if edit_form.is_valid():
                 students = []
@@ -321,12 +317,8 @@ class EventView(View):
 @login_required
 @parent_required
 def markAnnouncementRead(request, announcement_id):
-    try:
-        announcement = Announcements.objects.get(Q(id__exact=force_str(
-            urlsafe_base64_decode(announcement_id))))
-    except Announcements.DoesNotExist:
-        raise Http404("Mitteilung nicht gefunden")
-    else:
-        announcement.read = True
-        announcement.save()
-        return redirect("home")
+    announcement = get_object_or_404(Announcements, id__exact=force_str(
+        urlsafe_base64_decode(announcement_id)), user=request.user)
+    announcement.read = True
+    announcement.save()
+    return redirect("home")

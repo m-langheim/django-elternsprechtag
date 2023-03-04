@@ -63,10 +63,9 @@ class EditEventForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         self.teacher = kwargs.pop('teacher')
-        self.initial = kwargs.pop('initial', [])
+        self.event = kwargs.pop('event')
         super(EditEventForm, self).__init__(*args, **kwargs)
-        if self.initial:
-            initial_students = self.initial["student"]
+
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
@@ -84,9 +83,9 @@ class EditEventForm(forms.Form):
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
             students_with_event = Event.objects.filter(Q(teacher=self.teacher), Q(
-                occupied=True), Q(parent=self.request.user)).values_list("student", flat=True)
+                occupied=True), Q(parent=self.request.user)).exclude(id=self.event.id).values_list("student", flat=True)
             for student in choices:
-                if student[0] in initial_students or student[0] not in students_with_event:
+                if student[0] not in students_with_event:
                     active_choices.append(student[0])
 
         self.fields['student'].choices = choices
