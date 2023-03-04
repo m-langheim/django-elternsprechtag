@@ -41,7 +41,12 @@
                 </li>
                 {% if user.role == 1 %}
                 <li>
-                    <a class="dropdown-item" href="#">Menu item</a>
+                    <a class="dropdown-item" href="{% url 'profile_edit_tag_view' %}">Tags</a>
+                </li>
+                {% endif %}
+                {% if user.role == 0 %}
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile_student_list' %}">Schüler:innen</a>
                 </li>
                 {% endif %}
             </ul>
