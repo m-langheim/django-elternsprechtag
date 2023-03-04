@@ -20,6 +20,9 @@
                                             Lehrer: {{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
+                                            Datum: {{ event.start|date }}
+                                        </div>
+                                        <div>
                                             Uhrzeit: {{ event.start|time }} Uhr
                                         </div>
                                         <div>

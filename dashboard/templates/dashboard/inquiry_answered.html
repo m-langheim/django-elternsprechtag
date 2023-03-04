@@ -1,0 +1,96 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Anfrage</p>
+            <div class="row">
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <strong>Anfragesteller:</strong>
+                </div>
+                <div class="col-6 col-sm-8 col-md-9 col-lg-10">
+                    <a href="{% url 'event_teacher_list' teacher_id %}" class="pb-1"
+                        style="color: #2b2a2a; text-decoration: none;">
+                        {{ inquiry.requester.first_name}} {{ inquiry.requester.last_name }}
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <strong>Schüler:in:</strong>
+                </div>
+                <div class="col-6 col-sm-8 col-md-9 col-lg-10">
+                    {{ inquiry.students.first }}
+                </div>
+                <div class="col-12 col-md-3 col-lg-2">
+                    <strong>Grund:</strong>
+                </div>
+                <div class="col-12 col-md-9 col-lg-10">
+                    {{ inquiry.reason|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <p>{{ reason }}</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" class="button" value="Book" />
+</form> -->
+<!-- Hier wurde einmal die komplette Seite von event eingefügt -->
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Elternsprechtag-Termine</p>
+            {% if inquiry.event %}
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row gy-1 align-items-center">
+                        <!-- <div class="row align-items-center"> -->
+                        <div class="col-12 col-md-7 col-xl-9 text-start">
+                            {{ inquiry.event.start|date }} - {{ inquiry.event.start|time }}
+                        </div>
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                {% if inquiry.event.status == 2 %}
+                                <style>
+                                    .specify_color_orange {
+                                        border-color: #FF8C00 !important;
+                                        color: #FF8C00 !important;
+                                    }
+
+                                    .specify_color_orange:hover {
+                                        background-color: #FF8C00 !important;
+                                        color: white !important;
+                                    }
+                                </style>
+                                <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+                                    href="{% url 'event_per_id' inquiry.event.id %}">
+                                    Angefragt
+                                </a>
+                                {% else %}
+                                <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                    href="{% url 'event_per_id' inquiry.event.id %}">
+                                    Gebucht
+                                </a>
+                                {% endif %}
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                </li>
+            </ul>
+            {% else %}
+
+            <!-- Für den Lehrer wurden noch keine Events gebucht -->
+            <div class="container">
+                <p class="h1">Events</p>
+                <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
