@@ -9,7 +9,7 @@ services:
 
   django:
     container_name: dj01
-    image: djangoelternsprechtag:latest
+    build: .
     environment:
       - DB_HOST=db
       - DB_NAME=elternsprechtag
@@ -30,7 +30,7 @@ services:
       - PUID=1000
       - PGID=1000
       - MYSQL_ROOT_PASSWORD=jhg2023
-      - TZ=Europe/London
+      - TZ=Europe/Berlin
       - MYSQL_DATABASE=elternsprechtagapp
       - MYSQL_USER=elternsprechtag
       - MYSQL_PASSWORD=jhg2023
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   celery:
-    image: djangoelternsprechtag:latest
+    build: .
     command: celery -A elternsprechtag worker -B --loglevel=DEBUG
     links:
       - redis

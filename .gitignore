@@ -132,3 +132,4 @@ dmypy.json
 *.rdb
 
 media/teacher_pics/*
+emails
