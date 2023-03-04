@@ -8,8 +8,9 @@
 {% if user.role == 1 %}
 <div class="row p-3">
     {% if user.teacherextradata.image %}
-    <div class="col col-12 col-sm-5 col-lg-3">
-        <img class="rounded-circle img-fluid" src="{{ user.teacherextradata.image.url }}">
+    <div class="flex-shrink-0 col col-12 col-sm-5 col-lg-3">
+        <img src="{{ user.teacherextradata.image.url }}" alt="Generic placeholder image" class="img-fluid"
+            style="border-radius: 10px;">
     </div>
     <div class="col col-7 col-sm-7 col-lg-9">
         <p class="secondary-text">Dieses Bild ist nur für Elternteile sichtbar.</p>

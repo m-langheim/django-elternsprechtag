@@ -17,7 +17,8 @@
     <nav class="navbar navbar-expand-lg bg-white navbar-white border-bottom text-dark shadow-sm">
         <div class="container-fluid">
             <div class="content">
-                <div class="logo"><a class="text-secondary fs-2" style="text-decoration: none;" href="{% url 'teacher_dashboard' %}">Elternsprechtag</a></div>
+                <div class="logo"><a class="text-secondary fs-2" style="text-decoration: none;"
+                        href="{% url 'teacher_dashboard' %}">Elternsprechtag</a></div>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -29,8 +30,11 @@
                     <div class="form-white input-group bg-white align-items-center" style="width: 500px;">
                         <input type="text"
                             class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
-                            placeholder="Search..." aria-label="Search" style="box-shadow: none; outline: none;" name="q" autocomplete="off">
-                        <button type="submit" class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i class="fa-solid fa-arrow-right fa-xl"></i></button>
+                            placeholder="Search..." aria-label="Search" style="box-shadow: none; outline: none;"
+                            name="q" autocomplete="off">
+                        <button type="submit"
+                            class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i
+                                class="fa-solid fa-arrow-right fa-xl"></i></button>
                     </div>
                 </form>
                 <ul class="navbar-nav d-flex flex-row ms-auto">
@@ -40,12 +44,14 @@
                             <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
-                            <li><a class="dropdown-item" href="{% url 'teacher_profile' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
+                                        class="fa-solid fa-gear"></i> Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider" />
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                                <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
+                                        class="fa-solid fa-right-from-bracket"></i> Logout</a>
                             </li>
                         </ul>
                     </li>
@@ -65,7 +71,7 @@
             {% endfor %}
         </div>
         {% endif %}
-        
+
         <div class="container mt-2">
             {% block content %}{% endblock %}
         </div>
@@ -75,4 +81,3 @@
 </body>
 
 </html>
-

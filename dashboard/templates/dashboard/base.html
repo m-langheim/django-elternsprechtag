@@ -2,6 +2,8 @@
 {% load i18n %}
 <html lang="en">
 
+<!-- Wurde angepasst um sowohl für Lehrer wie auch Eltern zu gelten -->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +20,8 @@
         <div class="container-fluid">
             <div class="content">
                 <div class="logo"><a class="text-secondary fs-2" style="text-decoration: none;"
-                        href="{% url 'home' %}">Elternsprechtag</a></div>
+                        href="{% if user.role == 1 %}{% url 'teacher_dashboard' %}{% else %}{% url 'home' %}{% endif %}">Elternsprechtag</a>
+                </div>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -30,7 +33,7 @@
                 <div class="row ms-lg-4" style="width: 100%;">
                     <!-- Um das neu anzuordnen, wenn man auf kleinen Bildschirmen ist, steht es zweimal hier -->
                     <form class="d-none d-lg-block col-6 col-xl-4 col-lg-5 col-xxl-3" style="margin-top: 10.5px;"
-                        action="{% url 'search' %}">
+                        action="{% if user.role == 1 %}{% url 'teacher_students_list' %}{% else %}{% url 'search' %}{% endif %}">
                         <div class="form-white input-group bg-white align-items-center align-self-center">
                             <input type="text"
                                 class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
@@ -51,8 +54,10 @@
                                     <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
+                                    {% if user.role == 0 %}
                                     <li><a class="dropdown-item" href="{% url 'profile_student_list' %}"><i
-                                                class="fa-solid fa-user"></i> Students</a></li>
+                                                class="fa-solid fa-user"></i> Schüler:innen</a></li>
+                                    {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                 class="fa-solid fa-gear"></i> Mein Profil</a></li>
                                     <li>

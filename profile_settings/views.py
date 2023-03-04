@@ -75,7 +75,7 @@ class ChangePasswordView(View):
 @method_decorator(teacher_decorators, name='dispatch')
 class EditTagsView(View):
     def get(self, request):
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()})})
+        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
 
     def post(self, request):
         tagConfigurationForm = configureTagsFormForTeacher(request.POST)
@@ -84,4 +84,4 @@ class EditTagsView(View):
             extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
             extraData.save()
 
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm})
+        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm, 'tags': request.user.teacherextradata.tags.all()})

@@ -23,8 +23,7 @@ class changeProfileFormForTeacher(forms.ModelForm):  # Nur für lehrer
 
 
 class changeProfileFormForTeacher(forms.ModelForm):  # Nur für lehrer
-    change_profile = forms.BooleanField(
-        widget=forms.HiddenInput, initial=True)  # field to identify the form
+    image = forms.ImageField(required=False)
 
     class Meta:
         model = CustomUser
@@ -51,4 +50,5 @@ class changeProfileFormForUsers(forms.ModelForm):  # Für alle außer Lehrer
 
 
 class configureTagsFormForTeacher(forms.Form):
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects, required=False)
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects, required=False)
