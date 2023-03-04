@@ -23,18 +23,15 @@
                     <ul class="list-group list-group-flush">
                         {% for teacher in teachers %}
                         <li class="list-group-item">
-                            <div class="container p-0">
-                                <div class="row align-items-center">
-                                    <div class="col-12 col-sm-8 text-start">
-                                        {{ teacher.first_name }} {{ teacher.last_name }}
-                                    </div>
-                                    <div class="col-12 col-sm-4">
-                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                            <a type="button" class="btn btn-outline-danger col-10"
-                                                href="{{ teacher.url }}">
-                                                Termin buchen
-                                            </a>
-                                        </div>
+                            <div class="row align-items-center">
+                                <div class="col-12 col-sm-6 col-md-8 text-start">
+                                    {{ teacher.first_name }} {{ teacher.last_name }}
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a type="button" class="btn btn-outline-danger" href="{{ teacher.url }}">
+                                            Termin buchen
+                                        </a>
                                     </div>
                                 </div>
                             </div>

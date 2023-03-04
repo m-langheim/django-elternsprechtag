@@ -7,35 +7,41 @@
 <div class="container p-2 pt-4">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <div class="d-flex text-black">
-                <div class="flex-shrink-0">
+            <!-- Hier wurde was geändert um auf kleinen geräten zu funktionieren -->
+            <div class="d-flex text-black row">
+                <div class="col-2 d-block d-sm-none"></div>
+                <div class="flex-shrink-0 col-8 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <img src="{{ image }}" alt="Generic placeholder image" class="img-fluid"
-                        style="width: 180px; border-radius: 10px;">
+                        style="border-radius: 10px;">
                 </div>
-                <div class="d-flex flex-column flex-grow-1 align-items-stretch ms-3">
-                    <h3 class="mb-2">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
-                    <a class="pb-1" style="color: #2b2a2a; text-decoration: none;" href="mailto:{{ teacher.email }}">
-                        {{ teacher.email }}
-                    </a>
-                    <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1"
-                        style="background-color: #efefef;">
-                        <div>
-                            <p class="small text-muted mb-1">Tags</p>
-                            <div class="d-flex align-content-start flex-wrap">
-                                {% if tags|length > 0 %}
-                                {% for tag in tags %}
-                                <span class="badge bg-light rounded-pill me-1 mt-1"
-                                    style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
-                                    {{ tag.name }}
-                                </span>
-                                {% endfor %}
-                                {% else %}
-                                <p>This teacher does not have any tags</p>
-                                {% endif %}
+                <div class="col-12 col-sm-6 col-md-8 col-lg-9 col-xl-10">
+                    <div class="d-flex flex-column flex-grow-1 align-items-stretch">
+                        <h3 class="mb-2">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
+                        <a class="pb-1" style="color: #2b2a2a; text-decoration: none;"
+                            href="mailto:{{ teacher.email }}">
+                            {{ teacher.email }}
+                        </a>
+                        <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1"
+                            style="background-color: #efefef;">
+                            <div>
+                                <p class="small text-muted mb-1">Tags</p>
+                                <div class="d-flex align-content-start flex-wrap">
+                                    {% if tags|length > 0 %}
+                                    {% for tag in tags %}
+                                    <span class="badge bg-light rounded-pill me-1 mt-1"
+                                        style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
+                                        {{ tag.name }}
+                                    </span>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p>This teacher does not have any tags</p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

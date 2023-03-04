@@ -3,8 +3,8 @@
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-<div class="row mb-3">
-    <div class="container col-md-8">
+<div class="row gx-4 gy-4">
+    <div class="col-12 col-md-8">
         <div class="h-auto d-grid gap-3">
             {% if events|length > 0 %}
             <!-- Events-Titel -->
@@ -77,8 +77,8 @@
                                     {% endfor %}
                                     <br />
 
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <a type="button" class="btn btn-outline-danger col-3"
+                                    <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
+                                        <a type="button" class="btn btn-outline-danger col-12 col-md-3"
                                             href="{% url 'event_per_id' event.id %}">
                                             Details
                                         </a>
@@ -103,7 +103,7 @@
     </div>
 
     <!-- Anfragen -->
-    <div class="container col-md-4">
+    <div class="col-12 col-md-4">
         <div class="h-auto d-grid gap-3">
             <div class="container">
                 <p class="h1">Anfragen</p>
@@ -138,8 +138,8 @@
                             {% else %}
                             ---
                             {% endif %}
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a class="btn btn-outline-danger col-3" role="button"
+                            <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
+                                <a class="btn btn-outline-danger col-12 col-xxl-3 col-lg-4 col-md-5" role="button"
                                     href="{{ inquiry.url }}">Ansehen</a>
                             </div>
                         </div>
