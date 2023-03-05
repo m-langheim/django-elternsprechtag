@@ -20,6 +20,8 @@ services:
       - DB_PASSWORD=jhg2023
       - SECRET_KEY=supersecuresecretkey02
       - REDIS_HOST=redis
+      - SUPER_USER_PASSWORD='root'
+      - SUPER_USER_EMAIL='admin@email.com'
     volumes:
       - media:/app/media
       - static:/app/staticfiles

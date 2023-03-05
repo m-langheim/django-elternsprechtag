@@ -14,6 +14,7 @@ Django==4.1
 django-colorfield==0.7.2
 django-cors-headers==3.13.0
 django-crispy-forms==1.14.0
+gunicorn==20.1.0
 kombu==5.2.4
 packaging==21.3
 Pillow==9.2.0
@@ -31,3 +32,4 @@ uuid==1.30
 vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.14.1
+mysqlclient
