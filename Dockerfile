@@ -14,5 +14,11 @@ WORKDIR /app
 
 EXPOSE 8000
 
-ENTRYPOINT [ "entrypoint.sh" ]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENV REDIS_HOST="localhost"
+RUN python manage.py collectstatic --no-input
+
+RUN chmod +x entrypoint.sh
+
+CMD ["./entrypoint.sh"]
+# ENTRYPOINT ["python", "manage.py", "migrate"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

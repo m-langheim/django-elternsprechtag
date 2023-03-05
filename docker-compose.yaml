@@ -9,12 +9,20 @@ services:
 
   django:
     container_name: dj01
-    build: .
+    build: 
+      context: .
+    image: django-elternsprechtag
+    # command: python manage.py runserver 0.0.0.0:8000
     environment:
       - DB_HOST=db
-      - DB_NAME=elternsprechtag
+      - DB_NAME=elternsprechtagapp
       - DB_USERNAME=elternsprechtag
       - DB_PASSWORD=jhg2023
+      - SECRET_KEY=supersecuresecretkey02
+      - REDIS_HOST=redis
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
     ports:
       - '8000:8000'
     links: 
@@ -35,13 +43,32 @@ services:
       - MYSQL_USER=elternsprechtag
       - MYSQL_PASSWORD=jhg2023
     volumes:
-      - /path/to/data:/config
+      - db:/config
     restart: unless-stopped
 
   celery:
-    build: .
-    command: celery -A elternsprechtag worker -B --loglevel=DEBUG
+    build: 
+      context: .
+    image: django-elternsprechtag
+    command: celery -A elternsprechtag worker -B
+    environment:
+      - REDIS_HOST=redis
     links:
       - redis
     depends_on:
       - redis
+
+  nginx:
+    build:
+      context: ./nginx/
+    ports:
+      - 8080:8080
+    volumes:
+      - static:/mnt/static
+      - media:/mnt/media
+
+
+volumes:
+  media:
+  static:
+  db:
