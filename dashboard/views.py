@@ -127,11 +127,12 @@ def bookEventTeacherList(request, teacher_id):
             Q(occupied=True), Q(parent=request.user))
 
         events_dt = Event.objects.filter(Q(teacher=teacher))
+        print(events_dt)
         dates = []
         datetime_objects = events_dt.values_list("start", flat=True)
         for datetime_object in datetime_objects:
-            if timezone.localtime(datetime_object).date() not in dates:
-                dates.append(timezone.localtime(datetime_object).date())
+            if datetime_object.date() not in dates:
+                dates.append(datetime_object.date())
 
         events_dt_dict = {}
         for date in dates:

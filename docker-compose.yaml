@@ -52,9 +52,16 @@ services:
     build: 
       context: .
     image: django-elternsprechtag
-    command: celery -A elternsprechtag worker -B
+    command: celery -A elternsprechtag worker -B --loglevel=DEBUG
     environment:
       - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_NAME=elternsprechtagapp
+      - DB_USERNAME=elternsprechtag
+      - DB_PASSWORD=jhg2023
+      - SECRET_KEY=supersecuresecretkey02
+      - SUPER_USER_PASSWORD=test1234
+      - SUPER_USER_EMAIL=test@test.com
     links:
       - redis
     depends_on:
