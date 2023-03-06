@@ -62,6 +62,8 @@ def search(request):
     teacherExtraData = TeacherExtraData.objects.all()
     request_search = request.GET.get('q', None)
     state = 0
+    result=[]
+
     if request_search is None:
         state = 0
     elif request_search.startswith('#'):
@@ -69,7 +71,6 @@ def search(request):
         tags = Tag.objects.filter(Q(name__icontains=request_search) | Q(
             synonyms__icontains=request_search))  # get a list of all matching tags
 
-        result = []
         for tag in tags:
             extraData = teacherExtraData.filter(tags=tag)
 
@@ -79,7 +80,6 @@ def search(request):
                     result.append(teacher)
         state = 1
     else:
-        result = []
         for data in teachers.filter(last_name__icontains=request_search):
             if not data in result:
                 result.append(data)
