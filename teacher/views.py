@@ -149,6 +149,11 @@ class CreateInquiryView(View):
                 Q(role=0), Q(students=student)).first
             initial = {'student': student, 'parent': parent}
             form = createInquiryForm(initial=initial)
+
+            if len(Event.objects.filter(Q(teacher=request.user), Q(student=student))) is not 0:
+                messages.warning(request, "Sie haben bereits einen Termin mit diesem Kind.")
+                
+
         return render(request, "teacher/createInquiry.html", {'form': form, "student": student})
 
     def post(self, request, studentID):
