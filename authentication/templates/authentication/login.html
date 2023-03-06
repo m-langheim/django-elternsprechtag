@@ -20,8 +20,9 @@
                         <p class="pb-2 text-secondary">{% translate 'Please log into your parent account' %}</p>
                         {% csrf_token %}
                         {% load crispy_forms_tags %}
-                        {{ form.username|as_crispy_field }}
-                        {{ form.password|as_crispy_field }}
+                        <!-- {{ form.username|as_crispy_field }}
+                        {{ form.password|as_crispy_field }} -->
+                        {{form|crispy}}
                         <div class="d-grid ms-2 me-2 mt-3 pt-3 pb-2">
                             <input type="submit" class="btn btn-outline-danger" value="{% translate 'Login' %}">
                         </div>
