@@ -127,7 +127,7 @@ def bookEventTeacherList(request, teacher_id):
             Q(occupied=True), Q(parent=request.user))
 
         events_dt = Event.objects.filter(Q(teacher=teacher))
-        print(events_dt)
+        
         dates = []
         datetime_objects = events_dt.values_list("start", flat=True)
         for datetime_object in datetime_objects:
@@ -145,7 +145,12 @@ def bookEventTeacherList(request, teacher_id):
         image = TeacherExtraData.objects.filter(
             Q(teacher=teacher))[0].image.url
 
-    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'tags': tags, 'image': image})
+        booked_times = []
+        for event in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
+            time = timezone.localtime(event)
+            booked_times.append(time)
+
+    return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'tags': tags, 'image': image, 'booked_times': booked_times})
 
 
 @method_decorator(parent_required, name='dispatch')
@@ -182,7 +187,12 @@ class bookEventView(View):
             teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
             back_url = reverse('event_teacher_list', args=[teacher_id])
 
-        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'back_url': back_url})
+        booked_times = []
+        for b_times in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
+            time = timezone.localtime(b_times)
+            booked_times.append(time)
+
+        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'back_url': back_url, 'booked_times': booked_times})
 
     def post(self, request, event_id):
         # try:
@@ -224,7 +234,12 @@ class bookEventView(View):
         teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
         url = reverse('event_teacher_list', args=[teacher_id])
 
-        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'teacher_url': url})
+        booked_times = []
+        for b_times in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
+            time = timezone.localtime(b_times)
+            booked_times.append(time)
+
+        return render(request, 'dashboard/events/book.html', {'event': event, 'book_form': form, 'teacher_url': url, 'booked_times': booked_times})
 
 
 # Der Inquiry View wurde einmal neu gemacht, muss jetzt noch weiter so ergänzt werden, damit er schön aussieht
@@ -256,7 +271,12 @@ class InquiryView(View):
             events_dt_dict[str(date)] = Event.objects.filter(
                 Q(teacher=inquiry.requester), Q(start__date=date)).order_by('start')
 
-        return render(request, "dashboard/inquiry.html", {'inquiry_id': inquiry_id, 'inquiry': inquiry, 'events': events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'teacher_id': teacher_id})
+        booked_times = []
+        for b_times in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
+            time = timezone.localtime(b_times)
+            booked_times.append(time)
+
+        return render(request, "dashboard/inquiry.html", {'inquiry_id': inquiry_id, 'inquiry': inquiry, 'events': events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'teacher_id': teacher_id, 'booked_times': booked_times})
 
     # def post(self, request, inquiry_id):
     #     inquiry = get_object_or_404(Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user)), type=0, id=force_str(
@@ -285,7 +305,7 @@ class EventView(View):
     cancel_form = cancelEventForm
 
     def get(self, request, event_id):
-        event = get_object_or_404(Event, id=event_id)
+        event = get_object_or_404(Event, id=event_id, parent=request.user)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
         edit_form = EditEventForm(
@@ -293,7 +313,7 @@ class EventView(View):
         return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form, "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
 
     def post(self, request, event_id):
-        event = get_object_or_404(Event, id=event_id)
+        event = get_object_or_404(Event, id=event_id, parent=request.user)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 

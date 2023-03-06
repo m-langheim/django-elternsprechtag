@@ -112,10 +112,16 @@
                                         </a>
                                         {% endif %}
                                         {% else %}
-                                        <a type="button" class="btn btn-outline-danger col-12 col-md-6"
-                                            href="{% url 'book_event_per_id' event.id %}?inquiry={{ inquiry_id }}">
-                                            Anfragen
-                                        </a>
+                                            {% if event.start in booked_times %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Zeitkonflikt
+                                                </a>
+                                            {% else %}
+                                                <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                                    href="{% url 'book_event_per_id' event.id %}?inquiry={{ inquiry_id }}">
+                                                    Anfragen
+                                                </a>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </div>

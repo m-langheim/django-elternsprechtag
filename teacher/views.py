@@ -26,7 +26,7 @@ teacher_decorators = [login_required, teacher_required]
 @login_required
 @teacher_required
 def dashboard(request):
-    inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=request.user))
+    inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=request.user), Q(processed=False))
     # create individual link for each inquiry
     custom_inquiries = []
     for inquiry in inquiries:
