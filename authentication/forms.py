@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from .models import CustomUser
 from django.utils.translation import gettext as _
+from crispy_forms.helper import FormHelper
 
 class CustomAuthForm(AuthenticationForm): # login
     class Meta:
@@ -12,6 +13,7 @@ class CustomAuthForm(AuthenticationForm): # login
         self.fields['username'].label = False
         self.fields['password'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}) 
         self.fields['password'].label = False
+        self.helper = FormHelper()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -53,7 +55,7 @@ class Register_Parent_Account(forms.Form): # register (parent account)
 
         if password == confirm_password:
             return self.cleaned_data
-        raise forms.ValidationError(_("a fuckin error."))
+        raise forms.ValidationError(_("a error."))
 
 class AdminCsvImportForm(forms.Form):
     csv_file = forms.FileField()
