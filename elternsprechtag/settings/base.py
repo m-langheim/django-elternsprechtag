@@ -16,7 +16,7 @@ import os
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# * This setting was moved to the individual settings files
+# DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -86,7 +87,7 @@ WSGI_APPLICATION = 'elternsprechtag.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+# * This setting was moved to the individual settings files
 
 # DATABASES = {
 #     'default': {
@@ -95,15 +96,15 @@ WSGI_APPLICATION = 'elternsprechtag.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST")
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get("DB_NAME"),
+#         'USER': os.environ.get("DB_USER"),
+#         'PASSWORD': os.environ.get("DB_PASSWORD"),
+#         'HOST': os.environ.get("DB_HOST")
+#     }
+# }
 
 
 # Password validation
@@ -171,16 +172,15 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'
 LOGIN_URL = '/login'
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
+# * This setting was moved to the individual settings files
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Celery settings
+# * This setting was moved to the individual settings files
 # CELERY_BROKER_URL = "redis://localhost:6379"
 # CELERY_RESULT_BACKEND = "redis://localhost:6379"
-
-CELERY_BROKER_URL = "redis://"+os.environ.get("REDIS_HOST")+":6379"
-CELERY_RESULT_BACKEND = "redis://"+os.environ.get("REDIS_HOST")+":6379"
