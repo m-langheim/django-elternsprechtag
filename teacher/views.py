@@ -13,6 +13,20 @@ from .decorators import teacher_required
 from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import BadRequest
+#pdf gen
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+import datetime
+
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, PageTemplate
+from reportlab.platypus.frames import Frame
+from reportlab.lib import pagesizes
+from reportlab.platypus.paragraph import Paragraph
+from functools import partial
+
 # Create your views here.
 
 from django.urls import reverse
@@ -213,6 +227,27 @@ def markAnnouncementRead(request, announcement_id):
         announcement.read = True
         announcement.save()
         return redirect("teacher_dashboard")
+
+
+@login_required
+@teacher_required
+def createPDF(request):
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+    textobject = p.beginText(2*cm, 29.7*cm - 2*cm)
+
+
+    for event in Event.objects.filter(teacher=request.user):
+
+        textobject.textLine(text=f'{str(timezone.localtime(event.start).time().strftime("%H:%M"))} - {str(event.student)}')
+        textobject.moveCursor(0, 8)
+
+    p.drawText(textobject)
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=False, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.pdf')
 
 
 @method_decorator(teacher_decorators, name='dispatch')
