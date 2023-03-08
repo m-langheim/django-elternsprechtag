@@ -14,5 +14,5 @@ urlpatterns = [
      path('event/<event_id>', EventDetailView.as_view(), name="teacher_event_view"),
      path('announcement/<announcement_id>/mark_read',
           markAnnouncementRead, name="teacher_mark_announcement_read"),
-     path('export/', createPDF, name='create_events_pdf')
+     path('export/', create_event_PDF, name='create_events_pdf')
 ]

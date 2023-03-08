@@ -13,19 +13,18 @@ from .decorators import teacher_required
 from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import BadRequest
-#pdf gen
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-import datetime
 
-from reportlab.lib.styles import getSampleStyleSheet
+#pdf gen
+from io import BytesIO
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageTemplate
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from django.http import FileResponse
+import datetime
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageTemplate
-from reportlab.platypus.frames import Frame
-from reportlab.lib import pagesizes
-from reportlab.platypus.paragraph import Paragraph
-from functools import partial
+from functools import  partial
+from  reportlab.platypus.frames import  Frame
 
 # Create your views here.
 
@@ -164,7 +163,7 @@ class CreateInquiryView(View):
             initial = {'student': student, 'parent': parent}
             form = createInquiryForm(initial=initial)
 
-            if len(Event.objects.filter(Q(teacher=request.user), Q(student=student))) is not 0:
+            if len(Event.objects.filter(Q(teacher=request.user), Q(student=student))) != 0:
                 messages.warning(request, "Sie haben bereits einen Termin mit diesem Kind.")
                 
 
@@ -231,23 +230,76 @@ def markAnnouncementRead(request, announcement_id):
 
 @login_required
 @teacher_required
-def createPDF(request):
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer)
-    textobject = p.beginText(2*cm, 29.7*cm - 2*cm)
+def create_event_PDF(request):
+    buff = BytesIO()
+    doc = SimpleDocTemplate(buff, pagesize=A4,
+                            rightMargin=2*cm,leftMargin=2*cm,
+                            topMargin=2*cm,bottomMargin=2*cm)
+    styles = getSampleStyleSheet()
+    elements=[]
 
+    events = Event.objects.filter(Q(teacher=request.user))
+    dates = []
 
-    for event in Event.objects.filter(teacher=request.user):
+    datetime_objects = events.values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if timezone.localtime(datetime_object).date() not in dates:
+            dates.append(timezone.localtime(datetime_object).date())
 
-        textobject.textLine(text=f'{str(timezone.localtime(event.start).time().strftime("%H:%M"))} - {str(event.student)}')
-        textobject.moveCursor(0, 8)
+    events_dct = {}
+    for date in dates:
+        events_dct[str(date)] = events.filter(start__date=date)
 
-    p.drawText(textobject)
+    date_style = ParagraphStyle('date_style',
+        fontName="Helvetica-Bold",
+        fontSize=14,
+        spaceBefore=7,
+        spaceAfter=3
+    )
 
-    p.showPage()
-    p.save()
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=False, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.pdf')
+    for date in dates:
+        elements.append(Paragraph(str(date.strftime("%d.%m.%Y")), date_style))
+        elements.append(Spacer(0, 5))
+
+        events_per_date = events.filter(Q(start__date=date))
+        for event_per_date in events_per_date:
+            t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
+            s = ""
+            if len(event_per_date.student.all()) == 0:
+                s = "/"
+            else:
+                for student in event_per_date.student.all():
+                    s += "{} {}; ".format(student.first_name, student.last_name)
+                s = s[:-2]
+
+            elements.append(Paragraph(f"{t}  |  {s}", styles["Normal"]))
+            elements.append(Spacer(0, 5))
+
+    def  header_and_footer(canvas, doc,  header_text, footer_text):
+        header_footer_style = ParagraphStyle('header_footer_stlye',
+            alignment=TA_CENTER
+        )
+        header_content = Paragraph(header_text,  header_footer_style)
+        footer_content=Paragraph(footer_text,  header_footer_style)
+
+        canvas.saveState()
+
+        header_content.wrap(doc.width,  doc.topMargin)
+        header_content.drawOn(canvas, doc.leftMargin,  doc.height + doc.bottomMargin + doc.topMargin - 1*cm)
+
+        footer_content.wrap(doc.width,  doc.bottomMargin)
+        footer_content.drawOn(canvas, doc.leftMargin,  1*cm)
+
+        canvas.restoreState()
+
+    frame =  Frame(doc.leftMargin, doc.bottomMargin,  doc.width, doc.height,  id='normal')
+
+    template =  PageTemplate(id='test', frames=frame,  onPage=partial(header_and_footer,  header_text=str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_" + str(request.user.last_name),  footer_text="Alle Angaben ohne Gewähr"))
+    
+    doc.addPageTemplates([template])
+    doc.build(elements)
+    buff.seek(0)
+    return FileResponse(buff, as_attachment=False, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf')
 
 
 @method_decorator(teacher_decorators, name='dispatch')
