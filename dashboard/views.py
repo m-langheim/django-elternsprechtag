@@ -50,7 +50,7 @@ def public_dashboard(request):
         events_dict[str(date)] = events.filter(start__date=date)
 
     announcements = Announcements.objects.filter(
-        Q(user=request.user), Q(read=False))
+        Q(user=request.user), Q(read=False)).order_by("-created")
 
     return render(request, 'dashboard/public_dashboard.html', {'inquiries': custom_inquiries, "events_dict": events_dict, 'events': events, "announcements": announcements})
 

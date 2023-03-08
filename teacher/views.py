@@ -60,7 +60,7 @@ def dashboard(request):
         events_dict[str(date)] = events.filter(start__date=date)
 
     announcements = Announcements.objects.filter(
-        Q(user=request.user), Q(read=False))
+        Q(user=request.user), Q(read=False)).order_by("-created")
 
     return render(request, "teacher/dashboard.html", {'inquiries': custom_inquiries, 'events': events, "events_dict": events_dict, "announcements": announcements})
 
