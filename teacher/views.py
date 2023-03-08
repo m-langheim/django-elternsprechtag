@@ -275,12 +275,12 @@ def create_event_PDF(request):
             elements.append(Paragraph(f"{t}  |  {s}", styles["Normal"]))
             elements.append(Spacer(0, 5))
 
-    def  header_and_footer(canvas, doc,  header_text, footer_text):
+    def  header_and_footer(canvas, doc):
         header_footer_style = ParagraphStyle('header_footer_stlye',
-            alignment=TA_CENTER
+            alignment=TA_CENTER,
         )
-        header_content = Paragraph(header_text,  header_footer_style)
-        footer_content=Paragraph(footer_text,  header_footer_style)
+        header_content = Paragraph(str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_" + str(request.user.last_name),  header_footer_style)
+        footer_content=Paragraph("Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),  header_footer_style)
 
         canvas.saveState()
 
@@ -294,7 +294,7 @@ def create_event_PDF(request):
 
     frame =  Frame(doc.leftMargin, doc.bottomMargin,  doc.width, doc.height,  id='normal')
 
-    template =  PageTemplate(id='test', frames=frame,  onPage=partial(header_and_footer,  header_text=str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_" + str(request.user.last_name),  footer_text="Alle Angaben ohne Gewähr"))
+    template =  PageTemplate(id='test', frames=frame,  onPage=partial(header_and_footer))
     
     doc.addPageTemplates([template])
     doc.build(elements)
