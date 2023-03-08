@@ -13,6 +13,19 @@ from .decorators import teacher_required
 from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import BadRequest
+
+#pdf gen
+from io import BytesIO
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageTemplate
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from django.http import FileResponse
+import datetime
+from reportlab.lib.units import cm
+from functools import  partial
+from  reportlab.platypus.frames import  Frame
+
 # Create your views here.
 
 from django.urls import reverse
@@ -26,7 +39,7 @@ teacher_decorators = [login_required, teacher_required]
 @login_required
 @teacher_required
 def dashboard(request):
-    inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=request.user))
+    inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=request.user), Q(processed=False))
     # create individual link for each inquiry
     custom_inquiries = []
     for inquiry in inquiries:
@@ -149,6 +162,11 @@ class CreateInquiryView(View):
                 Q(role=0), Q(students=student)).first
             initial = {'student': student, 'parent': parent}
             form = createInquiryForm(initial=initial)
+
+            if len(Event.objects.filter(Q(teacher=request.user), Q(student=student))) != 0:
+                messages.warning(request, "Sie haben bereits einen Termin mit diesem Kind.")
+                
+
         return render(request, "teacher/createInquiry.html", {'form': form, "student": student})
 
     def post(self, request, studentID):
@@ -208,6 +226,80 @@ def markAnnouncementRead(request, announcement_id):
         announcement.read = True
         announcement.save()
         return redirect("teacher_dashboard")
+
+
+@login_required
+@teacher_required
+def create_event_PDF(request):
+    buff = BytesIO()
+    doc = SimpleDocTemplate(buff, pagesize=A4,
+                            rightMargin=2*cm,leftMargin=2*cm,
+                            topMargin=2*cm,bottomMargin=2*cm)
+    styles = getSampleStyleSheet()
+    elements=[]
+
+    events = Event.objects.filter(Q(teacher=request.user))
+    dates = []
+
+    datetime_objects = events.values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if timezone.localtime(datetime_object).date() not in dates:
+            dates.append(timezone.localtime(datetime_object).date())
+
+    events_dct = {}
+    for date in dates:
+        events_dct[str(date)] = events.filter(start__date=date)
+
+    date_style = ParagraphStyle('date_style',
+        fontName="Helvetica-Bold",
+        fontSize=14,
+        spaceBefore=7,
+        spaceAfter=3
+    )
+
+    for date in dates:
+        elements.append(Paragraph(str(date.strftime("%d.%m.%Y")), date_style))
+        elements.append(Spacer(0, 5))
+
+        events_per_date = events.filter(Q(start__date=date))
+        for event_per_date in events_per_date:
+            t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
+            s = ""
+            if len(event_per_date.student.all()) == 0:
+                s = "/"
+            else:
+                for student in event_per_date.student.all():
+                    s += "{} {}; ".format(student.first_name, student.last_name)
+                s = s[:-2]
+
+            elements.append(Paragraph(f"{t}  |  {s}", styles["Normal"]))
+            elements.append(Spacer(0, 5))
+
+    def  header_and_footer(canvas, doc):
+        header_footer_style = ParagraphStyle('header_footer_stlye',
+            alignment=TA_CENTER,
+        )
+        header_content = Paragraph(str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_" + str(request.user.last_name),  header_footer_style)
+        footer_content=Paragraph("Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),  header_footer_style)
+
+        canvas.saveState()
+
+        header_content.wrap(doc.width,  doc.topMargin)
+        header_content.drawOn(canvas, doc.leftMargin,  doc.height + doc.bottomMargin + doc.topMargin - 1*cm)
+
+        footer_content.wrap(doc.width,  doc.bottomMargin)
+        footer_content.drawOn(canvas, doc.leftMargin,  1*cm)
+
+        canvas.restoreState()
+
+    frame =  Frame(doc.leftMargin, doc.bottomMargin,  doc.width, doc.height,  id='normal')
+
+    template =  PageTemplate(id='test', frames=frame,  onPage=partial(header_and_footer))
+    
+    doc.addPageTemplates([template])
+    doc.build(elements)
+    buff.seek(0)
+    return FileResponse(buff, as_attachment=False, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf')
 
 
 @method_decorator(teacher_decorators, name='dispatch')
