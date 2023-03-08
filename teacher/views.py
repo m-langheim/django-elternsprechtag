@@ -299,7 +299,7 @@ def create_event_PDF(request):
     doc.addPageTemplates([template])
     doc.build(elements)
     buff.seek(0)
-    return FileResponse(buff, as_attachment=False, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf')
+    return FileResponse(buff, as_attachment=True, filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf')
 
 
 @method_decorator(teacher_decorators, name='dispatch')
