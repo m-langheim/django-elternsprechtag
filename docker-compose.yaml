@@ -26,8 +26,6 @@ services:
     volumes:
       - media:/app/media
       - static:/app/staticfiles
-    ports:
-      - '8000:8000'
     links: 
       - redis
     depends_on:
@@ -80,8 +78,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - static:/mnt/static
-      - media:/mnt/media
+      - static:/mnt/static:ro
+      - media:/mnt/media:ro
     depends_on:
       - django
 
