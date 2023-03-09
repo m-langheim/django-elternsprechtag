@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Upcomming_User
+from .models import Upcomming_User, CustomUser
 from django.db.models import Q
 from .forms import *
 from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from .models import CustomUser
 
 
 def register(request, user_token, key_token):
@@ -50,7 +49,7 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
-                        return redirect('login')
+                        return redirect('login')#{'page': request.GET.get("page")}
 
                 else:
                     form = Register_Parent_Account()

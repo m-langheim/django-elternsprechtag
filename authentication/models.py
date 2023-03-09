@@ -1,10 +1,12 @@
 from django.db import models
 import string
 import random
-from datetime import datetime
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from colorfield.fields import ColorField
+
+from PIL import Image
 
 from .managers import CustomUserManager
 
@@ -13,10 +15,11 @@ from .managers import CustomUserManager
 
 class Student(models.Model):  # Schüler
     shield_id = models.CharField(
-        max_length=38, unique=True, primary_key=True)
+        max_length=38, unique=True)
     first_name = models.CharField(_("First name"), max_length=48)
     last_name = models.CharField(_("Last name"), max_length=48)
     child_email = models.EmailField(max_length=200, null=True)
+    class_name = models.CharField(max_length=2, default="")
     registered = models.BooleanField(default=False)
 
     def __str__(self):
@@ -48,11 +51,48 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
         return self.email
 
 
+def generate_new_color():
+
+    while True:
+        color = "#"+''.join([random.choice('ABCDEF0123456789')
+                            for i in range(6)])
+        if not Tag.objects.filter(color=color):
+            break
+
+    return color
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=32)
+    synonyms = models.TextField(null=True, blank=True)
+    color = ColorField(default=generate_new_color)
+
+    def __str__(self):
+        return self.name
+
+
 class TeacherExtraData(models.Model):
     teacher = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1})
-    tags = models.TextField()
+    acronym = models.CharField(max_length=3, default="")
+    # tags = models.TextField(null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     room = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to='teacher_pics/', default="default.jpg")
+
+    def __str__(self):
+        return f'{self.teacher.last_name} extraData'
+
+    def save(self, *args, **kwargs):
+        super(TeacherExtraData, self).save(*args, **kwargs)
+        # resize the image
+        if self.image:
+            img = Image.open(self.image.path)
+
+            if img.height > 300 or img.width > 300:
+                output_size = (300, 300)
+                img.thumbnail(output_size)
+                img.save(self.image.path)
 
 
 def generate_unique_code():
@@ -88,7 +128,7 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     user_token = models.CharField(
         max_length=12, primary_key=True, default=generate_unique_code)
     access_key = models.CharField(max_length=12, default=generate_unique_code)
-    otp = models.IntegerField(default=generate_unique_otp)
+    otp = models.CharField(max_length=6, default=generate_unique_otp)
     otp_verified = models.BooleanField(default=False)
     otp_verified_date = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(default=timezone.now)

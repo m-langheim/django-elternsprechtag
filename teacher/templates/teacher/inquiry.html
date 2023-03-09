@@ -1,0 +1,44 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-6">
+            {{ form.student|as_crispy_field }}
+        </div>
+        <div class="col-6">
+            {{ form.parent|as_crispy_field }}
+        </div>
+    </div>
+    {{form.event|as_crispy_field}}
+    {{ form.reason|as_crispy_field }}
+    <input type="submit" class="btn btn-success" value="Ändern" />
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Anfrage revidieren
+    </button>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Anfrage revidieren</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Möchten Sie die Anfrage nach einem Gespräch mit den Eltern von {{student.first_name}}
+                {{student.last_name}} wirklich zurückziehen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <a href="{% url 'teaher_delete_inquiry' f_inquiry_id %}" class="btn btn-primary">Anfrage revidieren</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

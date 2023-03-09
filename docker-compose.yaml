@@ -1,0 +1,83 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: rd01
+    ports:
+     - '6379:6379'
+
+  django:
+    container_name: dj01
+    build: 
+      context: .
+    image: django-elternsprechtag
+    # command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DB_HOST=db
+      - DB_NAME=elternsprechtagapp
+      - DB_USERNAME=elternsprechtag
+      - DB_PASSWORD=jhg2023
+      - SECRET_KEY=supersecuresecretkey02
+      - REDIS_HOST=redis
+      - SUPER_USER_PASSWORD=test1234
+      - SUPER_USER_EMAIL=test@test.com
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
+    ports:
+      - '8000:8000'
+    links: 
+      - redis
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: lscr.io/linuxserver/mariadb
+    container_name: elternsprechtag_db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=jhg2023
+      - TZ=Europe/Berlin
+      - MYSQL_DATABASE=elternsprechtagapp
+      - MYSQL_USER=elternsprechtag
+      - MYSQL_PASSWORD=jhg2023
+    volumes:
+      - db:/config
+    restart: unless-stopped
+
+  celery:
+    build: 
+      context: .
+    image: django-elternsprechtag
+    command: celery -A elternsprechtag worker -B --loglevel=DEBUG
+    environment:
+      - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_NAME=elternsprechtagapp
+      - DB_USERNAME=elternsprechtag
+      - DB_PASSWORD=jhg2023
+      - SECRET_KEY=supersecuresecretkey02
+      - SUPER_USER_PASSWORD=test1234
+      - SUPER_USER_EMAIL=test@test.com
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  nginx:
+    build:
+      context: ./nginx/
+    ports:
+      - 8080:8080
+    volumes:
+      - static:/mnt/static
+      - media:/mnt/media
+
+
+volumes:
+  media:
+  static:
+  db:

@@ -1,0 +1,99 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard - Profile {% endblock title %}
+
+{% block content %}
+
+{% url 'profile_my_profile' as my_profile_url %}
+{% url 'profile_change_password' as change_password_url %}
+{% url 'profile_edit_tag_view' as edit_tags_url %}
+{% url 'profile_student_list' as student_list %}
+
+<div class="row gx-3 gy-3">
+    <div class="d-block d-sm-none">
+        <div class="btn-group col-12">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                data-bs-auto-close="true" aria-expanded="false">
+                {% if request.get_full_path == my_profile_url %}
+                Mein Profil
+                {% elif request.get_full_path == change_password_url %}
+                Kennwort ändern
+                {% endif %}
+            </button>
+            <ul class="dropdown-menu col-12">
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile_my_profile' %}">Mein Profil</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile_change_password' %}">
+                        Kennwort
+                    </a>
+                </li>
+                {% if user.role == 1 %}
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile_edit_tag_view' %}">Tags</a>
+                </li>
+                {% endif %}
+                {% if user.role == 0 %}
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile_student_list' %}">Schüler:innen</a>
+                </li>
+                {% endif %}
+                {% if user.role == 0 %}
+                <li>
+                    <a class="dropdown-item" href="{% url 'home' %}">Zurück</a>
+                </li>
+                {% elif user.role == 1 %}
+                <li>
+                    <a class="dropdown-item" href="{% url 'teacher_dashboard' %}">Zurück</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="d-none d-sm-block col-sm-4 col-xl-2 col-lg-3">
+        <ul class="nav flex-column nav-tabs p-2" style="background-color: #e9ecef; border-radius: 0.5rem;"
+            role="tablist" aria-orientation="vertical" id="profilePageTabs">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.get_full_path == my_profile_url %} active {% endif %}"
+                    style="border-radius: 0.5rem;" href="{% url 'profile_my_profile' %}">Mein
+                    Profil</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.get_full_path == change_password_url %} active {% endif %}"
+                    style="border-radius: 0.5rem;" href="{% url 'profile_change_password' %}">Sicherheit</a>
+            </li>
+            {% if user.role == 1 %}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.get_full_path == edit_tags_url %} active {% endif %}"
+                    style="border-radius: 0.5rem;" href="{% url 'profile_edit_tag_view' %}">Tags</a>
+            </li>
+            {% endif %}
+            {% if user.role == 0 %}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if request.get_full_path == student_list %} active {% endif %}"
+                    style="border-radius: 0.5rem;" href="{% url 'profile_student_list' %}">Schüler:innen</a>
+            </li>
+            {% endif %}
+            {% if user.role == 0 %}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link"
+                    style="border-radius: 0.5rem;" href="{% url 'home' %}">Zurück</a>
+            </li>
+            {% endif %}
+            {% if user.role == 1 %}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link"
+                    style="border-radius: 0.5rem;" href="{% url 'teacher_dashboard' %}">Zurück</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="col-12 col-sm-8 col-xl-10 col-lg-9">
+        <div class="card card-body p-4">
+            {% block profile_content %}
+            {% endblock profile_content %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

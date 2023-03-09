@@ -1,0 +1,50 @@
+{% extends "profile_settings/profile_layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Profile {% endblock title %}
+
+{% block profile_content %}
+<p class="h1">Tags bearbeiten</p>
+<div class="row">
+    <div class="col">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#configureTagsModal">Bearbeiten</button>
+    </div>
+</div>
+{% if tags|length > 0 %}
+<div class="card">
+    <div class="card-body">
+        {% for tag in tags %}
+        <!-- <div class="container" style="color: {{tag.color}};"><strong>{{ tag.name }}</strong></div> -->
+        <span class="badge rounded-pill" style="background-color: {{tag.color}};">
+            {{ tag.name }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<p class="text-muted">Es wurden keine Tags konfiguriert.</p>
+{% endif %}
+<div class="modal fade" id="configureTagsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tags bearbeiten</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {{ edit_tags|crispy }}
+                    <p>Bitte wälen Sie alle Tags aus, die zu Ihrer Position passen. Dies soll es den Eltern erleichten
+                        Sie ausfindig zu machen.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Änderungen speichern" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock profile_content %}

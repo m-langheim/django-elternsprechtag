@@ -1,0 +1,27 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block content %}
+{% if not student.customuser_set.exists %}
+<div class="alert alert-warning d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
+        <use xlink:href="#exclamation-triangle-fill" />
+    </svg>
+    <div>
+        <h4>Kein Elternteil definiert!</h4><br />
+        Für {{ student.first_name }} {{student.last_name}} hat sich bisher kein Elternteil registriert. Treffen Sie
+        daher bitte mit {{student.first_name}} persönliche eine Absprache über einen möglichen Termin.
+    </div>
+</div>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.student|as_crispy_field }}
+    {{ form.parent|as_crispy_field }}
+    {{ form.reason|as_crispy_field }}
+    <input type="submit" class="btn btn-success" value="Anfrage stellen" />
+</form>
+{% endif %}
+{% endblock content %}

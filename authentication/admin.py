@@ -1,13 +1,13 @@
+import io
+import csv
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.urls import path
+from django.contrib.auth.models import Group
 
-import io
-import csv
-
-from .models import Upcomming_User, Student, CustomUser, TeacherExtraData
+from .models import Upcomming_User, Student, CustomUser, TeacherExtraData, Tag
 from .forms import CustomUserCreationForm, CustomUserChangeForm, AdminCsvImportForm
 
 # Register your models here.
@@ -18,7 +18,7 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
     list_display = ('email', 'is_active', 'role')
-    list_filter = ('email', 'is_active', 'role')
+    list_filter = ('is_active', 'role', 'is_staff')
     fieldsets = (
         (None, {'fields': ('email', 'password',
          'first_name', 'last_name', 'role', 'students')}),
@@ -34,8 +34,12 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'color')
 
+
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Upcomming_User)
 admin.site.register(TeacherExtraData)
 
@@ -55,14 +59,25 @@ class StudentAdmin(admin.ModelAdmin):
 
     def import_csv(self, request):
         if request.method == "POST":
+            # delete all groups with index class
+            for group in Group.objects.filter(name__startswith="class_"):
+                group.delete()
+
             csv_file = request.FILES["csv_file"].read().decode('utf-8')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
             for lines in reader:
-                print(lines["eindeutige Nummer (GUID)"])
-                Student.objects.create(
-                    shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"],)
-            # Create Hero objects from passed in data
-            # ...
+                try:
+                    student = Student.objects.get(
+                        shield_id=lines["eindeutige Nummer (GUID)"])
+                except Student.DoesNotExist:
+                    student = Student.objects.create(
+                        shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], class_name=lines["Klasse"], child_email=lines["Mailadresse"])
+                else:
+                    student.child_email = lines["Mailadresse"]
+                    student.first_name = lines["Vorname"]
+                    student.last_name = lines["Nachname"]
+                    student.class_name = lines["Klasse"]
+                    student.save()
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")
         form = AdminCsvImportForm()

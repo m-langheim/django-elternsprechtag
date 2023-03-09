@@ -4,11 +4,76 @@
 
 {% block content %}
 
-<h2>{{ event_id }}</h2>
-{% load crispy_forms_tags %}
-<form method="post">
-    {% csrf_token %}
-    {{ book_form }}
-    <input type="submit" class="button" value="Book" />
-</form>
+<div class="container p-2 pt-4">
+    <div class="row">
+        <div class="column">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush">
+                        <h2>Termin</h2>
+                        <li class="list-group-item">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col text-start">
+                                        <div>
+                                            Lehrer: {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                        </div>
+                                        <div>
+                                            Uhrzeit: {{ event.start|time }} Uhr
+                                        </div>
+                                        <div>
+                                            {% if event.room %}
+                                            Raum: {{ event.room }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <form method="post">
+                            {% csrf_token %}
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="container">
+                                        <div class="row align-items-center">
+                                            <div class="col text-start">
+                                                <div class="mb-2">
+                                                    Schüler für das Gespräch wählen:
+                                                </div>
+                                                <div>
+                                                    {% load crispy_forms_tags %}
+                                                    {{ book_form|crispy }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="container">
+                                        <div class="row gy-1">
+                                            <div class="col-12 col-md-6">
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                                                    href="{{ back_url }}">Zurück</a>
+                                            </div>
+                                            <div class="col-12 col-md-6 d-flex justify-content-end">
+                                                {% if event.start in booked_times %}
+                                                    <button type="submit"
+                                                        class="btn btn-outline-secondary col-12 col-lg-3 disabled">Zeitkonflikt</button>
+                                                {% else %}
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger col-12 col-lg-3">Buchen</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}

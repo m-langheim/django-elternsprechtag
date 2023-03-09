@@ -4,6 +4,199 @@
 
 {% block content %}
 
-<h2>Events from {{ teacher.last_name }}</h2>
-{% for event in events %}<li><a href="{{ event.url }}">{{ event.event.start }}</a></li>{% endfor %}
+<div class="container p-2 pt-4">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <!-- Hier wurde was geändert um auf kleinen geräten zu funktionieren -->
+            <div class="d-flex text-black row">
+                <div class="col-2 d-block d-sm-none"></div>
+                <div class="flex-shrink-0 col-8 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <img src="{{ image }}" alt="Generic placeholder image" class="img-fluid"
+                        style="border-radius: 10px;">
+                </div>
+                <div class="col-12 col-sm-6 col-md-8 col-lg-9 col-xl-10">
+                    <div class="d-flex flex-column flex-grow-1 align-items-stretch">
+                        <h3 class="mb-2">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
+                        <a class="pb-1" style="color: #2b2a2a; text-decoration: none;"
+                            href="mailto:{{ teacher.email }}">
+                            {{ teacher.email }}
+                        </a>
+                        <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1"
+                            style="background-color: #efefef;">
+                            <div>
+                                <p class="small text-muted mb-1">Tags</p>
+                                <div class="d-flex align-content-start flex-wrap">
+                                    {% if tags|length > 0 %}
+                                    {% for tag in tags %}
+                                    <span class="badge bg-light rounded-pill me-1 mt-1"
+                                        style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
+                                        {{ tag.name }}
+                                    </span>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p>This teacher does not have any tags</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% if personal_booked_events|length > 0 %}
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Gebuchte Termine</p>
+            <ul class="list-group list-group-flush">
+                {% for event in personal_booked_events %}
+                <li class="list-group-item">
+                    <div class="row gy-1 align-items-center">
+                        <!-- <div class="row align-items-center"> -->
+                        <div class="col-12 col-md-7 col-xl-9 text-start">
+                            {{ event.start|date }} - {{ event.start|time }}
+                        </div>
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                {% if event.status == 2 %}
+                                <style>
+                                    .specify_color_orange {
+                                        border-color: #FF8C00 !important;
+                                        color: #FF8C00 !important;
+                                    }
+
+                                    .specify_color_orange:hover {
+                                        background-color: #FF8C00 !important;
+                                        color: white !important;
+                                    }
+                                </style>
+                                <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+                                    href="{% url 'event_per_id' event.id %}">
+                                    Angefragt
+                                </a>
+                                {% else %}
+                                <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                    href="{% url 'event_per_id' event.id %}">
+                                    Gebucht
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- </div> -->
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Elternsprechtag-Termine</p>
+            {% if events|length > 0 %}
+            <!-- Liste an möglichen Tabs -->
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <style>
+                    .active {
+                        border-color: red !important;
+                    }
+
+                    /* change this color */
+                </style>
+                {%for key, events in events_dt_dict.items %}
+                <li class="nav-item" role="presentation">
+                    <button
+                        class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
+                        id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button"
+                        role="tab" aria-controls="pills-{{key}}" aria-selected="true">
+                        {{events.first.start|date}}</button>
+                </li>
+                {%endfor%}
+            </ul>
+
+            <div class="tab-content" id="pills-tabContent">
+                {%for key, events in events_dt_dict.items %}
+                <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
+                    role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
+
+                    <ul class="list-group list-group-flush">
+                        {% for event in events %}
+                        <li class="list-group-item">
+                            <div class="row gy-1 align-items-center">
+                                <!-- <div class="row align-items-center"> -->
+                                <div class="col-12 col-md-7 col-xl-9 text-start">
+                                    {{ event.start|time }}
+                                </div>
+                                <div class="col-12 col-md-5 col-xl-3">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        {% if event.occupied %}
+                                            {% if event.parent == user %}
+                                                {% if event.status == 2 %}
+                                                    <style>
+                                                        .specify_color_orange {
+                                                            border-color: #FF8C00 !important;
+                                                            color: #FF8C00 !important;
+                                                        }
+
+                                                        .specify_color_orange:hover {
+                                                            background-color: #FF8C00 !important;
+                                                            color: white !important;
+                                                        }
+                                                    </style>
+                                                    <a type="button"
+                                                        class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+                                                        href="{% url 'event_per_id' event.id %}">
+                                                        Angefragt
+                                                    </a>
+                                                {% else %}
+                                                    <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                                        href="{% url 'event_per_id' event.id %}">
+                                                        Gebucht
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Belegt
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if event.start in booked_times %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Zeitkonflikt
+                                                </a>
+                                            {% else %}
+                                                <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                                    href="{% url 'book_event_per_id' event.id %}">
+                                                    Anfragen
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                {%endfor%}
+            </div>
+            {% else %}
+
+            <!-- Für den Lehrer wurden noch keine Events gebucht -->
+            <div class="container">
+                <p class="h1">Events</p>
+                <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock content %}

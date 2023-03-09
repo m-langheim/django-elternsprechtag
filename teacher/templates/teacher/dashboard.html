@@ -1,0 +1,244 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block head %}{% endblock head %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="container col-md-8">
+        <div class="h-auto d-grid gap-3">
+            {% if events|length > 0 %}
+            <!-- Events-Titel -->
+            <div class="row p-1">
+                <div class="col col-8">
+                    <p class="h1">Events</p>
+                    <p class="text-muted">Hier werden alle gebuchten Termine aufgeführt</p>
+                </div>
+                <div class="col col-4 d-grid gap-2 justify-content-md-end">
+                    <a class="btn btn-outline-danger p-4" type="button" href="{% url 'create_events_pdf' %}">Download PDF</a>
+                </div>
+            </div>
+
+            <!-- Liste an möglichen Tabs -->
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <style>
+                    .active {
+                        border-color: red !important;
+                    }
+
+                    /* change this color */
+                </style>
+                {%for key, events in events_dict.items %}
+                <li class="nav-item" role="presentation">
+                    <button
+                        class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active{%endif%}"
+                        id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button"
+                        role="tab" aria-controls="pills-{{key}}" aria-selected="true">
+                        {{events.first.start|date}}</button>
+
+                </li>
+                {%endfor%}
+            </ul>
+
+            <!-- Inhalt der Tabs -->
+            <div class="tab-content" id="pills-tabContent">
+                {%for key, events in events_dict.items %}
+                <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
+                    role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
+
+                    <div class="accordion" id="event-accordion">
+                        {% for event in events %}
+                        <div class="accordion-item" id="event-accordion-item-{{ event.id }}">
+                            <h2 class="accordion-header" id="event-accordion-heading-{{ event.id }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
+                                    aria-controls="event-accordion-collapse-{{ event.id }}">
+                                    {{ event.start|time }} - {{event.end|time}}
+                                    {% if event.status == 2 %}
+                                    <span
+                                        class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
+                                        Nicht bestätigt
+                                    </span>
+                                    {% endif %}
+                                </button>
+                            </h2>
+                            <div id="event-accordion-collapse-{{ event.id }}" class="accordion-collapse collapse"
+                                aria-labelledby="event-accordion-heading-{{ event.id }}"
+                                data-bs-parent="#event-accordion">
+                                <div class="accordion-body">
+                                    <strong>Startzeit: </strong>{{ event.start }} <br />
+                                    <strong>Elternteil: </strong>
+                                    {{ event.parent.first_name }} {{ event.parent.last_name }}<br />
+                                    <strong>Schüler:innen: </strong>
+                                    {% for student in event.student.all %}
+                                    {{student.first_name}} {{student.last_name}}
+                                    {% if student != event.student.last %}, {% endif %}
+                                    {% endfor %}
+                                    <br />
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a type="button" class="btn btn-outline-danger"
+                                            href="{% url 'teacher_event_view' event.id %}">
+                                            Details
+                                        </a>
+                                        {% if event.status == 2 %}
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#eventModal{{event.id}}">
+                                            Termin bestätigen
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+            {% else %}
+
+            <!-- Für den Lehrer wurden noch keine Events gebucht -->
+            <div class="container">
+                <p class="h1">Events</p>
+                <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container col-md-4">
+        <div class="h-auto d-grid gap-3">
+            <div class="container">
+                <p class="h1">Anfragen</p>
+                <p class="text-muted">Ihre Anfragen an einzelne Schüler</p>
+            </div>
+
+            {% if inquiries|length > 0 %}
+            <div class="accordion" id="inquiry-accordion">
+                {% for inquiry in inquiries %}
+                <div class="accordion-item" id="inquiry-accordion-item-{{ inquiry.inquiry.id }}">
+                    <h2 class="accordion-header" id="inquiry-accordion-heading-{{ inquiry.inquiry.id }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#inquiry-accordion-collapse-{{ inquiry.inquiry.id }}" aria-expanded="false"
+                            aria-controls="inquiry-accordion-collapse-{{ inquiry.inquiry.id }}">
+                            {{ inquiry.inquiry.students.first }}
+                        </button>
+                    </h2>
+                    <div id="inquiry-accordion-collapse-{{ inquiry.inquiry.id }}" class="accordion-collapse collapse"
+                        aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
+                        data-bs-parent="#inquiry-accordion">
+                        <div class="accordion-body">
+                            <strong>Elternteil: </strong>
+                            {{ inquiry.inquiry.respondent.first_name }} {{ inquiry.inquiry.respondent.last_name }}<br />
+                            <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
+                            <strong>Event: </strong>
+                            {% if inquiry.inquiry.event != null %}
+                            {{inquiry.inquiry.event.start}}
+                            {% else %}
+                            ---
+                            {% endif %}
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-outline-danger" role="button" href="{{ inquiry.url }}">Bearbeiten</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card m-1">
+                <div class="card-body">
+                    <p class="h5 card-title">Keine Anfragen</p>
+                    <p class="card-text">Sie haben keine unbestätigten Anfragen an Schüler:innen</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a class="btn btn-outline-danger" role="button" href="{% url 'teacher_students_list' %}">Anfrage
+                    stellen</a>
+            </div>
+
+            <!-- Ab hier geht es um Mitteilungen -->
+            <div class="container">
+                <p class="h1">Mitteilungen</p>
+            </div>
+            {% if announcements|length > 0 %}
+            <div class="accordion" id="announcement-accordion">
+                {% for announcement in announcements %}
+                <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
+                    <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#announcement-accordion-collapse-{{ announcement.id }}"
+                            aria-expanded="false" aria-controls="announcement-accordion-collapse-{{ announcement.id }}">
+                            {{ announcement.get_announcement_type_display }}
+                        </button>
+                    </h2>
+                    <div id="announcement-accordion-collapse-{{ announcement.id }}" class="accordion-collapse collapse"
+                        aria-labelledby="announcement-accordion-heading-{{ announcement.id }}"
+                        data-bs-parent="#announcement-accordion">
+                        <div class="accordion-body">
+                            {{announcement.message|safe|linebreaks}}
+                            <!-- <strong>Elternteil: </strong>
+                            {{ announcement.announcement.respondent.first_name }} {{
+                            announcement.announcement.respondent.last_name }}<br />
+                            <strong>Grund: </strong> {{ announcement.announcement.reason }}<br />
+                            <strong>Event: </strong>
+                            {% if announcement.announcement.event != null %}
+                            {{announcement.announcement.event.start}}
+                            {% else %}
+                            ---
+                            {% endif %}
+                            {{announcement.encodedID}} -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-outline-secondary" role="button"
+                                    href="{% url 'teacher_mark_announcement_read' announcement.encodedID %}">Gelesen</a>
+                                {% if announcement.action_link %}
+
+                                <a class="btn btn-outline-danger" role="button"
+                                    href="{{ announcement.action_link }}">{{announcement.action_name}}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card m-1">
+                <div class="card-body">
+                    <p class="h5 card-title">Keine Mitteilungen</p>
+                    <p class="card-text">Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% for event in events %}
+{% if event.status == 2 %}
+<!-- Modal -->
+<div class="modal fade" id="eventModal{{event.id}}" tabindex="-1" aria-labelledby="eventModal{{event.id}}Label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Termin bestätigen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Ihnen wurde eine Anfrage von {{ event.parent.first_name }} {{ event.parent.last_name }} für den
+                {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen Termin bestätigen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <a type="button" class="btn btn-outline-danger" href="{% url 'teacher_confirm_event' event.id %}">Termin
+                    annehmen</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock content %}
