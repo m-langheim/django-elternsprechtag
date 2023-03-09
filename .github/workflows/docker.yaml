@@ -18,10 +18,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Show directory
+        run: ls -la
       - name: Build and push (django)
         uses: docker/build-push-action@v4
         with:
-          context: ./Dockerfile
+          context: .
           push: true
           tags: janni06/django-elternsprechtag:dev
       - name: Build and push (nginx)
