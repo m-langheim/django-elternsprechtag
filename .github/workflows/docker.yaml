@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   docker:
@@ -21,12 +21,12 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: Dockerfile
           push: true
-          tags: janni06/django-elternsprechtag:latest
+          tags: janni06/django-elternsprechtag:dev
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./nginx
           push: true
-          tags: janni06/django-elternsprechtag-nginx:latest
+          tags: janni06/django-elternsprechtag-nginx:dev
