@@ -23,6 +23,7 @@ services:
       - EMAIL_HOST=example.com
       - EMAIL_HOST_USER=test@example.com
       - EMAIL_HOST_PASSWORD=test
+      - PUBLIC_URL=http://localhost:8080
     volumes:
       - media:/app/media
       - static:/app/staticfiles

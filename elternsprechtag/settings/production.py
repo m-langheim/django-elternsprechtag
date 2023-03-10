@@ -5,7 +5,11 @@ from .base import *
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+# Added for testing purposes
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = [os.environ.get("PUBLIC_URL")]
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
