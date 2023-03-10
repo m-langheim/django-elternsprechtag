@@ -32,10 +32,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 ALLOWED_HOSTS = ['*']
 
-# Added for testing purposes
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
-
 # Application definition
 
 INSTALLED_APPS = [
