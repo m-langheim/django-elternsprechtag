@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 
 from authentication.tasks import async_send_mail
 from django.core.mail import send_mail
+from django.conf import settings
 
 
 @receiver(post_save, sender=Student)
@@ -25,8 +26,8 @@ def add_groups(sender, instance, **kwargs):
         class_group.user_set.add(parent)
 
 
-#@receiver(post_save, sender=CustomUser)
-#def add_parents_to_group(sender, instance, created, **kwargs):
+# @receiver(post_save, sender=CustomUser)
+# def add_parents_to_group(sender, instance, created, **kwargs):
 #    if created and instance.role == 0:
 #        parent_group = Group.objects.get_or_create(name="parents")
 #        parent_group.user_set.add(instance)
@@ -51,5 +52,5 @@ def send_email(sender, instance, created, **kwargs):
 
         # async_send_mail.delay(email_subject, email_body,
         #                      instance.student.child_email)
-        send_mail(email_subject, email_body, "admin@jhgcloud.de",
+        send_mail(email_subject, email_body, settings.EMAIL_HOST_USER,
                   [instance.student.child_email])

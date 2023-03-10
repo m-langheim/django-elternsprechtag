@@ -9,10 +9,7 @@ services:
 
   django:
     container_name: dj01
-    build: 
-      context: .
-    image: django-elternsprechtag
-    # command: python manage.py runserver 0.0.0.0:8000
+    image: janni06/django-elternsprechtag:latest
     environment:
       - DB_HOST=db
       - DB_NAME=elternsprechtagapp
@@ -22,16 +19,20 @@ services:
       - REDIS_HOST=redis
       - SUPER_USER_PASSWORD=test1234
       - SUPER_USER_EMAIL=test@test.com
+      - DJANGO_SETTINGS_MODULE:elternsprechtag.settings.production
+      - EMAIL_HOST=example.com
+      - EMAIL_HOST_USER=test@example.com
+      - EMAIL_HOST_PASSWORD=test
     volumes:
       - media:/app/media
       - static:/app/staticfiles
-    ports:
-      - '8000:8000'
     links: 
       - redis
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   db:
     image: lscr.io/linuxserver/mariadb
@@ -46,12 +47,14 @@ services:
       - MYSQL_PASSWORD=jhg2023
     volumes:
       - db:/config
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
     restart: unless-stopped
 
   celery:
-    build: 
-      context: .
-    image: django-elternsprechtag
+    image: janni06/django-elternsprechtag:latest
     command: celery -A elternsprechtag worker -B --loglevel=DEBUG
     environment:
       - REDIS_HOST=redis
@@ -62,19 +65,23 @@ services:
       - SECRET_KEY=supersecuresecretkey02
       - SUPER_USER_PASSWORD=test1234
       - SUPER_USER_EMAIL=test@test.com
+      - EMAIL_HOST=example.com
+      - EMAIL_HOST_USER=test@example.com
+      - EMAIL_HOST_PASSWORD=test
     links:
       - redis
     depends_on:
       - redis
 
   nginx:
-    build:
-      context: ./nginx/
+    image: janni06/django-elternsprechtag-nginx:latest
     ports:
       - 8080:8080
     volumes:
-      - static:/mnt/static
-      - media:/mnt/media
+      - static:/mnt/static:ro
+      - media:/mnt/media:ro
+    depends_on:
+      - django
 
 
 volumes:
