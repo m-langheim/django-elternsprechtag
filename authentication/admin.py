@@ -66,13 +66,13 @@ class StudentAdmin(admin.ModelAdmin):
             csv_file = request.FILES["csv_file"].read().decode('utf-8')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
             for lines in reader:
-                try:
-                    student = Student.objects.get(
-                        shield_id=lines["eindeutige Nummer (GUID)"])
-                except Student.DoesNotExist:
+                student = Student.objects.filter(
+                    shield_id=lines["eindeutige Nummer (GUID)"])
+                if not student.exists():
                     student = Student.objects.create(
                         shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], class_name=lines["Klasse"], child_email=lines["Mailadresse"])
                 else:
+                    student = student.first()
                     student.child_email = lines["Mailadresse"]
                     student.first_name = lines["Vorname"]
                     student.last_name = lines["Nachname"]

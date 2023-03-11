@@ -1,3 +1,4 @@
+import logging
 from .base import *
 
 
@@ -22,6 +23,33 @@ DATABASES = {
         'PASSWORD': os.environ.get("DB_PASSWORD"),
         'HOST': os.environ.get("DB_HOST")
     }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'file_warning': {
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django.debug.log',
+            'formatter': 'django.server',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+    },
+    'root': {
+        'handlers': ['file_warning', 'console'],
+        'level': 'DEBUG',
+    },
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
