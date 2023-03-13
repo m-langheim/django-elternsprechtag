@@ -1,14 +1,20 @@
 import io
 import csv
+import os
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.urls import path
 from django.contrib.auth.models import Group
+from django.template.loader import render_to_string
 
+from .tasks import async_send_mail
 from .models import Upcomming_User, Student, CustomUser, TeacherExtraData, Tag
 from .forms import CustomUserCreationForm, CustomUserChangeForm, AdminCsvImportForm
+
+from django.contrib import messages
+from django.utils.translation import ngettext
 
 # Register your models here.
 
@@ -27,7 +33,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'role')}
+            'fields': ('email', 'password1', 'password2', 'first_name', 'last_name', 'is_staff', 'role')}
          ),
     )
     search_fields = ('email', 'first_name', 'last_name',)
@@ -38,9 +44,38 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color')
 
 
+class UpcommingsUserAdmin(admin.ModelAdmin):
+    @admin.action(description="Send registration email for selected users")
+    def sendRegistrationMails(self, request, queryset):
+        for up_user in queryset:
+            current_site = os.environ.get("PUBLIC_URL")
+            email_subject = "Anmeldelink für den Elternsprechtag"
+            email_body = render_to_string(
+                'authentication/emails/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+
+            async_send_mail.delay(email_subject, email_body,
+                                  up_user.student.child_email)
+        updated = queryset
+        self.message_user(
+            request,
+            ngettext(
+                "%d story was successfully marked as published.",
+                "%d stories were successfully marked as published.",
+                updated,
+            )
+            % updated,
+            messages.SUCCESS,
+        )
+
+    list_display = ["student", "created"]
+    actions = [sendRegistrationMails]
+    # model = Upcomming_User
+    # urls = []
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(Upcomming_User)
+admin.site.register(Upcomming_User, UpcommingsUserAdmin)
 admin.site.register(TeacherExtraData)
 
 # CSV Import
@@ -66,13 +101,13 @@ class StudentAdmin(admin.ModelAdmin):
             csv_file = request.FILES["csv_file"].read().decode('utf-8')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
             for lines in reader:
-                try:
-                    student = Student.objects.get(
-                        shield_id=lines["eindeutige Nummer (GUID)"])
-                except Student.DoesNotExist:
+                student = Student.objects.filter(
+                    shield_id=lines["eindeutige Nummer (GUID)"])
+                if not student.exists():
                     student = Student.objects.create(
                         shield_id=lines["eindeutige Nummer (GUID)"], first_name=lines["Vorname"], last_name=lines["Nachname"], class_name=lines["Klasse"], child_email=lines["Mailadresse"])
                 else:
+                    student = student.first()
                     student.child_email = lines["Mailadresse"]
                     student.first_name = lines["Vorname"]
                     student.last_name = lines["Nachname"]
