@@ -47,6 +47,7 @@ class TagAdmin(admin.ModelAdmin):
 class UpcommingsUserAdmin(admin.ModelAdmin):
     @admin.action(description="Send registration email for selected users")
     def sendRegistrationMails(self, request, queryset):
+        successfull_updates = 0
         for up_user in queryset:
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
@@ -55,15 +56,15 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
 
             async_send_mail.delay(email_subject, email_body,
                                   up_user.student.child_email)
-        updated = queryset
+            successfull_updates += 1
         self.message_user(
             request,
             ngettext(
-                "%d story was successfully marked as published.",
-                "%d stories were successfully marked as published.",
-                updated,
+                "%d registration email was successfully initiated.",
+                "%d registration emails were successfully initiated.",
+                successfull_updates,
             )
-            % updated,
+            % successfull_updates,
             messages.SUCCESS,
         )
 
