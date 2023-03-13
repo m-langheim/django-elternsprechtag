@@ -51,11 +51,13 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
         for up_user in queryset:
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
-            email_body = render_to_string(
+            email_str_body = render_to_string(
                 'authentication/emails/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+            email_html_body = render_to_string(
+                'authentication/emails/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
 
-            async_send_mail.delay(email_subject, email_body,
-                                  up_user.student.child_email)
+            async_send_mail.delay(email_subject, email_str_body,
+                                  up_user.student.child_email, email_html_body=email_html_body)
             successfull_updates += 1
         self.message_user(
             request,

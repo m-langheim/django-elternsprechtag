@@ -49,7 +49,8 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
-                        return redirect('login')#{'page': request.GET.get("page")}
+                        # {'page': request.GET.get("page")}
+                        return redirect('login')
 
                 else:
                     form = Register_Parent_Account()
