@@ -234,7 +234,8 @@ def create_event_PDF(request):
     buff = BytesIO()
     doc = SimpleDocTemplate(buff, pagesize=A4,
                             rightMargin=2*cm,leftMargin=2*cm,
-                            topMargin=2*cm,bottomMargin=2*cm)
+                            topMargin=2*cm,bottomMargin=2*cm,
+                            title="Export Events")
     styles = getSampleStyleSheet()
     elements=[]
 
