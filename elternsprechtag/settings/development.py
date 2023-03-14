@@ -17,36 +17,36 @@ DATABASES = {
     }
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'django.server': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '[{server_time}] {message}',
-            'style': '{',
-        }
-    },
-    'handlers': {
-        'file_warning': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/essential.log'),
-            'formatter': 'django.server',
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server',
-        },
-    },
-    'loggers': {
-        'django.server': {
-            'handlers': ['file_warning', 'console'],
-            'level': 'INFO',
-            'propagate': True,
-        }
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'django.server': {
+#             '()': 'django.utils.log.ServerFormatter',
+#             'format': '[{server_time}] {message}',
+#             'style': '{',
+#         }
+#     },
+#     'handlers': {
+#         'file_warning': {
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'logs/essential.log'),
+#             'formatter': 'django.server',
+#         },
+#         'console': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'django.server',
+#         },
+#     },
+#     'loggers': {
+#         'django.server': {
+#             'handlers': ['file_warning', 'console'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         }
+#     },
+# }
 
 
 # Django-Email Setup
