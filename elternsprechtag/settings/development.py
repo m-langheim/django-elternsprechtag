@@ -53,6 +53,7 @@ DATABASES = {
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 EMAIL_HOST_USER = "test@examle.com"
+EMAIL_COMPLETE = "test@example.com"
 
 # Celery Settings
 CELERY_BROKER_URL = "redis://localhost:6379"

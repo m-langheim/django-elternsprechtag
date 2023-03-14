@@ -14,5 +14,5 @@ urlpatterns = [
          name="inquiry_detail_view"),
     path('announcement/<announcement_id>/mark_read',
          markAnnouncementRead, name="mark_annuncement_read"),
-    path('impressum/', Impressum.as_view(), name='impressum')
+    path('impressum/', impressum, name='impressum')
 ]

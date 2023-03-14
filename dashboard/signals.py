@@ -37,7 +37,7 @@ def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
                         'url': reverse("teacher_event_view", args=[instance.event.id]),
                         'current_site': os.environ.get("PUBLIC_URL")
                     }
-                ), instance.respondet.email)
+                ), instance.respondent.email)
             Announcements.objects.create(
                 user=instance.respondent, message='%s bittet um den Termin am %s um %s Uhr. Bitte bestätigen Sie den Termin.' % (instance.requester, timezone.localtime(instance.event.start).date().strftime("%d.%m.%Y"), timezone.localtime(instance.event.start).time().strftime("%H:%M")))
         elif instance.type == 0:
@@ -52,6 +52,6 @@ def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
                             'inquiry_detail_view', args=[urlsafe_base64_encode(force_bytes(instance.id))]),
                         'current_site': os.environ.get("PUBLIC_URL")
                     }
-                ), instance.respondet.email)
+                ), instance.respondent.email)
             Announcements.objects.create(
                 user=instance.respondent, message='%s bittet Sie darum einen Termin zu erstellen' % (instance.requester))
