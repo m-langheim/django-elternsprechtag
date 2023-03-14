@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from authentication.tasks import async_send_mail
 from django.core.mail import send_mail
 from django.conf import settings
+import os
 
 
 @receiver(post_save, sender=Student)
@@ -40,17 +41,20 @@ def add_teacher_data(sender, instance, created, **kwargs):
 
 # signal when new Upcomming_User object saved to send email to the child
 
+# Das hier soll in einen extra View geschoben werden und nicht automatisch passieren.
 
-@receiver(post_save, sender=Upcomming_User)
-def send_email(sender, instance, created, **kwargs):
-    if created:
-        print(instance)
-        current_site = "127.0.0.1:8000"
-        email_subject = "Anmeldelink für den Elternsprechtag"
-        email_body = render_to_string(
-            'authentication/emails/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
 
-        # async_send_mail.delay(email_subject, email_body,
-        #                      instance.student.child_email)
-        send_mail(email_subject, email_body, settings.EMAIL_HOST_USER,
-                  [instance.student.child_email])
+# @receiver(post_save, sender=Upcomming_User)
+# def send_email(sender, instance, created, **kwargs):
+#     if created:
+#         print(instance)
+#         # current_site = "127.0.0.1:8000"
+#         current_site = os.environ.get("PUBLIC_URL")
+#         email_subject = "Anmeldelink für den Elternsprechtag"
+#         email_body = render_to_string(
+#             'authentication/emails/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
+
+#         async_send_mail.delay(email_subject, email_body,
+#                               instance.student.child_email)
+#         # send_mail(email_subject, email_body, settings.EMAIL_HOST_USER,
+#         #           [instance.student.child_email])

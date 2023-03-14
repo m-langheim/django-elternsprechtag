@@ -5,6 +5,7 @@ from .models import Event, Inquiry, SiteSettings, Announcements
 from django.db.models import Q
 from django.utils import timezone
 from django.views import View
+from django.views.generic.base import RedirectView
 from django.utils.decorators import method_decorator
 
 from django.shortcuts import get_object_or_404
@@ -62,7 +63,7 @@ def search(request):
     teacherExtraData = TeacherExtraData.objects.all()
     request_search = request.GET.get('q', None)
     state = 0
-    result=[]
+    result = []
 
     if request_search is None:
         state = 0
@@ -127,7 +128,7 @@ def bookEventTeacherList(request, teacher_id):
             Q(occupied=True), Q(parent=request.user))
 
         events_dt = Event.objects.filter(Q(teacher=teacher))
-        
+
         dates = []
         datetime_objects = events_dt.values_list("start", flat=True)
         for datetime_object in datetime_objects:
@@ -374,3 +375,7 @@ def markAnnouncementRead(request, announcement_id):
     announcement.read = True
     announcement.save()
     return redirect("home")
+
+
+class Impressum(RedirectView):
+    url = SiteSettings.objects.first().impressum

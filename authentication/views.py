@@ -5,6 +5,7 @@ from .forms import *
 from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.contrib.auth import logout
 
 
 def register(request, user_token, key_token):
@@ -24,6 +25,12 @@ def register(request, user_token, key_token):
         user_data.delete()
         Upcomming_User.objects.create(student=studi)
         return render(request, 'authentication/register/link_deprecated.html')
+
+    # logout user
+    if request.user.is_authenticated:
+        logout(request)
+        messages.info(
+            request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
 
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
@@ -49,7 +56,8 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
-                        return redirect('login')#{'page': request.GET.get("page")}
+                        # {'page': request.GET.get("page")}
+                        return redirect('login')
 
                 else:
                     form = Register_Parent_Account()

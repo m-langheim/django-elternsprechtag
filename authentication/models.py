@@ -133,6 +133,7 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     otp_verified_date = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(default=timezone.now)
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    email_send = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{_("Access for")} {self.student}'

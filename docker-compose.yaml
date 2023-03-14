@@ -3,12 +3,10 @@ version: '3'
 services:
   redis:
     image: redis:latest
-    container_name: rd01
     ports:
      - '6379:6379'
 
   django:
-    container_name: dj01
     image: janni06/django-elternsprechtag:latest
     environment:
       - DB_HOST=db
@@ -21,8 +19,10 @@ services:
       - SUPER_USER_EMAIL=test@test.com
       - DJANGO_SETTINGS_MODULE:elternsprechtag.settings.production
       - EMAIL_HOST=example.com
-      - EMAIL_HOST_USER=test@example.com
-      - EMAIL_HOST_PASSWORD=test
+      - EMAIL_HOST_USER=example
+      - EMAIL_HOST_PASSWORD=email
+      - PUBLIC_URL=http://localhost:8080
+      - EMAIL_COMPLETE=email@example.com
     volumes:
       - media:/app/media
       - static:/app/staticfiles
@@ -36,7 +36,6 @@ services:
 
   db:
     image: lscr.io/linuxserver/mariadb
-    container_name: elternsprechtag_db
     environment:
       - PUID=1000
       - PGID=1000
@@ -66,12 +65,15 @@ services:
       - SUPER_USER_PASSWORD=test1234
       - SUPER_USER_EMAIL=test@test.com
       - EMAIL_HOST=example.com
-      - EMAIL_HOST_USER=test@example.com
-      - EMAIL_HOST_PASSWORD=test
+      - EMAIL_HOST_USER=example
+      - EMAIL_HOST_PASSWORD=email
+      - PUBLIC_URL=http://localhost:8080
+      - EMAIL_COMPLETE=email@example.com
     links:
       - redis
     depends_on:
       - redis
+      - django
 
   nginx:
     image: janni06/django-elternsprechtag-nginx:latest
