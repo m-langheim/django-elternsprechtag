@@ -377,5 +377,11 @@ def markAnnouncementRead(request, announcement_id):
     return redirect("home")
 
 
-class Impressum(RedirectView):
-    url = SiteSettings.objects.first().impressum
+def impressum(request):
+    try:
+        settings = SiteSettings.objects.first()
+    except SiteSettings.DoesNotExist:
+        raise Http404(
+            "Es wurden keine Einstellungen für diese Seite gefunden.")
+    else:
+        return redirect(settings.impressum)
