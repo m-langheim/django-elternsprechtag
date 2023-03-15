@@ -6,6 +6,18 @@ from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import logout
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+import os
+from .tasks import async_send_mail
 
 
 def register(request, user_token, key_token):
@@ -125,3 +137,30 @@ def register(request, user_token, key_token):
             request,
             'authentication/register/register_otp.html',
             {'otp_form': form, 'child_name': name})
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = CustomUser.objects.filter(Q(email=data))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "authentication/password-reset/password_reset_email.txt"
+                    c = {
+                        "email": user.email,
+                        'site_name': 'Elternsprechtagprotal',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'current_site': os.environ.get("PUBLIC_URL"),
+                    }
+                    email = render_to_string(email_template_name, c)
+                    # send_mail(subject, email, 'admin@example.com',
+                    #           [user.email], fail_silently=False)
+                    async_send_mail.delay(subject, email, user.email)
+                    return redirect("password_reset_done")
+    password_reset_form = PasswordResetForm()
+    return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})
