@@ -58,7 +58,7 @@ def register(request, user_token, key_token):
             if request.GET.get('register', False):
                 if request.method == 'POST':
                     form = Register_Parent_Account(request.POST)
-                    if form.is_valid():
+                    if form.is_valid():  # Erstellung des Nutzers
                         cu = CustomUser(
                             email=form.cleaned_data['email'],
                             first_name=form.cleaned_data['first_name'],
@@ -68,6 +68,8 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
+                        async_send_mail.delay("Registrierung erfolgreich", render_to_string(
+                            "authentication/register/register_finished_email.txt", {'user': cu}, cu.email))
                         # {'page': request.GET.get("page")}
                         return redirect('login')
 
