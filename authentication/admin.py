@@ -52,9 +52,9 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                'authentication/emails/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
             email_html_body = render_to_string(
-                'authentication/emails/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
 
             async_send_mail.delay(email_subject, email_str_body,
                                   up_user.student.child_email, email_html_body=email_html_body)
@@ -83,9 +83,9 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                'authentication/emails/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
             email_html_body = render_to_string(
-                'authentication/emails/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
 
             async_send_mail.delay(email_subject, email_str_body,
                                   up_user.student.child_email, email_html_body=email_html_body)
