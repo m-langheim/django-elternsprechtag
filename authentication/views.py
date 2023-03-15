@@ -151,16 +151,18 @@ def password_reset_request(request):
                     email_template_name = "authentication/password-reset/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'site_name': 'Elternsprechtagprotal',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,
                         'token': default_token_generator.make_token(user),
                         'current_site': os.environ.get("PUBLIC_URL"),
                     }
                     email = render_to_string(email_template_name, c)
+                    email_html = render_to_string(
+                        "authentication/password-reset/password_reset_email_html.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
-                    async_send_mail.delay(subject, email, user.email)
+                    async_send_mail.delay(
+                        subject, email, user.email, email_html_body=email_html)
                     return redirect("password_reset_done")
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})
