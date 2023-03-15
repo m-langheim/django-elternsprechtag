@@ -53,11 +53,16 @@
                                         <div class="row gy-1">
                                             <div class="col-12 col-md-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{{ teacher_url }}">Zurück</a>
+                                                    href="{{ back_url }}">Zurück</a>
                                             </div>
                                             <div class="col-12 col-md-6 d-flex justify-content-end">
-                                                <button type="submit"
-                                                    class="btn btn-outline-danger col-12 col-lg-3">Buchen</button>
+                                                {% if event.start in booked_times %}
+                                                    <button type="submit"
+                                                        class="btn btn-outline-secondary col-12 col-lg-3 disabled">Zeitkonflikt</button>
+                                                {% else %}
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger col-12 col-lg-3">Buchen</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

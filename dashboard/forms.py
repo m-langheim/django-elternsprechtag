@@ -63,10 +63,9 @@ class EditEventForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         self.teacher = kwargs.pop('teacher')
-        self.initial = kwargs.pop('initial', [])
+        self.event = kwargs.pop('event')
         super(EditEventForm, self).__init__(*args, **kwargs)
-        if self.initial:
-            initial_students = self.initial["student"]
+
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
@@ -84,9 +83,9 @@ class EditEventForm(forms.Form):
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
             students_with_event = Event.objects.filter(Q(teacher=self.teacher), Q(
-                occupied=True), Q(parent=self.request.user)).values_list("student", flat=True)
+                occupied=True), Q(parent=self.request.user)).exclude(id=self.event.id).values_list("student", flat=True)
             for student in choices:
-                if student[0] in initial_students or student[0] not in students_with_event:
+                if student[0] not in students_with_event:
                     active_choices.append(student[0])
 
         self.fields['student'].choices = choices
@@ -96,31 +95,31 @@ class EditEventForm(forms.Form):
         choices=[], widget=StudentSelector(), label='', required=True)
 
 
-class InquiryForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        self.selected_student = kwargs.pop('selected_student')
-        self.teacher = kwargs.pop('teacher')
-        self.parent = kwargs.pop('parent')
-        super(InquiryForm, self).__init__(*args, **kwargs)
+# class InquiryForm(forms.Form): #? Irrelevant, da es ein überarbeitetes Interface zum beantworten von Anfragen gibt?
+#     def __init__(self, *args, **kwargs):
+#         self.request = kwargs.pop('request')
+#         self.selected_student = kwargs.pop('selected_student')
+#         self.teacher = kwargs.pop('teacher')
+#         self.parent = kwargs.pop('parent')
+#         super(InquiryForm, self).__init__(*args, **kwargs)
 
-        self.fields['student'].queryset = self.request.user.students.all()
-        self.fields['student'].initial = self.selected_student()
-        self.fields['event'].queryset = Event.objects.filter(
-            Q(teacher=self.teacher), Q(occupied=False))
+#         self.fields['student'].queryset = self.request.user.students.all()
+#         self.fields['student'].initial = self.selected_student()
+#         self.fields['event'].queryset = Event.objects.filter(
+#             Q(teacher=self.teacher), Q(occupied=False))
 
-    def clean(self):
-        cleaned_data = super(InquiryForm, self).clean()
-        students = cleaned_data.get('student')
-        if not self.selected_student() in students:
-            self.add_error(
-                'student', "The default selected student needs to stay selected")
+#     def clean(self):
+#         cleaned_data = super(InquiryForm, self).clean()
+#         students = cleaned_data.get('student')
+#         if not self.selected_student() in students:
+#             self.add_error(
+#                 'student', "The default selected student needs to stay selected")
 
-        return cleaned_data
+#         return cleaned_data
 
-    event = forms.ModelChoiceField(queryset=None)
-    student = forms.ModelMultipleChoiceField(
-        queryset=None, widget=forms.CheckboxSelectMultiple)
+#     event = forms.ModelChoiceField(queryset=None)
+#     student = forms.ModelMultipleChoiceField(
+#         queryset=None, widget=forms.CheckboxSelectMultiple)
 
 # Admin Form
 

@@ -3,45 +3,90 @@ version: '3'
 services:
   redis:
     image: redis:latest
-    container_name: rd01
     ports:
      - '6379:6379'
 
   django:
-    container_name: dj01
-    image: djangoelternsprechtag:latest
+    image: janni06/django-elternsprechtag:latest
     environment:
       - DB_HOST=db
-      - DB_NAME=elternsprechtag
+      - DB_NAME=elternsprechtagapp
       - DB_USERNAME=elternsprechtag
       - DB_PASSWORD=jhg2023
-    ports:
-      - '8000:8000'
+      - SECRET_KEY=supersecuresecretkey02
+      - REDIS_HOST=redis
+      - SUPER_USER_PASSWORD=test1234
+      - SUPER_USER_EMAIL=test@test.com
+      - DJANGO_SETTINGS_MODULE:elternsprechtag.settings.production
+      - EMAIL_HOST=example.com
+      - EMAIL_HOST_USER=example
+      - EMAIL_HOST_PASSWORD=email
+      - PUBLIC_URL=http://localhost:8080
+      - EMAIL_COMPLETE=email@example.com
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
     links: 
       - redis
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   db:
     image: lscr.io/linuxserver/mariadb
-    container_name: elternsprechtag_db
     environment:
       - PUID=1000
       - PGID=1000
       - MYSQL_ROOT_PASSWORD=jhg2023
-      - TZ=Europe/London
+      - TZ=Europe/Berlin
       - MYSQL_DATABASE=elternsprechtagapp
       - MYSQL_USER=elternsprechtag
       - MYSQL_PASSWORD=jhg2023
     volumes:
-      - /path/to/data:/config
+      - db:/config
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
     restart: unless-stopped
 
   celery:
-    image: djangoelternsprechtag:latest
+    image: janni06/django-elternsprechtag:latest
     command: celery -A elternsprechtag worker -B --loglevel=DEBUG
+    environment:
+      - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_NAME=elternsprechtagapp
+      - DB_USERNAME=elternsprechtag
+      - DB_PASSWORD=jhg2023
+      - SECRET_KEY=supersecuresecretkey02
+      - SUPER_USER_PASSWORD=test1234
+      - SUPER_USER_EMAIL=test@test.com
+      - EMAIL_HOST=example.com
+      - EMAIL_HOST_USER=example
+      - EMAIL_HOST_PASSWORD=email
+      - PUBLIC_URL=http://localhost:8080
+      - EMAIL_COMPLETE=email@example.com
     links:
       - redis
     depends_on:
       - redis
+      - django
+
+  nginx:
+    image: janni06/django-elternsprechtag-nginx:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - static:/mnt/static:ro
+      - media:/mnt/media:ro
+    depends_on:
+      - django
+
+
+volumes:
+  media:
+  static:
+  db:

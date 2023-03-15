@@ -1,0 +1,23 @@
+{% extends "profile_settings/profile_layout.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block profile_content %}
+
+<p class="h1">Schüler:innen</p>
+<p class="text-muted">Hier werden alle Schüler:innen aufgelistet, die Ihnen zugeordnet sind.</p>
+<ul class="list-group list-group-flush">
+    <!-- Iterate over object_list -->
+    {% for student in object_list %}
+    <!-- Display Objects -->
+    <li class="list-group-item">
+        <div class="container">
+            {{ student.first_name }} {{ student.last_name }}
+        </div>
+    </li>
+    <!-- If object_list is empty  -->
+    {% empty %}
+    <li class="list-group-item">Keine Schüler</li>
+    {% endfor %}
+</ul>
+{% endblock profile_content %}

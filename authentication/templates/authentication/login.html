@@ -7,22 +7,32 @@
 
 <head>
     {% load static %}
-    <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-{% load crispy_forms_tags %}
-<form method="post">
-    {% if next != '/' and next != ''%}
-    <div class="fortschritt_balken">
-        <div class="fortschritt"></div>
+<!-- Habe einen Link zum Passwort reset hinzugefügt -->
+<div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-sm-9 col-md-7 col-lg-5 col-xl-4 col-xxl-3">
+        <div class="card" style="border-radius: 10px;">
+            <div class="card-body d-grid p-4 text-center">
+                <form method="post">
+                    <h1 class="pb-2 text-danger">{% translate 'Login' %}</h1>
+                    <p class="pb-2 text-secondary">{% translate 'Please log into your parent account' %}</p>
+                    {% csrf_token %}
+                    {% load crispy_forms_tags %}
+                    <!-- {{ form.username|as_crispy_field }}
+                        {{ form.password|as_crispy_field }} -->
+                    {{form|crispy}}
+                    <a class="" style="text-decoration: none;" href="{% url 'password_reset' %}">
+                        {% translate "Forgot password?" %}
+                    </a>
+                    <div class="d-grid ms-2 me-2 mt-3 pt-3 pb-2">
+                        <input type="submit" class="btn btn-outline-danger" value="{% translate 'Login' %}">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    <h1>{% translate 'Login' %}</h1>
-    <p>{% translate 'Please log into your parent account' %}</p>
-    {% csrf_token %}
-    {{ form.username|as_crispy_field }}
-    {{ form.password|as_crispy_field }}
-    <input type="submit" value="{% translate 'Login' %}" class="button" />
-</form>
+</div>
 
 {% endblock content %}

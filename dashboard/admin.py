@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.urls import path
 from django.views import View
 
-from dashboard.tasks import async_create_events, async_create_events_special
+from dashboard.tasks import async_create_events_special
 # Register your models here.
 
 

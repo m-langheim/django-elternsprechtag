@@ -23,7 +23,8 @@ urlpatterns = [
     path('', include("authentication.urls")),
     path('', include("dashboard.urls")),
     path('help/', include("help.urls")),
-    path('teacher/', include("teacher.urls"))
+    path('teacher/', include("teacher.urls")),
+    path('profile/', include("profile_settings.urls"))
     # path('register/', include("login.urls"))
 ]
 
