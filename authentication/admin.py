@@ -139,7 +139,7 @@ class StudentAdmin(admin.ModelAdmin):
             for group in Group.objects.filter(name__startswith="class_"):
                 group.delete()
 
-            csv_file = request.FILES["csv_file"].read().decode('utf-8')
+            csv_file = request.FILES["csv_file"].read().decode('utf-8-sig')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
 
             created_students = 0
