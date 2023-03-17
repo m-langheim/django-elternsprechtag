@@ -38,12 +38,6 @@ def register(request, user_token, key_token):
         Upcomming_User.objects.create(student=studi)
         return render(request, 'authentication/register/link_deprecated.html')
 
-    # logout user
-    if request.user.is_authenticated:
-        logout(request)
-        messages.info(
-            request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
-
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
@@ -71,6 +65,11 @@ def register(request, user_token, key_token):
                         async_send_mail.delay("Registrierung erfolgreich", render_to_string(
                             "authentication/register/register_finished_email.txt", {'user': cu}), cu.email)
                         # {'page': request.GET.get("page")}
+                        # logout user
+                        if request.user.is_authenticated:
+                            logout(request)
+                            messages.info(
+                                request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
                         return redirect('login')
 
                 else:
