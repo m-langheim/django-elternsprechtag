@@ -69,7 +69,7 @@ def register(request, user_token, key_token):
                         cu.save()
                         user_data.delete()
                         async_send_mail.delay("Registrierung erfolgreich", render_to_string(
-                            "authentication/register/register_finished_email.txt", {'user': cu}, cu.email))
+                            "authentication/register/register_finished_email.txt", {'user': cu}), cu.email)
                         # {'page': request.GET.get("page")}
                         return redirect('login')
 
