@@ -63,7 +63,7 @@ def register(request, user_token, key_token):
                         cu.save()
                         user_data.delete()
                         async_send_mail.delay("Registrierung erfolgreich", render_to_string(
-                            "authentication/register/register_finished_email.txt", {'user': cu}), cu.email)
+                            "authentication/register/register_finished_email.txt", {'user': cu, 'current_site': os.environ.get("PUBLIC_URL")}), cu.email)
                         # {'page': request.GET.get("page")}
                         # logout user
                         if request.user.is_authenticated:
@@ -158,12 +158,14 @@ def password_reset_request(request):
                         'current_site': os.environ.get("PUBLIC_URL"),
                     }
                     email = render_to_string(email_template_name, c)
-                    email_html = render_to_string(
-                        "authentication/password-reset/password_reset_email_html.html", c)
+                    # email_html = render_to_string(
+                    #     "authentication/password-reset/password_reset_email_html.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
+                    # async_send_mail.delay(
+                    #     subject, email, user.email, email_html_body=email_html)
                     async_send_mail.delay(
-                        subject, email, user.email, email_html_body=email_html)
+                        subject, email, user.email)
                     return redirect("password_reset_done")
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})
