@@ -38,12 +38,6 @@ def register(request, user_token, key_token):
         Upcomming_User.objects.create(student=studi)
         return render(request, 'authentication/register/link_deprecated.html')
 
-    # logout user
-    if request.user.is_authenticated:
-        logout(request)
-        messages.info(
-            request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
-
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
@@ -58,7 +52,7 @@ def register(request, user_token, key_token):
             if request.GET.get('register', False):
                 if request.method == 'POST':
                     form = Register_Parent_Account(request.POST)
-                    if form.is_valid():
+                    if form.is_valid():  # Erstellung des Nutzers
                         cu = CustomUser(
                             email=form.cleaned_data['email'],
                             first_name=form.cleaned_data['first_name'],
@@ -68,7 +62,14 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
+                        async_send_mail.delay("Registrierung erfolgreich", render_to_string(
+                            "authentication/register/register_finished_email.txt", {'user': cu, 'current_site': os.environ.get("PUBLIC_URL")}), cu.email)
                         # {'page': request.GET.get("page")}
+                        # logout user
+                        if request.user.is_authenticated:
+                            logout(request)
+                            messages.info(
+                                request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
                         return redirect('login')
 
                 else:
@@ -151,16 +152,20 @@ def password_reset_request(request):
                     email_template_name = "authentication/password-reset/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'site_name': 'Elternsprechtagprotal',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,
                         'token': default_token_generator.make_token(user),
                         'current_site': os.environ.get("PUBLIC_URL"),
                     }
                     email = render_to_string(email_template_name, c)
+                    # email_html = render_to_string(
+                    #     "authentication/password-reset/password_reset_email_html.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
-                    async_send_mail.delay(subject, email, user.email)
+                    # async_send_mail.delay(
+                    #     subject, email, user.email, email_html_body=email_html)
+                    async_send_mail.delay(
+                        subject, email, user.email)
                     return redirect("password_reset_done")
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})

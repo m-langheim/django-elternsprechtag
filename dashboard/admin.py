@@ -14,8 +14,11 @@ from dashboard.tasks import async_create_events_special
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('teacher', 'start', 'end', 'occupied')
+    list_display = ('teacher', 'start', 'end', 'status')
+    search_fields = ('teacher__first_name',
+                     'teacher__last_name', 'teacher__email')
     change_list_template = "dashboard/admin/events.html"
+    list_filter = ('occupied', 'status')
 
     def get_urls(self):
         urls = super().get_urls()
