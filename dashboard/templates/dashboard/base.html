@@ -30,8 +30,50 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Hier wurde etwas geändert, damit sich das ganze besser anpasst -->
-                <div class="row ms-lg-4" style="width: 100%;">
-                    <!-- Um das neu anzuordnen, wenn man auf kleinen Bildschirmen ist, steht es zweimal hier -->
+                <div class="row ms-lg-4 ms-0" style="width: 100%;">
+                    
+                    <!-- Kleiner Bildschirm -->
+                    <div class="d-block d-lg-none">
+                        <form class="d-flex d-lg-none col-10" style="margin-top: 10.5px; width: 100%;"
+                            action="{% url 'search' %}">
+                            <div class="form-white input-group bg-white align-items-center align-self-center">
+                                <input type="text"
+                                    class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
+                                    placeholder="Suchen..." aria-label="Search" style="box-shadow: none; outline: none;"
+                                    name="q" autocomplete="off">
+                                <button type="submit"
+                                    class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i
+                                        class="fa-solid fa-arrow-right fa-xl"></i></button>
+                            </div>
+                        </form>
+                        <div class="d-block col-10 d-lg-none mt-2 mb-2 border-top border-gray" style="width: 100%;">
+                            <ul class="nav navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link dropdown ms-2 align-items-center text-dark d-flex"
+                                        data-bs-toggle="dropdown">
+                                        Profil <i class="fa-solid fa-lg fa-caret-down ms-auto"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdown">
+                                        {% if user.role == 0 %}
+                                        <li><a class="dropdown-item" href="{% url 'profile_student_list' %}"><i
+                                                    class="fa-solid fa-user"></i> Schüler:innen</a></li>
+                                        {% endif %}
+                                        <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
+                                                    class="fa-solid fa-gear"></i> Mein Profil</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
+                                                    class="fa-solid fa-right-from-bracket"></i> Abmelden</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Großer Bildschirm -->
                     <form class="d-none d-lg-block col-6 col-xl-4 col-lg-5 col-xxl-3" style="margin-top: 10.5px;"
                         action="{% if user.role == 1 %}{% url 'teacher_students_list' %}{% else %}{% url 'search' %}{% endif %}">
                         <div class="form-white input-group bg-white align-items-center align-self-center">
@@ -46,7 +88,7 @@
                     </form>
                     <div class="d-none d-lg-block col-xl-6 col-lg-5 col-xxl-7"></div>
 
-                    <div class="col-3 col-sm-2 d-flex justify-content-end">
+                    <div class="d-none d-lg-flex col-3 col-sm-2 justify-content-end">
                         <ul class="navbar-nav d-flex flex-row ms-auto">
                             <li class="nav-item me-3 me-lg-0 dropdown">
                                 <a class="nav-link dropdown" href="#" id="navbarDropdown1" role="button"
@@ -71,19 +113,7 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- Hier steht die Suchleiste zum zweiten mal -->
-                    <form class="d-block d-lg-none col-9 col-sm-10" style="margin-top: 10.5px;"
-                        action="{% url 'search' %}">
-                        <div class="form-white input-group bg-white align-items-center align-self-center">
-                            <input type="text"
-                                class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
-                                placeholder="Suchen..." aria-label="Search" style="box-shadow: none; outline: none;"
-                                name="q" autocomplete="off">
-                            <button type="submit"
-                                class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i
-                                    class="fa-solid fa-arrow-right fa-xl"></i></button>
-                        </div>
-                    </form>
+
                 </div>
             </div>
         </div>
@@ -112,7 +142,8 @@
         <div class="container">
             <div class="container">
                 <footer class="d-flex flex-wrap justify-content-between align-items-center my-2 border-top">
-                    <p class="col mb-0 text-muted">&copy; 2023 Bastian Bollmer, Jan-Niklas Wielpütz</p>  <!-- changed col-md-4 to col -->
+                    <p class="col mb-0 text-muted">&copy; 2023 Bastian Bollmer, Jan-Niklas Wielpütz</p>
+                    <!-- changed col-md-4 to col -->
 
                     <!-- <a href="/"
                         class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
