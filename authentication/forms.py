@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm
 from .models import CustomUser
 from django.utils.translation import gettext as _
 
@@ -13,6 +13,13 @@ class CustomAuthForm(AuthenticationForm): # login
         self.fields['password'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}) 
         self.fields['password'].label = False
 
+class CustomPasswordResetForm(PasswordResetForm): # password reset
+    class Meta:
+        fields = ['email']
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget = forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'autocomplete': "off"})
+        self.fields['email'].label = False
 
 class CustomUserCreationForm(UserCreationForm):
 

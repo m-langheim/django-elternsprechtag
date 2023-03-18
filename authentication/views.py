@@ -167,5 +167,5 @@ def password_reset_request(request):
                     async_send_mail.delay(
                         subject, email, user.email)
                     return redirect("password_reset_done")
-    password_reset_form = PasswordResetForm()
+    password_reset_form = CustomPasswordResetForm()
     return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})
