@@ -24,4 +24,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: janni06/django-elternsprechtag:latest
+          tags: janni06/django-elternsprechtag:dev
