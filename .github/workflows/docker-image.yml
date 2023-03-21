@@ -1,9 +1,11 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_run:
+    workflows: ["Django CI", "CodeQL"]
+    branches: [main]
+    types: 
+      - completed
 
 jobs:
   docker:
