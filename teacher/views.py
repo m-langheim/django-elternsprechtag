@@ -270,7 +270,7 @@ def create_event_PDF(request):
                 Q(start__lte=timezone.datetime.combine(
                     date.date(),
                     timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
-                )))
+                ))).order_by('start')
 
     date_style = ParagraphStyle('date_style',
                                 fontName="Helvetica-Bold",
@@ -291,7 +291,7 @@ def create_event_PDF(request):
                 Q(start__lte=timezone.datetime.combine(
                     date.date(),
                     timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
-                )))
+                ))).order_by('start')
         for event_per_date in events_per_date:
             t = str(timezone.localtime(
                 event_per_date.start).time().strftime("%H:%M"))
