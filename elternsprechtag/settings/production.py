@@ -36,18 +36,19 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file_warning': {
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/django.debug.log',
-            'formatter': 'django.server',
-        },
+        # 'file_warning': {
+        #     'class': 'logging.FileHandler',
+        #     'filename': '/var/log/django.debug.log',
+        #     'formatter': 'django.server',
+        # },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
     },
     'root': {
-        'handlers': ['file_warning', 'console'],
+        # 'handlers': ['file_warning', 'console'],
+        'handlers': ['console'],
         'level': 'DEBUG',
     },
 }
