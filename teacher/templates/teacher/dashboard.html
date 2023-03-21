@@ -54,13 +54,20 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
                                     aria-controls="event-accordion-collapse-{{ event.id }}">
-                                    {{ event.start|time }} - {{event.end|time}}
-                                    {% if event.status == 2 %}
-                                    <span
-                                        class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
-                                        Nicht bestätigt
-                                    </span>
-                                    {% endif %}
+                                    <div class="col">
+                                        {{ event.start|time }} - {{event.end|time}}
+                                    </div>
+                                    <div class="col-3">
+
+                                    </div>
+                                    <div class="col-4">
+                                        {% if event.status == 2 %}
+                                        <span
+                                            class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
+                                            Nicht bestätigt
+                                        </span>
+                                        {% endif %}
+                                    </div>
                                 </button>
                             </h2>
                             <div id="event-accordion-collapse-{{ event.id }}" class="accordion-collapse collapse"
