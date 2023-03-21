@@ -1,14 +1,8 @@
-E-Mail Verbindung einrichten
-weiterleitung nach login abhängig von Eltern oder Lehrer
 Übersetzungen hinzufügen
 Bei Registrierung checken, ob die Email bereits benutzt wird. Ansonsten Fehler melden
-border-bottom färbt sich erst, wenn das passwort mit dem ersten übereinstimmt
-better warning if the otp is 
+border-bottom färbt sich erst, wenn das passwort mit dem ersten übereinstimmt 
+better warning if the otp is ???
 fix the submit button of otp even if there is an invalid type of code
-
-Passwort ändern in authentication mit typischem Aussehen
-Möglichkeit zum Passwort Reset
-Versendung eines Reset Links an die Lehrer, sobald deren Konto erstellt wird
 
 Man muss bei jeder registrierung das Elternteil abmelden und sofort wieder bei anmelden, ohne dass das elternteil was tun muss. sonst kann das elternteil im falschen account sein
 
@@ -16,6 +10,6 @@ Bei den Abfragen der Students lässt sich mit "customuser_set" das Elternteil ab
 
 
 
-
+fortschrittsbalken für passwort reset und registrierung
 
 farben auf der teacher profilseite

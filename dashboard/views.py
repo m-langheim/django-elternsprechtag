@@ -5,6 +5,7 @@ from .models import Event, Inquiry, SiteSettings, Announcements
 from django.db.models import Q
 from django.utils import timezone
 from django.views import View
+from django.views.generic.base import RedirectView
 from django.utils.decorators import method_decorator
 
 from django.shortcuts import get_object_or_404
@@ -17,6 +18,9 @@ from .forms import BookForm, cancelEventForm, EditEventForm
 from .decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
+
+from django.conf import settings
+import pytz
 
 from .utils import check_inquiry_reopen
 
@@ -40,14 +44,24 @@ def public_dashboard(request):
     events = Event.objects.filter(Q(parent=request.user), Q(occupied=True))
     dates = []
 
-    datetime_objects = events.values_list("start", flat=True)
+    datetime_objects = events.order_by('start').values_list("start", flat=True)
     for datetime_object in datetime_objects:
-        if timezone.localtime(datetime_object).date() not in dates:
-            dates.append(timezone.localtime(datetime_object).date())
+        if timezone.localtime(datetime_object).date() not in [date.date() for date in dates]:
+            # print(datetime_object.astimezone(pytz.UTC).date())
+            dates.append(datetime_object.astimezone(pytz.UTC))
 
     events_dict = {}
     for date in dates:
-        events_dict[str(date)] = events.filter(start__date=date)
+        #! Spontane Änderung aufgrund von Problemen auf dem Server
+        events_dict[str(date.date())] = events.filter(
+            Q(start__gte=timezone.datetime.combine(
+                date.date(),
+                timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()
+            )),
+            Q(start__lte=timezone.datetime.combine(
+                date.date(),
+                timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
+            ))).order_by('start')
 
     announcements = Announcements.objects.filter(
         Q(user=request.user), Q(read=False)).order_by("-created")
@@ -62,7 +76,7 @@ def search(request):
     teacherExtraData = TeacherExtraData.objects.all()
     request_search = request.GET.get('q', None)
     state = 0
-    result=[]
+    result = []
 
     if request_search is None:
         state = 0
@@ -127,17 +141,36 @@ def bookEventTeacherList(request, teacher_id):
             Q(occupied=True), Q(parent=request.user))
 
         events_dt = Event.objects.filter(Q(teacher=teacher))
-        
+
         dates = []
-        datetime_objects = events_dt.values_list("start", flat=True)
+        datetime_objects = events_dt.order_by(
+            "start").values_list("start", flat=True)
         for datetime_object in datetime_objects:
-            if datetime_object.date() not in dates:
-                dates.append(datetime_object.date())
+            if timezone.localtime(datetime_object).date() not in [date.date() for date in dates]:
+                # print(datetime_object.astimezone(pytz.UTC).date())
+                dates.append(datetime_object.astimezone(pytz.UTC))
 
         events_dt_dict = {}
+        # print(Event.objects.filter(Q(teacher=teacher)).order_by(
+        #     'start').values_list("start", flat=True))
+        # print("DATES", dates)
         for date in dates:
-            events_dt_dict[str(date)] = Event.objects.filter(
-                Q(teacher=teacher), Q(start__date=date)).order_by('start')
+            # print("TIME", timezone.datetime.combine(date.date(),
+            #       timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()))
+
+            #! Spontane Änderung aufgrund von Problemen auf dem Server
+            events_dt_dict[str(date.date())] = Event.objects.filter(
+                Q(teacher=teacher),
+                Q(start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()
+                )),
+                Q(start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
+                ))).order_by('start')
+
+        # print(events_dt_dict)
 
         tags = TeacherExtraData.objects.get(
             teacher=teacher).tags.all().order_by('name')
@@ -153,7 +186,7 @@ def bookEventTeacherList(request, teacher_id):
     return render(request, 'dashboard/events/teacher.html', {'teacher': teacher, 'events': events, 'personal_booked_events': personal_booked_events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'tags': tags, 'image': image, 'booked_times': booked_times})
 
 
-@method_decorator(parent_required, name='dispatch')
+@ method_decorator(parent_required, name='dispatch')
 # hier werden final die Termine dann gebucht
 class bookEventView(View):
     def get(self, request, event_id):
@@ -178,7 +211,7 @@ class bookEventView(View):
                 back_url = reverse('event_teacher_list', args=[teacher_id])
             else:
                 form = BookForm(request=request, teacher=event.teacher, initial={
-                                'student': [student.id for student in inquiry.students.all()]})
+                    'student': [student.id for student in inquiry.students.all()]})
                 back_url = reverse('inquiry_detail_view',
                                    args=[inquiry_id_get])
         else:
@@ -243,7 +276,7 @@ class bookEventView(View):
 
 
 # Der Inquiry View wurde einmal neu gemacht, muss jetzt noch weiter so ergänzt werden, damit er schön aussieht
-@method_decorator(parent_required, name='dispatch')
+@ method_decorator(parent_required, name='dispatch')
 class InquiryView(View):
     def get(self, request, inquiry_id):
         inquiry = get_object_or_404(Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user)), type=0, id=force_str(
@@ -261,15 +294,25 @@ class InquiryView(View):
 
         events_dt = Event.objects.filter(Q(teacher=inquiry.requester))
         dates = []
-        datetime_objects = events_dt.values_list("start", flat=True)
+        datetime_objects = events_dt.order_by(
+            "start").values_list("start", flat=True)
         for datetime_object in datetime_objects:
-            if timezone.localtime(datetime_object).date() not in dates:
-                dates.append(timezone.localtime(datetime_object).date())
+            if timezone.localtime(datetime_object).date() not in [date.date() for date in dates]:
+                # print(datetime_object.astimezone(pytz.UTC).date())
+                dates.append(datetime_object.astimezone(pytz.UTC))
 
         events_dt_dict = {}
         for date in dates:
-            events_dt_dict[str(date)] = Event.objects.filter(
-                Q(teacher=inquiry.requester), Q(start__date=date)).order_by('start')
+            #! Spontane Änderung aufgrund von Problemen auf dem Server
+            events_dt_dict[str(date.date())] = events.filter(
+                Q(start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()
+                )),
+                Q(start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
+                ))).order_by('start')
 
         booked_times = []
         for b_times in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
@@ -300,7 +343,7 @@ class InquiryView(View):
     #     return render(request, "dashboard/inquiry.html", {'reason': inquiry, 'form': form})
 
 
-@method_decorator(parent_required, name='dispatch')
+@ method_decorator(parent_required, name='dispatch')
 class EventView(View):
     cancel_form = cancelEventForm
 
@@ -318,7 +361,7 @@ class EventView(View):
             return render(request, "dashboard/events/occupied.html")
 
         edit_form = EditEventForm(request=request, teacher=event.teacher, event=event, initial={
-                                  'student': [student.id for student in event.student.all()]})
+            'student': [student.id for student in event.student.all()]})
         cancel_form = self.cancel_form()
 
         # Es wurde die Cancel-Form zurück gegeben
@@ -366,11 +409,21 @@ class EventView(View):
         return render(request, "dashboard/events/view.html", {'event': event, 'cancel_form': self.cancel_form,  "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)), 'edit_form': edit_form})
 
 
-@login_required
-@parent_required
+@ login_required
+@ parent_required
 def markAnnouncementRead(request, announcement_id):
     announcement = get_object_or_404(Announcements, id__exact=force_str(
         urlsafe_base64_decode(announcement_id)), user=request.user)
     announcement.read = True
     announcement.save()
     return redirect("home")
+
+
+def impressum(request):
+    try:
+        settings = SiteSettings.objects.first()
+    except SiteSettings.DoesNotExist:
+        raise Http404(
+            "Es wurden keine Einstellungen für diese Seite gefunden.")
+    else:
+        return redirect(settings.impressum)

@@ -1,0 +1,6 @@
+Guten Tag {{ user.first_name }} {{ user.last_name }},
+
+Sie haben sich erfolgreich beim Elternsprechtagsprotal registriert. Um sich anzumelden, können Sie diesem Link folgen: {{ current_site }}{% url 'login' %}
+
+Mit freundlichen Grüßen
+    Ihr Elternsprechtagsportal-Team

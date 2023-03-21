@@ -52,12 +52,14 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                'authentication/emails/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
             email_html_body = render_to_string(
-                'authentication/emails/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
 
             async_send_mail.delay(email_subject, email_str_body,
                                   up_user.student.child_email, email_html_body=email_html_body)
+            up_user.email_send = True
+            up_user.save()
             successfull_updates += 1
         self.message_user(
             request,
@@ -70,10 +72,46 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             messages.SUCCESS,
         )
 
-    list_display = ["student", "created"]
-    actions = [sendRegistrationMails]
-    # model = Upcomming_User
-    # urls = []
+    @admin.action(description="Recreate registration link and send email")
+    def recreateUpcommingUser(self, request, queryset):
+        successfull_updates = 0
+        for up_user in queryset:
+            student = up_user.student
+            up_user.delete()
+            Upcomming_User.objects.create(student=student)
+
+            current_site = os.environ.get("PUBLIC_URL")
+            email_subject = "Anmeldelink für den Elternsprechtag"
+            email_str_body = render_to_string(
+                'authentication/email/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+            email_html_body = render_to_string(
+                'authentication/email/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+
+            async_send_mail.delay(email_subject, email_str_body,
+                                  up_user.student.child_email, email_html_body=email_html_body)
+            up_user.email_send = True
+            up_user.save()
+            uccessfull_updates += 1
+        self.message_user(
+            request,
+            ngettext(
+                "%d regestration link was successfully recreated and send.",
+                "%d registration links were successfully recreates and send.",
+                successfull_updates,
+            )
+            % successfull_updates,
+            messages.SUCCESS,
+        )
+
+    list_display = ["student", "email_send"]
+    list_filter = ["email_send"]
+    search_fields = ["student"]
+    actions = [sendRegistrationMails, recreateUpcommingUser]
+    fieldsets = (
+        (None, {'fields': ('student', 'email_send', 'created')}),
+        (_('Access details'), {'fields': (
+            'user_token', 'access_key', 'otp', 'otp_verified', 'otp_verified_date')}),
+    )
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
@@ -101,8 +139,10 @@ class StudentAdmin(admin.ModelAdmin):
             for group in Group.objects.filter(name__startswith="class_"):
                 group.delete()
 
-            csv_file = request.FILES["csv_file"].read().decode('utf-8')
+            csv_file = request.FILES["csv_file"].read().decode('utf-8-sig')
             reader = csv.DictReader(io.StringIO(csv_file), delimiter=';')
+
+            created_students = 0
             for lines in reader:
                 student = Student.objects.filter(
                     shield_id=lines["eindeutige Nummer (GUID)"])
@@ -116,7 +156,17 @@ class StudentAdmin(admin.ModelAdmin):
                     student.last_name = lines["Nachname"]
                     student.class_name = lines["Klasse"]
                     student.save()
-            self.message_user(request, "Your csv file has been imported")
+                    created_students += 1
+            self.message_user(
+                request,
+                ngettext(
+                    "%d student was newely created.",
+                    "%d students were newely created.",
+                    created_students,
+                )
+                % created_students,
+                messages.SUCCESS,
+            )
             return redirect("..")
         form = AdminCsvImportForm()
         payload = {"form": form}

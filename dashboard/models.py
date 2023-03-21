@@ -101,3 +101,4 @@ class SiteSettings(SingletonModel):
         default=datetime.timedelta(seconds=0))
     time_start = models.TimeField(default=timezone.now)
     time_end = models.TimeField(default=timezone.now)
+    impressum = models.URLField(max_length=200, default="")

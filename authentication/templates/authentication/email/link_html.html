@@ -1,5 +1,4 @@
 {% load i18n %}{% autoescape off %}
-
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -11,7 +10,7 @@
     <meta name="x-apple-disable-message-reformatting">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="telephone=no" name="format-detection">
-    <title>Elternsprechtag-Passwort zurcksetzen</title>
+    <title>Elternsprechtag-Kind registrieren</title>
     <!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;} </style><![endif]-->
     <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
     <!--[if gte mso 9]><xml> <o:OfficeDocumentSettings> <o:AllowPNG></o:AllowPNG> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]-->
@@ -496,7 +495,7 @@
                                                                     style="Margin:0;padding-top:15px;padding-bottom:15px;padding-left:40px;padding-right:40px">
                                                                     <h1
                                                                         style="Margin:0;line-height:55px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">
-                                                                        Passwort zurücksetzen</h1>
+                                                                        Kind registrieren</h1>
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -504,10 +503,9 @@
                                                                     style="padding:0;Margin:0;padding-top:10px">
                                                                     <p
                                                                         style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">
-                                                                        Hallo {{ user.first_name }}
-                                                                        {{ user.last_name }},
+                                                                        Sehr geehrte Damen und Herren,
                                                                         <br>folgen Sie bitte diesem
-                                                                        Link, um Ihr Passwort zurück zu setzen:
+                                                                        Link, um mit der Registrierung zu beginnen:
                                                                     </p>
                                                                 </td>
                                                             </tr>
@@ -523,32 +521,39 @@
                                                             <tr>
                                                                 <td align="center"
                                                                     style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px">
-                                                                    <!--[if mso]><a href="{{ current_site }}{% url 'password_reset_confirm' uidb64=uid token=token %}" target="_blank" hidden> <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" esdevVmlButton href="https://elternsprechtagsvklöksdkl.com" style="height:44px; v-text-anchor:middle; width:266px" arcsize="14%" stroke="f" fillcolor="#861e32"> <w:anchorlock></w:anchorlock> <center style='color:#ffffff; font-family:arial, "helvetica neue", helvetica, sans-serif; font-size:18px; font-weight:400; line-height:18px; mso-text-raise:1px'>Passwort zurücksetzen</center> </v:roundrect></a><![endif]-->
-                                                                    <!--[if !mso]><!-- --><span
-                                                                        class="msohide es-button-border"
-                                                                        style="border-style:solid;border-color:#2CB543;background:#861e32;border-width:0px;display:inline-block;border-radius:6px;width:auto;mso-hide:all"><a
-                                                                            href="{{ current_site }}{% url 'password_reset_confirm' uidb64=uid token=token %}"
+                                                                    <span class="msohide es-button-border"
+                                                                        style="border-style:solid;border-color:#2CB543;background:#861e32;border-width:0px;display:inline-block;border-radius:6px;width:auto;mso-hide:all">
+                                                                        <a href="{{ current_site }}/register/{{ id }}/{{ key }}/"
                                                                             class="es-button" target="_blank"
-                                                                            style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;display:inline-block;background:#861e32;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;padding:10px 30px 10px 30px;padding-left:30px;padding-right:30px;border-color:#861e32">Passwort
-                                                                            zurücksetzen</a></span>
-                                                                    <!--<![endif]-->
+                                                                            style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;display:inline-block;background:#861e32;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;padding:10px 30px 10px 30px;padding-left:30px;padding-right:30px;border-color:#861e32">
+                                                                            Beginnen
+                                                                        </a>
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td align="left" style="padding:0;Margin:0">
                                                                     <p
                                                                         style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">
-                                                                        Nachdem Sie den Link gefolgt sind, geben Sie
-                                                                        bitte das neue gewünschte Passwort ein. Danach
-                                                                        sollten Sie sich wieder wie gewohnt mit Ihren
-                                                                        neuen Anmeldedaten anmelden können.<br>Falls Sie
-                                                                        hilfe benötigen, könnn Sie diese hier finden:
-                                                                        https://wiki.jhg-elternsprechtag.de/books/dokumentation-eltern/page/zurucksetzen-des-passwortes
-                                                                        <br><br>Mit freundlich Grüßen
+                                                                        Ihr Einmalkennwort lautet:
+                                                                        <strong>{{ otp }}</strong>
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="left" style="padding:0;Margin:0">
+                                                                    <p
+                                                                        style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">
+                                                                        Mit dem Link können Sie mit der Registrierung
+                                                                        beginnen. Wie dies geht können Sie unter
+                                                                        folgender Addresse nachlesen:
+                                                                        https://wiki.jhg-elternsprechtag.de/books/dokumentation-eltern/page/registrierung-eines-eltern-accounts
+                                                                        <br><br>Mit
+                                                                        freundlich Grüßen
                                                                     </p>
                                                                     <p
                                                                         style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px;margin-left:40px">
-                                                                        Ihr Elternsprechtag-Team</p>
+                                                                        Ihr Elternsprechtagsportal-Team</p>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -561,7 +566,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table cellpadding="0" cellspacing="0" class="es-footer" align="center"
+                    <!-- <table cellpadding="0" cellspacing="0" class="es-footer" align="center"
                         style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top">
                         <tr>
                             <td align="center" style="padding:0;Margin:0">
@@ -582,12 +587,13 @@
                                                                     style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px">
                                                                     <p
                                                                         style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#a9a9a9;font-size:12px">
-                                                                        Falls Sie Ihr Passwort nicht zurücksetzen
-                                                                        wollten, müssen Sie diese Nachricht nicht weiter
-                                                                        beachten.</p>
+                                                                        If you didn't request to reset
+                                                                        your&nbsp;password, please disregard this
+                                                                        message or contact our customer service
+                                                                        department.</p>
                                                                 </td>
                                                             </tr>
-                                                            <!-- <tr>
+                                                            <tr>
                                                                 <td style="padding:0;Margin:0">
                                                                     <table cellpadding="0" cellspacing="0" width="100%"
                                                                         class="es-menu" role="presentation"
@@ -608,7 +614,7 @@
                                                                         </tr>
                                                                     </table>
                                                                 </td>
-                                                            </tr> -->
+                                                            </tr>
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -618,7 +624,7 @@
                                 </table>
                             </td>
                         </tr>
-                    </table>
+                    </table> -->
                 </td>
             </tr>
         </table>

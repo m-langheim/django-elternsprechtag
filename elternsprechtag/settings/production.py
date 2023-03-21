@@ -36,18 +36,19 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file_warning': {
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/django.debug.log',
-            'formatter': 'django.server',
-        },
+        # 'file_warning': {
+        #     'class': 'logging.FileHandler',
+        #     'filename': '/var/log/django.debug.log',
+        #     'formatter': 'django.server',
+        # },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
     },
     'root': {
-        'handlers': ['file_warning', 'console'],
+        # 'handlers': ['file_warning', 'console'],
+        'handlers': ['console'],
         'level': 'DEBUG',
     },
 }
@@ -59,7 +60,7 @@ EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_COMPLETE = os.environ.get("EMAIL_COMPLETE")
-
+DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_COMPLETE")
 
 # Celery Settings
 CELERY_BROKER_URL = "redis://"+os.environ.get("REDIS_HOST")+":6379"

@@ -52,7 +52,7 @@ def add_teacher_data(sender, instance, created, **kwargs):
 #         current_site = os.environ.get("PUBLIC_URL")
 #         email_subject = "Anmeldelink für den Elternsprechtag"
 #         email_body = render_to_string(
-#             'authentication/emails/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
+#             'authentication/email/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
 
 #         async_send_mail.delay(email_subject, email_body,
 #                               instance.student.child_email)

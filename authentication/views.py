@@ -6,6 +6,18 @@ from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import logout
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+import os
+from .tasks import async_send_mail
 
 
 def register(request, user_token, key_token):
@@ -26,12 +38,6 @@ def register(request, user_token, key_token):
         Upcomming_User.objects.create(student=studi)
         return render(request, 'authentication/register/link_deprecated.html')
 
-    # logout user
-    if request.user.is_authenticated:
-        logout(request)
-        messages.info(
-            request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
-
     if user_data.otp_verified:
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
@@ -46,7 +52,7 @@ def register(request, user_token, key_token):
             if request.GET.get('register', False):
                 if request.method == 'POST':
                     form = Register_Parent_Account(request.POST)
-                    if form.is_valid():
+                    if form.is_valid():  # Erstellung des Nutzers
                         cu = CustomUser(
                             email=form.cleaned_data['email'],
                             first_name=form.cleaned_data['first_name'],
@@ -56,7 +62,14 @@ def register(request, user_token, key_token):
                         cu.students.add(user_data.student)
                         cu.save()
                         user_data.delete()
+                        async_send_mail.delay("Registrierung erfolgreich", render_to_string(
+                            "authentication/register/register_finished_email.txt", {'user': cu, 'current_site': os.environ.get("PUBLIC_URL")}), cu.email)
                         # {'page': request.GET.get("page")}
+                        # logout user
+                        if request.user.is_authenticated:
+                            logout(request)
+                            messages.info(
+                                request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
                         return redirect('login')
 
                 else:
@@ -125,3 +138,35 @@ def register(request, user_token, key_token):
             request,
             'authentication/register/register_otp.html',
             {'otp_form': form, 'child_name': name})
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = CustomPasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = CustomUser.objects.filter(Q(email=data))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "authentication/password-reset/password_reset_email.txt"
+                    c = {
+                        "email": user.email,
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'current_site': os.environ.get("PUBLIC_URL"),
+                    }
+                    email = render_to_string(email_template_name, c)
+                    # email_html = render_to_string(
+                    #     "authentication/password-reset/password_reset_email_html.html", c)
+                    # send_mail(subject, email, 'admin@example.com',
+                    #           [user.email], fail_silently=False)
+                    # async_send_mail.delay(
+                    #     subject, email, user.email, email_html_body=email_html)
+                    async_send_mail.delay(
+                        subject, email, user.email)
+                    # return redirect("password_reset_done")
+            return redirect("password_reset_done")
+    password_reset_form = CustomPasswordResetForm()
+    return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})

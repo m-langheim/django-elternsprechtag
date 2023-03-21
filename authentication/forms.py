@@ -1,8 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from .models import CustomUser
-from django.utils.translation import gettext as _
 from crispy_forms.helper import FormHelper
+from django.utils.translation import gettext as _
 
 class CustomAuthForm(AuthenticationForm): # login
     class Meta:
@@ -13,8 +13,26 @@ class CustomAuthForm(AuthenticationForm): # login
         self.fields['username'].label = False
         self.fields['password'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}) 
         self.fields['password'].label = False
-        self.helper = FormHelper()
 
+class CustomPasswordResetForm(PasswordResetForm): # password reset
+    class Meta:
+        fields = ['email']
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget = forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'autocomplete': "off"})
+        self.fields['email'].label = False
+
+class CustomSetPasswordForm(SetPasswordForm):
+
+    class Meta:
+        fields = ['new_password1','new_password2']
+
+    def __init__(self, *args, **kwargs):
+        super(CustomSetPasswordForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password', 'autocomplete': "off"})
+        self.fields['new_password1'].label = False
+        self.fields['new_password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm password', 'autocomplete': "off"})
+        self.fields['new_password2'].label = False
 
 class CustomUserCreationForm(UserCreationForm):
 
