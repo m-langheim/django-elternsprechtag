@@ -142,7 +142,7 @@ def register(request, user_token, key_token):
 
 def password_reset_request(request):
     if request.method == "POST":
-        password_reset_form = PasswordResetForm(request.POST)
+        password_reset_form = CustomPasswordResetForm(request.POST)
         if password_reset_form.is_valid():
             data = password_reset_form.cleaned_data['email']
             associated_users = CustomUser.objects.filter(Q(email=data))
@@ -166,6 +166,7 @@ def password_reset_request(request):
                     #     subject, email, user.email, email_html_body=email_html)
                     async_send_mail.delay(
                         subject, email, user.email)
-                    return redirect("password_reset_done")
-    password_reset_form = PasswordResetForm()
+                    # return redirect("password_reset_done")
+            return redirect("password_reset_done")
+    password_reset_form = CustomPasswordResetForm()
     return render(request=request, template_name="authentication/password-reset/password_reset.html", context={"password_reset_form": password_reset_form})

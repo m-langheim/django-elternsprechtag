@@ -257,12 +257,20 @@ def create_event_PDF(request):
 
     datetime_objects = events.order_by('start').values_list("start", flat=True)
     for datetime_object in datetime_objects:
-        if timezone.localtime(datetime_object).date() not in dates:
-            dates.append(timezone.localtime(datetime_object).date())
+        if timezone.localtime(datetime_object).date() not in [date.date() for date in dates]:
+            dates.append(datetime_object.astimezone(pytz.UTC))
 
     events_dct = {}
     for date in dates:
-        events_dct[str(date)] = events.filter(start__date=date)
+        events_dct[str(date.date())] = Event.objects.filter(
+                Q(start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()
+                )),
+                Q(start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
+                )))
 
     date_style = ParagraphStyle('date_style',
                                 fontName="Helvetica-Bold",
@@ -272,10 +280,18 @@ def create_event_PDF(request):
                                 )
 
     for date in dates:
-        elements.append(Paragraph(str(date.strftime("%d.%m.%Y")), date_style))
+        elements.append(Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style))
         elements.append(Spacer(0, 5))
 
-        events_per_date = events.filter(Q(start__date=date))
+        events_per_date = events.filter(
+                Q(start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()
+                )),
+                Q(start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time()
+                )))
         for event_per_date in events_per_date:
             t = str(timezone.localtime(
                 event_per_date.start).time().strftime("%H:%M"))
