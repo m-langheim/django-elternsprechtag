@@ -303,8 +303,12 @@ def create_event_PDF(request):
                     s += "{} {}; ".format(student.first_name,
                                           student.last_name)
                 s = s[:-2]
+            
+            b = ""
+            if event_per_date.status == 2:
+                b = "| Nicht bestätigt"
 
-            elements.append(Paragraph(f"{t}  |  {s}", styles["Normal"]))
+            elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
             elements.append(Spacer(0, 5))
 
     def header_and_footer(canvas, doc):
