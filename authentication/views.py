@@ -42,12 +42,16 @@ def register(request, user_token, key_token):
         # check if otp was set to verified in last 3 hours
         if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
             if request.GET.get('login', False) and request.user.is_authenticated:
-                user = request.user
-                user.students.add(user_data.student)
-                user.save()
-                user_data.delete()
+                if request.user.role == 0:
+                    user = request.user
+                    user.students.add(user_data.student)
+                    user.save()
+                    user_data.delete()
 
-                return redirect("home")
+                    return redirect("home")
+                else:
+                    logout(request)
+                    return render(request, 'authentication/register/unusable_account.html')
 
             if request.GET.get('register', False):
                 if request.method == 'POST':
@@ -69,7 +73,7 @@ def register(request, user_token, key_token):
                         if request.user.is_authenticated:
                             logout(request)
                             messages.info(
-                                request, "Sie wurden abgemeldet um den Registrierungsvorgang fort zu setzen.")
+                                request, "Sie wurden abgemeldet um den Registrierungsvorgang fortzusetzen.")
                         return redirect('login')
 
                 else:
