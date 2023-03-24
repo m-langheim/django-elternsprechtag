@@ -78,20 +78,20 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
         for up_user in queryset:
             student = up_user.student
             up_user.delete()
-            Upcomming_User.objects.create(student=student)
+            new_up_user = Upcomming_User.objects.create(student=student)
 
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                'authentication/email/link.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link.html', {'current_site': current_site, 'id': new_up_user.user_token, 'key': new_up_user.access_key, 'otp': new_up_user.otp})
             email_html_body = render_to_string(
-                'authentication/email/link_html.html', {'current_site': current_site, 'id': up_user.user_token, 'key': up_user.access_key, 'otp': up_user.otp})
+                'authentication/email/link_html.html', {'current_site': current_site, 'id': new_up_user.user_token, 'key': new_up_user.access_key, 'otp': new_up_user.otp})
 
             async_send_mail.delay(email_subject, email_str_body,
-                                  up_user.student.child_email, email_html_body=email_html_body)
-            up_user.email_send = True
-            up_user.save()
-            uccessfull_updates += 1
+                                  new_up_user.student.child_email, email_html_body=email_html_body)
+            new_up_user.email_send = True
+            new_up_user.save()
+            successfull_updates += 1
         self.message_user(
             request,
             ngettext(
