@@ -128,8 +128,8 @@ def register(request, user_token, key_token):
                         {'child_name': name, 'path': request.get_full_path()})
                     # report the error to the user
 
-                else:
-                    messages.error(request, _("The code is invalid"))
+                #else:
+                #    messages.error(request, _("The code is invalid"))
 
         else:
             form = Register_OTP()

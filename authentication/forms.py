@@ -49,11 +49,12 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class Register_OTP(forms.Form): # one time password
-    def validate_code(value):
-        if len(value) != 6:
-            raise forms.ValidationError(_('The code consists of 6 digits'))
+    otp = forms.CharField(label=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Code'}), min_length=6, max_length=6)
 
-    otp = forms.CharField(label=False, widget=forms.NumberInput(attrs={'placeholder': 'Code'}), validators=[validate_code])
+    def clean(self):
+        if self.cleaned_data('otp') != 6: # how to get the amount of chars?
+            raise forms.ValidationError(_("a error."), code='invalid_.')
+
 
 
 class Register_Parent_Account(forms.Form): # register (parent account)
