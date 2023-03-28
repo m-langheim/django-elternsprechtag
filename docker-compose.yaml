@@ -24,6 +24,11 @@ services:
       - EMAIL_HOST_PASSWORD=email
       - PUBLIC_URL=http://localhost:8080
       - EMAIL_COMPLETE=email@example.com
+      # optional for backup configuration
+      - USE_FTP_BACKUP=true
+      - FTP_SERVER=ftp.test.com
+      - FTP_USERNAME=test
+      - FTP_USER_PASSWORD=test1234
     volumes:
       - media:/app/media
       - static:/app/staticfiles
