@@ -9,6 +9,7 @@ services:
   django:
     image: janni06/django-elternsprechtag:latest
     environment:
+      - TZ=Europe/Berlin
       - DB_HOST=db
       - DB_NAME=elternsprechtagapp
       - DB_USERNAME=elternsprechtag
@@ -56,6 +57,7 @@ services:
     image: janni06/django-elternsprechtag:latest
     command: celery -A elternsprechtag worker -B --loglevel=DEBUG
     environment:
+      - TZ=Europe/Berlin
       - REDIS_HOST=redis
       - DB_HOST=db
       - DB_NAME=elternsprechtagapp
@@ -69,6 +71,11 @@ services:
       - EMAIL_HOST_PASSWORD=email
       - PUBLIC_URL=http://localhost:8080
       - EMAIL_COMPLETE=email@example.com
+      # optional for backup configuration
+      - USE_FTP_BACKUP=true
+      - FTP_SERVER=ftp.test.com
+      - FTP_USERNAME=test
+      - FTP_USER_PASSWORD=test1234
     links:
       - redis
     depends_on:
