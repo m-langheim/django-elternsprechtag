@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from .models import CustomUser
-from crispy_forms.helper import FormHelper
 from django.utils.translation import gettext as _
+from .models import *
+from django.db.models import Q
 
 class CustomAuthForm(AuthenticationForm): # login
     class Meta:
@@ -49,13 +50,35 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class Register_OTP(forms.Form): # one time password
-    otp = forms.CharField(label=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Code'}), min_length=6, max_length=6)
+    def __init__(self, *args, **kwargs):
+        self.user_token = kwargs.pop('user_token')
+        self.key_token = kwargs.pop('key_token')
+        super(Register_OTP, self).__init__(*args, **kwargs)
 
-    def clean(self):
-        if self.cleaned_data('otp') != 6: # how to get the amount of chars?
-            raise forms.ValidationError(_("a error."), code='invalid_.')
+    otp1 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus1(this)'}), required=True, max_length=1)
+    otp2 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus2(this)'}), required=True, max_length=1)
+    otp3 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus3(this)'}), required=True, max_length=1)
+    otp4 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus4(this)'}), required=True, max_length=1)
+    otp5 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus5(this)'}), required=True, max_length=1)
+    otp6 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center'}), required=True, max_length=1)
 
+    def clean_otp6(self):
+        otp1 = self.cleaned_data['otp1']
+        otp2 = self.cleaned_data['otp2']
+        otp3 = self.cleaned_data['otp3']
+        otp4 = self.cleaned_data['otp4']
+        otp5 = self.cleaned_data['otp5']
+        otp6 = self.cleaned_data['otp6']
+        user_data = Upcomming_User.objects.get(Q(user_token=self.user_token), Q(access_key=self.key_token))
 
+        # Clear the fields if any error arises
+        
+        if not (otp1.isdigit() and otp2.isdigit() and otp3.isdigit() and otp4.isdigit() and otp5.isdigit() and otp6.isdigit()):
+            raise forms.ValidationError("The code does not only exist of digits.", code="invalid_type")
+        
+        print(str(otp1) + str(otp2) + str(otp3) + str(otp4) + str(otp5) + str(otp6))
+        if str(user_data.otp) != (str(otp1) + str(otp2) + str(otp3) + str(otp4) + str(otp5) + str(otp6)):
+            raise forms.ValidationError("This verification code is not correct.", code="incorrect_code")
 
 class Register_Parent_Account(forms.Form): # register (parent account)
     def validate_the_email(value):

@@ -13,3 +13,11 @@ Bei den Abfragen der Students lässt sich mit "customuser_set" das Elternteil ab
 fortschrittsbalken für passwort reset und registrierung
 
 farben auf der teacher profilseite
+
+forms.py - Register_OTP
+Clear the fields if any error arises
+
+register_otp.html - scripts
+In das Script muss noch herein, dass beim Kopieren der Text auf die Fields aufgeteilt wird
+
+Email an IServ-Email-Adresse, wenn dieser Schüler einem Konto hinzugefügt wurde

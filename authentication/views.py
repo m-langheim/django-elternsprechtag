@@ -85,7 +85,7 @@ def register(request, user_token, key_token):
                     {'register_parent_account': form})
             name = user_data.student
             name = str(name)
-            if len(name) > 18:
+            if len(name) > 20:
                 name = name[:18]
                 name = name+'...'
             # view to choose between registering a new user and logging in
@@ -98,10 +98,10 @@ def register(request, user_token, key_token):
             #     request, _("The validation has timed out, please reenter your pin"))
             user_data.otp_verified = False
             user_data.save()
-            form = Register_OTP()
+            form = Register_OTP(user_token=user_token, key_token=key_token)
             name = user_data.student
             name = str(name)
-            if len(name) > 18:
+            if len(name) > 20:
                 name = name[:18]
                 name = name+'...'
             return render(
@@ -110,32 +110,26 @@ def register(request, user_token, key_token):
                 {'otp_form': form, 'child_name': name})
     else:
         if request.method == 'POST':
-            form = Register_OTP(request.POST)
+            form = Register_OTP(request.POST, user_token=user_token, key_token=key_token)
             if form.is_valid():
-                # type muss beachtet werden (int und str)
-                if str(user_data.otp) == form.cleaned_data['otp']:
-                    user_data.otp_verified = True
-                    user_data.otp_verified_date = timezone.now()
-                    user_data.save()
-                    name = user_data.student
-                    name = str(name)
-                    if len(name) > 18:
-                        name = name[:18]
-                        name = name+'...'
-                    return render(
-                        request,
-                        "authentication/register/register_choose.html",
-                        {'child_name': name, 'path': request.get_full_path()})
-                    # report the error to the user
-
-                #else:
-                #    messages.error(request, _("The code is invalid"))
+                user_data.otp_verified = True
+                user_data.otp_verified_date = timezone.now()
+                user_data.save()
+                name = user_data.student
+                name = str(name)
+                if len(name) > 20:
+                    name = name[:18]
+                    name = name+'...'
+                return render(
+                    request,
+                    "authentication/register/register_choose.html",
+                    {'child_name': name, 'path': request.get_full_path()})
 
         else:
-            form = Register_OTP()
+            form = Register_OTP(user_token=user_token, key_token=key_token)
         name = user_data.student
         name = str(name)
-        if len(name) > 18:
+        if len(name) > 20:
             name = name[:18]
             name = name+'...'
         return render(
