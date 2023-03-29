@@ -15,7 +15,6 @@
         margin-bottom: 0.5vh !important;
     }
 </style>
-<!-- Habe einen Link zum Passwort reset hinzugefügt -->
 <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
         <div class="card shadow" style="border-radius: 10px;">
@@ -33,7 +32,6 @@
                     {% load crispy_forms_tags %}
                     {{ form.username|as_crispy_field }}
                     {{ form.password|as_crispy_field }}
-                    <!-- {{form|crispy}} -->
                     {% if form.errors %}
                     <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Email and
                         Password do not match</div>

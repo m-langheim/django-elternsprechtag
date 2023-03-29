@@ -22,4 +22,4 @@ In das Script muss noch herein, dass beim Kopieren der Text auf die Fields aufge
 
 Email an IServ-Email-Adresse, wenn dieser Schüler einem Konto hinzugefügt wurde
 
-Wichtig: Beim Registrierungsvorgang choose muss beim login erst abgemeldet werden, außerdem im html gucken, ob es im registrierungsvorgang ist: dann progressbar hinzufügen
+register_otp: wenn eine zahl entfernt wird durch backslash (?), muss wieder in das letzte feld gesprungen werden

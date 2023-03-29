@@ -81,23 +81,23 @@ class Register_OTP(forms.Form): # one time password
             raise forms.ValidationError("This verification code is not correct.", code="incorrect_code")
 
 class Register_Parent_Account(forms.Form): # register (parent account)
-    def validate_the_email(value):
-        if CustomUser.objects.filter(email=value).exists():
-            raise forms.ValidationError(_('This email is already in use. Please select another email.'))
+    email = forms.CharField(widget=forms.EmailInput(attrs={'placeholder': 'Email', 'autocomplete': 'off'}), label=False)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'First Name', 'autocomplete': 'off'}), label=False)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Last Name', 'autocomplete': 'off'}), label=False)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'autocomplete': 'off'}), max_length=255, label=False)
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password', 'autocomplete': 'off'}), max_length=255, label=False)
 
-    email = forms.CharField(widget=forms.EmailInput(attrs={'placeholder': _('Email'), 'autocomplete': 'off'}), validators=[validate_the_email], label=False)
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _('First Name'), 'autocomplete': 'off'}), label=False)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _('Last Name'), 'autocomplete': 'off'}), label=False)
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password'), 'autocomplete': 'off'}), max_length=255, label=False)
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Confirm Password'), 'autocomplete': 'off'}), max_length=255, label=False)
-
-    def clean(self):
+    def clean_confirm_password(self):
         password = self.cleaned_data['password']
         confirm_password = self.cleaned_data['confirm_password']
+        email = self.cleaned_data['email']
 
-        if password == confirm_password:
-            return self.cleaned_data
-        raise forms.ValidationError(_("a error."))
+        if password != confirm_password:
+            raise forms.ValidationError("The passwords do not match", code="passwords_wrong")
+        
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email is already in use. Please select another one.', code='email_')
+        
 
 class AdminCsvImportForm(forms.Form):
     csv_file = forms.FileField()
