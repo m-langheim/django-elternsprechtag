@@ -21,3 +21,5 @@ register_otp.html - scripts
 In das Script muss noch herein, dass beim Kopieren der Text auf die Fields aufgeteilt wird
 
 Email an IServ-Email-Adresse, wenn dieser Schüler einem Konto hinzugefügt wurde
+
+Wichtig: Beim Registrierungsvorgang choose muss beim login erst abgemeldet werden, außerdem im html gucken, ob es im registrierungsvorgang ist: dann progressbar hinzufügen
