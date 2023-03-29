@@ -1,6 +1,6 @@
 {% extends "authentication/base.html" %}
 {% load i18n %}
-{% block title %} {% translate 'Register' %} {% endblock title %}
+{% block title %} {% translate 'Login' %} {% endblock title %}
 
 {% block content %}
 
@@ -22,7 +22,7 @@
     <p class="description2">{% translate 'to a new or an existing parent account' %}</p>
     <div class="strich"></div>
     <p class="login_zusatz">{% translate 'to link an existing parent account' %}</p>
-    <a href="{% url 'login' %}?next={{ path }}?login=true" class="login">{% translate 'Login' %}</a>
+    <a href="{% url 'logout' %}?next=/login/?next={{ path }}?login=true" class="login">{% translate 'Login' %}</a>
     <p class="register_zusatz">{% translate 'to create a new parent account' %}</p>
     <a href="{{ path }}?register=true" class="register">{% translate 'Register' %}</a>
 </div>

@@ -7,4 +7,5 @@
 <h1>
     {% translate 'Please use a parent account for your child!' %}
 </h1>
+<a href="{% url 'login' %}?next={{ path }}">Login again?</a>
 {% endblock content %}
