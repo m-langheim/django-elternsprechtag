@@ -55,12 +55,12 @@ class Register_OTP(forms.Form): # one time password
         self.key_token = kwargs.pop('key_token')
         super(Register_OTP, self).__init__(*args, **kwargs)
 
-    otp1 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus1(this)'}), required=True, max_length=1)
-    otp2 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus2(this)'}), required=True, max_length=1)
-    otp3 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus3(this)'}), required=True, max_length=1)
-    otp4 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus4(this)'}), required=True, max_length=1)
-    otp5 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus5(this)'}), required=True, max_length=1)
-    otp6 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center'}), required=True, max_length=1)
+    otp1 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus1(this)', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp2 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus2(this)', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp3 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus3(this)', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp4 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus4(this)', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp5 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus5(this)', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp6 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'autocomplete': 'off'}), required=True, max_length=1)
 
     def clean_otp6(self):
         otp1 = self.cleaned_data['otp1']
