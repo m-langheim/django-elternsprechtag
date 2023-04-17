@@ -4,8 +4,54 @@
 {% block title %} Dashboard - Profile {% endblock title %}
 
 {% block profile_content %}
+
 <p class="h1">Tags bearbeiten</p>
-<div class="row">
+
+<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border"> <!-- style="background-color: #efefef;"-->
+    <div>
+        <p class="small text-success mb-1">Aktive Tags</p>
+        <div class="d-flex align-content-start flex-wrap">
+            {% if tags|length > 0 %}
+            {% for tag in tags %}
+            <span class="badge bg-light rounded-pill me-1 mt-1"
+                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
+                {{ tag.name }}
+            </span>
+            {% endfor %}
+            {% else %}
+            <p>This teacher does not have any tags</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border"> <!-- style="background-color: #efefef;"-->
+    <div>
+        <p class="small text-danger mb-1">Inaktive Tags</p> <!-- Hier brauche ich eine Liste, die alle Tags beinhaltet, die nicht in der aktive Tags liste sind-->
+        <div class="d-flex align-content-start flex-wrap">
+            {% if tags|length > 0 %}
+            {% for tag in tags %}
+            <span class="badge bg-light rounded-pill me-1 mt-1"
+                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
+                {{ tag.name }}
+            </span>
+            {% endfor %}
+            {% else %}
+            <p>This teacher does not have any tags</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- <div class="row">
     <div class="col">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#configureTagsModal">Bearbeiten</button>
@@ -14,9 +60,9 @@
 {% if tags|length > 0 %}
 <div class="card">
     <div class="card-body">
-        {% for tag in tags %}
-        <!-- <div class="container" style="color: {{tag.color}};"><strong>{{ tag.name }}</strong></div> -->
-        <span class="badge rounded-pill" style="background-color: {{tag.color}};">
+        {% for tag in tags %} -->
+<!-- <div class="container" style="color: {{tag.color}};"><strong>{{ tag.name }}</strong></div> -->
+<!-- <span class="badge rounded-pill" style="background-color: {{tag.color}};">
             {{ tag.name }}</span>
         {% endfor %}
     </div>
@@ -46,5 +92,5 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
 {% endblock profile_content %}
