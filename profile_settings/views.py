@@ -71,7 +71,7 @@ class ChangePasswordView(View):
             return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
 
-
+# hier werden die tags usw geladen
 @method_decorator(teacher_decorators, name='dispatch')
 class EditTagsView(View):
     def get(self, request):
