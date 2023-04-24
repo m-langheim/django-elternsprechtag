@@ -1,0 +1,6 @@
+Guten Tag {{ user.first_name }} {{ user.last_name }},
+
+Ihr Schüleraccount wurde erfolgreich einem Elternaccount im Elternsprechtagsportal hinzugefügt.
+
+Mit freundlichen Grüßen
+    Ihr Elternsprechtagsportal-Team

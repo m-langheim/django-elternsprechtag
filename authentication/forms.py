@@ -48,7 +48,6 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = ('email',)
 
-
 class Register_OTP(forms.Form): # one time password
     def __init__(self, *args, **kwargs):
         self.user_token = kwargs.pop('user_token')
@@ -60,7 +59,7 @@ class Register_OTP(forms.Form): # one time password
     otp3 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus3(this)', 'autocomplete': 'off'}), required=True, max_length=1)
     otp4 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus4(this)', 'autocomplete': 'off'}), required=True, max_length=1)
     otp5 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus5(this)', 'autocomplete': 'off'}), required=True, max_length=1)
-    otp6 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'autocomplete': 'off'}), required=True, max_length=1)
+    otp6 = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'form-control text-center', 'onkeyup': 'changefocus6(this)', 'autocomplete': 'off'}), required=True, max_length=1)
 
     def clean_otp6(self):
         otp1 = self.cleaned_data['otp1']
@@ -76,7 +75,6 @@ class Register_OTP(forms.Form): # one time password
         if not (otp1.isdigit() and otp2.isdigit() and otp3.isdigit() and otp4.isdigit() and otp5.isdigit() and otp6.isdigit()):
             raise forms.ValidationError("The code does not only exist of digits.", code="invalid_type")
         
-        print(str(otp1) + str(otp2) + str(otp3) + str(otp4) + str(otp5) + str(otp6))
         if str(user_data.otp) != (str(otp1) + str(otp2) + str(otp3) + str(otp4) + str(otp5) + str(otp6)):
             raise forms.ValidationError("This verification code is not correct.", code="incorrect_code")
 
