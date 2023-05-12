@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from dashboard.decorators import parent_required
 from teacher.decorators import teacher_required
 from django.utils.decorators import method_decorator
+from authentication.models import Tag
 
 parent_decorators = [login_required, parent_required]
 teacher_decorators = [login_required, teacher_required]
@@ -71,17 +72,30 @@ class ChangePasswordView(View):
             return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
 
-# hier werden die tags usw geladen
-@method_decorator(teacher_decorators, name='dispatch')
-class EditTagsView(View):
-    def get(self, request):
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
 
-    def post(self, request):
-        tagConfigurationForm = configureTagsFormForTeacher(request.POST)
-        if tagConfigurationForm.is_valid():
-            extraData = request.user.teacherextradata
-            extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
-            extraData.save()
+#@method_decorator(teacher_decorators, name='dispatch') hier muss der für funktionen rein oder alles zur klasse ändern
+def editTags(request):
+    if request.method == 'GET':
+        res = [i for i in Tag.objects.all() if i not in request.user.teacherextradata.tags.all()]
+        return render(request, "profile_settings/teacher_change_tags.html", context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': res})
+    
+    if request.method == 'POST':
+        res = [i for i in Tag.objects.all() if i not in request.user.teacherextradata.tags.all()]
+        return render(request, "profile_settings/teacher_change_tags.html", context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': res})
+    
 
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm, 'tags': request.user.teacherextradata.tags.all()})
+
+
+#@method_decorator(teacher_decorators, name='dispatch')
+#class EditTagsView(View):
+#    def get(self, request):
+#        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
+#
+#    def post(self, request):
+#        tagConfigurationForm = configureTagsFormForTeacher(request.POST)
+#        if tagConfigurationForm.is_valid():
+#            extraData = request.user.teacherextradata
+#            extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
+#            extraData.save()
+#
+#        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm, 'tags': request.user.teacherextradata.tags.all()})

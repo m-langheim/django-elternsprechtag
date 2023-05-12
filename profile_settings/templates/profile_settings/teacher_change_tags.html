@@ -7,50 +7,88 @@
 <script>
 
     function remove(el) {
-        window.alert(el);
-        document.getElementById("store_active").appendChild(el); //wtf??? wieso funktioniert das nicht
-        el.remove();
+        var active = document.getElementById("store_active");
+        var inactive = document.getElementById("store_inactive");
+        var p_active = document.querySelector("#store_active p");
+        var p_inactive = document.querySelector("#store_inactive p");
+
+        if (el.parentElement == active) {
+            if (inactive.children.length <= 1) {
+                p_inactive.style.display = "none";
+            }
+            inactive.appendChild(el);
+            if (active.children.length <= 1) {
+                p_active.style.display = "block";
+            }
+        } else if (el.parentElement == inactive) {
+            if (active.children.length <= 1) {
+                p_active.style.display = "none";
+            }
+            active.appendChild(el);
+            if (inactive.children.length <= 1) {
+                p_inactive.style.display = "block";
+            }
+        }
+    }
+    function submit_form() {
+        // hier muss nh onclick function rein, die beim submit die ids im store_active sammelt und per ajax oder curl an views.py quasi zurückgibt
+
     }
 
 </script>
-
 <p class="h1">Tags bearbeiten</p>
 
-<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border"> <!-- style="background-color: #efefef;"-->
+<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
+    <!-- style="background-color: #efefef;"-->
     <div>
         <p class="small text-success mb-1">Aktive Tags</p>
         <div class="d-flex align-content-start flex-wrap" id="store_active">
-            {% if tags|length > 0 %}
-            {% for tag in tags %}
-            <span class="badge bg-light rounded-pill me-1 mt-1"
-                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}">
-                {{ tag.name }}
-            </span>
-            {% endfor %}
-            {% else %}
-            <p>This teacher does not have any tags</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
 
-<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border" id="loli"> <!-- style="background-color: #efefef;"-->
-    <div>
-        <p class="small text-danger mb-1">Inaktive Tags</p> <!-- Hier brauche ich eine Liste, die alle Tags beinhaltet, die nicht in der aktive Tags liste sind-->
-        <div class="d-flex align-content-start flex-wrap">
-            {% if tags|length > 0 %}
             {% for tag in tags %}
             <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)"
                 style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
                 {{ tag.name }}
             </span>
             {% endfor %}
+
+            {% if tags|length > 0 %}
+            <p style="display: none">This teacher does not have any tags</p>
             {% else %}
             <p>This teacher does not have any tags</p>
             {% endif %}
+
         </div>
     </div>
 </div>
+
+<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
+    <!-- style="background-color: #efefef;"-->
+    <div>
+        <p class="small text-danger mb-1">Inaktive Tags</p>
+        <div class="d-flex align-content-start flex-wrap" id="store_inactive">
+            {% for tag in all_tags %}
+            <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
+                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
+                {{ tag.name }}
+            </span>
+            {% endfor %}
+
+            {% if tags|length > 0 %}
+            <p style="display: none">This teacher does not have any tags</p>
+            {% else %}
+            <p>This teacher does not have any tags</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<form method="POST" action="{% url 'profile_edit_tag_view' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success mt-2" onclick="submit_form()">Accept</button>
+</form>
+
+
+
 
 
 
