@@ -30,10 +30,51 @@
             }
         }
     }
-    function submit_form() {
-        // hier muss nh onclick function rein, die beim submit die ids im store_active sammelt und per ajax oder curl an views.py quasi zurückgibt
 
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
+
+
+    function submit_form() {
+        url = window.location.href;
+
+        var active = document.getElementById("store_active");
+        tags = [];
+
+        for (child in active.children) {
+            tags.push(child.id.replace("tag-id-", ""));
+        }
+        
+        console.log(tags) //i think it child is no element
+
+        fetch(url, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({tags: tags})
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            });
+    }
+
 
 </script>
 <p class="h1">Tags bearbeiten</p>
@@ -45,7 +86,7 @@
         <div class="d-flex align-content-start flex-wrap" id="store_active">
 
             {% for tag in tags %}
-            <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)"
+            <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
                 style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
                 {{ tag.name }}
             </span>
@@ -78,13 +119,12 @@
             {% else %}
             <p>This teacher does not have any tags</p>
             {% endif %}
-
         </div>
     </div>
 </div>
-<form method="POST" action="{% url 'profile_edit_tag_view' %}">
+<form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
     {% csrf_token %}
-    <button type="submit" class="btn btn-success mt-2" onclick="submit_form()">Accept</button>
+    <button class="btn btn-success mt-2" onclick="submit_form()">Speichern</button> <!-- type="submit" -->
 </form>
 
 

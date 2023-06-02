@@ -11,6 +11,8 @@ from dashboard.decorators import parent_required
 from teacher.decorators import teacher_required
 from django.utils.decorators import method_decorator
 from authentication.models import Tag
+import json
+from django.http import HttpResponseBadRequest, JsonResponse
 
 parent_decorators = [login_required, parent_required]
 teacher_decorators = [login_required, teacher_required]
@@ -72,18 +74,24 @@ class ChangePasswordView(View):
             return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
 
+@teacher_required
+def editTagsView(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-#@method_decorator(teacher_decorators, name='dispatch') hier muss der für funktionen rein oder alles zur klasse ändern
-def editTags(request):
-    if request.method == 'GET':
-        res = [i for i in Tag.objects.all() if i not in request.user.teacherextradata.tags.all()]
-        return render(request, "profile_settings/teacher_change_tags.html", context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': res})
-    
-    if request.method == 'POST':
-        res = [i for i in Tag.objects.all() if i not in request.user.teacherextradata.tags.all()]
-        return render(request, "profile_settings/teacher_change_tags.html", context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': res})
-    
+    if is_ajax:
+        if request.method == 'POST':
+            data = json.load(request)
+            tags = data.get('tags')
 
+            print(tags)
+
+            #write new tags into model
+            return JsonResponse({'status': 'Updated Tags'})
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    else:
+        return render(request, "profile_settings/teacher_change_tags.html", 
+                context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all()))})
 
 
 #@method_decorator(teacher_decorators, name='dispatch')
