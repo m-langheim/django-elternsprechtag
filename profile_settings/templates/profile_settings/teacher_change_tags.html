@@ -54,20 +54,18 @@
         var active = document.getElementById("store_active");
         tags = [];
 
-        for (child in active.children) {
-            tags.push(child.id.replace("tag-id-", ""));
+        for (let i = 0; i < (active.children.length - 1); i++) {
+            tags.push(active.children[i].id.replace("tag-id-", ""));
         }
-        
-        console.log(tags) //i think it child is no element
 
-        fetch(url, {
+        fetch(url, { //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
             method: "POST",
             credentials: "same-origin",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                "X-Requested-With": "XMLHttpRequest", //I think this is not added to the header????
                 "X-CSRFToken": getCookie("csrftoken"),
             },
-            body: JSON.stringify({tags: tags})
+            body: JSON.stringify({ tags: tags })
         })
             .then(response => response.json())
             .then(data => {
