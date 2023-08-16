@@ -4,77 +4,7 @@
 {% block title %} Dashboard - Profile {% endblock title %}
 
 {% block profile_content %}
-<script>
 
-    function remove(el) {
-        var active = document.getElementById("store_active");
-        var inactive = document.getElementById("store_inactive");
-        var p_active = document.querySelector("#store_active p");
-        var p_inactive = document.querySelector("#store_inactive p");
-
-        if (el.parentElement == active) {
-            if (inactive.children.length <= 1) {
-                p_inactive.style.display = "none";
-            }
-            inactive.appendChild(el);
-            if (active.children.length <= 1) {
-                p_active.style.display = "block";
-            }
-        } else if (el.parentElement == inactive) {
-            if (active.children.length <= 1) {
-                p_active.style.display = "none";
-            }
-            active.appendChild(el);
-            if (inactive.children.length <= 1) {
-                p_inactive.style.display = "block";
-            }
-        }
-    }
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-
-    function submit_form() {
-        url = window.location.href;
-
-        var active = document.getElementById("store_active");
-        tags = [];
-
-        for (let i = 0; i < (active.children.length - 1); i++) {
-            tags.push(active.children[i].id.replace("tag-id-", ""));
-        }
-
-        fetch(url, { //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest", //I think this is not added to the header????
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-            body: JSON.stringify({ tags: tags })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            });
-    }
-
-
-</script>
 <p class="h1">Tags bearbeiten</p>
 
 <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
@@ -91,9 +21,9 @@
             {% endfor %}
 
             {% if tags|length > 0 %}
-            <p style="display: none">This teacher does not have any tags</p>
+            <p style="display: none; margin-bottom: 0;">This teacher does not have any tags</p>
             {% else %}
-            <p>This teacher does not have any tags</p>
+            <p style="margin-bottom: 0">This teacher does not have any tags</p>
             {% endif %}
 
         </div>
@@ -112,17 +42,17 @@
             </span>
             {% endfor %}
 
-            {% if tags|length > 0 %}
-            <p style="display: none">This teacher does not have any tags</p>
+            {% if all_tags|length > 0 %}
+            <p style="display: none; margin-bottom: 0">There aren't any inactive tags</p>
             {% else %}
-            <p>This teacher does not have any tags</p>
+            <p style="margin-bottom: 0">There aren't any inactive tags</p>
             {% endif %}
         </div>
     </div>
 </div>
 <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
     {% csrf_token %}
-    <button class="btn btn-success mt-2" onclick="submit_form()">Speichern</button> <!-- type="submit" -->
+    <button class="btn btn-success mt-2" id="submit_button">Speichern</button> <!-- type="submit" -->
 </form>
 
 
@@ -178,4 +108,89 @@
         </div>
     </div>
 </div> -->
+
+<script>
+
+    function remove(el) {
+        var active = document.getElementById("store_active");
+        var inactive = document.getElementById("store_inactive");
+        var p_active = document.querySelector("#store_active p");
+        var p_inactive = document.querySelector("#store_inactive p");
+
+        if (el.parentElement == active) {
+            if (inactive.children.length <= 1) {
+                p_inactive.style.display = "none";
+            }
+            inactive.appendChild(el);
+            if (active.children.length <= 1) {
+                p_active.style.display = "block";
+            }
+        } else if (el.parentElement == inactive) {
+            if (active.children.length <= 1) {
+                p_active.style.display = "none";
+            }
+            active.appendChild(el);
+            if (inactive.children.length <= 1) {
+                p_inactive.style.display = "block";
+            }
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const button = document.getElementById('submit_button');
+
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        url = window.location.href;
+
+        var active = document.getElementById("store_active");
+
+        tags = [];
+
+        for (let i = 0; i < (active.children.length - 1); i++) {
+            if (active.children[i].id.startsWith("tag-id-")) {
+                tags.push(active.children[i].id.replace("tag-id-", ""));
+            }
+        }
+
+        console.log(tags)
+
+        fetch(url, { //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                //"Content-Type": "application/json",
+                'X-Requested-With': 'XMLHttpRequest', //I think this is not added to the header????
+                'X-CSRFToken': getCookie("csrftoken")
+            },
+            body: JSON.stringify({ tags: tags }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    });
+
+
+</script>
+
 {% endblock profile_content %}

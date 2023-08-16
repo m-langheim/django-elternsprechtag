@@ -77,18 +77,26 @@ class ChangePasswordView(View):
 @teacher_required
 def editTagsView(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-    print(request.headers) #X-Requested-With is not added to the header so it won't work
-
-    print(is_ajax) #False
 
     if is_ajax:
         if request.method == 'POST':
             data = json.load(request)
             tags = data.get('tags')
+            extraData = request.user.teacherextradata
 
-            print(tags)
+            extraData.tags.set([])
 
-            #write new tags into model
+            elements = []
+            for el in tags:
+                if el != '' and el != None:
+                    elements.append(Tag.objects.get(Q(id=int(el))))
+
+            extraData.tags.set(elements)
+
+            print(extraData.tags.all())
+
+            extraData.save()
+
             return JsonResponse({'status': 'Updated Tags'})
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
