@@ -87,13 +87,15 @@ def editTagsView(request):
             extraData.tags.set([])
 
             elements = []
+
             for el in tags:
                 if el != '' and el != None:
-                    elements.append(Tag.objects.get(Q(id=int(el))))
+                    try :
+                        elements.append(Tag.objects.all().get(Q(id=int(el))))
+                    except:
+                        print("An error accured")
 
             extraData.tags.set(elements)
-
-            print(extraData.tags.all())
 
             extraData.save()
 
@@ -102,7 +104,7 @@ def editTagsView(request):
         return JsonResponse({'status': 'Invalid request'}, status=400)
     else:
         return render(request, "profile_settings/teacher_change_tags.html", 
-                context={'tags': request.user.teacherextradata.tags.all(), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all()))})
+                context={'tags': request.user.teacherextradata.tags.all().order_by('name'), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all().order_by('name')))})
 
 
 #@method_decorator(teacher_decorators, name='dispatch')
