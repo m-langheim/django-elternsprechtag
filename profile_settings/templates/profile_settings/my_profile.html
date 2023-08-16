@@ -29,13 +29,10 @@
         {% endif %}
         {% csrf_token %}
         {{ profile_form|crispy }}
-        <div class="row">
-            <div class="d-none d-lg-block col-lg-8 col-xl-10"></div>
-            <div class="col-12 col-lg-4 col-xl-2 d-flex justify-content-end">
-                <button type="submit" class="btn btn-outline-danger col-12">
-                    Speichern
-                </button>
-            </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-outline-danger">
+                Speichern
+            </button>
         </div>
 
     </form>

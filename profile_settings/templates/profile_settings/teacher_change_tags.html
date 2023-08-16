@@ -58,9 +58,9 @@
             </div>
         </div>
     </div>
-    <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
+    <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form" class="text-end">
         {% csrf_token %}
-        <button class="btn btn-success mt-2" id="submit_button">Speichern</button>
+        <button class="btn btn-outline-danger mt-2" id="submit_button">Speichern</button>
     </form>
 </div>
 
