@@ -6,4 +6,12 @@ Register OTP
 - beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
 - wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
 
-s. teacher_change_tags.html
+
+
+
+
+
+teacher_change_tags.html
+- ggf. Non-JS-Version
+- Cancel-Button
+- leichte Verschiebung wenn ein Div leer wird vermeiden

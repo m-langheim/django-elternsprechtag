@@ -6,54 +6,67 @@
 {% block profile_content %}
 
 <p class="h1">Tags bearbeiten</p>
+<p class="text-secondary">Bitte wählen Sie hier Ihre Tags, damit Eltern Sie einfacher finden können.</p>
 
-<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
-    <div>
-        <p class="small text-success mb-1">Aktive Tags</p>
-        <div class="d-flex align-content-start flex-wrap" id="store_active">
+<noscript>
 
-            {% for tag in tags %}
-            <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
-                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
-                {{ tag.name }}
-            </span>
-            {% endfor %}
+    <!-- No JavaScript-Disabled version at the moment -->
+    Bitte erlauben Sie JavaScript, um Ihre Tags zu ändern. </br>
+    <a href="https://www.enable-javascript.com/de/">Hier</a> erfahren Sie, wie dies funktioniert. Vielen Dank!
 
-            {% if tags|length > 0 %}
-            <p style="display: none; margin-bottom: 0;">Diese Lehrkraft hat keine zugewiesenen Tags</p>
-            {% else %}
-            <p style="margin-bottom: 0">Diese Lehrkraft hat keine zugewiesenen Tags</p>
-            {% endif %}
+</noscript>
 
+<div id="js-content" style="display: none;">
+    <div class="d-flex justify-content-start rounded-3 p-2 flex-grow-1 border">
+        <div>
+            <p class="small text-success mb-1">Aktive Tags</p>
+            <div class="d-flex align-content-start flex-wrap" id="store_active">
+
+                {% for tag in tags %}
+                <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
+                    style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
+                    {{ tag.name }}
+                </span>
+                {% endfor %}
+
+                {% if tags|length > 0 %}
+                <p style="display: none; margin-bottom: 0;">Diese Lehrkraft hat keine zugewiesenen Tags</p>
+                {% else %}
+                <p style="margin-bottom: 0">Diese Lehrkraft hat keine zugewiesenen Tags</p>
+                {% endif %}
+
+            </div>
         </div>
     </div>
-</div>
 
-<div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
-    <div>
-        <p class="small text-danger mb-1">Inaktive Tags</p>
-        <div class="d-flex align-content-start flex-wrap" id="store_inactive">
-            {% for tag in all_tags %}
-            <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
-                style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
-                {{ tag.name }}
-            </span>
-            {% endfor %}
+    <div class="d-flex justify-content-start rounded-3 p-2 mt-2 flex-grow-1 border">
+        <div>
+            <p class="small text-danger mb-1">Inaktive Tags</p>
+            <div class="d-flex align-content-start flex-wrap" id="store_inactive">
+                {% for tag in all_tags %}
+                <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
+                    style="border: 1px solid {{ tag.color }}; color: {{ tag.color }}; cursor: pointer;">
+                    {{ tag.name }}
+                </span>
+                {% endfor %}
 
-            {% if all_tags|length > 0 %}
-            <p style="display: none; margin-bottom: 0;">Es gibt keine inaktiven Tags</p>
-            {% else %}
-            <p style="margin-bottom: 0">Es gibt keine inaktivaten Tags</p>
-            {% endif %}
+                {% if all_tags|length > 0 %}
+                <p style="display: none; margin-bottom: 0;">Es gibt keine inaktiven Tags</p>
+                {% else %}
+                <p style="margin-bottom: 0">Es gibt keine inaktiven Tags</p>
+                {% endif %}
+            </div>
         </div>
     </div>
+    <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
+        {% csrf_token %}
+        <button class="btn btn-success mt-2" id="submit_button">Speichern</button>
+    </form>
 </div>
-<form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
-    {% csrf_token %}
-    <button class="btn btn-success mt-2" id="submit_button">Speichern</button>
-</form>
 
 <script>
+    var jsContent = document.getElementById("js-content");
+    jsContent.style.display = "block";
 
     function remove(el) {
         var active = document.getElementById("store_active");
@@ -100,6 +113,7 @@
 
     button.addEventListener("click", function (event) {
         event.preventDefault();
+        event.target.blur();
         url = window.location.href;
 
         var active = document.getElementById("store_active");
@@ -112,8 +126,6 @@
             }
         }
 
-        console.log(tags)
-
         fetch(url, {
             method: "POST",
             credentials: "same-origin",
@@ -123,59 +135,15 @@
             },
             body: JSON.stringify({ tags: tags }),
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     });
 
 </script>
 
 {% endblock profile_content %}
-
-<!-- <div class="row">
-    <div class="col">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#configureTagsModal">Bearbeiten</button>
-    </div>
-</div>
-{% if tags|length > 0 %}
-<div class="card">
-    <div class="card-body">
-        {% for tag in tags %}
-<div class="container" style="color: {{tag.color}};"><strong>{{ tag.name }}</strong></div>
-<span class="badge rounded-pill" style="background-color: {{tag.color}};">
-            {{ tag.name }}</span>
-        {% endfor %}
-    </div>
-</div>
-{% else %}
-<p class="text-muted">Es wurden keine Tags konfiguriert.</p>
-{% endif %}
-<div class="modal fade" id="configureTagsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tags bearbeiten</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form method="post">
-                {% csrf_token %}
-                <div class="modal-body">
-                    {{ edit_tags|crispy }}
-                    <p>Bitte wählen Sie alle Tags aus, die zu Ihrer Position passen. Dies soll es den Eltern erleichten
-                        Sie ausfindig zu machen.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-primary" value="Änderungen speichern" />
-                </div>
-            </form>
-        </div>
-    </div>
-</div> -->
