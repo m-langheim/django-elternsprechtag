@@ -17,8 +17,6 @@ from django.http import HttpResponseBadRequest, JsonResponse
 parent_decorators = [login_required, parent_required]
 teacher_decorators = [login_required, teacher_required]
 
-# Create your views here.
-
 
 @method_decorator(parent_decorators, name='dispatch')
 class StudentsListView(ListView):
@@ -71,8 +69,9 @@ class ChangePasswordView(View):
             update_session_auth_hash(request, user)
             messages.success(
                 request, "Das Passwort wurde erfolgreich geändert.")
-            return redirect("profile_my_profile")
+            # return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
+
 
 @teacher_required
 def editTagsView(request):
@@ -90,7 +89,7 @@ def editTagsView(request):
 
             for el in tags:
                 if el != '' and el != None:
-                    try :
+                    try:
                         elements.append(Tag.objects.all().get(Q(id=int(el))))
                     except:
                         print("An error accured")
@@ -98,17 +97,18 @@ def editTagsView(request):
             extraData.tags.set(elements)
 
             extraData.save()
+            messages.success(request, "Änderungen erfolgreich vorgenommen")
 
             return JsonResponse({'status': 'Updated Tags'})
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
     else:
-        return render(request, "profile_settings/teacher_change_tags.html", 
-                context={'tags': request.user.teacherextradata.tags.all().order_by('name'), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all().order_by('name')))})
+        return render(request, "profile_settings/teacher_change_tags.html",
+                      context={'tags': request.user.teacherextradata.tags.all().order_by('name'), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all().order_by('name')))})
 
 
-#@method_decorator(teacher_decorators, name='dispatch')
-#class EditTagsView(View):
+# @method_decorator(teacher_decorators, name='dispatch')
+# class EditTagsView(View):
 #    def get(self, request):
 #        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
 #

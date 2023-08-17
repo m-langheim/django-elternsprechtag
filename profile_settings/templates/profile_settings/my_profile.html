@@ -23,17 +23,28 @@
     {% endif %}
 </div>
 <!-- Typ wird nur gesetzt, wenn Lehrer -->
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="password_form">
     {% else %}
-    <form method="post">
+    <form method="post" id="password_form">
         {% endif %}
         {% csrf_token %}
         {{ profile_form|crispy }}
-        <div class="text-end">
-            <button type="submit" class="btn btn-outline-danger">
+        <div class="d-flex justify-content-end">
+            <div class="btn btn-outline-secondary mt-2 me-2" id="cancel_button" style="width: 120px;">Abbrechen</div>
+            <button type="submit" class="btn btn-outline-danger mt-2" id="submit_button" style="width: 120px;">
                 Speichern
             </button>
         </div>
 
     </form>
+    <script>
+        document.getElementById("submit_button").addEventListener("click", function(event) {
+            event.target.blur();
+        });
+        document.getElementById("cancel_button").addEventListener("click", function(event) {
+            event.target.blur();
+    
+            document.getElementById("password_form").reset();
+        });
+    </script>
     {% endblock profile_content %}
