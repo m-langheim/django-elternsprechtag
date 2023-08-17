@@ -58,15 +58,48 @@
             </div>
         </div>
     </div>
-    <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form" class="text-end">
-        {% csrf_token %}
-        <button class="btn btn-outline-danger mt-2" id="submit_button">Speichern</button>
-    </form>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-secondary mt-2 me-2" id="cancel_button" style="width: 120px;">Abbrechen</button>
+        <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
+            {% csrf_token %}
+            <button class="btn btn-outline-secondary mt-2" id="submit_button" style="width: 120px;">Speichern</button>
+        </form>
+    </div>
 </div>
 
 <script>
     var jsContent = document.getElementById("js-content");
     jsContent.style.display = "block";
+
+    var active = document.getElementById("store_active");
+    tags = [];
+    for (let i = 0; i < (active.children.length); i++) {
+        if (active.children[i].id.startsWith("tag-id-")) {
+            tags.push(active.children[i].id.replace("tag-id-", ""));
+        }
+    }
+
+    const submit_button = document.getElementById('submit_button');
+    const cancel_button = document.getElementById('cancel_button');
+
+    function update_submit_color() {
+        var s_button = document.getElementById("submit_button");
+        tags_to_compare = [];
+
+        for (let i = 0; i < (active.children.length); i++) {
+            if (active.children[i].id.startsWith("tag-id-")) {
+                tags_to_compare.push(active.children[i].id.replace("tag-id-", ""));
+            }
+        }
+
+        if (JSON.stringify(tags.sort(function (a, b) { return a - b })) == JSON.stringify(tags_to_compare.sort(function (a, b) { return a - b }))) {
+            s_button.classList.remove("btn-outline-danger");
+            s_button.classList.add("btn-outline-secondary");
+        } else {
+            s_button.classList.remove("btn-outline-secondary");
+            s_button.classList.add("btn-outline-danger");
+        }
+    }
 
     function remove(el) {
         var active = document.getElementById("store_active");
@@ -91,6 +124,8 @@
                 p_inactive.style.display = "block";
             }
         }
+
+        update_submit_color();
     }
 
     function getCookie(name) {
@@ -109,20 +144,18 @@
         return cookieValue;
     }
 
-    const button = document.getElementById('submit_button');
-
-    button.addEventListener("click", function (event) {
+    submit_button.addEventListener("click", function (event) {
         event.preventDefault();
         event.target.blur();
         url = window.location.href;
 
         var active = document.getElementById("store_active");
 
-        tags = [];
+        tags_to_submit = [];
 
         for (let i = 0; i < (active.children.length); i++) {
             if (active.children[i].id.startsWith("tag-id-")) {
-                tags.push(active.children[i].id.replace("tag-id-", ""));
+                tags_to_submit.push(active.children[i].id.replace("tag-id-", ""));
             }
         }
 
@@ -133,7 +166,7 @@
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRFToken': getCookie("csrftoken")
             },
-            body: JSON.stringify({ tags: tags }),
+            body: JSON.stringify({ tags: tags_to_submit }),
         })
             .then(response => response.json())
             .then(data => {
@@ -142,6 +175,48 @@
             .catch(error => {
                 console.error(error);
             });
+
+        tags = tags_to_submit;
+        update_submit_color();
+    });
+
+    cancel_button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.target.blur();
+        var active = document.getElementById("store_active");
+        var children_active = Array.from(active.children);
+        var inactive = document.getElementById("store_inactive");
+        var children_inactive = Array.from(inactive.children);
+        var p_active = document.querySelector("#store_active p");
+        var p_inactive = document.querySelector("#store_inactive p");
+
+        p_inactive.style.display = "none";
+        p_active.style.display = "none";
+
+        for (let i = 0; i < children_active.length; i++) {
+            if (children_active[i].id.startsWith("tag-id-")) {
+                if (!tags.includes(children_active[i].id.replace("tag-id-", ""))) {
+                    inactive.appendChild(children_active[i]);
+                }
+            }
+        }
+        for (let i = 0; i < (children_inactive.length); i++) {
+            if (children_inactive[i].id.startsWith("tag-id-")) {
+                if (tags.includes(children_inactive[i].id.replace("tag-id-", ""))) {
+                    active.appendChild(children_inactive[i]);
+                }
+            }
+        }
+
+        if (active.children.length <= 1) {
+            p_active.style.display = "block";
+        }
+
+        if (inactive.children.length <= 1) {
+            p_inactive.style.display = "block";
+        }
+
+        update_submit_color();
     });
 
 </script>
