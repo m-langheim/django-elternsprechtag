@@ -18,3 +18,9 @@ teacher_change_tags.html
 
 views.py (profile_settings)
 - succes message isn't shown correctly -> see TODO in the file
+
+my_profile.html
+- change the focus color of the input fields
+
+change_password.html
+- change the focus color of the input fields

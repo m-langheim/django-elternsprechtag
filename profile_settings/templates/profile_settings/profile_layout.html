@@ -63,39 +63,41 @@
         </div>
     </div>
     <div class="d-none d-sm-block col-sm-4 col-xl-2 col-lg-3">
-        <ul class="nav flex-column nav-tabs p-2" style="background-color: #e9ecef; border-radius: 0.5rem;"
+        <ul class="nav flex-column nav-tabs p-2 card card-body" style="border-radius: 0.5rem;"
             role="tablist" aria-orientation="vertical" id="profilePageTabs">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link {% if request.get_full_path == my_profile_url %} active {% endif %}"
-                    style="border-radius: 0.5rem;" href="{% url 'profile_my_profile' %}">Mein
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if request.get_full_path == my_profile_url %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_my_profile' %}">Mein
                     Profil</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link {% if request.get_full_path == change_password_url %} active {% endif %}"
-                    style="border-radius: 0.5rem;" href="{% url 'profile_change_password' %}">Sicherheit</a>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if request.get_full_path == change_password_url %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_change_password' %}">Sicherheit</a>
             </li>
             {% if user.role == 1 %}
-            <li class="nav-item" role="presentation">
-                <a class="nav-link {% if request.get_full_path == edit_tags_url %} active {% endif %}"
-                    style="border-radius: 0.5rem;" href="{% url 'profile_edit_tag_view' %}">Tags</a>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if request.get_full_path == edit_tags_url %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_edit_tag_view' %}">Tags</a>
+            </li>
+            <li>
+                <div class="dropdown-divider"></div>
+            </li>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'teacher_dashboard' %}">Zurück</a>
             </li>
             {% endif %}
             {% if user.role == 0 %}
-            <li class="nav-item" role="presentation">
-                <a class="nav-link {% if request.get_full_path == student_list %} active {% endif %}"
-                    style="border-radius: 0.5rem;" href="{% url 'profile_student_list' %}">Schüler:innen</a>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if request.get_full_path == student_list %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_student_list' %}">Schüler:innen</a>
             </li>
-            {% endif %}
-            {% if user.role == 0 %}
-            <li class="nav-item" role="presentation">
-                <a class="nav-link"
-                    style="border-radius: 0.5rem;" href="{% url 'home' %}">Zurück</a>
+            <li>
+                <div class="dropdown-divider"></div>
             </li>
-            {% endif %}
-            {% if user.role == 1 %}
-            <li class="nav-item" role="presentation">
+            <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link"
-                    style="border-radius: 0.5rem;" href="{% url 'teacher_dashboard' %}">Zurück</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'home' %}">Zurück</a>
             </li>
             {% endif %}
         </ul>
