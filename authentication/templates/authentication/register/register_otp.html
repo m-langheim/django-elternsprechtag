@@ -25,21 +25,39 @@
     function changefocus2(element) {
         if (element.value.length === parseInt(element.attributes["maxlength"].value)) {
             document.getElementById("id_otp3").focus()
+        } else if(element.value.length == 0) {
+            document.getElementById("id_otp1").focus()
+            document.getElementById("id_otp1").setSelectionRange(1, 1);
         }
     }
     function changefocus3(element) {
         if (element.value.length === parseInt(element.attributes["maxlength"].value)) {
             document.getElementById("id_otp4").focus()
+        } else if(element.value.length == 0) {
+            document.getElementById("id_otp2").focus()
+            document.getElementById("id_otp2").setSelectionRange(1, 1);
         }
     }
     function changefocus4(element) {
         if (element.value.length === parseInt(element.attributes["maxlength"].value)) {
             document.getElementById("id_otp5").focus()
+        } else if(element.value.length == 0) {
+            document.getElementById("id_otp3").focus()
+            document.getElementById("id_otp3").setSelectionRange(1, 1);
         }
     }
     function changefocus5(element) {
         if (element.value.length === parseInt(element.attributes["maxlength"].value)) {
             document.getElementById("id_otp6").focus()
+        } else if(element.value.length == 0) {
+            document.getElementById("id_otp4").focus()
+            document.getElementById("id_otp4").setSelectionRange(1, 1);
+        }
+    }
+    function changefocus6(element) {
+        if (element.value.length === 0) {
+            document.getElementById("id_otp5").focus()
+            document.getElementById("id_otp5").setSelectionRange(1, 1);
         }
     }
 </script>

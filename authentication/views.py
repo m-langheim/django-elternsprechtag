@@ -78,14 +78,14 @@ def register(request, user_token, key_token):
                             last_name=form.cleaned_data['last_name'], role=0)
                         cu.set_password(form.cleaned_data['password'])
                         cu.save()
-                        cu.students.add(user_data.student)
+                        studi = user_data.student
+                        cu.students.add(studi)
                         cu.save()
                         user_data.delete()
 
-                        # TODO: Hier muss hin, dass der Schüler zum Account hinzugefügt wurd
-
-                        # Send confirmation mail
+                        # Send confirmation mails
                         async_send_mail.delay("Registrierung erfolgreich", render_to_string("authentication/register/register_finished_email.txt", {'user': cu, 'current_site': os.environ.get("PUBLIC_URL")}), cu.email)
+                        async_send_mail.delay("Registrierung erfolgreich", render_to_string("authentication/register/register_finished_email_student.txt", {'user': studi}), studi.child_email)
 
                         if request.user.is_authenticated:
                             logout(request)
@@ -140,7 +140,6 @@ def register(request, user_token, key_token):
                     name = name+'...'
 
                 return render(request, "authentication/register/register_choose.html", {'child_name': name, 'path': request.get_full_path()})
-
         else:
             form = Register_OTP(user_token=user_token, key_token=key_token)
 
