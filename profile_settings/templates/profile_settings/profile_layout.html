@@ -9,15 +9,23 @@
 {% url 'profile_edit_tag_view' as edit_tags_url %}
 {% url 'profile_student_list' as student_list %}
 
+<script>
+    function blur(event) {
+        event.target.blur();
+    }
+</script>
+
 <div class="row gx-3 gy-3">
     <div class="d-block d-sm-none">
         <div class="btn-group col-12">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                data-bs-auto-close="true" aria-expanded="false">
+            <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                data-bs-auto-close="true" aria-expanded="false" onclick="blur(this);">
                 {% if request.get_full_path == my_profile_url %}
                 Mein Profil
                 {% elif request.get_full_path == change_password_url %}
-                Kennwort ändern
+                Kennwort
+                {% elif request.get_full_path == edit_tags_url %}
+                Tags
                 {% endif %}
             </button>
             <ul class="dropdown-menu col-12">
@@ -33,19 +41,22 @@
                 <li>
                     <a class="dropdown-item" href="{% url 'profile_edit_tag_view' %}">Tags</a>
                 </li>
+                <li>
+                    <div class="dropdown-divider"></div>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'teacher_dashboard' %}">Zurück</a>
+                </li>
                 {% endif %}
                 {% if user.role == 0 %}
                 <li>
                     <a class="dropdown-item" href="{% url 'profile_student_list' %}">Schüler:innen</a>
                 </li>
-                {% endif %}
-                {% if user.role == 0 %}
+                <li>
+                    <div class="dropdown-divider"></div>
+                </li>
                 <li>
                     <a class="dropdown-item" href="{% url 'home' %}">Zurück</a>
-                </li>
-                {% elif user.role == 1 %}
-                <li>
-                    <a class="dropdown-item" href="{% url 'teacher_dashboard' %}">Zurück</a>
                 </li>
                 {% endif %}
             </ul>

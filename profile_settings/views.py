@@ -97,7 +97,7 @@ def editTagsView(request):
             extraData.tags.set(elements)
 
             extraData.save()
-            messages.success(request, "Änderungen erfolgreich vorgenommen")
+            # messages.success(request, "Änderungen wurden angenommen") --> TODO: This is not working correctly as it shows the message on the password page ???
 
             return JsonResponse({'status': 'Updated Tags'})
 
@@ -105,18 +105,3 @@ def editTagsView(request):
     else:
         return render(request, "profile_settings/teacher_change_tags.html",
                       context={'tags': request.user.teacherextradata.tags.all().order_by('name'), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all().order_by('name')))})
-
-
-# @method_decorator(teacher_decorators, name='dispatch')
-# class EditTagsView(View):
-#    def get(self, request):
-#        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
-#
-#    def post(self, request):
-#        tagConfigurationForm = configureTagsFormForTeacher(request.POST)
-#        if tagConfigurationForm.is_valid():
-#            extraData = request.user.teacherextradata
-#            extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
-#            extraData.save()
-#
-#        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm, 'tags': request.user.teacherextradata.tags.all()})

@@ -15,3 +15,6 @@ teacher_change_tags.html
 - ggf. Non-JS-Version
 - Cancel-Button
 - leichte Verschiebung wenn ein Div leer wird vermeiden
+
+views.py (profile_settings)
+- succes message isn't shown correctly -> see TODO in the file
