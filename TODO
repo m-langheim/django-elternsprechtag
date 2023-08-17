@@ -21,6 +21,7 @@ views.py (profile_settings)
 
 my_profile.html
 - change the focus color of the input fields
+- change the size of the profile-picture -> implement it more into the website
 
 change_password.html
 - change the focus color of the input fields
