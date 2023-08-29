@@ -1,15 +1,13 @@
 Übersetzungen hinzufügen
 
-farben auf der teacher profilseite
+
+
+
+
 
 Register OTP
 - beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
 - wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
-
-
-
-
-
 
 teacher_change_tags.html
 - ggf. Non-JS-Version
@@ -17,7 +15,7 @@ teacher_change_tags.html
 - leichte Verschiebung wenn ein Div leer wird vermeiden
 
 views.py (profile_settings)
-- succes message isn't shown correctly -> see TODO in the file
+- success message isn't shown correctly -> see TODO in the file
 
 my_profile.html
 - change the focus color of the input fields

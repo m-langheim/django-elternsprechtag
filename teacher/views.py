@@ -87,10 +87,9 @@ def studentList(request):
         students = Student.objects.all()
     else:
         students = Student.objects.filter(
-            Q(first_name__icontains=search) | Q(last_name__icontains=search)).order_by('id')
+            Q(first_name__icontains=search) | Q(last_name__icontains=search)).order_by('last_name')
     paginator = Paginator(students, 25)
     page_obj = paginator.get_page(page_number)
-    print(page_obj)
     return render(request, "teacher/studentList.html", {'page_obj': page_obj})
 
 

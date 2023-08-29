@@ -3,20 +3,36 @@
 {% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 <div class="list-group">
     {% for student in page_obj %}
     <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}"
-        class="list-group-item list-group-item-action position-relative">
-        {{ student.first_name }} {{ student.last_name }}
+        class="list-group-item list-group-item-action d-flex">
+
+        {{ student.last_name }}, {{ student.first_name }}
+
         {% if not student.customuser_set.exists %}
-        <span
-            class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-danger d-none d-sm-block">
-            Kein Elternteil
-        </span>
-        <span
-            class="position-absolute top-50 start-100 translate-end-x translate-middle-y badge rounded-pill bg-danger d-sm-none">
-        </span>
+        <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto" data-bs-toggle="tooltip"
+            title="Kein registriertes Elternteil!"></i> <!-- align it vertically in the middle-->
         {% endif %}
+
+
+
+
+        <!-- check whether there is already an event   -->
+
+
+
+
+
+
+
     </a>
     {% endfor %}
 </div>
