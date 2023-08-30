@@ -10,31 +10,47 @@
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 </script>
-<div class="list-group">
-    {% for student in page_obj %}
-    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}"
-        class="list-group-item list-group-item-action d-flex">
 
-        {{ student.last_name }}, {{ student.first_name }}
-
-        {% if not student.customuser_set.exists %}
-        <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto" data-bs-toggle="tooltip"
-            title="Kein registriertes Elternteil!"></i> <!-- align it vertically in the middle-->
-        {% endif %}
-
-
-
-
-        <!-- check whether there is already an event   -->
-
-
-
-
-
-
-
-    </a>
-    {% endfor %}
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Suchergebnisse</p>
+            <ul class="list-group list-group-flush">
+                {% for student in page_obj %}
+                <li class="list-group-item">
+                    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}" class="row gy-1 align-items-center text-decoration-none text-dark" >
+                        <div class="col-12 col-md-7 col-xl-9 text-start">
+                            {{ student.last_name }}, {{ student.first_name }}
+                        </div>
+                        {% if not student.customuser_set.exists %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto" data-bs-toggle="tooltip"
+                                title="Kein registriertes Elternteil!"></i>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% with got_value="0" %}
+                            {% for key, value in events.items %}
+                                <!--change the value to 1 or 2-->
+                                {% if key == student %}
+                                    {% if value == 1 %}
+                                        one
+                                    {% elif value == 2 %}
+                                        two
+                                    {% else %}
+                                        rest
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                        <!-- check here for got_value and set an icon depending on the number-->
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 
 <nav aria-label="Student navigation" class="mt-2">

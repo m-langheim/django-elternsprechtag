@@ -90,7 +90,17 @@ def studentList(request):
             Q(first_name__icontains=search) | Q(last_name__icontains=search)).order_by('last_name')
     paginator = Paginator(students, 25)
     page_obj = paginator.get_page(page_number)
-    return render(request, "teacher/studentList.html", {'page_obj': page_obj})
+
+    events = Event.objects.filter(Q(teacher=request.user)) # ggf hier order_by(""last_name"")
+    events_dict = {}
+
+    if events is not None:
+        for event in events:
+            for student in students:
+                if event.student.contains(student):
+                    events_dict[student] = event.status
+
+    return render(request, "teacher/studentList.html", {'page_obj': page_obj, 'events': events_dict})
 
 
 @method_decorator(teacher_decorators, name='dispatch')
