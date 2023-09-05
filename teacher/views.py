@@ -94,11 +94,15 @@ def studentList(request):
     events = Event.objects.filter(Q(teacher=request.user)) # ggf hier order_by(""last_name"")
     events_dict = {}
 
+    # check here for inquries -> ignore processed ones
+
     if events is not None:
         for event in events:
             for student in students:
                 if event.student.contains(student):
                     events_dict[student] = event.status
+
+    print(events_dict)
 
     return render(request, "teacher/studentList.html", {'page_obj': page_obj, 'events': events_dict})
 

@@ -18,32 +18,41 @@
             <ul class="list-group list-group-flush">
                 {% for student in page_obj %}
                 <li class="list-group-item">
-                    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}" class="row gy-1 align-items-center text-decoration-none text-dark" >
+                    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}"
+                        class="row gy-1 align-items-center text-decoration-none text-dark"> <!-- hier muss die URL abhängig vom Status des Schülers geändert werden. Wenn Termin existiert: teacher_event_view, wenn anfrage vom schüler besteht: seite mit anfrage annehmen-->
                         <div class="col-12 col-md-7 col-xl-9 text-start">
                             {{ student.last_name }}, {{ student.first_name }}
                         </div>
                         {% if not student.customuser_set.exists %}
                         <div class="col-12 col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
-                                <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto" data-bs-toggle="tooltip"
-                                title="Kein registriertes Elternteil!"></i>
+                                <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto"
+                                    data-bs-toggle="tooltip" title="Kein registriertes Elternteil!"></i>
                             </div>
                         </div>
                         {% endif %}
-                        {% with got_value="0" %}
-                            {% for key, value in events.items %}
-                                <!--change the value to 1 or 2-->
-                                {% if key == student %}
-                                    {% if value == 1 %}
-                                        one
-                                    {% elif value == 2 %}
-                                        two
-                                    {% else %}
-                                        rest
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endwith %}
+                        {% for key, value in events.items %} <!-- hier muss auch auf inquiries des lehrers eingegangen werden, ob er bereits an einen Schüler was geschickt hat-->
+                        {% if key == student %}
+                        {% if value == 1 %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-circle-check fa-xl text-success ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits ein Termin mit diesem Kind!"></i>
+                            </div>
+                        </div>
+                        
+                        {% elif value == 2 %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-envelope fa-xl text-secondary ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage gestellt!"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        rest
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
                         <!-- check here for got_value and set an icon depending on the number-->
                     </a>
                 </li>
