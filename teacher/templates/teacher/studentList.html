@@ -30,8 +30,8 @@
                                     data-bs-toggle="tooltip" title="Kein registriertes Elternteil!"></i>
                             </div>
                         </div>
-                        {% endif %}
-                        {% for key, value in events.items %} <!-- hier muss auch auf inquiries des lehrers eingegangen werden, ob er bereits an einen Schüler was geschickt hat-->
+                        {% else %}
+                        {% for key, value in events.items %}
                         {% if key == student %}
                         {% if value == 1 %}
                         <div class="col-12 col-md-5 col-xl-3">
@@ -48,12 +48,24 @@
                                     data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage gestellt!"></i>
                             </div>
                         </div>
+                        {% elif value == 3 %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-arrow-right-to-bracket fa-xl text-success ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage bekommen!"></i>
+                            </div>
+                        </div>
                         {% else %}
-                        rest
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-paper-plane fa-xl text-secondary ms-auto"
+                                    data-bs-toggle="tooltip" title="Stellen Sie eine Anfrage!"></i>
+                            </div>
+                        </div>
                         {% endif %}
                         {% endif %}
                         {% endfor %}
-                        <!-- check here for got_value and set an icon depending on the number-->
+                        {% endif %}
                     </a>
                 </li>
                 {% endfor %}

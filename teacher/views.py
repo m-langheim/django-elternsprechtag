@@ -92,15 +92,30 @@ def studentList(request):
     page_obj = paginator.get_page(page_number)
 
     events = Event.objects.filter(Q(teacher=request.user)) # ggf hier order_by(""last_name"")
+    inquiries = Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user))
     events_dict = {}
 
-    # check here for inquries -> ignore processed ones
+    if students is not None:
+        for student in students:
+            events_dict[student] = 0
+
+    
+    if inquiries is not None:
+        for inquiry in inquiries:
+            if inquiry.processed == False:
+                for student in inquiry.students.all():
+                    if inquiry.type == 0: # Teacher -> Parent
+                        events_dict[student] = 2
+                    elif inquiry.type == 1: # Parent -> Teacher
+                        events_dict[student] = 3
 
     if events is not None:
         for event in events:
             for student in students:
                 if event.student.contains(student):
-                    events_dict[student] = event.status
+                    events_dict[student] = event.status # 0: 
+
+    # events that must be accept are not displayed right
 
     print(events_dict)
 
