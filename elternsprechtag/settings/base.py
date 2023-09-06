@@ -42,12 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'dbbackup',
     'crispy_bootstrap5',
     'authentication',
     'help',
     'dashboard',
     'teacher',
     'profile_settings',
+    'django_celery_results',
+    'django_celery_beat',
+    'general_tasks',
     'colorfield',
 ]
 
@@ -135,7 +139,7 @@ LANGUAGES = [
 
 LOCALE_PATHS = (Path.joinpath(BASE_DIR, 'locale'),)
 
-TIME_ZONE = 'Europe/Berlin'
+TIME_ZONE = os.environ.get("TZ")
 
 USE_I18N = True
 
@@ -181,3 +185,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # * This setting was moved to the individual settings files
 # CELERY_BROKER_URL = "redis://localhost:6379"
 # CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+# general Celery configuration
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_TIMEZONE = os.environ.get("TZ")
