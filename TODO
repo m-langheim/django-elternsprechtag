@@ -31,3 +31,11 @@ Lehrer hat Anfrage erstellt, noch nicht angenommen -> Inquiry edit page -> ist b
 Lehrer hat Anfrage erstellt, wurde angenommen -> Termin seite (da wo man wieder termin zurücknehmen kann + details zeigen) -> aktuell falsch
 Eltern hat Anfrage erstellt, noch nicht angenommen -> Termin seite, wo man termin annehmen kann ggf. dieselbe wie da ^) -> aktuell falsch, existiert noch nicht
 Eltern hat Anfrage erstellt, wurde angenommen -> Termin seite (wo man wieder termin zurücknehmen kann + Termin relevant & Details hinzufügen) -> existiert nicht
+
+
+
+
+
+
+termin annehmen in event view
+wenn man anfrage ablehnt + book event -> anfrage  muss unter anfragen auf dashboard auftauchen

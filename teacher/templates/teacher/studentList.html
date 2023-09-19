@@ -18,7 +18,7 @@
             <ul class="list-group list-group-flush">
                 {% for student in page_obj %}
                 <li class="list-group-item">
-                    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}"
+                    <a href="{% url 'teacher_redirect_eventinquiry' studentID=student.id %}"
                         class="row gy-1 align-items-center text-decoration-none text-dark"> <!-- hier muss die URL abhängig vom Status des Schülers geändert werden. Wenn Termin existiert: teacher_event_view, wenn anfrage vom schüler besteht: seite mit anfrage annehmen-->
                         <div class="col-12 col-md-7 col-xl-9 text-start">
                             {{ student.last_name }}, {{ student.first_name }}
@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         
-                        {% elif value == 2 %}
+                        {% elif value == 2 %} <!-- ist dasselbe wie 3-->
                         <div class="col-12 col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
                                 <i class="fa-solid fa-envelope fa-xl text-secondary ms-auto"
