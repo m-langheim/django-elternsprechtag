@@ -20,7 +20,6 @@ cssselect2==0.7.0
 Deprecated==1.2.13
 Django==4.1
 django-celery-beat==2.5.0
-django-celery-results==2.5.0
 django-colorfield==0.7.2
 django-cors-headers==3.13.0
 django-crispy-forms==1.14.0

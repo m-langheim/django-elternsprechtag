@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'dashboard',
     'teacher',
     'profile_settings',
-    'django_celery_results',
     'django_celery_beat',
     'general_tasks',
     'colorfield',
@@ -139,8 +138,6 @@ LANGUAGES = [
 
 LOCALE_PATHS = (Path.joinpath(BASE_DIR, 'locale'),)
 
-TIME_ZONE = os.environ.get("TZ")
-
 USE_I18N = True
 
 USE_TZ = True
@@ -193,4 +190,4 @@ CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_BACKEND = 'django-db'
 
-CELERY_TIMEZONE = os.environ.get("TZ")
+

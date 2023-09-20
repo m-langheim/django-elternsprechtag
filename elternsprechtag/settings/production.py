@@ -9,6 +9,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+TIME_ZONE = os.environ.get("TZ")
+
+
 # Added for testing purposes
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_TRUSTED_ORIGINS = [os.environ.get("PUBLIC_URL")]
@@ -64,8 +67,9 @@ EMAIL_COMPLETE = os.environ.get("EMAIL_COMPLETE")
 DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_COMPLETE")
 
 # Celery Settings
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_URL = "redis://"+os.environ.get("REDIS_HOST")+":6379"
-
+CELERY_TIMEZONE = os.environ.get("TZ")
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
@@ -81,7 +85,7 @@ CELERY_BEAT_SCHEDULE = {
 if os.environ.get("USE_FTP_BACKUP", False):
     if not os.environ.get("FTP_USERNAME") or not os.environ.get("FTP_USER_PASSWORD") or not os.environ.get("FTP_SERVER"):
         raise "Es sind nicht alle Daten angegeben um ein Backup auf einen FTP Server durchzuführen"
-    DBBACKUP_STORAGE = 'storages.backends.ftp.FTPStorage
+    DBBACKUP_STORAGE = 'storages.backends.ftp.FTPStorage'
     DBBACKUP_STORAGE_OPTIONS = {
         'location': 'ftp://'+os.environ.get("FTP_USERNAME")+':'+os.environ.get("FTP_USER_PASSWORD")+'@'+os.environ.get("FTP_SERVER")+':'+os.environ.get("FTP_PORT", 21)
     }

@@ -7,6 +7,7 @@ SECRET_KEY = "södfdsafölkdsalödsfpokewafpoewlkfaüir3qwolkfeäkfewfWKT$I$OKRP
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+TIME_ZONE = "Europe/Berlin"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -58,7 +59,7 @@ EMAIL_COMPLETE = "test@example.com"
 
 # Celery Settings
 CELERY_BROKER_URL = "redis://localhost:6379"
-
+CELERY_TIMEZONE = "Europe/Berlin"
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 # CELERY_BEAT_SCHEDULE = {
@@ -68,5 +69,6 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 #     }
 # }
 # Backup settings
+
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'backup')}
