@@ -1,5 +1,5 @@
 from .base import *
-from celery.schedules import crontab
+# from celery.schedules import crontab
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "södfdsafölkdsalödsfpokewafpoewlkfaüir3qwolkfeäkfewfWKT$I$OKRPOKREWLKFD<LKNFD<OIU$OIJFEWÖJFEW"
