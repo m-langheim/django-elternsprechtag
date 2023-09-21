@@ -25,5 +25,3 @@ class GeneralTasksConfig(AppConfig):
 
         if settings.RUN_CELERY_THREAD:
             threading.Thread(target=thread_start_celery, args=(app,)).start()
-
-        return super().ready()
