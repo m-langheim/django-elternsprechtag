@@ -80,6 +80,7 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
+RUN_CELERY_THREAD = False
 
 # Backup configuration
 if os.environ.get("USE_FTP_BACKUP", False):
