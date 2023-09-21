@@ -13,9 +13,9 @@ TIME_ZONE = "Europe/Berlin"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -52,17 +52,18 @@ DATABASES = {
 
 
 # Django-Email Setup
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "emails")
 EMAIL_HOST_USER = "test@examle.com"
 EMAIL_COMPLETE = "test@example.com"
 
 # Celery Settings
-CELERY_BROKER_URL = "sqla+sqlite:///" + os.path.join(BASE_DIR, 'db.sqlite3')
+# CELERY_BROKER_URL = "sqla+sqlite:///" + os.path.join(BASE_DIR, 'db.sqlite3')
+CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_TIMEZONE = "Europe/Berlin"
 
 # CELERY BEAT
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # CELERY_BEAT_SCHEDULE = {
 #     'db_backup_task': {
 #         'task': 'general_tasks.tasks.run_dbbackup',
@@ -70,5 +71,5 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 #     }
 # }
 # Backup settings
-DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'backup')}
+DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
