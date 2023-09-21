@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
      path('', dashboard, name="teacher_dashboard"),
      path('students/', studentList, name="teacher_students_list"),
+     path('redirect/eventinquiry/<studentID>', teacher_redirect_eventinquiry, name="teacher_redirect_eventinquiry"),
      path('inquiry/create/<studentID>', CreateInquiryView.as_view(),
           name="teacher_create_inquiry_id"),
      path('inquiry/<id>', InquiryView.as_view(), name="teacher_show_inquiry"),

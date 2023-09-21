@@ -3,22 +3,75 @@
 {% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
-<div class="list-group">
-    {% for student in page_obj %}
-    <a href="{% url 'teacher_create_inquiry_id' studentID=student.id %}"
-        class="list-group-item list-group-item-action position-relative">
-        {{ student.first_name }} {{ student.last_name }}
-        {% if not student.customuser_set.exists %}
-        <span
-            class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-danger d-none d-sm-block">
-            Kein Elternteil
-        </span>
-        <span
-            class="position-absolute top-50 start-100 translate-end-x translate-middle-y badge rounded-pill bg-danger d-sm-none">
-        </span>
-        {% endif %}
-    </a>
-    {% endfor %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+
+<div class="container p-2">
+    <div class="card" style="border-radius: 10px;">
+        <div class="card-body p-4">
+            <p class="h1">Suchergebnisse</p>
+            <ul class="list-group list-group-flush">
+                {% for student in page_obj %}
+                <li class="list-group-item">
+                    <a href="{% url 'teacher_redirect_eventinquiry' studentID=student.id %}"
+                        class="row gy-1 align-items-center text-decoration-none text-dark"> <!-- hier muss die URL abhängig vom Status des Schülers geändert werden. Wenn Termin existiert: teacher_event_view, wenn anfrage vom schüler besteht: seite mit anfrage annehmen-->
+                        <div class="col-12 col-md-7 col-xl-9 text-start">
+                            {{ student.last_name }}, {{ student.first_name }}
+                        </div>
+                        {% if not student.customuser_set.exists %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto"
+                                    data-bs-toggle="tooltip" title="Kein registriertes Elternteil!"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        {% for key, value in events.items %}
+                        {% if key == student %}
+                        {% if value == 1 %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-circle-check fa-xl text-success ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits ein Termin mit diesem Kind!"></i>
+                            </div>
+                        </div>
+                        
+                        {% elif value == 2 %} <!-- ist dasselbe wie 3-->
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-envelope fa-xl text-secondary ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage gestellt!"></i>
+                            </div>
+                        </div>
+                        {% elif value == 3 %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-arrow-right-to-bracket fa-xl text-success ms-auto"
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage bekommen!"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                                <i class="fa-solid fa-paper-plane fa-xl text-secondary ms-auto"
+                                    data-bs-toggle="tooltip" title="Stellen Sie eine Anfrage!"></i>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 
 <nav aria-label="Student navigation" class="mt-2">
