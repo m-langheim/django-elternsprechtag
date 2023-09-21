@@ -87,17 +87,86 @@ def studentList(request):
         students = Student.objects.all()
     else:
         students = Student.objects.filter(
-            Q(first_name__icontains=search) | Q(last_name__icontains=search)).order_by('id')
+            Q(first_name__icontains=search) | Q(last_name__icontains=search)).order_by('last_name')
     paginator = Paginator(students, 25)
     page_obj = paginator.get_page(page_number)
-    print(page_obj)
-    return render(request, "teacher/studentList.html", {'page_obj': page_obj})
+
+    events = Event.objects.filter(Q(teacher=request.user)) # ggf hier order_by(""last_name"")
+    inquiries = Inquiry.objects.filter(Q(requester=request.user) | Q(respondent=request.user))
+    events_dict = {}
+
+    if students is not None:
+        for student in students:
+            events_dict[student] = 0
+
+    
+    if inquiries is not None:
+        for inquiry in inquiries:
+            if inquiry.processed == False:
+                for student in inquiry.students.all():
+                    if inquiry.type == 0: # Teacher -> Parent
+                        events_dict[student] = 2
+                    elif inquiry.type == 1: # Parent -> Teacher
+                        events_dict[student] = 3
+
+    if events is not None:
+        for event in events:
+            for student in students:
+                if event.student.contains(student):
+                    events_dict[student] = event.status # 0: 
+
+    # events that must be accepted are not displayed right
+
+    print(events_dict)
+
+    return render(request, "teacher/studentList.html", {'page_obj': page_obj, 'events': events_dict})
 
 
-@method_decorator(teacher_decorators, name='dispatch')
-class DetailStudent(View):
-    def get(self, request):
-        return render(request, "teacher/student.html")
+# @method_decorator(teacher_decorators, name='dispatch')
+# class DetailStudent(View):
+#    def get(self, request):
+#         return render(request, "teacher/student.html")
+
+@login_required
+@teacher_required
+def teacher_redirect_eventinquiry(request, studentID):
+
+    try:
+
+        student = Student.objects.get(id__exact=studentID)
+
+    except Student.DoesNotExist:
+
+        raise Http404("Student not found")
+
+    teacher = request.user
+
+    try:
+
+        event = Event.objects.get(Q(teacher=teacher), Q(student=student))
+
+    except Event.DoesNotExist:
+
+        pass
+
+    else:
+
+        return redirect("teacher_event_view", event_id=event.id)
+
+    try:
+
+        inquiry = Inquiry.objects.get(Q(requester=teacher), Q(students=student))
+
+    except Inquiry.DoesNotExist:
+
+        pass
+
+    else:
+
+        return redirect("teacher_show_inquiry", id=urlsafe_base64_encode(
+                    force_bytes(inquiry.id)))
+
+    return redirect("teacher_create_inquiry_id", studentID=student.id)
 
 
 @method_decorator(teacher_decorators, name='dispatch')
@@ -397,7 +466,7 @@ class EventDetailView(View):
 
 
 @method_decorator(teacher_decorators, name='dispatch')
-class EventListView(View):
+class EventListView(View): # ???????? was war das nochmal?
     def get(self, request):
         events = Event.objects.filter(
             Q(teacher=request.user), Q(occupied=True))

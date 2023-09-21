@@ -1,15 +1,13 @@
 Übersetzungen hinzufügen
 
-farben auf der teacher profilseite
+
+
+
+
 
 Register OTP
 - beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
 - wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
-
-
-
-
-
 
 teacher_change_tags.html
 - ggf. Non-JS-Version
@@ -17,7 +15,7 @@ teacher_change_tags.html
 - leichte Verschiebung wenn ein Div leer wird vermeiden
 
 views.py (profile_settings)
-- succes message isn't shown correctly -> see TODO in the file
+- success message isn't shown correctly -> see TODO in the file
 
 my_profile.html
 - change the focus color of the input fields
@@ -27,3 +25,17 @@ my_profile.html
 change_password.html
 - change the focus color of the input fields
 
+
+
+Lehrer hat Anfrage erstellt, noch nicht angenommen -> Inquiry edit page -> ist bereits richtig
+Lehrer hat Anfrage erstellt, wurde angenommen -> Termin seite (da wo man wieder termin zurücknehmen kann + details zeigen) -> aktuell falsch
+Eltern hat Anfrage erstellt, noch nicht angenommen -> Termin seite, wo man termin annehmen kann ggf. dieselbe wie da ^) -> aktuell falsch, existiert noch nicht
+Eltern hat Anfrage erstellt, wurde angenommen -> Termin seite (wo man wieder termin zurücknehmen kann + Termin relevant & Details hinzufügen) -> existiert nicht
+
+
+
+
+
+
+termin annehmen in event view
+wenn man anfrage ablehnt + book event -> anfrage  muss unter anfragen auf dashboard auftauchen
