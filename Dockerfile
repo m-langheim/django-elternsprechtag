@@ -15,7 +15,7 @@ WORKDIR /app
 EXPOSE 8000
 
 ENV REDIS_HOST="localhost"
-RUN python manage.py collectstatic --no-input && python manage.py compilemessages
+RUN python manage.py collectstatic --no-input && python manage.py compilemessages 
 
 RUN chmod +x entrypoint.sh
 
