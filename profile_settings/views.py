@@ -10,11 +10,12 @@ from django.contrib.auth.decorators import login_required
 from dashboard.decorators import parent_required
 from teacher.decorators import teacher_required
 from django.utils.decorators import method_decorator
+from authentication.models import Tag
+import json
+from django.http import HttpResponseBadRequest, JsonResponse
 
 parent_decorators = [login_required, parent_required]
 teacher_decorators = [login_required, teacher_required]
-
-# Create your views here.
 
 
 @method_decorator(parent_decorators, name='dispatch')
@@ -68,20 +69,39 @@ class ChangePasswordView(View):
             update_session_auth_hash(request, user)
             messages.success(
                 request, "Das Passwort wurde erfolgreich geändert.")
-            return redirect("profile_my_profile")
+            # return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
 
 
-@method_decorator(teacher_decorators, name='dispatch')
-class EditTagsView(View):
-    def get(self, request):
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': configureTagsFormForTeacher(initial={'tags': request.user.teacherextradata.tags.all()}), 'tags': request.user.teacherextradata.tags.all()})
+@teacher_required
+def editTagsView(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-    def post(self, request):
-        tagConfigurationForm = configureTagsFormForTeacher(request.POST)
-        if tagConfigurationForm.is_valid():
+    if is_ajax:
+        if request.method == 'POST':
+            data = json.load(request)
+            tags = data.get('tags')
             extraData = request.user.teacherextradata
-            extraData.tags.set(tagConfigurationForm.cleaned_data["tags"])
-            extraData.save()
 
-        return render(request, "profile_settings/teacher_change_tags.html", context={'edit_tags': tagConfigurationForm, 'tags': request.user.teacherextradata.tags.all()})
+            extraData.tags.set([])
+
+            elements = []
+
+            for el in tags:
+                if el != '' and el != None:
+                    try:
+                        elements.append(Tag.objects.all().get(Q(id=int(el))))
+                    except:
+                        print("An error accured")
+
+            extraData.tags.set(elements)
+
+            extraData.save()
+            # messages.success(request, "Änderungen wurden angenommen") --> TODO: This is not working correctly as it shows the message on the password page ???
+
+            return JsonResponse({'status': 'Updated Tags'})
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    else:
+        return render(request, "profile_settings/teacher_change_tags.html",
+                      context={'tags': request.user.teacherextradata.tags.all().order_by('name'), 'all_tags': list(set(Tag.objects.all()).difference(request.user.teacherextradata.tags.all().order_by('name')))})
