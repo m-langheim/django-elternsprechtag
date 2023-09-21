@@ -6,16 +6,23 @@
 {% block content %}
 <div class="container">
     <p class="h1">Termin</p>
-    <p class="text-muted">{{ event.start|date}} - {{event.start|time}}</p>
+    <p class="text-muted">{{ event.start|date}} - {{event.start|time}} Uhr bis {{event.end|time}} Uhr</p>
 </div>
 <div class="container">
     <div class="row">
         <strong>Datum: </strong>{{event.start|date}}
     </div>
 </div>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eventCancelModal">
     Termin absagen
 </button>
+{% if event.status == 2 %}
+<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+data-bs-target="#eventModal{{event.id}}">
+Termin bestätigen
+</button>
+{% endif %}
+
 <!-- Event Cancel Modal -->
 <div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -39,4 +46,30 @@
         </div>
     </div>
 </div>
+
+{% if event.status == 2 %}
+<!-- Event Confirmation Modal -->
+<div class="modal fade" id="eventModal{{event.id}}" tabindex="-1" aria-labelledby="eventModal{{event.id}}Label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Termin bestätigen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Ihnen wurde eine Anfrage von {{ event.parent.first_name }} {{ event.parent.last_name }} für den
+                {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen Termin bestätigen?
+            </div>
+            <div class="modal-footer">
+                {{ event.id }}
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <a type="button" class="btn btn-outline-danger" href="{% url 'teacher_confirm_event' event.id %}">Termin
+                    annehmen</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock content %}
