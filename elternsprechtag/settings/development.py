@@ -64,6 +64,9 @@ CELERY_TIMEZONE = "Europe/Berlin"
 
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+RUN_CELERY_THREAD = True
+
 # CELERY_BEAT_SCHEDULE = {
 #     'db_backup_task': {
 #         'task': 'general_tasks.tasks.run_dbbackup',
