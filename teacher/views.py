@@ -520,7 +520,7 @@ class EventDetailView(View):
             inquiry_reason = None
 
             try:
-                inquiry = Inquiry.objects.filter(Q(event=event), Q(processed=False))
+                inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
             except Inquiry.DoesNotExist:
                 pass
             else:
@@ -581,11 +581,22 @@ class EventDetailView(View):
                     event.student.clear()
                     event.save()
                     return redirect("teacher_dashboard")
+                
+            
+            inquiry_reason = None
+
+            try:
+                inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+            except Inquiry.DoesNotExist:
+                pass
+            else:
+                inquiry_reason = inquiry[0].reason
+
             cancel_form = self.cancel_form
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event},
+                context={"cancel_event": cancel_form, "event": event, "inquiry_reason": inquiry_reason},
             )
 
 
