@@ -516,11 +516,21 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+
+            inquiry_reason = None
+
+            try:
+                inquiry = Inquiry.objects.filter(Q(event=event), Q(processed=False))
+            except Inquiry.DoesNotExist:
+                pass
+            else:
+                inquiry_reason = inquiry[0].reason
+
             cancel_form = self.cancel_form
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event},
+                context={"cancel_event": cancel_form, "event": event, "inquiry_reason": inquiry_reason},
             )
 
     def post(self, request, event_id):
