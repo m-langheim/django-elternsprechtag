@@ -27,15 +27,7 @@ change_password.html
 
 
 
-Lehrer hat Anfrage erstellt, noch nicht angenommen -> Inquiry edit page -> ist bereits richtig
-Lehrer hat Anfrage erstellt, wurde angenommen -> Termin seite (da wo man wieder termin zurücknehmen kann + details zeigen) -> aktuell falsch
-Eltern hat Anfrage erstellt, noch nicht angenommen -> Termin seite, wo man termin annehmen kann ggf. dieselbe wie da ^) -> aktuell falsch, existiert noch nicht
-Eltern hat Anfrage erstellt, wurde angenommen -> Termin seite (wo man wieder termin zurücknehmen kann + Termin relevant & Details hinzufügen) -> existiert nicht
 
+bei der Suche wird die Suche durch den Paginator entfernt -> 2. Seite kann beim Paginator einer Suche nicht angezeigt werden
 
-
-
-
-
-termin annehmen in event view
-wenn man anfrage ablehnt + book event -> anfrage  muss unter anfragen auf dashboard auftauchen
+Farbe des Paginators ändern bei der Suche
