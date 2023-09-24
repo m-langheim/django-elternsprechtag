@@ -108,57 +108,48 @@ def dashboard(request):
 def studentList(request):
     search = request.GET.get("q", None)
     page_number = request.GET.get("page")
+
     if search is None:
         students = Student.objects.all()
     else:
         students = Student.objects.filter(
             Q(first_name__icontains=search) | Q(last_name__icontains=search)
-        ).order_by("last_name")
-    paginator = Paginator(students, 25)
-    page_obj = paginator.get_page(page_number)
+        ).order_by("first_name").order_by("last_name") # May you must change this order system
 
     events = Event.objects.filter(
         Q(teacher=request.user)
-    )  # ggf hier order_by(""last_name"")
+    )
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)
-    )
-    events_dict = {}
+    ).exclude(Q(processed=True))
+
+    students_list = []
 
     if students is not None:
         for student in students:
-            events_dict[student] = 0
 
-    if inquiries is not None:
-        for inquiry in inquiries:
-            if inquiry.processed == False:
-                for student in inquiry.students.all():
-                    if inquiry.type == 0:  # Teacher -> Parent
-                        events_dict[student] = 2
-                    elif inquiry.type == 1:  # Parent -> Teacher
-                        events_dict[student] = 3
+            status = 0 # No Event or Inquiry at all
 
-    if events is not None:
-        for event in events:
-            for student in students:
-                if event.student.contains(student):
-                    events_dict[student] = event.status  # 0:
+            inquiry = inquiries.filter(Q(students=student)).order_by("requester__role")
 
-    # events that must be accepted are not displayed right
+            if inquiry:
+                if inquiry[0].type == 0:
+                    status = 1 # Teacher send inquiry
+                elif inquiry[0].type == 1:
+                    status = 2 # Parent send inquiry
 
-    print(events_dict)
+            event = events.filter(Q(student=student))
 
-    return render(
-        request,
-        "teacher/studentList.html",
-        {"page_obj": page_obj, "events": events_dict},
-    )
+            if event:
+                if event[0].status == 1: 
+                    status = 3 # Event is safe
+            
+            students_list.append([student, status])
 
+    paginator = Paginator(students_list, 25)
+    page_obj = paginator.get_page(page_number)
 
-# @method_decorator(teacher_decorators, name='dispatch')
-# class DetailStudent(View):
-#    def get(self, request):
-#         return render(request, "teacher/student.html")
+    return render(request, "teacher/studentList.html", {"page_obj": page_obj})
 
 
 @login_required
