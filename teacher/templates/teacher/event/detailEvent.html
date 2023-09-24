@@ -13,7 +13,7 @@
         <div class="card card-body p-4">
 
             <p class="h1">Termin</p>
-            <p class="text-secondary">---</p>
+            <p class="text-secondary">Detailansicht des Termins</p>
 
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
@@ -31,6 +31,18 @@
                     {{event.start|time}} Uhr - {{event.end|time}} Uhr
                 </p>
             </div>
+            <div class="row">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Terminwunsch:
+                </p>
+                <p class="col">
+                    {% if inquiry_reason %}
+                    Lehrkraft
+                    {% else %}
+                    Eltern
+                    {% endif %}
+                </p>
+            </div>
             {% if inquiry_reason %}
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
@@ -41,6 +53,17 @@
                 </p>
             </div>
             {% endif %}
+            <div class="row">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Schüler:innen:
+                </p>
+                <p class="col">
+                    {% for stu in event.student.all %}
+                    {{ stu.first_name }} {{ stu.last_name }}
+                    {% endfor %}
+                </p>
+                <!-- you must add ', ' here -->
+            </div>
             <div class="row">
                 <div class="col d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
@@ -99,6 +122,7 @@
                                     {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen
                                     Termin bestätigen?
                                 </div>
+                                <!-- event.parent.last_name isn't displayed right -->
                                 <div class="modal-footer">
                                     {{ event.id }}
                                     <button type="button" class="btn btn-outline-secondary"

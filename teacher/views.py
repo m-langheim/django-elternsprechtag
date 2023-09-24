@@ -355,9 +355,10 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiry = event.inquiry_set.all().first()
-        inquiry.processed = True
-        inquiry.save()
+        inquiries = event.inquiry_set.all()
+        for inquiry in inquiries:
+            inquiry.processed = True
+            inquiry.save()
     return redirect("teacher_dashboard")
 
 
@@ -519,11 +520,9 @@ class EventDetailView(View):
 
             inquiry_reason = None
 
-            try:
-                inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
-            except Inquiry.DoesNotExist:
-                pass
-            else:
+            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+
+            if inquiry:
                 inquiry_reason = inquiry[0].reason
 
             cancel_form = self.cancel_form
@@ -585,11 +584,9 @@ class EventDetailView(View):
             
             inquiry_reason = None
 
-            try:
-                inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
-            except Inquiry.DoesNotExist:
-                pass
-            else:
+            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+
+            if inquiry:
                 inquiry_reason = inquiry[0].reason
 
             cancel_form = self.cancel_form
