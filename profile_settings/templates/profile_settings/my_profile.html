@@ -5,6 +5,7 @@
 
 {% block profile_content %}
 <p class="h1">Mein Profil</p>
+<p class="text-secondary">Personalisieren Sie hier Ihr Profil und machen Sie so Informationen Eltern einsichtlich.</p>
 {% if user.role == 1 %}
 <div class="row p-3">
     {% if user.teacherextradata.image %}
@@ -13,30 +14,38 @@
             style="border-radius: 10px;">
     </div>
     <div class="col col-7 col-sm-7 col-lg-9">
-        <p class="secondary-text">Dieses Bild ist nur für Elternteile sichtbar.</p>
+        <p class="secondary-text">Dieses Profilbild ist nur für Eltern sichtbar.</p>
     </div>
     {% else %}
     <div class="col col-12">
-        <p class="heading">Sie haben kein Bild hochgeladen</p>
-        <p class="secondary-text">Dieses Bild ist nur für Elternteile sichtbar.</p>
+        <p class="heading">Sie haben kein Bild hochgeladen.</p>
+        <p class="secondary-text">Dieses Profilbild ist nur für Eltern sichtbar.</p>
     </div>
     {% endif %}
 </div>
 <!-- Typ wird nur gesetzt, wenn Lehrer -->
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="password_form">
     {% else %}
-    <form method="post">
+    <form method="post" id="password_form">
         {% endif %}
         {% csrf_token %}
         {{ profile_form|crispy }}
-        <div class="row">
-            <div class="d-none d-lg-block col-lg-8 col-xl-10"></div>
-            <div class="col-12 col-lg-4 col-xl-2 d-flex justify-content-end">
-                <button type="submit" class="btn btn-outline-danger col-12">
-                    Speichern
-                </button>
-            </div>
+        <div class="d-flex justify-content-end">
+            <div class="btn btn-outline-secondary mt-2 me-2" id="cancel_button" style="width: 120px;">Abbrechen</div>
+            <button type="submit" class="btn btn-outline-danger mt-2" id="submit_button" style="width: 120px;">
+                Speichern
+            </button>
         </div>
 
     </form>
+    <script>
+        document.getElementById("submit_button").addEventListener("click", function(event) {
+            event.target.blur();
+        });
+        document.getElementById("cancel_button").addEventListener("click", function(event) {
+            event.target.blur();
+    
+            document.getElementById("password_form").reset();
+        });
+    </script>
     {% endblock profile_content %}

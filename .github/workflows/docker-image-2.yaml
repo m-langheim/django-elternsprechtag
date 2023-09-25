@@ -20,8 +20,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          ref: development
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: https://github.com/Janni2006/django-elternsprechtag.git#development
           push: true
           tags: janni06/django-elternsprechtag:dev

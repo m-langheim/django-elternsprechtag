@@ -1,5 +1,6 @@
 from .base import *
-from celery.schedules import crontab
+
+# from celery.schedules import crontab
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "södfdsafölkdsalödsfpokewafpoewlkfaüir3qwolkfeäkfewfWKT$I$OKRPOKREWLKFD<LKNFD<OIU$OIJFEWÖJFEW"
@@ -58,14 +59,12 @@ EMAIL_HOST_USER = "test@examle.com"
 EMAIL_COMPLETE = "test@example.com"
 
 # Celery Settings
-# CELERY_BROKER_URL = "sqla+sqlite:///" + os.path.join(BASE_DIR, 'db.sqlite3')
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_TIMEZONE = "Europe/Berlin"
-
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-RUN_CELERY_THREAD = True
+RUN_CELERY_THREAD = False
 
 # CELERY_BEAT_SCHEDULE = {
 #     'db_backup_task': {
@@ -74,5 +73,6 @@ RUN_CELERY_THREAD = True
 #     }
 # }
 # Backup settings
+
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
