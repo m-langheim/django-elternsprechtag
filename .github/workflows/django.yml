@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main", "development" ]
 
+env:
+  DJANGO_SETTINGS_MODULE: elternsprechtag.settings.test
+
 jobs:
   build:
 
@@ -27,4 +30,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test --settings=elternsprechtag.settings.development
+        python manage.py test --settings=elternsprechtag.settings.test

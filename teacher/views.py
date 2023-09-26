@@ -575,12 +575,20 @@ class EventDetailView(View):
                             ),
                         )
 
-                    inquiries = event.inquiry_set.filter(Q(requester=event.parent))
-
-                    for inquiriy in inquiries:
+                    # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+                    try:
+                        inquiry = Inquiry.objects.get(
+                            Q(type=1),
+                            Q(requester=event.parent),
+                            Q(respondent=event.teacher),
+                            Q(event=event),
+                        )
+                    except Inquiry.DoesNotExist:
+                        pass
+                    else:
                         inquiry.processed = True
-                        inquiriy.save()
-
+                        inquiry.respondent_reaction = 2
+                        inquiry.save()
                     event.parent = None
                     event.status = 0
                     event.occupied = False
