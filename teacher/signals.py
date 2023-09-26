@@ -8,7 +8,7 @@ from dashboard.models import Inquiry, Event
 @receiver(post_save, sender=Inquiry)
 def handleTeacherNewInquiry(sender, instance: Inquiry, created: bool, **kwargs):
     if created and instance.type == 1:
-        requested_student = instance.students.first
+        requested_student = instance.students.first()
 
         try:
             event = Event.objects.exclude(status=0).get(

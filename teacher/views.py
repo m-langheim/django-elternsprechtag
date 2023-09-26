@@ -34,6 +34,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
 
+from dashboard.utils import check_inquiry_reopen
+
 
 teacher_decorators = [login_required, teacher_required]
 
@@ -589,6 +591,7 @@ class EventDetailView(View):
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2
                         inquiry.save()
+                    check_inquiry_reopen(event.parent, event.teacher)
                     event.parent = None
                     event.status = 0
                     event.occupied = False
