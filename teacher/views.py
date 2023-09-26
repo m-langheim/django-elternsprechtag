@@ -355,7 +355,8 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiries = event.inquiry_set.all()
+        inquiries = event.inquiry_set.filter(Q(requester=event.parent), Q(processed=False))
+        print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
             inquiry.save()
@@ -573,6 +574,12 @@ class EventDetailView(View):
                                 message,
                             ),
                         )
+
+                    inquiries = event.inquiry_set.filter(Q(requester=event.parent))
+
+                    for inquiriy in inquiries:
+                        inquiry.processed = True
+                        inquiriy.save()
 
                     event.parent = None
                     event.status = 0
