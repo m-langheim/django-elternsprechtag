@@ -9,6 +9,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+NAME = "production"
+
 TIME_ZONE = os.environ.get("TZ")
 
 
@@ -80,7 +82,7 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-RUN_CELERY_THREAD = False
+# RUN_CELERY_THREAD = False
 
 # Backup configuration
 if os.environ.get("USE_FTP_BACKUP", False):

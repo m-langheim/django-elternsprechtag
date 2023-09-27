@@ -7,6 +7,8 @@ SECRET_KEY = "södfdsafölkdsalödsfpokewafpoewlkfaüir3qwolkfeäkfewfWKT$I$OKRP
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+NAME = "development"
+
 TIME_ZONE = "Europe/Berlin"
 
 # Database

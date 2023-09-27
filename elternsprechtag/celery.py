@@ -1,15 +1,13 @@
 import os
 from celery import Celery
-from celery.schedules import crontab
 
-import threading
-import time
+# from celery.schedules import crontab
 from django.conf import settings
 
 # from general_tasks.tasks import run_dbbackup
-
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE",
-#                       "elternsprechtag.settings.development")  # ! Always needs to be changed befor build
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", "elternsprechtag.settings.production"
+)  # ! Always needs to be changed befor build
 
 app = Celery("elternsprechtag")
 app.config_from_object("django.conf:settings", namespace="CELERY")
