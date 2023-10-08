@@ -14,8 +14,6 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 app.autodiscover_tasks()
 
-print(os.environ.get("DJANGO_SETTINGS_MODULE"))
-
 
 # @app.on_after_configure.connect
 # def register_periodic_tasks(sender: Celery, **kwargs):

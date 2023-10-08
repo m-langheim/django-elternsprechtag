@@ -7,12 +7,15 @@ from django.core.paginator import Paginator
 from django.views import View
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
 from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import BadRequest
+from django.http import HttpResponse
+
+from general_tasks.utils import create_pdf_with_all_user_events, EventPDFExport
 
 import pytz
 
@@ -112,13 +115,15 @@ def studentList(request):
     if search is None:
         students = Student.objects.all()
     else:
-        students = Student.objects.filter(
-            Q(first_name__icontains=search) | Q(last_name__icontains=search)
-        ).order_by("first_name").order_by("last_name") # May you must change this order system
+        students = (
+            Student.objects.filter(
+                Q(first_name__icontains=search) | Q(last_name__icontains=search)
+            )
+            .order_by("first_name")
+            .order_by("last_name")
+        )  # May you must change this order system
 
-    events = Event.objects.filter(
-        Q(teacher=request.user)
-    )
+    events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)
     ).exclude(Q(processed=True))
@@ -127,23 +132,22 @@ def studentList(request):
 
     if students is not None:
         for student in students:
-
-            status = 0 # No Event or Inquiry at all
+            status = 0  # No Event or Inquiry at all
 
             inquiry = inquiries.filter(Q(students=student)).order_by("requester__role")
 
             if inquiry:
                 if inquiry[0].type == 0:
-                    status = 1 # Teacher send inquiry
+                    status = 1  # Teacher send inquiry
                 elif inquiry[0].type == 1:
-                    status = 2 # Parent send inquiry
+                    status = 2  # Parent send inquiry
 
             event = events.filter(Q(student=student))
 
             if event:
-                if event[0].status == 1: 
-                    status = 3 # Event is safe
-            
+                if event[0].status == 1:
+                    status = 3  # Event is safe
+
             students_list.append([student, status])
 
     paginator = Paginator(students_list, 25)
@@ -380,131 +384,320 @@ def markAnnouncementRead(request, announcement_id):
 @login_required
 @teacher_required
 def create_event_PDF(request):
-    buff = BytesIO()
-    doc = SimpleDocTemplate(
-        buff,
-        pagesize=A4,
-        rightMargin=2 * cm,
-        leftMargin=2 * cm,
-        topMargin=2 * cm,
-        bottomMargin=2 * cm,
-        title="Export Events",
-    )
-    styles = getSampleStyleSheet()
-    elements = []
-
-    events = Event.objects.filter(Q(teacher=request.user))
-    dates = []
-
-    datetime_objects = events.order_by("start").values_list("start", flat=True)
-    for datetime_object in datetime_objects:
-        if timezone.localtime(datetime_object).date() not in [
-            date.date() for date in dates
-        ]:
-            dates.append(datetime_object.astimezone(pytz.UTC))
-
-    events_dct = {}
-    for date in dates:
-        events_dct[str(date.date())] = Event.objects.filter(
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
-            ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                )
-            ),
-        ).order_by("start")
-
-    date_style = ParagraphStyle(
-        "date_style",
-        fontName="Helvetica-Bold",
-        fontSize=14,
-        spaceBefore=7,
-        spaceAfter=3,
-    )
-
-    for date in dates:
-        elements.append(Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style))
-        elements.append(Spacer(0, 5))
-
-        events_per_date = events.filter(
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
-            ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                )
-            ),
-        ).order_by("start")
-        for event_per_date in events_per_date:
-            t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
-            s = ""
-            if len(event_per_date.student.all()) == 0:
-                s = "/"
-            else:
-                for student in event_per_date.student.all():
-                    s += "{} {}; ".format(student.first_name, student.last_name)
-                s = s[:-2]
-
-            b = ""
-            if event_per_date.status == 2:
-                b = "| Nicht bestätigt"
-
-            elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
-            elements.append(Spacer(0, 5))
-
-    def header_and_footer(canvas, doc):
-        header_footer_style = ParagraphStyle(
-            "header_footer_stlye",
-            alignment=TA_CENTER,
-        )
-        header_content = Paragraph(
-            str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-            + "_"
-            + str(request.user.last_name),
-            header_footer_style,
-        )
-        footer_content = Paragraph(
-            "Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),
-            header_footer_style,
-        )
-
-        canvas.saveState()
-
-        header_content.wrap(doc.width, doc.topMargin)
-        header_content.drawOn(
-            canvas,
-            doc.leftMargin,
-            doc.height + doc.bottomMargin + doc.topMargin - 1 * cm,
-        )
-
-        footer_content.wrap(doc.width, doc.bottomMargin)
-        footer_content.drawOn(canvas, doc.leftMargin, 1 * cm)
-
-        canvas.restoreState()
-
-    frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
-
-    template = PageTemplate(id="test", frames=frame, onPage=partial(header_and_footer))
-
-    doc.addPageTemplates([template])
-    doc.build(elements)
-    buff.seek(0)
+    pdf_generator = EventPDFExport(request.user.id)
     return FileResponse(
-        buff,
+        pdf_generator.print_events(request.user.id),
         as_attachment=False,
         filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
+        content_type="application/pdf",
     )
+    # return FileResponse(
+    #     create_pdf_with_all_user_events(request.user.id),
+    #     as_attachment=False,
+    #     filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
+    #     content_type="application/pdf",
+    # )
+    # try:
+    #     user = CustomUser.objects.get(id=request.user.id)
+    # except CustomUser.DoesNotExist:
+    #     raise ("Error could not generate the PDF")
+    # else:
+    #     if user.role == 0 or user.role == 1:
+    #         buff = BytesIO()
+    #         doc = SimpleDocTemplate(
+    #             buff,
+    #             pagesize=A4,
+    #             rightMargin=2 * cm,
+    #             leftMargin=2 * cm,
+    #             topMargin=2 * cm,
+    #             bottomMargin=2 * cm,
+    #             title="Export Events",
+    #         )
+    #         styles = getSampleStyleSheet()
+    #         elements = []
+
+    #         if user.role == 0:
+    #             events = Event.objects.filter(Q(parent=user))
+    #         else:
+    #             events = Event.objects.filter(Q(teacher=user))
+    #         print(events)
+
+    #         if events.count() == 0:
+    #             no_events_style = ParagraphStyle(
+    #                 "no_events_style",
+    #                 alignment=TA_CENTER,
+    #             )
+    #             elements.append(Paragraph("Sie haben bisher keine Events", no_events_style))
+    #         else:
+    #             dates = []
+
+    #             datetime_objects = events.order_by("start").values_list("start", flat=True)
+    #             for datetime_object in datetime_objects:
+    #                 if timezone.localtime(datetime_object).date() not in [
+    #                     date.date() for date in dates
+    #                 ]:
+    #                     dates.append(datetime_object.astimezone(pytz.UTC))
+
+    #             events_dct = {}
+    #             for date in dates:
+    #                 events_dct[str(date.date())] = Event.objects.filter(
+    #                     Q(
+    #                         start__gte=timezone.datetime.combine(
+    #                             date.date(),
+    #                             timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+    #                         )
+    #                     ),
+    #                     Q(
+    #                         start__lte=timezone.datetime.combine(
+    #                             date.date(),
+    #                             timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    #                         )
+    #                     ),
+    #                 ).order_by("start")
+
+    #             date_style = ParagraphStyle(
+    #                 "date_style",
+    #                 fontName="Helvetica-Bold",
+    #                 fontSize=14,
+    #                 spaceBefore=7,
+    #                 spaceAfter=3,
+    #             )
+
+    #             for date in dates:
+    #                 elements.append(Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style))
+    #                 elements.append(Spacer(0, 5))
+
+    #                 events_per_date = events.filter(
+    #                     Q(
+    #                         start__gte=timezone.datetime.combine(
+    #                             date.date(),
+    #                             timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+    #                         )
+    #                     ),
+    #                     Q(
+    #                         start__lte=timezone.datetime.combine(
+    #                             date.date(),
+    #                             timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    #                         )
+    #                     ),
+    #                 ).order_by("start")
+    #                 for event_per_date in events_per_date:
+    #                     t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
+    #                     s = ""
+    #                     if len(event_per_date.student.all()) == 0:
+    #                         s = "/"
+    #                     else:
+    #                         for student in event_per_date.student.all():
+    #                             s += "{} {}; ".format(student.first_name, student.last_name)
+    #                         s = s[:-2]
+
+    #                     b = ""
+    #                     if event_per_date.status == 2:
+    #                         b = "| Nicht bestätigt"
+
+    #                     elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
+    #                     elements.append(Spacer(0, 5))
+
+    #         def header_and_footer(canvas, doc):
+    #             header_footer_style = ParagraphStyle(
+    #                 "header_footer_stlye",
+    #                 alignment=TA_CENTER,
+    #             )
+    #             header_content = Paragraph(
+    #                 str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+    #                 + "_"
+    #                 + str(user.last_name),
+    #                 header_footer_style,
+    #             )
+    #             footer_content = Paragraph(
+    #                 "Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),
+    #                 header_footer_style,
+    #             )
+
+    #             canvas.saveState()
+
+    #             header_content.wrap(doc.width, doc.topMargin)
+    #             header_content.drawOn(
+    #                 canvas,
+    #                 doc.leftMargin,
+    #                 doc.height + doc.bottomMargin + doc.topMargin - 1 * cm,
+    #             )
+
+    #             footer_content.wrap(doc.width, doc.bottomMargin)
+    #             footer_content.drawOn(canvas, doc.leftMargin, 1 * cm)
+
+    #             canvas.restoreState()
+
+    #         frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
+
+    #         template = PageTemplate(id="test", frames=frame, onPage=partial(header_and_footer))
+
+    #         doc.addPageTemplates([template])
+    #         doc.build(elements)
+    #         buff.seek(0)
+    #! Hier muss eientlich die Datei aus der Funktion übernommen werden, aber es funktioniert irgendwie nicht...
+    # with create_pdf_with_all_user_events(request.user.id) as buff:
+    #     print(buff)
+    #     # buff.seek(0)
+    # pdf = create_pdf_with_all_user_events(request.user.id)
+    # print(type(pdf))
+    # print(pdf)
+    # response = HttpResponse(content_type="application/pdf")
+    # response[
+    #     "Content-Disposition"
+    # ] = f'inline; filename="events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf"'
+    # response.write(pdf)
+    # return response
+
+    # try:
+    #     user = CustomUser.objects.get(id=request.user.id)
+    # except CustomUser.DoesNotExist:
+    #     raise ("Error could not generate the PDF")
+    # else:
+    #     if user.role == 0 or user.role == 1:
+    #         buff = BytesIO()
+    #         doc = SimpleDocTemplate(
+    #             buff,
+    #             pagesize=A4,
+    #             rightMargin=2 * cm,
+    #             leftMargin=2 * cm,
+    #             topMargin=2 * cm,
+    #             bottomMargin=2 * cm,
+    #             title="Export Events",
+    #         )
+    #         styles = getSampleStyleSheet()
+    #         elements = []
+
+    #         if user.role == 0:
+    #             events = Event.objects.filter(Q(teacher=user))
+    #         else:
+    #             events = Event.objects.filter(Q(parent=user))
+    #         dates = []
+
+    #         datetime_objects = events.order_by("start").values_list("start", flat=True)
+    #         for datetime_object in datetime_objects:
+    #             if timezone.localtime(datetime_object).date() not in [
+    #                 date.date() for date in dates
+    #             ]:
+    #                 dates.append(datetime_object.astimezone(pytz.UTC))
+
+    #         events_dct = {}
+    #         for date in dates:
+    #             events_dct[str(date.date())] = Event.objects.filter(
+    #                 Q(
+    #                     start__gte=timezone.datetime.combine(
+    #                         date.date(),
+    #                         timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+    #                     )
+    #                 ),
+    #                 Q(
+    #                     start__lte=timezone.datetime.combine(
+    #                         date.date(),
+    #                         timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    #                     )
+    #                 ),
+    #             ).order_by("start")
+
+    #         date_style = ParagraphStyle(
+    #             "date_style",
+    #             fontName="Helvetica-Bold",
+    #             fontSize=14,
+    #             spaceBefore=7,
+    #             spaceAfter=3,
+    #         )
+
+    #         for date in dates:
+    #             elements.append(
+    #                 Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style)
+    #             )
+    #             elements.append(Spacer(0, 5))
+
+    #             events_per_date = events.filter(
+    #                 Q(
+    #                     start__gte=timezone.datetime.combine(
+    #                         date.date(),
+    #                         timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+    #                     )
+    #                 ),
+    #                 Q(
+    #                     start__lte=timezone.datetime.combine(
+    #                         date.date(),
+    #                         timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    #                     )
+    #                 ),
+    #             ).order_by("start")
+    #             for event_per_date in events_per_date:
+    #                 t = str(
+    #                     timezone.localtime(event_per_date.start)
+    #                     .time()
+    #                     .strftime("%H:%M")
+    #                 )
+    #                 s = ""
+    #                 if len(event_per_date.student.all()) == 0:
+    #                     s = "/"
+    #                 else:
+    #                     for student in event_per_date.student.all():
+    #                         s += "{} {}; ".format(student.first_name, student.last_name)
+    #                     s = s[:-2]
+
+    #                 b = ""
+    #                 if event_per_date.status == 2:
+    #                     b = "| Nicht bestätigt"
+
+    #                 elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
+    #                 elements.append(Spacer(0, 5))
+
+    #         def header_and_footer(canvas, doc):
+    #             header_footer_style = ParagraphStyle(
+    #                 "header_footer_stlye",
+    #                 alignment=TA_CENTER,
+    #             )
+    #             header_content = Paragraph(
+    #                 str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+    #                 + "_"
+    #                 + str(user.last_name),
+    #                 header_footer_style,
+    #             )
+    #             footer_content = Paragraph(
+    #                 "Alle Angaben ohne Gewähr<br /><br />-{}-".format(
+    #                     canvas.getPageNumber()
+    #                 ),
+    #                 header_footer_style,
+    #             )
+
+    #             canvas.saveState()
+
+    #             header_content.wrap(doc.width, doc.topMargin)
+    #             header_content.drawOn(
+    #                 canvas,
+    #                 doc.leftMargin,
+    #                 doc.height + doc.bottomMargin + doc.topMargin - 1 * cm,
+    #             )
+
+    #             footer_content.wrap(doc.width, doc.bottomMargin)
+    #             footer_content.drawOn(canvas, doc.leftMargin, 1 * cm)
+
+    #             canvas.restoreState()
+
+    #         frame = Frame(
+    #             doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal"
+    #         )
+
+    #         template = PageTemplate(
+    #             id="test", frames=frame, onPage=partial(header_and_footer)
+    #         )
+
+    #         doc.addPageTemplates([template])
+    #         doc.build(elements)
+    #         buff.seek(0)
+
+    # return FileResponse(
+    #     buff,
+    #     as_attachment=False,
+    #     filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
+    #     content_type="application/pdf",
+    # )
+        # raise HttpResponseForbidden("Sie sind nicht berechtigt einen Plan über die Events herunter zu laden.")
 
 
 @method_decorator(teacher_decorators, name="dispatch")
@@ -517,7 +710,6 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
-
             inquiry_reason = None
 
             inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
@@ -529,7 +721,11 @@ class EventDetailView(View):
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event, "inquiry_reason": inquiry_reason},
+                context={
+                    "cancel_event": cancel_form,
+                    "event": event,
+                    "inquiry_reason": inquiry_reason,
+                },
             )
 
     def post(self, request, event_id):
@@ -594,8 +790,7 @@ class EventDetailView(View):
                     event.student.clear()
                     event.save()
                     return redirect("teacher_dashboard")
-                
-            
+
             inquiry_reason = None
 
             inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
@@ -607,7 +802,11 @@ class EventDetailView(View):
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event, "inquiry_reason": inquiry_reason},
+                context={
+                    "cancel_event": cancel_form,
+                    "event": event,
+                    "inquiry_reason": inquiry_reason,
+                },
             )
 
 
