@@ -80,8 +80,12 @@ DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
 
 CELERY_BEAT_SCHEDULE = {
-    "daily_night_job":{
-        'task': 'general_tasks.tasks.daily_night_job',
+    "initiateEventPDFs":{
+        'task': 'general_tasks.tasks.initiateEventPDFs',
+        'schedule': crontab(minute='*/15')
+    },
+    "look_for_open_inquiries":{
+        'task': 'general_tasks.tasks.look_for_open_inquiries',
         'schedule': crontab(minute='*/1')
     }
 }

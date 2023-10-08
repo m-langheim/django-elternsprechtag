@@ -7,7 +7,7 @@ from celery import shared_task
 from django.conf import settings
 from authentication.models import CustomUser
 from django.template.loader import render_to_string
-from dashboard.models import Event
+from dashboard.models import Event, Inquiry
 from django.db.models import Q
 
 from .utils import EventPDFExport
@@ -38,7 +38,7 @@ def async_send_mail(email_subject, email_body, email_receiver, *args, **kwargs):
                   settings.EMAIL_COMPLETE, [email_receiver, ])
 
 @shared_task
-def daily_night_job(): # Hier können Aktionen ausgeführt werden, die jeden Tag laufen sollen.
+def initiateEventPDFs(): # Mit diesem Task wird damit begonnen an alle Nutzer, die an dem Tag der Ausführung einen Termin vereinbart haben, die Termine per PDF zu senden.
     events = Event.objects.filter(Q(
                             start__gte=timezone.datetime.combine(
                                 timezone.datetime.now().date(),
@@ -63,8 +63,37 @@ def daily_night_job(): # Hier können Aktionen ausgeführt werden, die jeden Tag
                     receiving_user_list.append(event.teacher.id)
         for user_id in receiving_user_list:
             send_eventPDFs_over_email.delay(user_id)
-    else: 
-        print("Es wurden keine Events gefunden")
+
+@shared_task
+def look_for_open_inquiries():
+    inquiries = Inquiry.objects.filter(Q(processed=False), Q(type=0)) # Hier werden alle nicht bearbeiteten Anfragen von Lehrern an Eltern geöffnet
+
+    respondents_list=[]
+
+    for inquiry in inquiries:
+        if inquiry.respondent.id not in respondents_list:
+            respondents_list.append(inquiry.respondent.id)
+
+    print(respondents_list)
+    
+    for respondent_id in respondents_list:
+        try: 
+            respondent = CustomUser.objects.get(id=respondent_id)
+        except CustomUser.DoesNotExist:
+            print("Error")
+        else:
+            res_inquiries = Inquiry.objects.filter(Q(processed=False), Q(type=0), Q(respondent=respondent))
+            async_send_mail.delay(
+                "Offene Anfragen",
+                render_to_string(
+                    "general_tasks/email_unproccessedInquiries_reminder.html",
+                    {
+                        "user":respondent,
+                        "res_inquiries": res_inquiries
+                    }
+                ),
+                respondent.email
+            )
 
 @shared_task
 def send_eventPDFs_over_email(user_id=int):

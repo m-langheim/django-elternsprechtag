@@ -80,9 +80,13 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'general_tasks.tasks.run_dbbackup',
         'schedule': crontab(minute=0, hour=1)
     },
-    "daily_night_job":{
-        'task': 'general_tasks.tasks.daily_night_job',
+    "initiateEventPDFs":{
+        'task': 'general_tasks.tasks.initiateEventPDFs',
         'schedule': crontab(minute=0, hour=3)
+    },
+    "look_for_open_inquiries":{
+        'task': 'general_tasks.tasks.look_for_open_inquiries',
+        'schedule': crontab(minute=0, hour=6, day_of_week=1)
     }
 }
 
