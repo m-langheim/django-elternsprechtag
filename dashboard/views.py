@@ -24,6 +24,10 @@ import pytz
 
 from .utils import check_inquiry_reopen
 
+from general_tasks.utils import EventPDFExport
+import datetime
+from django.http import FileResponse
+
 # Create your views here.
 
 parent_decorators = [login_required, parent_required]
@@ -427,3 +431,13 @@ def impressum(request):
             "Es wurden keine Einstellungen für diese Seite gefunden.")
     else:
         return redirect(settings.impressum)
+
+@login_required
+def create_event_PDF(request):
+    pdf_generator = EventPDFExport(request.user.id)
+    return FileResponse(
+        pdf_generator.print_events(request.user.id),
+        as_attachment=False,
+        filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
+        content_type="application/pdf",
+    )

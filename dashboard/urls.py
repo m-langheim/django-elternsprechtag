@@ -14,5 +14,6 @@ urlpatterns = [
          name="inquiry_detail_view"),
     path('announcement/<announcement_id>/mark_read',
          markAnnouncementRead, name="mark_annuncement_read"),
-    path('impressum/', impressum, name='impressum')
+    path('impressum/', impressum, name='impressum'),
+    path('export/', create_event_PDF, name="parent_generate_pdf")
 ]
