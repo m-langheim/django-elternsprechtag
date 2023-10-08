@@ -1,5 +1,5 @@
-from authentication.models import CustomUser, TeacherExtraData
-from dashboard.models import Inquiry, Student, Event, Announcements
+from authentication.models import CustomUser
+from dashboard.models import Event
 from django.db.models import Q
 import pytz
 
@@ -9,14 +9,10 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageTemplate
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from django.http import FileResponse
 import datetime
 from reportlab.lib.units import cm, mm, inch
-from functools import partial
-from reportlab.platypus.frames import Frame
 from django.utils import timezone
 from reportlab.pdfgen import canvas
-import pdb
 
 
 class EventPDFExport:
@@ -192,147 +188,3 @@ class NumberedCanvas(canvas.Canvas):
         # Change the position of this to wherever you want the page number to be
         self.drawCentredString(100 * mm, 15 * mm + (0.2 * inch),
                              "Seite %d von %d" % (self._pageNumber, page_count))
-        
-
-
-def create_pdf_with_all_user_events(user_id: int):
-    try:
-        user = CustomUser.objects.get(id=user_id)
-    except CustomUser.DoesNotExist:
-        raise ("Error could not generate the PDF")
-    else:
-        if user.role == 0 or user.role == 1:
-            buff = BytesIO()
-            doc = SimpleDocTemplate(
-                buff,
-                pagesize=A4,
-                rightMargin=2 * cm,
-                leftMargin=2 * cm,
-                topMargin=2 * cm,
-                bottomMargin=2 * cm,
-                title="Export Events",
-            )
-            styles = getSampleStyleSheet()
-            elements = []
-
-            if user.role == 0:
-                events = Event.objects.filter(Q(parent=user))
-            else:
-                events = Event.objects.filter(Q(teacher=user))
-            print(events)
-
-            if events.count() == 0:
-                no_events_style = ParagraphStyle(
-                    "no_events_style",
-                    alignment=TA_CENTER,
-                )
-                elements.append(Paragraph("Sie haben bisher keine Events", no_events_style))
-            else:
-                dates = []
-
-                datetime_objects = events.order_by("start").values_list("start", flat=True)
-                for datetime_object in datetime_objects:
-                    if timezone.localtime(datetime_object).date() not in [
-                        date.date() for date in dates
-                    ]:
-                        dates.append(datetime_object.astimezone(pytz.UTC))
-
-                events_dct = {}
-                for date in dates:
-                    events_dct[str(date.date())] = Event.objects.filter(
-                        Q(
-                            start__gte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                            )
-                        ),
-                        Q(
-                            start__lte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                            )
-                        ),
-                    ).order_by("start")
-
-                date_style = ParagraphStyle(
-                    "date_style",
-                    fontName="Helvetica-Bold",
-                    fontSize=14,
-                    spaceBefore=7,
-                    spaceAfter=3,
-                )
-
-                for date in dates:
-                    elements.append(Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style))
-                    elements.append(Spacer(0, 5))
-
-                    events_per_date = events.filter(
-                        Q(
-                            start__gte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                            )
-                        ),
-                        Q(
-                            start__lte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                            )
-                        ),
-                    ).order_by("start")
-                    for event_per_date in events_per_date:
-                        t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
-                        s = ""
-                        if len(event_per_date.student.all()) == 0:
-                            s = "/"
-                        else:
-                            for student in event_per_date.student.all():
-                                s += "{} {}; ".format(student.first_name, student.last_name)
-                            s = s[:-2]
-
-                        b = ""
-                        if event_per_date.status == 2:
-                            b = "| Nicht bestätigt"
-
-                        elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
-                        elements.append(Spacer(0, 5))
-
-            def header_and_footer(canvas, doc):
-                header_footer_style = ParagraphStyle(
-                    "header_footer_stlye",
-                    alignment=TA_CENTER,
-                )
-                header_content = Paragraph(
-                    str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-                    + "_"
-                    + str(user.last_name),
-                    header_footer_style,
-                )
-                footer_content = Paragraph(
-                    "Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),
-                    header_footer_style,
-                )
-
-                canvas.saveState()
-
-                header_content.wrap(doc.width, doc.topMargin)
-                header_content.drawOn(
-                    canvas,
-                    doc.leftMargin,
-                    doc.height + doc.bottomMargin + doc.topMargin - 1 * cm,
-                )
-
-                footer_content.wrap(doc.width, doc.bottomMargin)
-                footer_content.drawOn(canvas, doc.leftMargin, 1 * cm)
-
-                canvas.restoreState()
-
-            frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
-
-            template = PageTemplate(id="test", frames=frame, onPage=partial(header_and_footer))
-
-            doc.addPageTemplates([template])
-            doc.build(elements)
-            buff.seek(0)
-            
-            return buff

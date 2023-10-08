@@ -7,29 +7,18 @@ from django.core.paginator import Paginator
 from django.views import View
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
-from django.http import Http404, JsonResponse, HttpResponseForbidden
+from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
 from .forms import *
-from django.contrib.auth import update_session_auth_hash
-from django.core.exceptions import BadRequest
-from django.http import HttpResponse
 
-from general_tasks.utils import create_pdf_with_all_user_events, EventPDFExport
+from general_tasks.utils import EventPDFExport
 
 import pytz
 
 # pdf gen
-from io import BytesIO
-from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageTemplate
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from django.http import FileResponse
 import datetime
-from reportlab.lib.units import cm
-from functools import partial
-from reportlab.platypus.frames import Frame
 
 # Create your views here.
 
