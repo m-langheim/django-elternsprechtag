@@ -54,7 +54,7 @@ class EventPDFExport:
         # Release the canvas
         canvas.restoreState()
 
-    def print_events(self, user_id):
+    def print_events(self):
         user = self.user
         if user.role == 0 or user.role == 1:
             buff = BytesIO()

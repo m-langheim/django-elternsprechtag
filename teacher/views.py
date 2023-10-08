@@ -375,7 +375,7 @@ def markAnnouncementRead(request, announcement_id):
 def create_event_PDF(request):
     pdf_generator = EventPDFExport(request.user.id)
     return FileResponse(
-        pdf_generator.print_events(request.user.id),
+        pdf_generator.print_events(),
         as_attachment=False,
         filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
         content_type="application/pdf",

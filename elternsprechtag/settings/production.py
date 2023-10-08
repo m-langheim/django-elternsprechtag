@@ -79,6 +79,10 @@ CELERY_BEAT_SCHEDULE = {
     'db_backup_task': {
         'task': 'general_tasks.tasks.run_dbbackup',
         'schedule': crontab(minute=0, hour=1)
+    },
+    "daily_night_job":{
+        'task': 'general_tasks.tasks.daily_night_job',
+        'schedule': crontab(minute=0, hour=3)
     }
 }
 

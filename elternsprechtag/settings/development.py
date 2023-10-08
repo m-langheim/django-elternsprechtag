@@ -78,3 +78,10 @@ RUN_CELERY_THREAD = True
 # Backup settings
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
+
+CELERY_BEAT_SCHEDULE = {
+    "daily_night_job":{
+        'task': 'general_tasks.tasks.daily_night_job',
+        'schedule': crontab(minute='*/1')
+    }
+}
