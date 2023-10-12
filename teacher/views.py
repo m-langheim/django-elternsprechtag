@@ -142,7 +142,7 @@ def studentList(request):
     paginator = Paginator(students_list, 25)
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "teacher/studentList.html", {"page_obj": page_obj})
+    return render(request, "teacher/studentList.html", {"page_obj": page_obj, "search": search})
 
 
 @login_required
