@@ -1,1 +1,0 @@
-http://localhost:8000/register?u=Y67205T8fhdW&key=W12k00PH6F9E
