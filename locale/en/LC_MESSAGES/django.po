@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-14 16:31+0200\n"
+"POT-Creation-Date: 2023-10-14 17:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,32 +47,72 @@ msgid_plural "%d students were newely created."
 msgstr[0] ""
 msgstr[1] ""
 
-#: authentication/models.py:19 authentication/models.py:35
+#: authentication/models.py:21 authentication/models.py:41
 msgid "First name"
 msgstr ""
 
-#: authentication/models.py:20 authentication/models.py:37
+#: authentication/models.py:22 authentication/models.py:43
 msgid "Last name"
 msgstr ""
 
 #: authentication/models.py:31
+msgid "Student"
+msgstr ""
+
+#: authentication/models.py:32
+msgid "Students"
+msgstr ""
+
+#: authentication/models.py:37
 msgid "Parent"
 msgstr ""
 
-#: authentication/models.py:31
+#: authentication/models.py:37
 msgid "Teacher"
 msgstr ""
 
-#: authentication/models.py:31
+#: authentication/models.py:37
 msgid "Others"
 msgstr ""
 
-#: authentication/models.py:33
+#: authentication/models.py:39
 msgid "Email"
 msgstr ""
 
-#: authentication/models.py:40
+#: authentication/models.py:46
 msgid "Role"
+msgstr ""
+
+#: authentication/models.py:60
+msgid "User"
+msgstr ""
+
+#: authentication/models.py:61
+msgid "Users"
+msgstr ""
+
+#: authentication/models.py:84
+msgid "Tag"
+msgstr ""
+
+#: authentication/models.py:85
+msgid "Tags"
+msgstr ""
+
+#: authentication/models.py:112
+msgid "Additional data for teacher"
+msgstr ""
+
+#: authentication/models.py:113
+msgid "Additional data for teachers"
+msgstr ""
+
+#: authentication/models.py:160
+msgid "Future user"
+msgstr ""
+
+#: authentication/models.py:161
+msgid "Future users"
 msgstr ""
 
 #: authentication/templates/authentication/login.html:4
@@ -131,6 +171,74 @@ msgstr ""
 
 #: authentication/templates/authentication/register/unusable_account.html:8
 msgid "Please use a parent account for your child!"
+msgstr ""
+
+#: dashboard/models.py:41
+msgid "Unoccupied"
+msgstr ""
+
+#: dashboard/models.py:41
+msgid "Occupied"
+msgstr ""
+
+#: dashboard/models.py:41
+msgid "Inquiry pending"
+msgstr ""
+
+#: dashboard/models.py:47
+msgid "Event"
+msgstr ""
+
+#: dashboard/models.py:48
+msgid "Events"
+msgstr ""
+
+#: dashboard/models.py:78
+msgid "No response"
+msgstr ""
+
+#: dashboard/models.py:79
+msgid "Inquiry accepted"
+msgstr ""
+
+#: dashboard/models.py:80
+msgid "Inquiry dismissed"
+msgstr ""
+
+#: dashboard/models.py:85
+msgid "Inquiry"
+msgstr ""
+
+#: dashboard/models.py:86
+msgid "Inquries"
+msgstr ""
+
+#: dashboard/models.py:109
+msgid "Announcement"
+msgstr ""
+
+#: dashboard/models.py:110
+msgid "Announcements"
+msgstr ""
+
+#: dashboard/models.py:137
+msgid ""
+"Specify when parents with inquiries can start booking for corresponding "
+"events"
+msgstr ""
+
+#: dashboard/models.py:138
+msgid "Specify when all parents can book events"
+msgstr ""
+
+#: dashboard/models.py:139
+msgid ""
+"Here you can set the general length of an event. The lenth applies to all "
+"events created with the function."
+msgstr ""
+
+#: dashboard/models.py:143 dashboard/models.py:144
+msgid "SiteSettings"
 msgstr ""
 
 #: dashboard/templates/dashboard/base.html:129

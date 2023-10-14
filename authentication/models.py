@@ -10,6 +10,8 @@ from PIL import Image
 
 from .managers import CustomUserManager
 
+from django.utils.translation import gettext as _
+
 # Create your models here.
 
 
@@ -24,6 +26,10 @@ class Student(models.Model):  # Schüler
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+    class Meta:
+        verbose_name = _('Student')
+        verbose_name_plural = _('Students')
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle außer Schüler)
@@ -49,6 +55,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
 
 
 def generate_new_color():
@@ -69,6 +79,10 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = _('Tag')
+        verbose_name_plural = _('Tags')
 
 
 class TeacherExtraData(models.Model):
@@ -93,6 +107,10 @@ class TeacherExtraData(models.Model):
                 output_size = (300, 300)
                 img.thumbnail(output_size)
                 img.save(self.image.path)
+
+    class Meta:
+        verbose_name = _('Additional data for teacher')
+        verbose_name_plural = _('Additional data for teachers')
 
 
 def generate_unique_code():
@@ -137,3 +155,7 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
 
     def __str__(self):
         return f'{_("Access for")} {self.student}'
+    
+    class Meta:
+        verbose_name = _('Future user')
+        verbose_name_plural = _('Future users')
