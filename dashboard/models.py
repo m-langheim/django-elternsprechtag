@@ -134,8 +134,8 @@ class SingletonModel(models.Model):  # set all general setting for Singleton mod
 
 
 class SiteSettings(SingletonModel):
-    lead_start = models.DateField(default=timezone.now, help_text=_("Specify when parents with inquiries can start booking for corresponding events"))
-    lead_inquiry_start = models.DateField(default=timezone.now, help_text=_("Specify when all parents can book events"))
+    lead_start = models.DateField(default=timezone.now, help_text=_("Specify when all parents can book events"))
+    lead_inquiry_start = models.DateField(default=timezone.now, help_text=_("Specify when parents with inquiries can start booking for corresponding events"))
     event_duration = models.DurationField(default=datetime.timedelta(seconds=0), help_text=_("Here you can set the general length of an event. The lenth applies to all events created with the function."))
     impressum = models.URLField(max_length=200, default="")
 
