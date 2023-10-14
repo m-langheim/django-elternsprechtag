@@ -195,7 +195,6 @@ class InquiryView(View):
         except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
-            print(inquiry.respondent)
             initial = {
                 "reason": inquiry.reason,
                 "student": inquiry.students.first,
@@ -210,6 +209,8 @@ class InquiryView(View):
                 {
                     "form": form,
                     "student": inquiry.students.first,
+                    "parent_first_name": inquiry.respondent.first_name,
+                    "parent_last_name": inquiry.respondent.last_name,
                     "f_inquiry_id": urlsafe_base64_encode(force_bytes(inquiry.id)),
                 },
             )
