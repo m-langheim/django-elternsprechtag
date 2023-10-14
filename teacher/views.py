@@ -26,6 +26,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
 
+from dashboard.utils import check_inquiry_reopen
+
 
 teacher_decorators = [login_required, teacher_required]
 
@@ -63,7 +65,6 @@ def dashboard(request):
 
     events_dict = {}
     for date in dates:
-        #! Spontane Änderung aufgrund von Problemen auf dem Server
         events_dict[str(date.date())] = events.filter(
             Q(
                 start__gte=timezone.datetime.combine(
@@ -421,17 +422,20 @@ class EventDetailView(View):
                     message = cancel_form.cleaned_data["message"]
                     book_other = cancel_form.cleaned_data["book_other_event"]
 
+                    parent = event.parent
+                    teacher = event.teacher
+
                     if book_other:
                         teacher_id = urlsafe_base64_encode(
                             force_bytes(event.teacher.id)
                         )
                         Announcements.objects.create(
                             announcement_type=1,
-                            user=event.parent,
+                            user=parent,
                             message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s \nUnter dem angegebenen Link buchen Sie bitte einen neuen Termin"
                             % (
-                                event.teacher.first_name,
-                                event.teacher.last_name,
+                                teacher.first_name,
+                                teacher.last_name,
                                 message,
                             ),
                             action_name="Termine ansehen",
@@ -442,11 +446,11 @@ class EventDetailView(View):
                     else:
                         Announcements.objects.create(
                             announcement_type=1,
-                            user=event.parent,
+                            user=parent,
                             message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s"
                             % (
-                                event.teacher.first_name,
-                                event.teacher.last_name,
+                                teacher.first_name,
+                                teacher.last_name,
                                 message,
                             ),
                         )
@@ -455,8 +459,8 @@ class EventDetailView(View):
                     try:
                         inquiry = Inquiry.objects.get(
                             Q(type=1),
-                            Q(requester=event.parent),
-                            Q(respondent=event.teacher),
+                            Q(requester=parent),
+                            Q(respondent=teacher),
                             Q(event=event),
                         )
                     except Inquiry.DoesNotExist:
@@ -465,6 +469,8 @@ class EventDetailView(View):
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2
                         inquiry.save()
+
+                    check_inquiry_reopen(parent, teacher)
                     event.parent = None
                     event.status = 0
                     event.occupied = False
@@ -491,34 +497,34 @@ class EventDetailView(View):
             )
 
 
-@method_decorator(teacher_decorators, name="dispatch")
-class EventListView(View):  # ???????? was war das nochmal?
-    def get(self, request):
-        events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
-        dates = []
+# @method_decorator(teacher_decorators, name="dispatch")
+# class EventListView(View):  # ???????? was war das nochmal?
+#     def get(self, request):
+#         events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
+#         dates = []
 
-        datetime_objects = events.order_by("start").values_list("start", flat=True)
-        for datetime_object in datetime_objects:
-            if timezone.localtime(datetime_object).date() not in [
-                date.date() for date in dates
-            ]:
-                # print(datetime_object.astimezone(pytz.UTC).date())
-                dates.append(datetime_object.astimezone(pytz.UTC))
+#         datetime_objects = events.order_by("start").values_list("start", flat=True)
+#         for datetime_object in datetime_objects:
+#             if timezone.localtime(datetime_object).date() not in [
+#                 date.date() for date in dates
+#             ]:
+#                 # print(datetime_object.astimezone(pytz.UTC).date())
+#                 dates.append(datetime_object.astimezone(pytz.UTC))
 
-        events_dict = {}
-        for date in dates:
-            #! Spontane Änderung aufgrund von Problemen auf dem Server
-            events_dict[str(date.date())] = events.filter(
-                Q(
-                    start__gte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(
-                    start__lte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                    )
-                ),
-            ).order_by("start")
+#         events_dict = {}
+#         for date in dates:
+#             #! Spontane Änderung aufgrund von Problemen auf dem Server
+#             events_dict[str(date.date())] = events.filter(
+#                 Q(
+#                     start__gte=timezone.datetime.combine(
+#                         date.date(),
+#                         timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+#                     )
+#                 ),
+#                 Q(
+#                     start__lte=timezone.datetime.combine(
+#                         date.date(),
+#                         timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+#                     )
+#                 ),
+#             ).order_by("start")
