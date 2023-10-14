@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData, Student, Tag
 from .models import Event, Inquiry, SiteSettings, Announcements
 from django.db.models import Q
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.views import View
 from django.views.generic.base import RedirectView
@@ -81,13 +82,14 @@ def search(request):
     request_search = request.GET.get('q', None)
     state = 0
     result = []
+    page_number = request.GET.get("page")
 
     if request_search is None:
-        state = 0
+        result = teachers
     elif request_search.startswith('#'):
         request_search = request_search[1:]
         tags = Tag.objects.filter(Q(name__icontains=request_search) | Q(
-            synonyms__icontains=request_search))  # get a list of all matching tags
+            synonyms__icontains=request_search)).order_by("name")  # get a list of all matching tags
 
         for tag in tags:
             extraData = teacherExtraData.filter(tags=tag)
@@ -96,16 +98,15 @@ def search(request):
                 teacher = data.teacher
                 if not teacher in result:
                     result.append(teacher)
-        state = 1
     else:
-        for data in teachers.filter(last_name__icontains=request_search):
+        for data in teachers.filter(last_name__icontains=request_search).order_by("first_name").order_by("last_name"):
             if not data in result:
                 result.append(data)
         # result = teachers.filter(last_name__icontains=request_search)
         for data in teacherExtraData.filter(acronym__icontains=request_search):
             if not data.teacher in result:
                 result.append(data.teacher)
-        state = 2
+
 
     custom_result = []
 
@@ -114,7 +115,11 @@ def search(request):
         custom_result.append({'first_name': teacher.first_name,
                              'last_name': teacher.last_name, 'email': teacher.email, 'url': reverse('event_teacher_list', args=[teacher_id])})  # notwendig um den Url parameter zu dem queryset hinzu zu fügen
     # return render(request, 'dashboard/search.html', {'teachers': result, 'search': request_search})
-    return render(request, 'dashboard/search.html', {'teachers': custom_result, 'state': state, 'request_search': request_search})
+
+    paginator = Paginator(custom_result, 25)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'dashboard/search.html', {'teachers': page_obj, 'state': state, 'request_search': request_search})
 
 
 @ login_required

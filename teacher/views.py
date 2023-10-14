@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from authentication.models import CustomUser, TeacherExtraData
+from authentication.models import CustomUser
 from dashboard.models import Inquiry, Student, Event, Announcements
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
