@@ -26,6 +26,9 @@ class editInquiryForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False)
     reason = forms.CharField(widget=forms.Textarea, required=False)
+    def __init__(self, *args, **kwargs):
+        super(editInquiryForm, self).__init__(*args, **kwargs)
+        self.fields['reason'].label = False
 
 
 class changePasswordForm(PasswordChangeForm):

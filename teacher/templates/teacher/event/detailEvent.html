@@ -9,7 +9,7 @@
 
 
 <div class="row gx-3 gy-3">
-    <div class="col-12 col-sm-8 col-xl-10 col-lg-9">
+    <div class="col-12">
         <div class="card card-body p-4">
 
             <p class="h1">Termin</p>
@@ -24,7 +24,7 @@
                 </p>
             </div>
             <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                <p class="col-3 col-xs-5 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
                     Zeitfenster:
                 </p>
                 <p class="col">
@@ -60,12 +60,49 @@
                 <p class="col">
                     {% for stu in event.student.all %}
                     {{ stu.first_name }} {{ stu.last_name }}
+                    {% if stu != event.student.all.last %}, {% endif %}
                     {% endfor %}
                 </p>
-                <!-- you must add ', ' here -->
             </div>
             <div class="row">
-                <div class="col d-flex justify-content-end">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Lehrkraft:
+                </p>
+                <p class="col">
+                    {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                </p>
+            </div>
+            <div class="d-flex d-md-none row">
+
+                <div class="d-flex d-md-none col-12">
+                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
+                        <button type="button" class="btn btn-outline-danger mb-2 me-2" data-bs-toggle="modal"
+                            data-bs-target="#eventCancelModal">
+                            Termin absagen
+                        </button>
+                    </div>
+
+                    {% if event.status == 2 %}
+                    <div class="d-grid col-6">
+                        <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal"
+                            data-bs-target="#eventModal{{event.id}}">
+                            Termin bestätigen
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="d-flex d-md-none col-12">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+            </div>
+
+            <div class="d-none d-md-flex row">
+                <div class="d-none d-md-flex col">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+                <div class="d-none d-md-flex col justify-content-end">
                     <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
                         data-bs-target="#eventCancelModal">
                         Termin absagen
@@ -103,40 +140,50 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-
-                    {% if event.status == 2 %}
-                    <!-- Event Confirmation Modal -->
-                    <div class="modal fade" id="eventModal{{event.id}}" tabindex="-1"
-                        aria-labelledby="eventModal{{event.id}}Label" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Termin bestätigen</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Ihnen wurde eine Anfrage von {{ event.parent.first_name }} {{ event.parent.last_name
-                                    }} für den
-                                    {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen
-                                    Termin bestätigen?
-                                </div>
-                                <!-- event.parent.last_name isn't displayed right -->
-                                <div class="modal-footer">
-                                    {{ event.id }}
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal">Abbrechen</button>
-                                    <a type="button" class="btn btn-outline-danger"
-                                        href="{% url 'teacher_confirm_event' event.id %}">Termin
-                                        annehmen</a>
-                                </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{cancel_event.cancel_event}}
+                            <div class="modal-body">
+                                {{ cancel_event.message|as_crispy_field }}
+                                {{cancel_event.book_other_event|as_crispy_field}}
                             </div>
-                        </div>
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Abbrechen</button>
+                                <input type="submit" class="btn btn-outline-danger" value="Termin absagen" />
+                            </div>
+                        </form>
                     </div>
-                    {% endif %}
                 </div>
             </div>
+
+            {% if event.status == 2 %}
+            <!-- Event Confirmation Modal -->
+            <div class="modal fade" id="eventModal{{event.id}}" tabindex="-1"
+                aria-labelledby="eventModal{{event.id}}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Termin bestätigen</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Ihnen wurde eine Anfrage von 
+                            {{ event.parent.first_name }} {{ event.parent.last_name }} für den
+                            {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen
+                            Termin bestätigen?
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Abbrechen</button>
+                            <a type="button" class="btn btn-outline-danger"
+                                href="{% url 'teacher_confirm_event' event.id %}">Termin
+                                annehmen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -194,7 +194,6 @@ class InquiryView(View):
         except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
-            print(inquiry.respondent)
             initial = {
                 "reason": inquiry.reason,
                 "student": inquiry.students.first,
@@ -209,6 +208,8 @@ class InquiryView(View):
                 {
                     "form": form,
                     "student": inquiry.students.first,
+                    "parent_first_name": inquiry.respondent.first_name,
+                    "parent_last_name": inquiry.respondent.last_name,
                     "f_inquiry_id": urlsafe_base64_encode(force_bytes(inquiry.id)),
                 },
             )
@@ -349,7 +350,8 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiries = event.inquiry_set.all()
+        inquiries = event.inquiry_set.filter(Q(requester=event.parent), Q(processed=False))
+        print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
             inquiry.save()
