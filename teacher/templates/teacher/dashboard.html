@@ -55,7 +55,11 @@
                                     data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
                                     aria-controls="event-accordion-collapse-{{ event.id }}">
                                     <div class="col">
-                                        {{ event.start|time }} - {{event.end|time}}
+                                        {{ event.start|time }} - {{event.end|time}} | 
+                                        {% for student in event.student.all %}
+                                        {{student.first_name}} {{student.last_name}}
+                                        {% if student != event.student.last %}, {% endif %}
+                                        {% endfor %}
                                     </div>
                                     <div class="col-3">
 
@@ -74,23 +78,20 @@
                                 aria-labelledby="event-accordion-heading-{{ event.id }}"
                                 data-bs-parent="#event-accordion">
                                 <div class="accordion-body">
-                                    <strong>Startzeit: </strong>{{ event.start }} <br />
-                                    <strong>Elternteil: </strong>
-                                    {{ event.parent.first_name }} {{ event.parent.last_name }}<br />
+                                    <strong>Startzeit: </strong>{{event.start.time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
                                     <strong>Schüler:innen: </strong>
                                     {% for student in event.student.all %}
                                     {{student.first_name}} {{student.last_name}}
                                     {% if student != event.student.last %}, {% endif %}
-                                    {% endfor %}
-                                    <br />
+                                    {% endfor %}<br />
 
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <a type="button" class="btn btn-outline-danger"
+                                        <a type="button" class="btn btn-outline-danger mt-2"
                                             href="{% url 'teacher_event_view' event.id %}">
                                             Details
                                         </a>
                                         {% if event.status == 2 %}
-                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
                                             data-bs-target="#eventModal{{event.id}}">
                                             Termin bestätigen
                                         </button>
@@ -138,13 +139,9 @@
                         <div class="accordion-body">
                             <strong>Elternteil: </strong>
                             {{ inquiry.inquiry.respondent.first_name }} {{ inquiry.inquiry.respondent.last_name }}<br />
+                            <strong>Schüler:in: </strong>
+                            {{ inquiry.inquiry.students.first }}<br />
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
-                            <strong>Event: </strong>
-                            {% if inquiry.inquiry.event != null %}
-                            {{inquiry.inquiry.event.start}}
-                            {% else %}
-                            ---
-                            {% endif %}
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a class="btn btn-outline-danger" role="button" href="{{ inquiry.url }}">Bearbeiten</a>
                             </div>
