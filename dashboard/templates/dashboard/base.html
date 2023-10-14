@@ -35,7 +35,7 @@
                     <!-- Kleiner Bildschirm -->
                     <div class="d-block d-lg-none">
                         <form class="d-flex d-lg-none col-10" style="margin-top: 10.5px; width: 100%;"
-                            action="{% url 'search' %}">
+                            action="{% if user.role == 1 %}{% url 'teacher_students_list' %}{% else %}{% url 'search' %}{% endif %}">
                             <div class="form-white input-group bg-white align-items-center align-self-center">
                                 <input type="text"
                                     class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
