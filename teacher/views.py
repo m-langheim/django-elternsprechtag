@@ -26,6 +26,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
 
+from dashboard.utils import check_inquiry_reopen
+
 
 teacher_decorators = [login_required, teacher_required]
 
@@ -348,7 +350,8 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiries = event.inquiry_set.all()
+        inquiries = event.inquiry_set.filter(Q(requester=event.parent), Q(processed=False))
+        print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
             inquiry.save()
@@ -465,6 +468,7 @@ class EventDetailView(View):
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2
                         inquiry.save()
+                    check_inquiry_reopen(event.parent, event.teacher)
                     event.parent = None
                     event.status = 0
                     event.occupied = False
