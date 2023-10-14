@@ -13,10 +13,9 @@
                     <p class="h1">Events</p>
                     <p class="text-muted">Hier werden alle gebuchten Termine aufgeführt</p>
                 </div>
-                <!-- !Es muss noch die Funktion zur Generierung von PDFs entwickelt werden -->
-                <!-- <div class="col col-4 d-grid gap-2 justify-content-md-end">
-                    <button class="btn btn-primary p-4" type="button">Download PDF</button>
-                </div> -->
+                    <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
+                        <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" type="button" href="{% url 'parent_generate_pdf' %}"><div>Download</div></a>
+                    </div>
             </div>
 
             <!-- Liste an möglichen Tabs -->
@@ -131,6 +130,7 @@
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
+                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first}} <br/>
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
                             <strong>Event: </strong>
                             {% if inquiry.inquiry.event != null %}
