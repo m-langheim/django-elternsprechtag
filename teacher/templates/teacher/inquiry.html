@@ -4,41 +4,96 @@
 {% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-6">
-            {{ form.student|as_crispy_field }}
-        </div>
-        <div class="col-6">
-            {{ form.parent|as_crispy_field }}
-        </div>
-    </div>
-    {{form.event|as_crispy_field}}
-    {{ form.reason|as_crispy_field }}
-    <input type="submit" class="btn btn-success" value="Ändern" />
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Anfrage revidieren
-    </button>
-</form>
+<div class="row gx-3 gy-3">
+    <div class="col-12">
+        <div class="card card-body p-4">
+            <p class="h1">Anfrage</p>
+            <p class="text-secondary">Bearbeiten Ihrer Anfrage an ein Elternteil</p>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Anfrage revidieren</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="row">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Schüler:in:
+                </p>
+                <p class="col">
+                    {{ student }}
+                </p>
             </div>
-            <div class="modal-body">
-                Möchten Sie die Anfrage nach einem Gespräch mit den Eltern von {{student.first_name}}
-                {{student.last_name}} wirklich zurückziehen?
+            <div class="row">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Elternteil:
+                </p>
+                <p class="col">
+                    {{ parent_first_name }} {{ parent_last_name }}
+                </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <a href="{% url 'teaher_delete_inquiry' f_inquiry_id %}" class="btn btn-primary">Anfrage revidieren</a>
+            <div class="row">
+                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                    Grund:
+                </p>
+                <p class="col">
+                    <form method="post">
+                        {{ form.reason|as_crispy_field }}
+                    </form>
+                </p>
+            </div>
+            <div class="d-flex d-md-none row">
+                <div class="d-flex d-md-none col-12">
+                    <div class="d-grid col-6">
+                        <input type="submit" class="btn btn-outline-danger mb-2 me-2" value="Speichern" />
+                    </div>
+                    <div class="d-grid col-6">
+                        <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                            Anfrage zurückziehen
+                        </button>
+                    </div>
+
+                </div>
+                <div class="d-flex d-md-none col-12">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+            </div>
+
+            <div class="d-none d-md-flex row">
+                <div class="d-none d-md-flex col">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+                <div class="d-none d-md-flex col justify-content-end">
+                    <input type="submit" class="btn btn-outline-danger mb-2 mt-2 me-2" value="Speichern"/>
+                    <button type="button" class="btn btn-outline-danger mt-2 mb-2" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        Anfrage zurückziehen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Anfrage zurückziehen</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Möchten Sie die Anfrage nach einem Gespräch mit den Eltern von {{student.first_name}}
+                            {{student.last_name}} zurückziehen?
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Abbrechen</button>
+                            <a type="button" class="btn btn-outline-danger"
+                                href="{% url 'teaher_delete_inquiry' f_inquiry_id %}">Anfrage zurückziehen</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 {% endblock content %}
