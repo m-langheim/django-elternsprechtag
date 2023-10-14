@@ -238,9 +238,11 @@
                 Ihnen wurde eine Anfrage von {{ event.parent.first_name }} {{ event.parent.last_name }} für den
                 {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen Termin bestätigen?
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <a type="button" class="btn btn-outline-danger" href="{% url 'teacher_confirm_event' event.id %}">Termin
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">Abbrechen</button>
+                <a type="button" class="btn btn-outline-danger"
+                    href="{% url 'teacher_confirm_event' event.id %}">Termin
                     annehmen</a>
             </div>
         </div>
