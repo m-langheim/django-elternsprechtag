@@ -103,7 +103,7 @@ def studentList(request):
     page_number = request.GET.get("page")
 
     if search is None:
-        students = Student.objects.all()
+        students = Student.objects.all().order_by("first_name").order_by("last_name")
     else:
         students = (
             Student.objects.filter(
@@ -111,7 +111,7 @@ def studentList(request):
             )
             .order_by("first_name")
             .order_by("last_name")
-        )  # May you must change this order system
+        )
 
     events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
