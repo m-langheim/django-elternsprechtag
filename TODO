@@ -28,6 +28,10 @@ change_password.html
 
 
 
-bei der Suche wird die Suche durch den Paginator entfernt -> 2. Seite kann beim Paginator einer Suche nicht angezeigt werden
+(behoben) bei der Suche wird die Suche durch den Paginator entfernt -> 2. Seite kann beim Paginator einer Suche nicht angezeigt werden
 
 Farbe des Paginators ändern bei der Suche
+
+Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen
+Es muss nochmal an den Leads gearbietet werden
+Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.

@@ -9,6 +9,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+NAME = "production"
+
 TIME_ZONE = os.environ.get("TZ")
 
 
@@ -77,10 +79,18 @@ CELERY_BEAT_SCHEDULE = {
     'db_backup_task': {
         'task': 'general_tasks.tasks.run_dbbackup',
         'schedule': crontab(minute=0, hour=1)
+    },
+    "initiateEventPDFs":{
+        'task': 'general_tasks.tasks.initiateEventPDFs',
+        'schedule': crontab(minute=0, hour=3)
+    },
+    "look_for_open_inquiries":{
+        'task': 'general_tasks.tasks.look_for_open_inquiries',
+        'schedule': crontab(minute=0, hour=6, day_of_week=1)
     }
 }
 
-RUN_CELERY_THREAD = False
+# RUN_CELERY_THREAD = False
 
 # Backup configuration
 if os.environ.get("USE_FTP_BACKUP", False):

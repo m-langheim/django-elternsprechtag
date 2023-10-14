@@ -40,8 +40,8 @@ class EventAdmin(admin.ModelAdmin):
 
                 async_create_events_special.delay([teacher.id for teacher in form.cleaned_data["teacher"]],
                                                   form.cleaned_data["date"].strftime("%Y-%m-%d"), form.cleaned_data["start_time"].strftime("%H:%M:%S"), form.cleaned_data["end_time"].strftime("%H:%M:%S"))
-                # async_create_events_special([teacher.id for teacher in form.cleaned_data["teacher"]],
-                #                             form.cleaned_data["date"], form.cleaned_data["start_time"], form.cleaned_data["end_time"])
+                
+                
                 return redirect("..")
             return render(request, "dashboard/admin/addEvents.html", context={'form': form})
 
