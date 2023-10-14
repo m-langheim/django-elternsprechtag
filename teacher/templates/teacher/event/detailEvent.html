@@ -115,20 +115,30 @@
                     </button>
                     {% endif %}
 
-                </div>
-            </div>
-
-
-
-
-            <!-- Event Cancel Modal -->
-            <div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="eventCancelModalLabel">Termin absagen</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Event Cancel Modal -->
+                    <div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="eventCancelModalLabel">Termin absagen</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {{cancel_event.cancel_event}}
+                                    <div class="modal-body">
+                                        {{ cancel_event.message|as_crispy_field }}
+                                        {{cancel_event.book_other_event|as_crispy_field}}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                        data-bs-dismiss="modal">Abbrechen</button>
+                                        <input type="submit" class="btn btn-outline-danger" value="Termin absagen" />
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                         <form method="post">
                             {% csrf_token %}
