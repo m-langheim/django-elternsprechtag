@@ -7,6 +7,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import PasswordChangeForm
 
+from django.utils.translation import gettext as _
+
 
 class createInquiryForm(forms.Form):
     student = forms.ModelChoiceField(
@@ -41,6 +43,6 @@ class changePasswordForm(PasswordChangeForm):
 
 
 class cancelEventForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea)
-    book_other_event = forms.BooleanField(initial=False, required=False)
+    message = forms.CharField(widget=forms.Textarea, label=_("Explenation why you dismiss the event."))
+    book_other_event = forms.BooleanField(initial=False, required=False, label=_("Parent should book a different event."))
     cancel_event = forms.BooleanField(widget=forms.HiddenInput, initial=True)

@@ -307,7 +307,6 @@ class InquiryView(View):
 
         events_dt_dict = {}
         for date in dates:
-            #! Spontane Änderung aufgrund von Problemen auf dem Server
             events_dt_dict[str(date.date())] = events.filter(
                 Q(start__gte=timezone.datetime.combine(
                     date.date(),
@@ -322,6 +321,8 @@ class InquiryView(View):
         for b_times in Event.objects.filter(Q(parent=request.user), Q(occupied=True)).values_list("start", flat=True):
             time = timezone.localtime(b_times)
             booked_times.append(time)
+
+        print(events)
 
         return render(request, "dashboard/inquiry.html", {'inquiry_id': inquiry_id, 'inquiry': inquiry, 'events': events, 'events_dt': events_dt, 'events_dt_dict': events_dt_dict, 'teacher_id': teacher_id, 'booked_times': booked_times})
 

@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
+from django.utils.translation import gettext as _
+
 # Create your models here.
 
 
@@ -36,10 +38,14 @@ class Event(models.Model):  # Termin
 
     room = models.CharField(default=None, blank=True, null=True, max_length=3)
 
-    STATUS_CHOICES = ((0, "Unoccupied"), (1, "Occupied"), (2, "Inquiry pending"))
+    STATUS_CHOICES = ((0, _("Unoccupied")), (1, _("Occupied")), (2, _("Inquiry pending")))
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
 
     occupied = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _('Event')
+        verbose_name_plural = _('Events')
 
 
 # Allgemeine Anfragen, also Terminanfragen von den Eltern an die Lehrer und die ufforderung für ein Termin von den Eltern an die Schüler
@@ -69,11 +75,15 @@ class Inquiry(models.Model):
     )
 
     REACTION_CHOICES = (
-        (0, "Bisher keine Reaktion"),
-        (1, "Anfrage wurde angenommen"),
-        (3, "Anfrage wurde abgelehnt"),
+        (0, _("No response")),
+        (1, _("Inquiry accepted")),
+        (3, _("Inquiry dismissed")),
     )
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
+
+    class Meta:
+        verbose_name = _('Inquiry')
+        verbose_name_plural = _('Inquries')
 
 
 class Announcements(models.Model):
@@ -94,6 +104,10 @@ class Announcements(models.Model):
 
     def encodedID(self):
         return urlsafe_base64_encode(force_bytes(self.id))
+    
+    class Meta:
+        verbose_name = _('Announcement')
+        verbose_name_plural = _('Announcements')
 
 
 ########################################################################### Settings ###################################################
@@ -120,7 +134,11 @@ class SingletonModel(models.Model):  # set all general setting for Singleton mod
 
 
 class SiteSettings(SingletonModel):
-    lead_start = models.DateField(default=timezone.now)
-    lead_inquiry_start = models.DateField(default=timezone.now)
-    event_duration = models.DurationField(default=datetime.timedelta(seconds=0))
+    lead_start = models.DateField(default=timezone.now, help_text=_("Specify when parents with inquiries can start booking for corresponding events"))
+    lead_inquiry_start = models.DateField(default=timezone.now, help_text=_("Specify when all parents can book events"))
+    event_duration = models.DurationField(default=datetime.timedelta(seconds=0), help_text=_("Here you can set the general length of an event. The lenth applies to all events created with the function."))
     impressum = models.URLField(max_length=200, default="")
+
+    class Meta:
+        verbose_name = _('SiteSettings')
+        verbose_name_plural = _('SiteSettings')
