@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-14 17:45+0200\n"
+"POT-Creation-Date: 2023-10-14 23:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,15 +57,15 @@ msgstr "Nachname"
 
 #: authentication/models.py:21
 msgid "Child emails"
-msgstr ""
+msgstr "Email des Kindes"
 
 #: authentication/models.py:22
 msgid "Name of class"
-msgstr ""
+msgstr "Klassenname"
 
 #: authentication/models.py:23
 msgid "Childs parents have registered"
-msgstr ""
+msgstr "Elternteil registriert"
 
 #: authentication/models.py:29 authentication/models.py:150
 #, fuzzy
@@ -81,7 +81,7 @@ msgstr "Schüler"
 msgid "Parent"
 msgstr "Elternteil"
 
-#: authentication/models.py:35
+#: authentication/models.py:35 dashboard/models.py:65
 msgid "Teacher"
 msgstr "Lehrer"
 
@@ -266,65 +266,174 @@ msgstr "Bitte melden Sie sich mit Ihrem Elternaccount an"
 msgid "Please use a parent account for your child!"
 msgstr "Bitte melden Sie sich mit Ihrem Elternaccount an"
 
-#: dashboard/models.py:41
+#: dashboard/admin.py:139
+msgid "Response actions"
+msgstr "Handlungsoptionen"
+
+#: dashboard/admin.py:146
+#, fuzzy
+#| msgid "Approved"
+msgid "Approve"
+msgstr "Bestätigt"
+
+#: dashboard/admin.py:148
+#, fuzzy
+#| msgid "Disapproved"
+msgid "Disapprove"
+msgstr "Abgelehnt"
+
+#: dashboard/admin.py:151
+msgid "No actions available"
+msgstr "Keine Aktionen verfügbar"
+
+#: dashboard/admin.py:176
+#, fuzzy, python-format
+#| msgid "%d regestration link was successfully recreated and send."
+#| msgid_plural "%d registration links were successfully recreates and send."
+msgid "%d form was successfully approved and events changed."
+msgid_plural "%d forms were successfully approved and changed."
+msgstr[0] ""
+"%d Antrag wurde erfolgreich angenommen. Die Termine werden automatisch "
+"erstellt."
+msgstr[1] ""
+"%d Anträge wurden erfolgreich angenommen. Die Termine werden automatisch "
+"erstellt."
+
+#: dashboard/admin.py:187
+#, python-format
+msgid "%d form was not successfully approved. Please try them individually."
+msgid_plural ""
+"%d forms were not successfully approved. Please try them individually."
+msgstr[0] ""
+"%d Antrag wurde nicht erfolgreich angenommen. Bitte versuchen Sie es bei "
+"diesem manuell."
+msgstr[1] ""
+"%d Anträge wurden nicht erfolgreich angenommen. Bitte versuchen Sie es bei "
+"diesen jeweils manuell."
+
+#: dashboard/admin.py:214
+#, fuzzy, python-format
+#| msgid "%d registration email was successfully initiated."
+#| msgid_plural "%d registration emails were successfully initiated."
+msgid "%d form was successfully disapproved."
+msgid_plural "%d forms were successfully disapproved."
+msgstr[0] "%d Antrag wurde erfolgreich abgelehnt."
+msgstr[1] "%d Anträge wurden erfolgreich abgelehnt."
+
+#: dashboard/admin.py:225
+#, python-format
+msgid "%d form was not successfully disapproved. Please try them individually."
+msgid_plural ""
+"%d forms were not successfully disapproved. Please try them individually."
+msgstr[0] ""
+"%d Antrag wurde nicht erfolgreich abgelehnt. Bitte versuchen Sie es bei "
+"diesem manuell."
+msgstr[1] ""
+"%d Anträge wurden nicht erfolgreich abgelehnt. Bitte versuchen Sie es bei "
+"diesen jeweils manuell."
+
+#: dashboard/models.py:42
 msgid "Unoccupied"
 msgstr "Frei"
 
-#: dashboard/models.py:41
+#: dashboard/models.py:43
 msgid "Occupied"
 msgstr "Belegt"
 
-#: dashboard/models.py:41
+#: dashboard/models.py:44
 msgid "Inquiry pending"
 msgstr "Anfrage ausstehend"
 
-#: dashboard/models.py:47
-#, fuzzy
-#| msgid "Event"
+#: dashboard/models.py:51
 msgid "Event"
 msgstr "Termin"
 
-#: dashboard/models.py:48
-#, fuzzy
-#| msgid "Events"
+#: dashboard/models.py:52
 msgid "Events"
 msgstr "Termine"
 
-#: dashboard/models.py:78
+#: dashboard/models.py:67
+msgid "Date"
+msgstr "Datum"
+
+#: dashboard/models.py:68
+msgid "Start time"
+msgstr "STart Uhrzeit"
+
+#: dashboard/models.py:69
+msgid "End time"
+msgstr "End Uhrzeit"
+
+#: dashboard/models.py:70
+#, fuzzy
+msgid "No events"
+msgstr "Keine Termine"
+
+#: dashboard/models.py:72
+msgid "Waiting to be filled"
+msgstr "Ausstehend"
+
+#: dashboard/models.py:73
+msgid "Waiting for approval"
+msgstr "Warte auf Bestätigung"
+
+#: dashboard/models.py:74
+msgid "Approved"
+msgstr "Bestätigt"
+
+#: dashboard/models.py:75
+msgid "Disapproved"
+msgstr "Abgelehnt"
+
+#: dashboard/models.py:80
+msgid "Event creation formula"
+msgstr "Termin-Änderungsantrag"
+
+#: dashboard/models.py:81
+msgid "Event creation formulas"
+msgstr "Termin-Änderungsanträge"
+
+#: dashboard/models.py:111
 msgid "No response"
 msgstr "Keine Reaktion"
 
-#: dashboard/models.py:79
+#: dashboard/models.py:112
 #, fuzzy
 #| msgid "Inquiry pending"
 msgid "Inquiry accepted"
 msgstr "Anfrage angenommen"
 
-#: dashboard/models.py:80
+#: dashboard/models.py:113
 #, fuzzy
 #| msgid "Inquiry pending"
 msgid "Inquiry dismissed"
 msgstr "Anfrage abgelehnt"
 
-#: dashboard/models.py:85
+#: dashboard/models.py:118
 #, fuzzy
 #| msgid "Inquiry pending"
 msgid "Inquiry"
 msgstr "Anfrage"
 
-#: dashboard/models.py:86
+#: dashboard/models.py:119
 msgid "Inquries"
 msgstr "Anfragen"
 
-#: dashboard/models.py:109
+#: dashboard/models.py:142
 msgid "Announcement"
 msgstr "Mitteilung"
 
-#: dashboard/models.py:110
+#: dashboard/models.py:143
 msgid "Announcements"
 msgstr "Mitteilungen"
 
-#: dashboard/models.py:137
+#: dashboard/models.py:171
+msgid "Specify when all parents can book events"
+msgstr ""
+"Hier kann festgelegt werden, ab wann alle Eltern Termine mit Lehrkräften "
+"vereinbaren können."
+
+#: dashboard/models.py:176
 msgid ""
 "Specify when parents with inquiries can start booking for corresponding "
 "events"
@@ -332,13 +441,7 @@ msgstr ""
 "Hier kann festgelegt werden, ab wann Eltern, die eine Anfrage von einer "
 "Lehrkraft erhalten haben, einen Termin bei dieser buchen können."
 
-#: dashboard/models.py:138
-msgid "Specify when all parents can book events"
-msgstr ""
-"Hier kann festgelegt werden, ab wann alle Eltern Termine mit Lehrkräften "
-"vereinbaren können."
-
-#: dashboard/models.py:139
+#: dashboard/models.py:182
 msgid ""
 "Here you can set the general length of an event. The lenth applies to all "
 "events created with the function."
@@ -346,7 +449,7 @@ msgstr ""
 "Hier kann die Länge für alle Termine, die über die Funktion erstellt werden "
 "angegeben werden."
 
-#: dashboard/models.py:143 dashboard/models.py:144
+#: dashboard/models.py:188 dashboard/models.py:189
 msgid "SiteSettings"
 msgstr "Einstellungen"
 
@@ -697,42 +800,6 @@ msgid_plural "{len_type} values are required, but {len_value} were given."
 msgstr[0] ""
 msgstr[1] ""
 
-#: env/lib/python3.10/site-packages/colorfield/validators.py:14
-#: venv/lib/python3.10/site-packages/colorfield/validators.py:14
-msgid "Enter a valid hex color, eg. #000000"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/colorfield/validators.py:20
-#: venv/lib/python3.10/site-packages/colorfield/validators.py:20
-msgid "Enter a valid hexa color, eg. #00000000"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
-#: env/lib/python3.10/site-packages/django/forms/fields.py:91
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
-#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
-msgid "This field is required."
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
-msgid "i18n text"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
-msgid "i18n legend"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
-#: env/lib/python3.10/site-packages/django/core/validators.py:22
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
-#: venv/lib/python3.10/site-packages/django/core/validators.py:22
-msgid "Enter a valid value."
-msgstr ""
-
 #: env/lib/python3.10/site-packages/dbbackup/apps.py:16
 #: venv/lib/python3.10/site-packages/dbbackup/apps.py:16
 msgid "Backup and restore"
@@ -778,6 +845,12 @@ msgstr ""
 #: env/lib/python3.10/site-packages/django/core/paginator.py:54
 #: venv/lib/python3.10/site-packages/django/core/paginator.py:54
 msgid "That page contains no results"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/django/core/validators.py:22
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
+#: venv/lib/python3.10/site-packages/django/core/validators.py:22
+msgid "Enter a valid value."
 msgstr ""
 
 #: env/lib/python3.10/site-packages/django/core/validators.py:104
@@ -1283,6 +1356,13 @@ msgstr ""
 #: env/lib/python3.10/site-packages/django/forms/boundfield.py:184
 #: venv/lib/python3.10/site-packages/django/forms/boundfield.py:184
 msgid ":?.!"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/django/forms/fields.py:91
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
+msgid "This field is required."
 msgstr ""
 
 #: env/lib/python3.10/site-packages/django/forms/fields.py:298
@@ -2235,6 +2315,22 @@ msgstr "Erläuterung der Terminabsage"
 #: teacher/forms.py:47
 msgid "Parent should book a different event."
 msgstr "Bitte, um eine neue Terminanfrage"
+
+#: venv/lib/python3.10/site-packages/colorfield/validators.py:14
+msgid "Enter a valid hex color, eg. #000000"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/colorfield/validators.py:20
+msgid "Enter a valid hexa color, eg. #00000000"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
+msgid "i18n text"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
+msgid "i18n legend"
+msgstr ""
 
 #~ msgid "The code consists of 6 digits"
 #~ msgstr "Das Einmalkennwort besteht aus 6 Zahlen."

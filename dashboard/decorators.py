@@ -16,7 +16,6 @@ def lead_started(view_func):
         elif SiteSettings.objects.all().first().lead_inquiry_start <= timezone.now().date():
             try:
                 event = Event.objects.get(id=event_id)
-                print(event.teacher)
             except Event.MultipleObjectsReturned:
                 print("error")
             except Event.DoesNotExist:

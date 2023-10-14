@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import Event, Inquiry, Announcements
 from django.db.models import Q
@@ -9,6 +9,7 @@ from django.urls import reverse
 import os
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
+from .utils import check_inquiry_reopen
 
 
 @receiver(post_save, sender=Event)
@@ -55,3 +56,18 @@ def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
                 ), instance.respondent.email)
             Announcements.objects.create(
                 user=instance.respondent, message='%s bittet Sie darum einen Termin zu erstellen' % (instance.requester))
+
+@receiver(post_delete, sender=Inquiry)
+def freeEvents(sender, instance, **kwarg):
+    inquiriy = instance
+    event = inquiriy.event
+
+    if inquiriy.type == 1 and not inquiriy.processed:
+        check_inquiry_reopen(event.parent, event.teacher)
+        event.parent = None
+        event.student.clear()
+        event.status = 0
+        event.occupied = False
+        event.save()
+
+        print(event)
