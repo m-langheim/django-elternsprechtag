@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-14 17:13+0200\n"
+"POT-Creation-Date: 2023-10-14 17:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,73 +47,151 @@ msgid_plural "%d students were newely created."
 msgstr[0] "%d Schüler wurde neu hinzugefügt."
 msgstr[1] "%d Schüler wurden neu hinzugefügt."
 
-#: authentication/models.py:21 authentication/models.py:41
+#: authentication/models.py:19 authentication/models.py:39
 msgid "First name"
 msgstr "Vorname"
 
-#: authentication/models.py:22 authentication/models.py:43
+#: authentication/models.py:20 authentication/models.py:41
 msgid "Last name"
 msgstr "Nachname"
 
-#: authentication/models.py:31
+#: authentication/models.py:21
+msgid "Child emails"
+msgstr ""
+
+#: authentication/models.py:22
+msgid "Name of class"
+msgstr ""
+
+#: authentication/models.py:23
+msgid "Childs parents have registered"
+msgstr ""
+
+#: authentication/models.py:29 authentication/models.py:150
 #, fuzzy
 #| msgid "Students"
 msgid "Student"
 msgstr "Schüler"
 
-#: authentication/models.py:32
+#: authentication/models.py:30 authentication/models.py:47
 msgid "Students"
 msgstr "Schüler"
 
-#: authentication/models.py:37
+#: authentication/models.py:35
 msgid "Parent"
 msgstr "Elternteil"
 
-#: authentication/models.py:37
+#: authentication/models.py:35
 msgid "Teacher"
 msgstr "Lehrer"
 
-#: authentication/models.py:37
+#: authentication/models.py:35
 msgid "Others"
 msgstr "Anderes"
 
-#: authentication/models.py:39
+#: authentication/models.py:37
 msgid "Email"
 msgstr "E-Mail"
 
-#: authentication/models.py:46
+#: authentication/models.py:44
 msgid "Role"
 msgstr "Rolle"
 
-#: authentication/models.py:60
+#: authentication/models.py:45
+msgid "Date joined"
+msgstr "Zugangsdatum"
+
+#: authentication/models.py:58
 msgid "User"
 msgstr "Benutzer"
 
-#: authentication/models.py:61
+#: authentication/models.py:59
 msgid "Users"
 msgstr "Benutzer"
 
-#: authentication/models.py:84
+#: authentication/models.py:74
+msgid "General name"
+msgstr "Allgemeiner Name"
+
+#: authentication/models.py:75
+msgid "Synonyms"
+msgstr "Synonyme Bezeichnungen"
+
+#: authentication/models.py:76
+msgid "Colour"
+msgstr "Farbe"
+
+#: authentication/models.py:82
 msgid "Tag"
 msgstr "Tag"
 
-#: authentication/models.py:85
+#: authentication/models.py:83 authentication/models.py:90
 msgid "Tags"
 msgstr "Tags"
 
-#: authentication/models.py:112
+#: authentication/models.py:88
+msgid "User object of the teacher"
+msgstr "Nutzerobjekt der Lehrkraft"
+
+#: authentication/models.py:89
+msgid "Acronym"
+msgstr "Abkürzung"
+
+#: authentication/models.py:91
+msgid "Room"
+msgstr "Raum"
+
+#: authentication/models.py:92
+msgid "Profile image"
+msgstr "Profilbild"
+
+#: authentication/models.py:109
 msgid "Additional data for teacher"
 msgstr "Zusatzinformationen zu einer Lehrkraft"
 
-#: authentication/models.py:113
+#: authentication/models.py:110
 msgid "Additional data for teachers"
 msgstr "Zusatzinformationen zu Lehrkräften"
 
-#: authentication/models.py:160
+#: authentication/models.py:144
+msgid "User token"
+msgstr "Nutzer Token"
+
+#: authentication/models.py:145
+#, fuzzy
+#| msgid "Access details"
+msgid "Access token"
+msgstr "Zugangs Token"
+
+#: authentication/models.py:146
+msgid "OTP key"
+msgstr "Einmalkennwort"
+
+#: authentication/models.py:147
+msgid "OTP key was verified"
+msgstr "Einmalkennwort wurde bestätigt"
+
+#: authentication/models.py:148
+#, fuzzy
+#| msgid "Time of creation"
+msgid "Time of OTP key verification"
+msgstr "Zeitpunkt der Verifizierung"
+
+#: authentication/models.py:149
+msgid "Time of creation"
+msgstr "Erstellungszeitpunkt"
+
+#: authentication/models.py:151
+#, fuzzy
+#| msgid "Email"
+msgid "Email send"
+msgstr "E-Mail"
+
+#: authentication/models.py:157
 msgid "Future user"
 msgstr "Zukünftiger Nutzer"
 
-#: authentication/models.py:161
+#: authentication/models.py:158
 msgid "Future users"
 msgstr "Zukünftige Nutzer"
 
@@ -250,11 +328,15 @@ msgstr "Mitteilungen"
 msgid ""
 "Specify when parents with inquiries can start booking for corresponding "
 "events"
-msgstr "Hier kann festgelegt werden, ab wann Eltern, die eine Anfrage von einer Lehrkraft erhalten haben, einen Termin bei dieser buchen können."
+msgstr ""
+"Hier kann festgelegt werden, ab wann Eltern, die eine Anfrage von einer "
+"Lehrkraft erhalten haben, einen Termin bei dieser buchen können."
 
 #: dashboard/models.py:138
 msgid "Specify when all parents can book events"
-msgstr "Hier kann festgelegt werden, ab wann alle Eltern Termine mit Lehrkräften vereinbaren können."
+msgstr ""
+"Hier kann festgelegt werden, ab wann alle Eltern Termine mit Lehrkräften "
+"vereinbaren können."
 
 #: dashboard/models.py:139
 msgid ""
@@ -2146,11 +2228,11 @@ msgstr ""
 msgid "A valid timezone is required."
 msgstr ""
 
-#: teacher/forms.py:43
+#: teacher/forms.py:46
 msgid "Explenation why you dismiss the event."
 msgstr "Erläuterung der Terminabsage"
 
-#: teacher/forms.py:44
+#: teacher/forms.py:47
 msgid "Parent should book a different event."
 msgstr "Bitte, um eine neue Terminanfrage"
 

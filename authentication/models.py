@@ -10,8 +10,6 @@ from PIL import Image
 
 from .managers import CustomUserManager
 
-from django.utils.translation import gettext as _
-
 # Create your models here.
 
 
@@ -20,9 +18,9 @@ class Student(models.Model):  # Schüler
         max_length=38, unique=True)
     first_name = models.CharField(_("First name"), max_length=48)
     last_name = models.CharField(_("Last name"), max_length=48)
-    child_email = models.EmailField(max_length=200, null=True)
-    class_name = models.CharField(max_length=2, default="")
-    registered = models.BooleanField(default=False)
+    child_email = models.EmailField(_("Child emails"),max_length=200, null=True)
+    class_name = models.CharField(_("Name of class"),max_length=2, default="")
+    registered = models.BooleanField(_("Childs parents have registered"),default=False)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -44,9 +42,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     role = models.IntegerField(_("Role"), choices=CHOCES_ROLES, default=2)
-    date_joined = models.DateTimeField(default=timezone.now)
+    date_joined = models.DateTimeField(verbose_name = _("Date joined"), default=timezone.now)
 
-    students = models.ManyToManyField(Student, blank=True)
+    students = models.ManyToManyField(Student, verbose_name = _("Students"), blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -73,9 +71,9 @@ def generate_new_color():
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=32)
-    synonyms = models.TextField(null=True, blank=True)
-    color = ColorField(default=generate_new_color)
+    name = models.CharField(_("General name"), max_length=32)
+    synonyms = models.TextField(_("Synonyms"), null=True, blank=True)
+    color = ColorField(_("Colour"), default=generate_new_color)
 
     def __str__(self):
         return self.name
@@ -87,12 +85,11 @@ class Tag(models.Model):
 
 class TeacherExtraData(models.Model):
     teacher = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1})
-    acronym = models.CharField(max_length=3, default="")
-    # tags = models.TextField(null=True, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
-    room = models.IntegerField(blank=True, null=True)
-    image = models.ImageField(upload_to='teacher_pics/', default="default.jpg")
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}, verbose_name=_("User object of the teacher"))
+    acronym = models.CharField(max_length=3, default="", verbose_name=_("Acronym"))
+    tags = models.ManyToManyField(Tag, blank=True, verbose_name=_("Tags"))
+    room = models.IntegerField(blank=True, null=True, verbose_name=_("Room"))
+    image = models.ImageField(upload_to='teacher_pics/', default="default.jpg", verbose_name=_("Profile image"))
 
     def __str__(self):
         return f'{self.teacher.last_name} extraData'
@@ -144,14 +141,14 @@ def generate_unique_otp():
 
 class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern haben
     user_token = models.CharField(
-        max_length=12, primary_key=True, default=generate_unique_code)
-    access_key = models.CharField(max_length=12, default=generate_unique_code)
-    otp = models.CharField(max_length=6, default=generate_unique_otp)
-    otp_verified = models.BooleanField(default=False)
-    otp_verified_date = models.DateTimeField(default=timezone.now)
-    created = models.DateTimeField(default=timezone.now)
-    student = models.OneToOneField(Student, on_delete=models.CASCADE)
-    email_send = models.BooleanField(default=False)
+        max_length=12, primary_key=True, default=generate_unique_code, verbose_name=_("User token"))
+    access_key = models.CharField(max_length=12, default=generate_unique_code, verbose_name=_("Access token"))
+    otp = models.CharField(max_length=6, default=generate_unique_otp, verbose_name=_("OTP key"))
+    otp_verified = models.BooleanField(default=False, verbose_name=_("OTP key was verified"))
+    otp_verified_date = models.DateTimeField(default=timezone.now, verbose_name=_("Time of OTP key verification"))
+    created = models.DateTimeField(default=timezone.now, verbose_name=_("Time of creation"))
+    student = models.OneToOneField(Student, on_delete=models.CASCADE, verbose_name=_("Student"))
+    email_send = models.BooleanField(default=False, verbose_name=_("Email send"))
 
     def __str__(self):
         return f'{_("Access for")} {self.student}'
