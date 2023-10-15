@@ -515,6 +515,7 @@ def viewMyEvents(request):
     event_change_formulas = EventChangeFormula.objects.filter(
         Q(teacher=request.user),
         Q(date__gte=timezone.datetime.now()),
+        Q(status=0) | Q(status=1),
     )
 
     custom_event_change_formulas = []
@@ -528,11 +529,20 @@ def viewMyEvents(request):
                 ),
             }
         )
-    print(custom_event_change_formulas)
+
+    closed_formulars = EventChangeFormula.objects.filter(
+        Q(teacher=request.user),
+        Q(date__gte=timezone.datetime.now()),
+        Q(status=2) | Q(status=3),
+    )
+
     return render(
         request,
         "teacher/event/myEvents.html",
-        {"formulas": custom_event_change_formulas},
+        {
+            "open_formulas": custom_event_change_formulas,
+            "closed_formulas": closed_formulars,
+        },
     )
 
 

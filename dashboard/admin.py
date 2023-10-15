@@ -179,9 +179,6 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
             return redirect("admin:dashboard_eventchangeformula_changelist")
 
         formula.status = 3
-        formula.no_events = False
-        formula.start_time = None
-        formula.end_time = None
         formula.save()
         return redirect("admin:dashboard_eventchangeformula_changelist")
 
@@ -248,9 +245,6 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
         for form in queryset:
             if form.status == 1:
                 form.status = 3
-                form.no_events = False
-                form.start_time = None
-                form.end_time = None
                 form.save()
                 successfull_approvals += 1
             else:

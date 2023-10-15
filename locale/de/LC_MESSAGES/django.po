@@ -358,7 +358,7 @@ msgstr "Datum"
 
 #: dashboard/models.py:68
 msgid "Start time"
-msgstr "STart Uhrzeit"
+msgstr "Start Uhrzeit"
 
 #: dashboard/models.py:69
 msgid "End time"
