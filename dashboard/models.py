@@ -38,14 +38,49 @@ class Event(models.Model):  # Termin
 
     room = models.CharField(default=None, blank=True, null=True, max_length=3)
 
-    STATUS_CHOICES = ((0, _("Unoccupied")), (1, _("Occupied")), (2, _("Inquiry pending")))
+    STATUS_CHOICES = (
+        (0, _("Unoccupied")),
+        (1, _("Occupied")),
+        (2, _("Inquiry pending")),
+    )
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
 
     occupied = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = _('Event')
-        verbose_name_plural = _('Events')
+        verbose_name = _("Event")
+        verbose_name_plural = _("Events")
+
+
+class EventChangeFormula(models.Model):
+    """
+    Dieses Model dient dazu, jedem Lehrer die Möglichkeit zu geben, seine Zeiten für den Elternsprtechtag selberr einzurrichten. In Zukunft können hier auch Anträge auf die Blockierung einzelner Termine eingereicht werden.
+    """
+
+    TYPE_CHOICES = ((0, _("Submit of personal timeslots")),)
+    type = models.IntegerField(choices=TYPE_CHOICES, default=0)
+    teacher = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={"role": 1},
+        blank=False,
+        verbose_name=_("Teacher"),
+    )
+    date = models.DateField(blank=False, default=timezone.now(), verbose_name=_("Date"))
+    start_time = models.TimeField(blank=True, null=True, verbose_name=_("Start time"))
+    end_time = models.TimeField(blank=True, null=True, verbose_name=_("End time"))
+    no_events = models.BooleanField(default=False, verbose_name=_("No events"))
+    CHOICES_STATUS = (
+        (0, _("Waiting to be filled")),
+        (1, _("Waiting for approval")),
+        (2, _("Approved")),
+        (3, _("Disapproved")),
+    )
+    status = models.IntegerField(choices=CHOICES_STATUS, default=0)
+
+    class Meta:
+        verbose_name = _("Event creation formula")
+        verbose_name_plural = _("Event creation formulas")
 
 
 # Allgemeine Anfragen, also Terminanfragen von den Eltern an die Lehrer und die ufforderung für ein Termin von den Eltern an die Schüler
@@ -82,8 +117,8 @@ class Inquiry(models.Model):
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
 
     class Meta:
-        verbose_name = _('Inquiry')
-        verbose_name_plural = _('Inquries')
+        verbose_name = _("Inquiry")
+        verbose_name_plural = _("Inquries")
 
 
 class Announcements(models.Model):
@@ -104,10 +139,10 @@ class Announcements(models.Model):
 
     def encodedID(self):
         return urlsafe_base64_encode(force_bytes(self.id))
-    
+
     class Meta:
-        verbose_name = _('Announcement')
-        verbose_name_plural = _('Announcements')
+        verbose_name = _("Announcement")
+        verbose_name_plural = _("Announcements")
 
 
 ########################################################################### Settings ###################################################
@@ -134,11 +169,23 @@ class SingletonModel(models.Model):  # set all general setting for Singleton mod
 
 
 class SiteSettings(SingletonModel):
-    lead_start = models.DateField(default=timezone.now, help_text=_("Specify when all parents can book events"))
-    lead_inquiry_start = models.DateField(default=timezone.now, help_text=_("Specify when parents with inquiries can start booking for corresponding events"))
-    event_duration = models.DurationField(default=datetime.timedelta(seconds=0), help_text=_("Here you can set the general length of an event. The lenth applies to all events created with the function."))
+    lead_start = models.DateField(
+        default=timezone.now, help_text=_("Specify when all parents can book events")
+    )
+    lead_inquiry_start = models.DateField(
+        default=timezone.now,
+        help_text=_(
+            "Specify when parents with inquiries can start booking for corresponding events"
+        ),
+    )
+    event_duration = models.DurationField(
+        default=datetime.timedelta(seconds=0),
+        help_text=_(
+            "Here you can set the general length of an event. The lenth applies to all events created with the function."
+        ),
+    )
     impressum = models.URLField(max_length=200, default="")
 
     class Meta:
-        verbose_name = _('SiteSettings')
-        verbose_name_plural = _('SiteSettings')
+        verbose_name = _("SiteSettings")
+        verbose_name_plural = _("SiteSettings")

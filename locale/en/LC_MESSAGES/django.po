@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-14 17:45+0200\n"
+"POT-Creation-Date: 2023-10-14 23:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
-#: authentication/models.py:35
+#: authentication/models.py:35 dashboard/models.py:65
 msgid "Teacher"
 msgstr ""
 
@@ -245,71 +245,157 @@ msgstr ""
 msgid "Please use a parent account for your child!"
 msgstr ""
 
-#: dashboard/models.py:41
+#: dashboard/admin.py:139
+msgid "Response actions"
+msgstr ""
+
+#: dashboard/admin.py:146
+msgid "Approve"
+msgstr ""
+
+#: dashboard/admin.py:148
+msgid "Disapprove"
+msgstr ""
+
+#: dashboard/admin.py:151
+msgid "No actions available"
+msgstr ""
+
+#: dashboard/admin.py:176
+#, python-format
+msgid "%d form was successfully approved and events changed."
+msgid_plural "%d forms were successfully approved and changed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: dashboard/admin.py:187
+#, python-format
+msgid "%d form was not successfully approved. Please try them individually."
+msgid_plural ""
+"%d forms were not successfully approved. Please try them individually."
+msgstr[0] ""
+msgstr[1] ""
+
+#: dashboard/admin.py:214
+#, python-format
+msgid "%d form was successfully disapproved."
+msgid_plural "%d forms were successfully disapproved."
+msgstr[0] ""
+msgstr[1] ""
+
+#: dashboard/admin.py:225
+#, python-format
+msgid "%d form was not successfully disapproved. Please try them individually."
+msgid_plural ""
+"%d forms were not successfully disapproved. Please try them individually."
+msgstr[0] ""
+msgstr[1] ""
+
+#: dashboard/models.py:42
 msgid "Unoccupied"
 msgstr ""
 
-#: dashboard/models.py:41
+#: dashboard/models.py:43
 msgid "Occupied"
 msgstr ""
 
-#: dashboard/models.py:41
+#: dashboard/models.py:44
 msgid "Inquiry pending"
 msgstr ""
 
-#: dashboard/models.py:47
+#: dashboard/models.py:51
 msgid "Event"
 msgstr ""
 
-#: dashboard/models.py:48
+#: dashboard/models.py:52
 msgid "Events"
 msgstr ""
 
-#: dashboard/models.py:78
-msgid "No response"
+#: dashboard/models.py:67
+msgid "Date"
 msgstr ""
 
-#: dashboard/models.py:79
-msgid "Inquiry accepted"
+#: dashboard/models.py:68
+msgid "Start time"
+msgstr ""
+
+#: dashboard/models.py:69
+msgid "End time"
+msgstr ""
+
+#: dashboard/models.py:70
+msgid "No events"
+msgstr ""
+
+#: dashboard/models.py:72
+msgid "Waiting to be filled"
+msgstr ""
+
+#: dashboard/models.py:73
+msgid "Waiting for approval"
+msgstr ""
+
+#: dashboard/models.py:74
+msgid "Approved"
+msgstr ""
+
+#: dashboard/models.py:75
+msgid "Disapproved"
 msgstr ""
 
 #: dashboard/models.py:80
+msgid "Event creation formula"
+msgstr ""
+
+#: dashboard/models.py:81
+msgid "Event creation formulas"
+msgstr ""
+
+#: dashboard/models.py:111
+msgid "No response"
+msgstr ""
+
+#: dashboard/models.py:112
+msgid "Inquiry accepted"
+msgstr ""
+
+#: dashboard/models.py:113
 msgid "Inquiry dismissed"
 msgstr ""
 
-#: dashboard/models.py:85
+#: dashboard/models.py:118
 msgid "Inquiry"
 msgstr ""
 
-#: dashboard/models.py:86
+#: dashboard/models.py:119
 msgid "Inquries"
 msgstr ""
 
-#: dashboard/models.py:109
+#: dashboard/models.py:142
 msgid "Announcement"
 msgstr ""
 
-#: dashboard/models.py:110
+#: dashboard/models.py:143
 msgid "Announcements"
 msgstr ""
 
-#: dashboard/models.py:137
+#: dashboard/models.py:171
+msgid "Specify when all parents can book events"
+msgstr ""
+
+#: dashboard/models.py:176
 msgid ""
 "Specify when parents with inquiries can start booking for corresponding "
 "events"
 msgstr ""
 
-#: dashboard/models.py:138
-msgid "Specify when all parents can book events"
-msgstr ""
-
-#: dashboard/models.py:139
+#: dashboard/models.py:182
 msgid ""
 "Here you can set the general length of an event. The lenth applies to all "
 "events created with the function."
 msgstr ""
 
-#: dashboard/models.py:143 dashboard/models.py:144
+#: dashboard/models.py:188 dashboard/models.py:189
 msgid "SiteSettings"
 msgstr ""
 
@@ -660,42 +746,6 @@ msgid_plural "{len_type} values are required, but {len_value} were given."
 msgstr[0] ""
 msgstr[1] ""
 
-#: env/lib/python3.10/site-packages/colorfield/validators.py:14
-#: venv/lib/python3.10/site-packages/colorfield/validators.py:14
-msgid "Enter a valid hex color, eg. #000000"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/colorfield/validators.py:20
-#: venv/lib/python3.10/site-packages/colorfield/validators.py:20
-msgid "Enter a valid hexa color, eg. #00000000"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
-#: env/lib/python3.10/site-packages/django/forms/fields.py:91
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
-#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
-msgid "This field is required."
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
-msgid "i18n text"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
-msgid "i18n legend"
-msgstr ""
-
-#: env/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
-#: env/lib/python3.10/site-packages/django/core/validators.py:22
-#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
-#: venv/lib/python3.10/site-packages/django/core/validators.py:22
-msgid "Enter a valid value."
-msgstr ""
-
 #: env/lib/python3.10/site-packages/dbbackup/apps.py:16
 #: venv/lib/python3.10/site-packages/dbbackup/apps.py:16
 msgid "Backup and restore"
@@ -741,6 +791,12 @@ msgstr ""
 #: env/lib/python3.10/site-packages/django/core/paginator.py:54
 #: venv/lib/python3.10/site-packages/django/core/paginator.py:54
 msgid "That page contains no results"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/django/core/validators.py:22
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout_objects.py:143
+#: venv/lib/python3.10/site-packages/django/core/validators.py:22
+msgid "Enter a valid value."
 msgstr ""
 
 #: env/lib/python3.10/site-packages/django/core/validators.py:104
@@ -1246,6 +1302,13 @@ msgstr ""
 #: env/lib/python3.10/site-packages/django/forms/boundfield.py:184
 #: venv/lib/python3.10/site-packages/django/forms/boundfield.py:184
 msgid ":?.!"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/django/forms/fields.py:91
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:130
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_form_helper.py:140
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:91
+msgid "This field is required."
 msgstr ""
 
 #: env/lib/python3.10/site-packages/django/forms/fields.py:298
@@ -2197,4 +2260,20 @@ msgstr ""
 
 #: teacher/forms.py:47
 msgid "Parent should book a different event."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/colorfield/validators.py:14
+msgid "Enter a valid hex color, eg. #000000"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/colorfield/validators.py:20
+msgid "Enter a valid hexa color, eg. #00000000"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:392
+msgid "i18n text"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/crispy_forms/tests/test_layout.py:394
+msgid "i18n legend"
 msgstr ""

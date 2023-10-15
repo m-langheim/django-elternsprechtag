@@ -20,9 +20,9 @@ cssselect2==0.7.0
 Deprecated==1.2.13
 Django==4.2
 django-celery-beat==2.5.0
-django-colorfield==0.7.2
-django-cors-headers==3.13.0
-django-crispy-forms==1.14.0
+django-colorfield==0.9.0
+django-cors-headers==4.1.0
+django-crispy-forms==2.0
 django-dbbackup==4.0.2
 django-storages==1.13.2
 django-timezone-field==5.0
@@ -50,11 +50,11 @@ pytz==2022.2.1
 pytz-deprecation-shim==0.1.0.post0
 PyYAML==6.0
 qrcode==7.4.2
-redis==4.3.4
+redis==4.5.5
 reportlab==3.6.12
 requests==2.28.2
 six==1.16.0
-sqlparse==0.4.2
+sqlparse==0.4.4
 svglib==1.5.1
 tinycss2==1.2.1
 toml==0.10.2
@@ -63,7 +63,7 @@ typing_extensions==4.5.0
 tzdata==2022.7
 tzlocal==4.3
 uritools==4.0.1
-urllib3==1.26.15
+urllib3==1.26.17
 uuid==1.30
 vine==5.0.0
 wcwidth==0.2.5
