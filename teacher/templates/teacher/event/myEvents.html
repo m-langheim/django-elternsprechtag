@@ -50,8 +50,8 @@
 
             <div class="pt-4 ps-4 pe-4">
 
-                <p class="h1">Festgelegte Elternsprechtagszeiten</p>
-                <p class="text-secondary">Hier sind die bereits festgelegten Zeiten für den nächsten Elternsprechtag aufgelistet</p>
+                <p class="h1">Angefragten Elternsprechtagszeiten</p>
+                <p class="text-secondary">Hier sind die bereits angefragten Zeiten für den nächsten Elternsprechtag aufgelistet</p>
 
                 {% if closed_formulas|length > 0 %}
                 <ul class="list-group list-group-flush">
@@ -60,11 +60,11 @@
                         <div class="row gy-1 align-items-center">
                             {% if formula.no_events %}
                             <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Keine Termine am {{ formula.date }}
+                                Anfrage: Keine Termine am {{ formula.date }}
                             </div>
                             {% else %}
                             <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Zeitraum für den {{ formula.date }} ({{ formula.start_time }} Uhr - 
+                                Anfrage: Zeitraum für den {{ formula.date }} ({{ formula.start_time }} Uhr - 
                                 {{formula.end_time}} Uhr)
                             </div>
                             {% endif %}
@@ -86,7 +86,7 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                Bisher wurden keine Eltersnprechtagszeiten festgelegt
+                Bisher wurden keine Eltersnprechtagszeiten angefragt
                 {% endif %}
 
             </div>
