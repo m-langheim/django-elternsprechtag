@@ -17,6 +17,10 @@ class createInquiryForm(forms.Form):
     )
     reason = forms.CharField(widget=forms.Textarea, required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(createInquiryForm, self).__init__(*args, **kwargs)
+        self.fields["reason"].label = False
+
 
 class editInquiryForm(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
@@ -45,7 +49,7 @@ class changePasswordForm(PasswordChangeForm):
 
 class cancelEventForm(forms.Form):
     message = forms.CharField(
-        widget=forms.Textarea, label=_("Explenation why you dismiss the event.")
+        widget=forms.Textarea, label=_("Explanation why you dismiss the event.")
     )
     book_other_event = forms.BooleanField(
         initial=False, required=False, label=_("Parent should book a different event.")

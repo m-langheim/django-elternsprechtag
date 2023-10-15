@@ -31,3 +31,7 @@ Farbe des Paginators ändern bei der Suche
 Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen
 Es muss nochmal an den Leads gearbeitet werden
 Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.
+
+
+gucken, ob überall 
+                        {% csrf_token %} vorhanden is
