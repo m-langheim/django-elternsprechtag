@@ -58,6 +58,10 @@
                                         <li><a class="dropdown-item" href="{% url 'profile_student_list' %}"><i
                                                     class="fa-solid fa-user"></i> Schüler:innen</a></li>
                                         {% endif %}
+                                        {% if user.role == 1 %}
+                                        <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
+                                                    class="fa-solid fa-calendar-days"></i> Schüler:innen</a></li>
+                                        {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                     class="fa-solid fa-gear"></i> Mein Profil</a></li>
                                         <li>
@@ -99,6 +103,10 @@
                                     {% if user.role == 0 %}
                                     <li><a class="dropdown-item" href="{% url 'profile_student_list' %}"><i
                                                 class="fa-solid fa-user"></i> Schüler:innen</a></li>
+                                    {% endif %}
+                                    {% if user.role == 1 %}
+                                    <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
+                                                class="fa-solid fa-calendar-days"></i> Meine Termine</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                 class="fa-solid fa-gear"></i> Mein Profil</a></li>

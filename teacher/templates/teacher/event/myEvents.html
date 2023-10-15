@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block content %}
+<div class="row gx-3 gy-3">
+    <div class="col-12">
+        {% if open_formulas|length > 0 %}
+        <div class="card card-body p-4">
+            <p class="h1">Offene Änderungen</p>
+            <p class="text-secondary">Hier können Sie Ihre Zeiten für den nächsten Elternsprechtag festlegen.</p>
+                <ul class="list-group list-group-flush">
+                    {% for formula in open_formulas %}
+                    <li class="list-group-item">
+                        <div class="row gy-1 align-items-center">
+                            <!-- <div class="row align-items-center"> -->
+                            <div class="col-12 col-md-7 col-xl-9 text-start">
+                                Antrag für den {{ formula.change_form.date }}
+                            </div>
+                            <div class="col-12 col-md-5 col-xl-3">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    {% if formula.change_form.status == 0 %}
+                                    <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                        href="{{ formula.link }}">
+                                        Jetzt bearbeiten
+                                    </a>
+                                    {% else %}
+                                    <a type="button" class="btn btn-outline-secondary col-12 col-md-6"
+                                        href="{{ formula.link }}">
+                                        Bestätigung ausstehend
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% if closed_formulas|length > 0 %}
+        <div class="card card-body p-4">
+            <p class="h1">Beendete Anträge</p>
+            <p class="text-secondary">Hier können Sie Ihre Zeiten für den nächsten Elternsprechtag festlegen.</p>
+                <ul class="list-group list-group-flush">
+                    {% for formula in closed_formulas %}
+                    <li class="list-group-item">
+                        <div class="row gy-1 align-items-center">
+                                {% if formula.no_events %}
+                                <div class="col-12 col-md-7 col-xl-9 text-start">
+                                    Antrag für den {{ formula.date }} ohne Termine
+                                </div>
+                                {% else %}
+                            <div class="col-12 col-md-7 col-xl-9 text-start">
+                                Antrag für den {{ formula.date }} mit Terminen zwischen {{ formula.start_time}} und {{formula.end_time}} Uhr
+                            </div>
+                            {% endif %}
+                            <div class="col-12 col-md-5 col-xl-3">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    {% if formula.status == 2 %}
+                                    <div class="btn btn-outline-success col-12 col-md-6">
+                                        Bestätigt
+                                </div>
+                                    {% else %}
+                                    <div class="btn btn-outline-dark col-12 col-md-6">
+                                        Abgelehnt
+                            </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        <div class="d-none d-md-flex row">
+            <div class="d-none d-md-flex col">
+                <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
+                    href="{% url 'home' %}">Zurück</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
