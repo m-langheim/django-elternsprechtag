@@ -57,6 +57,8 @@ class EventChangeFormula(models.Model):
     Dieses Model dient dazu, jedem Lehrer die Möglichkeit zu geben, seine Zeiten für den Elternsprtechtag selberr einzurrichten. In Zukunft können hier auch Anträge auf die Blockierung einzelner Termine eingereicht werden.
     """
 
+    TYPE_CHOICES = ((0, _("Submit of personal timeslots")),)
+    type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     teacher = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
