@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from authentication.models import CustomUser, TeacherExtraData
-from dashboard.models import Inquiry, Student, Event, Announcements
+from dashboard.models import Inquiry, Student, Event, Announcements, EventChangeFormula
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -84,6 +84,10 @@ def dashboard(request):
         Q(user=request.user), Q(read=False)
     ).order_by("-created")
 
+    event_creation_form_open = EventChangeFormula.objects.filter(
+        Q(teacher=request.user), Q(date__gte=timezone.datetime.now()), Q(status=0)
+    ).exists()
+
     return render(
         request,
         "teacher/dashboard.html",
@@ -92,6 +96,7 @@ def dashboard(request):
             "events": events,
             "events_dict": events_dict,
             "announcements": announcements,
+            "event_creation_form_open": event_creation_form_open,
         },
     )
 
@@ -143,7 +148,9 @@ def studentList(request):
     paginator = Paginator(students_list, 25)
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "teacher/studentList.html", {"page_obj": page_obj, "search": search})
+    return render(
+        request, "teacher/studentList.html", {"page_obj": page_obj, "search": search}
+    )
 
 
 @login_required
@@ -350,7 +357,9 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiries = event.inquiry_set.filter(Q(requester=event.parent), Q(processed=False))
+        inquiries = event.inquiry_set.filter(
+            Q(requester=event.parent), Q(processed=False)
+        )
         print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
@@ -383,6 +392,7 @@ def create_event_PDF(request):
         filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
         content_type="application/pdf",
     )
+
 
 @method_decorator(teacher_decorators, name="dispatch")
 class EventDetailView(View):
@@ -497,6 +507,72 @@ class EventDetailView(View):
                     "inquiry_reason": inquiry_reason,
                 },
             )
+
+
+@login_required
+@teacher_required
+def viewMyEvents(request):
+    event_change_formulas = EventChangeFormula.objects.filter(
+        Q(teacher=request.user),
+        Q(date__gte=timezone.datetime.now()),
+    )
+
+    custom_event_change_formulas = []
+    for form in event_change_formulas:
+        custom_event_change_formulas.append(
+            {
+                "change_form": form,
+                "link": reverse(
+                    "teacher_personal_events_edit",
+                    args=[urlsafe_base64_encode(force_bytes(form.id))],
+                ),
+            }
+        )
+    print(custom_event_change_formulas)
+    return render(
+        request,
+        "teacher/event/myEvents.html",
+        {"formulas": custom_event_change_formulas},
+    )
+
+
+@method_decorator(teacher_decorators, name="dispatch")
+class EditMyEventsDetail(View):
+    def get(self, request, form_id):
+        try:
+            event_change_formula = EventChangeFormula.objects.get(
+                id=force_str(urlsafe_base64_decode(form_id))
+            )
+        except EventChangeFormula.DoesNotExist:
+            raise Http404("The formula ould not be found.")
+
+        form = EventChangeFormulaForm(instance=event_change_formula)
+
+        return render(
+            request,
+            "teacher/event/myEventsEditFormula.html",
+            {"formula": event_change_formula, "form": form},
+        )
+
+    def post(self, request, form_id):
+        try:
+            event_change_formula = EventChangeFormula.objects.get(
+                id=force_str(urlsafe_base64_decode(form_id))
+            )
+        except EventChangeFormula.DoesNotExist:
+            raise Http404("The formula ould not be found.")
+
+        form = EventChangeFormulaForm(request.POST, instance=event_change_formula)
+
+        if form.is_valid():
+            form.save()
+            return redirect("teacher_personal_events")
+
+        return render(
+            request,
+            "teacher/event/myEventsEditFormula.html",
+            {"formula": event_change_formula, "form": form},
+        )
 
 
 # @method_decorator(teacher_decorators, name="dispatch")
