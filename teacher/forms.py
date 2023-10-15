@@ -62,6 +62,13 @@ class EventChangeFormulaForm(forms.ModelForm):
         model = EventChangeFormula
         fields = ["start_time", "end_time", "no_events"]
 
+    def __init__(self, *args, **kwargs):
+        super(EventChangeFormulaForm, self).__init__(*args, **kwargs)
+        # self.fields["start_time"].widget = forms.TimeField() ggf. irgendwann mal ändern -> bisher gab es so nur Fehler
+        self.fields["start_time"].label = False
+        self.fields["end_time"].label = False
+        self.fields["no_events"].label = "Keine Termine"
+
     def clean(self):
         super(EventChangeFormulaForm, self).clean()
 
@@ -73,9 +80,12 @@ class EventChangeFormulaForm(forms.ModelForm):
 
         if not no_events:
             if not start_time:
-                self.add_error("start_time", "This field must be specified.")
+                self._errors['start_time'] = self.error_class(["Bitte eine gültige Uhrzeit eingeben."])
             if not end_time:
-                self.add_error("end_time", "This field must be specified.")
+                self._errors['end_time'] = self.error_class(["Bitte eine gültige Uhrzeit eingeben."])
+            if start_time and end_time:
+                if start_time > end_time:
+                    self._errors['end_time'] = self.error_class(["Bitte wähle einen Startzeitpunkt, der vor dem Endzeitpunkt liegt."])
         return self.cleaned_data
 
     def save(self):
