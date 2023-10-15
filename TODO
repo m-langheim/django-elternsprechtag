@@ -35,3 +35,7 @@ Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei dene
 
 gucken, ob überall 
                         {% csrf_token %} vorhanden is
+
+Uhrzeitanträge: No events & uhrzeit darf nicht gleichzeitig möglich sein
+                Startuhrzeit darf nicht nach Enduhrzeit sein
+                
