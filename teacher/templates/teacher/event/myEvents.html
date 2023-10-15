@@ -6,29 +6,32 @@
 {% block content %}
 <div class="row gx-3 gy-3">
     <div class="col-12">
-        {% if open_formulas|length > 0 %}
-        <div class="card card-body p-4">
-            <p class="h1">Offene Änderungen</p>
-            <p class="text-secondary">Hier können Sie Ihre Zeiten für den nächsten Elternsprechtag festlegen.</p>
+        <div class="card card-body p-0">
+            <div class="p-4">
+
+                <p class="h1">Ausstehende Elternsprechtagszeiten</p>
+                <p class="text-secondary">Hier sind die noch ausstehenden Elternsprechtagszeiten aufgelistet</p>
+
+                {% if open_formulas|length > 0 %}
                 <ul class="list-group list-group-flush">
                     {% for formula in open_formulas %}
                     <li class="list-group-item">
                         <div class="row gy-1 align-items-center">
                             <!-- <div class="row align-items-center"> -->
                             <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Antrag für den {{ formula.change_form.date }}
+                                Zeitraum für den {{ formula.change_form.date }}
                             </div>
                             <div class="col-12 col-md-5 col-xl-3">
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     {% if formula.change_form.status == 0 %}
                                     <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                         href="{{ formula.link }}">
-                                        Jetzt bearbeiten
+                                        Angeben
                                     </a>
                                     {% else %}
                                     <a type="button" class="btn btn-outline-secondary col-12 col-md-6"
                                         href="{{ formula.link }}">
-                                        Bestätigung ausstehend
+                                        Ausstehend
                                     </a>
                                     {% endif %}
                                 </div>
@@ -37,24 +40,32 @@
                     </li>
                     {% endfor %}
                 </ul>
+                {% else %}
+                Aktuell gibt es keine unbestimmten Elternsprechtagszeiten
+                {% endif %}
+
             </div>
-        </div>
-        {% endif %}
-        {% if closed_formulas|length > 0 %}
-        <div class="card card-body p-4">
-            <p class="h1">Beendete Anträge</p>
-            <p class="text-secondary">Hier können Sie Ihre Zeiten für den nächsten Elternsprechtag festlegen.</p>
+
+            <div class="border-top"></div>
+
+            <div class="pt-4 ps-4 pe-4">
+
+                <p class="h1">Angefragten Elternsprechtagszeiten</p>
+                <p class="text-secondary">Hier sind die bereits angefragten Zeiten für den nächsten Elternsprechtag aufgelistet</p>
+
+                {% if closed_formulas|length > 0 %}
                 <ul class="list-group list-group-flush">
                     {% for formula in closed_formulas %}
                     <li class="list-group-item">
                         <div class="row gy-1 align-items-center">
-                                {% if formula.no_events %}
-                                <div class="col-12 col-md-7 col-xl-9 text-start">
-                                    Antrag für den {{ formula.date }} ohne Termine
-                                </div>
-                                {% else %}
+                            {% if formula.no_events %}
                             <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Antrag für den {{ formula.date }} mit Terminen zwischen {{ formula.start_time}} und {{formula.end_time}} Uhr
+                                Anfrage: Keine Termine am {{ formula.date }}
+                            </div>
+                            {% else %}
+                            <div class="col-12 col-md-7 col-xl-9 text-start">
+                                Anfrage: Zeitraum für den {{ formula.date }} ({{ formula.start_time }} Uhr - 
+                                {{formula.end_time}} Uhr)
                             </div>
                             {% endif %}
                             <div class="col-12 col-md-5 col-xl-3">
@@ -62,11 +73,11 @@
                                     {% if formula.status == 2 %}
                                     <div class="btn btn-outline-success col-12 col-md-6">
                                         Bestätigt
-                                </div>
+                                    </div>
                                     {% else %}
                                     <div class="btn btn-outline-dark col-12 col-md-6">
                                         Abgelehnt
-                            </div>
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -74,15 +85,25 @@
                     </li>
                     {% endfor %}
                 </ul>
+                {% else %}
+                Bisher wurden keine Eltersnprechtagszeiten angefragt
+                {% endif %}
+
             </div>
-        </div>
-        {% endif %}
-        <div class="d-none d-md-flex row">
-            <div class="d-none d-md-flex col">
-                <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
-                    href="{% url 'home' %}">Zurück</a>
+
+            <div class="ps-4 pe-4 pb-4 pt-4">
+                <div class="d-flex d-md-none row">
+                    <div class="d-flex d-md-none">
+                        <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'home' %}">Zurück</a>
+                    </div>
+                </div>
+                <div class="d-none d-md-flex row">
+                    <div class="d-none d-md-flex col-6">
+                        <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2"
+                            href="{% url 'home' %}">Zurück</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock content %}
+    {% endblock content %}

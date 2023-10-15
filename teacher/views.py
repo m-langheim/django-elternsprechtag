@@ -291,7 +291,7 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
-            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first
+            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(initial=initial)
 
@@ -304,7 +304,9 @@ class CreateInquiryView(View):
                 )
 
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student}
+            request, "teacher/createInquiry.html", {"form": form, "student": student,
+                    "parent_first_name": parent.first_name,
+                    "parent_last_name": parent.last_name}
         )
 
     def post(self, request, studentID):
@@ -328,7 +330,7 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
-            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first
+            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(request.POST, initial=initial)
             if form.is_valid():
@@ -342,7 +344,9 @@ class CreateInquiryView(View):
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student}
+            request, "teacher/createInquiry.html", {"form": form, "student": student,
+                    "parent_first_name": parent.first_name,
+                    "parent_last_name": parent.last_name}
         )
 
 
