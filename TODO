@@ -26,10 +26,6 @@ change_password.html
 - change the focus color of the input fields
 
 
-
-
-(behoben) bei der Suche wird die Suche durch den Paginator entfernt -> 2. Seite kann beim Paginator einer Suche nicht angezeigt werden
-
 Farbe des Paginators ändern bei der Suche
 
 Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen

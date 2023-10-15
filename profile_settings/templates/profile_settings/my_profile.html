@@ -5,7 +5,7 @@
 
 {% block profile_content %}
 <p class="h1">Mein Profil</p>
-<p class="text-secondary">Personalisieren Sie hier Ihr Profil und machen Sie so Informationen Eltern einsichtlich.</p>
+<p class="text-secondary">Personalisieren Sie Ihr Profil für die Eltern</p>
 {% if user.role == 1 %}
 <div class="row p-3">
     {% if user.teacherextradata.image %}
@@ -30,11 +30,15 @@
         {% endif %}
         {% csrf_token %}
         {{ profile_form|crispy }}
-        <div class="d-flex justify-content-end">
-            <div class="btn btn-outline-secondary mt-2 me-2" id="cancel_button" style="width: 120px;">Abbrechen</div>
-            <button type="submit" class="btn btn-outline-danger mt-2" id="submit_button" style="width: 120px;">
-                Speichern
-            </button>
+        <div class="row">
+            <div class="col d-flex">
+                <div class="btn btn-outline-secondary mt-2" id="cancel_button">Abbrechen</div>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button type="submit" class="btn btn-outline-danger mt-2" id="submit_button">
+                    Speichern
+                </button>
+            </div>
         </div>
 
     </form>

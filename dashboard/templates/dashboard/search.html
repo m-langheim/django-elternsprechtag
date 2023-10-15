@@ -9,23 +9,19 @@
         <div class="column">
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
-                    {% if state is 0 %}
-                    <h2>Please enter a search request!</h2>
-                    {% elif state is 1%}
+                    {% if request_search %}
                     <h2>Suchergebnisse für: "{{ request_search }}"</h2>
                     {% else %}
-                    {% if not teachers %}
-                    <h2>Keine Suchergebnisse für: "{{ request_search }}"</h2>
-                    {% else %}
-                    <h2>Suchergebnisse für: "{{ request_search }}"</h2>
+                    <h2>Alle Lehrkräfte</h2>
                     {% endif %}
-                    {% endif %}
+
+                    {% if teachers %}
                     <ul class="list-group list-group-flush">
                         {% for teacher in teachers %}
                         <li class="list-group-item">
                             <div class="row align-items-center">
                                 <div class="col-12 col-sm-6 col-md-8 text-start">
-                                    {{ teacher.first_name }} {{ teacher.last_name }}
+                                    {{ teacher.last_name }}, {{ teacher.first_name }}
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -38,10 +34,72 @@
                         </li>
                         {% endfor %}
                     </ul>
+                    {% else %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-12 col-sm-6 col-md-8 text-start">
+                                    Keine Suchergebnisse gefunden!
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% if teachers %}
+<nav aria-label="Student navigation" class="mt-2">
+    <ul class="pagination justify-content-center">
+        {% if request_search %}
+            {% if teachers.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ teachers.previous_page_number }}&q={{ request_search }}"><i class="fa-solid fa-angle-left"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href=""><i class="fa-solid fa-angle-left"></i></a></li> 
+            {% endif %}
+
+            {% for i in teachers.paginator.page_range %}
+            {% if i == teachers.number %}
+            <li class="page-item active"><a class="page-link" href="?page={{ i }}&q={{ request_search }}">{{ i }}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}&q={{ request_search }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if teachers.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ teachers.next_page_number }}&q={{ request_search }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href=""><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        {% else %}
+            {% if teachers.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ teachers.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href=""><i class="fa-solid fa-angle-left"></i></a></li> 
+            {% endif %}
+
+            {% for i in teachers.paginator.page_range %}
+            {% if i == teachers.number %}
+            <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if teachers.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ teachers.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href=""><i class="fa-solid fa-angle-right"></i></a></li>
+            {% endif %}
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
 
 {% endblock content %}
