@@ -162,7 +162,7 @@
             </div>
             {% if announcements|length > 0 %}
             <div class="accordion" id="announcement-accordion">
-                {% for announcement in announcements %}
+                {% for announcement in announcements|slice:":5" %}
                 <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
                     <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -202,6 +202,13 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if announcements.all|length > 5 %}
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a class="btn btn-outline-danger" role="button" href="{% url "announcements" %}">
+					Weitere Mitteilungen
+				</a>
+			</div>
+			{% endif %}
             {% else %}
             <div class="card m-1">
                 <div class="card-body">
