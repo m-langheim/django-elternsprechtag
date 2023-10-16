@@ -153,21 +153,21 @@
                                                         }
                                                     </style>
                                                     <a type="button"
-                                                        class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"> 
+                                                        class="btn btn-outline-warning col-12 col-md-6 specify_color_orange" href="{% url 'teacher_event_view' event.id %}"> 
                                                         {% comment %} Hier könnte man das Event vielleicht in Zukunft auch direkt bestätigen {% endcomment %}
                                                         Angefragt
                                                     </a>
                                                 {% else %}
                                                     <a type="button" class="btn btn-outline-danger col-12 col-md-6"
-                                                        href="{% url 'event_per_id' event.id %}">
+                                                        href="{% url 'teacher_event_view' event.id %}">
                                                         Belegt
                                                     </a>
                                                 {% endif %}
                                         {% else %}
-                                                <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                                <div type="button" class="btn btn-outline-success col-12 col-md-6"
                                                 >
                                                     Frei
-                                                </a>
+                                                </div>
                                         {% endif %}
                                     </div>
                                 </div>
