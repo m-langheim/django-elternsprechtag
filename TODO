@@ -25,6 +25,8 @@ my_profile.html
 change_password.html
 - change the focus color of the input fields
 
+myEventsList.html
+- Bestätigung und Absage eines Termins aus der Oberfläche direkt
 
 Farbe des Paginators ändern bei der Suche
 

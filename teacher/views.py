@@ -304,9 +304,14 @@ class CreateInquiryView(View):
                 )
 
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student,
-                    "parent_first_name": parent.first_name,
-                    "parent_last_name": parent.last_name}
+            request,
+            "teacher/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+                "parent_first_name": parent.first_name,
+                "parent_last_name": parent.last_name,
+            },
         )
 
     def post(self, request, studentID):
@@ -344,9 +349,14 @@ class CreateInquiryView(View):
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student,
-                    "parent_first_name": parent.first_name,
-                    "parent_last_name": parent.last_name}
+            request,
+            "teacher/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+                "parent_first_name": parent.first_name,
+                "parent_last_name": parent.last_name,
+            },
         )
 
 
@@ -540,12 +550,47 @@ def viewMyEvents(request):
         Q(status=2) | Q(status=3),
     )
 
+    teacher = request.user
+
+    events = Event.objects.filter(Q(teacher=teacher))
+
+    events_dt = Event.objects.filter(Q(teacher=teacher))
+
+    dates = []
+    datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if timezone.localtime(datetime_object).date() not in [
+            date.date() for date in dates
+        ]:
+            dates.append(datetime_object.astimezone(pytz.UTC))
+
+    events_dt_dict = {}
+    for date in dates:
+        events_dt_dict[str(date.date())] = Event.objects.filter(
+            Q(teacher=teacher),
+            Q(
+                start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                )
+            ),
+            Q(
+                start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                )
+            ),
+        ).order_by("start")
+
     return render(
         request,
         "teacher/event/myEvents.html",
         {
             "open_formulas": custom_event_change_formulas,
             "closed_formulas": closed_formulars,
+            "events": events,
+            "events_dt": events_dt,
+            "events_dt_dict": events_dt_dict,
         },
     )
 
