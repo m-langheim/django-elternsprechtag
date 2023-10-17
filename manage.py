@@ -6,10 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # if not os.environ.get("DJANGO_SETTINGS_MODULE", False):
-    #     os.environ.setdefault(
-    #         "DJANGO_SETTINGS_MODULE", "elternsprechtag.settings.test"
-    #     )
+    if not os.environ.get("DJANGO_SETTINGS_MODULE", False):
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "elternsprechtag.settings.test")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

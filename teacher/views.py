@@ -1,38 +1,32 @@
 from django.shortcuts import render, redirect
-from authentication.models import CustomUser, TeacherExtraData
-from dashboard.models import Inquiry, Student, Event, Announcements
+from authentication.models import CustomUser
+from dashboard.models import Inquiry, Student, Event, Announcements, EventChangeFormula
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.views import View
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required
 from .forms import *
-from django.contrib.auth import update_session_auth_hash
-from django.core.exceptions import BadRequest
+
+from general_tasks.utils import EventPDFExport
 
 import pytz
 
 # pdf gen
-from io import BytesIO
-from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, PageTemplate
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from django.http import FileResponse
 import datetime
-from reportlab.lib.units import cm
-from functools import partial
-from reportlab.platypus.frames import Frame
 
 # Create your views here.
 
 from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
+
+from dashboard.utils import check_inquiry_reopen
 
 
 teacher_decorators = [login_required, teacher_required]
@@ -71,7 +65,6 @@ def dashboard(request):
 
     events_dict = {}
     for date in dates:
-        #! Spontane Änderung aufgrund von Problemen auf dem Server
         events_dict[str(date.date())] = events.filter(
             Q(
                 start__gte=timezone.datetime.combine(
@@ -91,6 +84,10 @@ def dashboard(request):
         Q(user=request.user), Q(read=False)
     ).order_by("-created")
 
+    event_creation_form_open = EventChangeFormula.objects.filter(
+        Q(teacher=request.user), Q(date__gte=timezone.datetime.now()), Q(status=0)
+    ).exists()
+
     return render(
         request,
         "teacher/dashboard.html",
@@ -99,6 +96,7 @@ def dashboard(request):
             "events": events,
             "events_dict": events_dict,
             "announcements": announcements,
+            "event_creation_form_open": event_creation_form_open,
         },
     )
 
@@ -108,57 +106,51 @@ def dashboard(request):
 def studentList(request):
     search = request.GET.get("q", None)
     page_number = request.GET.get("page")
-    if search is None:
-        students = Student.objects.all()
-    else:
-        students = Student.objects.filter(
-            Q(first_name__icontains=search) | Q(last_name__icontains=search)
-        ).order_by("last_name")
-    paginator = Paginator(students, 25)
-    page_obj = paginator.get_page(page_number)
 
-    events = Event.objects.filter(
-        Q(teacher=request.user)
-    )  # ggf hier order_by(""last_name"")
+    if search is None:
+        students = Student.objects.all().order_by("first_name").order_by("last_name")
+    else:
+        students = (
+            Student.objects.filter(
+                Q(first_name__icontains=search) | Q(last_name__icontains=search)
+            )
+            .order_by("first_name")
+            .order_by("last_name")
+        )
+
+    events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)
-    )
-    events_dict = {}
+    ).exclude(Q(processed=True))
+
+    students_list = []
 
     if students is not None:
         for student in students:
-            events_dict[student] = 0
+            status = 0  # No Event or Inquiry at all
 
-    if inquiries is not None:
-        for inquiry in inquiries:
-            if inquiry.processed == False:
-                for student in inquiry.students.all():
-                    if inquiry.type == 0:  # Teacher -> Parent
-                        events_dict[student] = 2
-                    elif inquiry.type == 1:  # Parent -> Teacher
-                        events_dict[student] = 3
+            inquiry = inquiries.filter(Q(students=student)).order_by("requester__role")
 
-    if events is not None:
-        for event in events:
-            for student in students:
-                if event.student.contains(student):
-                    events_dict[student] = event.status  # 0:
+            if inquiry:
+                if inquiry[0].type == 0:
+                    status = 1  # Teacher send inquiry
+                elif inquiry[0].type == 1:
+                    status = 2  # Parent send inquiry
 
-    # events that must be accepted are not displayed right
+            event = events.filter(Q(student=student))
 
-    print(events_dict)
+            if event:
+                if event[0].status == 1:
+                    status = 3  # Event is safe
+
+            students_list.append([student, status])
+
+    paginator = Paginator(students_list, 25)
+    page_obj = paginator.get_page(page_number)
 
     return render(
-        request,
-        "teacher/studentList.html",
-        {"page_obj": page_obj, "events": events_dict},
+        request, "teacher/studentList.html", {"page_obj": page_obj, "search": search}
     )
-
-
-# @method_decorator(teacher_decorators, name='dispatch')
-# class DetailStudent(View):
-#    def get(self, request):
-#         return render(request, "teacher/student.html")
 
 
 @login_required
@@ -209,7 +201,6 @@ class InquiryView(View):
         except Inquiry.DoesNotExist:
             Http404("Inquiry wurde nicht gefunden")
         else:
-            print(inquiry.respondent)
             initial = {
                 "reason": inquiry.reason,
                 "student": inquiry.students.first,
@@ -224,6 +215,8 @@ class InquiryView(View):
                 {
                     "form": form,
                     "student": inquiry.students.first,
+                    "parent_first_name": inquiry.respondent.first_name,
+                    "parent_last_name": inquiry.respondent.last_name,
                     "f_inquiry_id": urlsafe_base64_encode(force_bytes(inquiry.id)),
                 },
             )
@@ -298,7 +291,7 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
-            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first
+            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(initial=initial)
 
@@ -311,7 +304,14 @@ class CreateInquiryView(View):
                 )
 
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student}
+            request,
+            "teacher/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+                "parent_first_name": parent.first_name,
+                "parent_last_name": parent.last_name,
+            },
         )
 
     def post(self, request, studentID):
@@ -335,7 +335,7 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
-            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first
+            parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(request.POST, initial=initial)
             if form.is_valid():
@@ -349,7 +349,14 @@ class CreateInquiryView(View):
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student}
+            request,
+            "teacher/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+                "parent_first_name": parent.first_name,
+                "parent_last_name": parent.last_name,
+            },
         )
 
 
@@ -364,9 +371,13 @@ def confirm_event(request, event):
         event.status = 1
         event.occupied = True
         event.save()
-        inquiry = event.inquiry_set.all().first()
-        inquiry.processed = True
-        inquiry.save()
+        inquiries = event.inquiry_set.filter(
+            Q(requester=event.parent), Q(processed=False)
+        )
+        print(inquiries)
+        for inquiry in inquiries:
+            inquiry.processed = True
+            inquiry.save()
     return redirect("teacher_dashboard")
 
 
@@ -388,130 +399,12 @@ def markAnnouncementRead(request, announcement_id):
 @login_required
 @teacher_required
 def create_event_PDF(request):
-    buff = BytesIO()
-    doc = SimpleDocTemplate(
-        buff,
-        pagesize=A4,
-        rightMargin=2 * cm,
-        leftMargin=2 * cm,
-        topMargin=2 * cm,
-        bottomMargin=2 * cm,
-        title="Export Events",
-    )
-    styles = getSampleStyleSheet()
-    elements = []
-
-    events = Event.objects.filter(Q(teacher=request.user))
-    dates = []
-
-    datetime_objects = events.order_by("start").values_list("start", flat=True)
-    for datetime_object in datetime_objects:
-        if timezone.localtime(datetime_object).date() not in [
-            date.date() for date in dates
-        ]:
-            dates.append(datetime_object.astimezone(pytz.UTC))
-
-    events_dct = {}
-    for date in dates:
-        events_dct[str(date.date())] = Event.objects.filter(
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
-            ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                )
-            ),
-        ).order_by("start")
-
-    date_style = ParagraphStyle(
-        "date_style",
-        fontName="Helvetica-Bold",
-        fontSize=14,
-        spaceBefore=7,
-        spaceAfter=3,
-    )
-
-    for date in dates:
-        elements.append(Paragraph(str(date.date().strftime("%d.%m.%Y")), date_style))
-        elements.append(Spacer(0, 5))
-
-        events_per_date = events.filter(
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
-            ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                )
-            ),
-        ).order_by("start")
-        for event_per_date in events_per_date:
-            t = str(timezone.localtime(event_per_date.start).time().strftime("%H:%M"))
-            s = ""
-            if len(event_per_date.student.all()) == 0:
-                s = "/"
-            else:
-                for student in event_per_date.student.all():
-                    s += "{} {}; ".format(student.first_name, student.last_name)
-                s = s[:-2]
-
-            b = ""
-            if event_per_date.status == 2:
-                b = "| Nicht bestätigt"
-
-            elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
-            elements.append(Spacer(0, 5))
-
-    def header_and_footer(canvas, doc):
-        header_footer_style = ParagraphStyle(
-            "header_footer_stlye",
-            alignment=TA_CENTER,
-        )
-        header_content = Paragraph(
-            str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-            + "_"
-            + str(request.user.last_name),
-            header_footer_style,
-        )
-        footer_content = Paragraph(
-            "Alle Angaben ohne Gewähr<br /><br />-{}-".format(canvas.getPageNumber()),
-            header_footer_style,
-        )
-
-        canvas.saveState()
-
-        header_content.wrap(doc.width, doc.topMargin)
-        header_content.drawOn(
-            canvas,
-            doc.leftMargin,
-            doc.height + doc.bottomMargin + doc.topMargin - 1 * cm,
-        )
-
-        footer_content.wrap(doc.width, doc.bottomMargin)
-        footer_content.drawOn(canvas, doc.leftMargin, 1 * cm)
-
-        canvas.restoreState()
-
-    frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
-
-    template = PageTemplate(id="test", frames=frame, onPage=partial(header_and_footer))
-
-    doc.addPageTemplates([template])
-    doc.build(elements)
-    buff.seek(0)
+    pdf_generator = EventPDFExport(request.user.id)
     return FileResponse(
-        buff,
+        pdf_generator.print_events(),
         as_attachment=False,
         filename=f'events_{datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.pdf',
+        content_type="application/pdf",
     )
 
 
@@ -525,11 +418,22 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+            inquiry_reason = None
+
+            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+
+            if inquiry:
+                inquiry_reason = inquiry[0].reason
+
             cancel_form = self.cancel_form
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event},
+                context={
+                    "cancel_event": cancel_form,
+                    "event": event,
+                    "inquiry_reason": inquiry_reason,
+                },
             )
 
     def post(self, request, event_id):
@@ -544,17 +448,20 @@ class EventDetailView(View):
                     message = cancel_form.cleaned_data["message"]
                     book_other = cancel_form.cleaned_data["book_other_event"]
 
+                    parent = event.parent
+                    teacher = event.teacher
+
                     if book_other:
                         teacher_id = urlsafe_base64_encode(
                             force_bytes(event.teacher.id)
                         )
                         Announcements.objects.create(
                             announcement_type=1,
-                            user=event.parent,
+                            user=parent,
                             message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s \nUnter dem angegebenen Link buchen Sie bitte einen neuen Termin"
                             % (
-                                event.teacher.first_name,
-                                event.teacher.last_name,
+                                teacher.first_name,
+                                teacher.last_name,
                                 message,
                             ),
                             action_name="Termine ansehen",
@@ -565,57 +472,196 @@ class EventDetailView(View):
                     else:
                         Announcements.objects.create(
                             announcement_type=1,
-                            user=event.parent,
+                            user=parent,
                             message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s"
                             % (
-                                event.teacher.first_name,
-                                event.teacher.last_name,
+                                teacher.first_name,
+                                teacher.last_name,
                                 message,
                             ),
                         )
 
+                    # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+                    try:
+                        inquiry = Inquiry.objects.get(
+                            Q(type=1),
+                            Q(requester=parent),
+                            Q(respondent=teacher),
+                            Q(event=event),
+                        )
+                    except Inquiry.DoesNotExist:
+                        pass
+                    else:
+                        inquiry.processed = True
+                        inquiry.respondent_reaction = 2
+                        inquiry.save()
+
+                    check_inquiry_reopen(parent, teacher)
                     event.parent = None
                     event.status = 0
                     event.occupied = False
                     event.student.clear()
                     event.save()
                     return redirect("teacher_dashboard")
+
+            inquiry_reason = None
+
+            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+
+            if inquiry:
+                inquiry_reason = inquiry[0].reason
+
             cancel_form = self.cancel_form
             return render(
                 request,
                 "teacher/event/detailEvent.html",
-                context={"cancel_event": cancel_form, "event": event},
+                context={
+                    "cancel_event": cancel_form,
+                    "event": event,
+                    "inquiry_reason": inquiry_reason,
+                },
             )
 
 
+@login_required
+@teacher_required
+def viewMyEvents(request):
+    event_change_formulas = EventChangeFormula.objects.filter(
+        Q(teacher=request.user),
+        Q(date__gte=timezone.datetime.now()),
+        Q(status=0) | Q(status=1),
+    )
+
+    custom_event_change_formulas = []
+    for form in event_change_formulas:
+        custom_event_change_formulas.append(
+            {
+                "change_form": form,
+                "link": reverse(
+                    "teacher_personal_events_edit",
+                    args=[urlsafe_base64_encode(force_bytes(form.id))],
+                ),
+            }
+        )
+
+    closed_formulars = EventChangeFormula.objects.filter(
+        Q(teacher=request.user),
+        Q(date__gte=timezone.datetime.now()),
+        Q(status=2) | Q(status=3),
+    )
+
+    teacher = request.user
+
+    events = Event.objects.filter(Q(teacher=teacher))
+
+    events_dt = Event.objects.filter(Q(teacher=teacher))
+
+    dates = []
+    datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if timezone.localtime(datetime_object).date() not in [
+            date.date() for date in dates
+        ]:
+            dates.append(datetime_object.astimezone(pytz.UTC))
+
+    events_dt_dict = {}
+    for date in dates:
+        events_dt_dict[str(date.date())] = Event.objects.filter(
+            Q(teacher=teacher),
+            Q(
+                start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                )
+            ),
+            Q(
+                start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                )
+            ),
+        ).order_by("start")
+
+    return render(
+        request,
+        "teacher/event/myEvents.html",
+        {
+            "open_formulas": custom_event_change_formulas,
+            "closed_formulas": closed_formulars,
+            "events": events,
+            "events_dt": events_dt,
+            "events_dt_dict": events_dt_dict,
+        },
+    )
+
+
 @method_decorator(teacher_decorators, name="dispatch")
-class EventListView(View):  # ???????? was war das nochmal?
-    def get(self, request):
-        events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
-        dates = []
+class EditMyEventsDetail(View):
+    def get(self, request, form_id):
+        try:
+            event_change_formula = EventChangeFormula.objects.get(
+                id=force_str(urlsafe_base64_decode(form_id))
+            )
+        except EventChangeFormula.DoesNotExist:
+            raise Http404("The formula ould not be found.")
 
-        datetime_objects = events.order_by("start").values_list("start", flat=True)
-        for datetime_object in datetime_objects:
-            if timezone.localtime(datetime_object).date() not in [
-                date.date() for date in dates
-            ]:
-                # print(datetime_object.astimezone(pytz.UTC).date())
-                dates.append(datetime_object.astimezone(pytz.UTC))
+        form = EventChangeFormulaForm(instance=event_change_formula)
 
-        events_dict = {}
-        for date in dates:
-            #! Spontane Änderung aufgrund von Problemen auf dem Server
-            events_dict[str(date.date())] = events.filter(
-                Q(
-                    start__gte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(
-                    start__lte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                    )
-                ),
-            ).order_by("start")
+        return render(
+            request,
+            "teacher/event/myEventsEditFormula.html",
+            {"formula": event_change_formula, "form": form},
+        )
+
+    def post(self, request, form_id):
+        try:
+            event_change_formula = EventChangeFormula.objects.get(
+                id=force_str(urlsafe_base64_decode(form_id))
+            )
+        except EventChangeFormula.DoesNotExist:
+            raise Http404("The formula ould not be found.")
+
+        form = EventChangeFormulaForm(request.POST, instance=event_change_formula)
+
+        if form.is_valid():
+            form.save()
+            return redirect("teacher_personal_events")
+
+        return render(
+            request,
+            "teacher/event/myEventsEditFormula.html",
+            {"formula": event_change_formula, "form": form},
+        )
+
+
+# @method_decorator(teacher_decorators, name="dispatch")
+# class EventListView(View):  # ???????? was war das nochmal?
+#     def get(self, request):
+#         events = Event.objects.filter(Q(teacher=request.user), Q(occupied=True))
+#         dates = []
+
+#         datetime_objects = events.order_by("start").values_list("start", flat=True)
+#         for datetime_object in datetime_objects:
+#             if timezone.localtime(datetime_object).date() not in [
+#                 date.date() for date in dates
+#             ]:
+#                 # print(datetime_object.astimezone(pytz.UTC).date())
+#                 dates.append(datetime_object.astimezone(pytz.UTC))
+
+#         events_dict = {}
+#         for date in dates:
+#             #! Spontane Änderung aufgrund von Problemen auf dem Server
+#             events_dict[str(date.date())] = events.filter(
+#                 Q(
+#                     start__gte=timezone.datetime.combine(
+#                         date.date(),
+#                         timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+#                     )
+#                 ),
+#                 Q(
+#                     start__lte=timezone.datetime.combine(
+#                         date.date(),
+#                         timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+#                     )
+#                 ),
+#             ).order_by("start")

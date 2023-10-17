@@ -7,6 +7,8 @@ SECRET_KEY = "södfdsafölkdsalödsfpokewafpoewlkfaüir3qwolkfeäkfewfWKT$I$OKRP
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+NAME = "development"
+
 TIME_ZONE = "Europe/Berlin"
 
 # Database
@@ -65,7 +67,7 @@ CELERY_TIMEZONE = "Europe/Berlin"
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-RUN_CELERY_THREAD = True
+RUN_CELERY_THREAD = False
 
 # CELERY_BEAT_SCHEDULE = {
 #     'db_backup_task': {
@@ -76,3 +78,14 @@ RUN_CELERY_THREAD = True
 # Backup settings
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
+
+CELERY_BEAT_SCHEDULE = {
+    "initiateEventPDFs":{
+        'task': 'general_tasks.tasks.initiateEventPDFs',
+        'schedule': crontab(minute='*/15')
+    },
+    "look_for_open_inquiries":{
+        'task': 'general_tasks.tasks.look_for_open_inquiries',
+        'schedule': crontab(minute='*/1')
+    }
+}

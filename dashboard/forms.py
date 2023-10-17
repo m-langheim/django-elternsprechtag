@@ -10,12 +10,12 @@ from crispy_forms.layout import Submit
 
 class StudentSelector(forms.CheckboxSelectMultiple):
     def __init__(self, *args, **kwargs):
-        self.active_choices = kwargs.pop('active_choices', [])
+        self.active_choices = kwargs.pop("active_choices", [])
         super().__init__(*args, **kwargs)
 
     def create_option(self, name, value, *args, **kwargs):
         option = super().create_option(name, value, *args, **kwargs)
-        option['attrs']['disabled'] = value not in self.active_choices
+        option["attrs"]["disabled"] = value not in self.active_choices
         return option
 
 
@@ -23,76 +23,94 @@ class BookForm(forms.Form):  # * Hier wurde einiges verändert
     book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        self.teacher = kwargs.pop('teacher')
+        self.request = kwargs.pop("request")
+        self.teacher = kwargs.pop("teacher")
         super(BookForm, self).__init__(*args, **kwargs)
 
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
-            choices.append(
-                [student.id, student.first_name + " " + student.last_name])
+            choices.append([student.id, student.first_name + " " + student.last_name])
 
         active_choices = []
 
         # ! Muss nochmal getestet werden
-        if SiteSettings.objects.all().first().lead_start > timezone.now().date():  # lead not started yet
-            inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=self.teacher), Q(
-                respondent=self.request.user), Q(event=None), Q(processed=False))
+        if (
+            SiteSettings.objects.all().first().lead_start > timezone.now().date()
+        ):  # lead not started yet
+            inquiries = Inquiry.objects.filter(
+                Q(type=0),
+                Q(requester=self.teacher),
+                Q(respondent=self.request.user),
+                Q(event=None),
+                Q(processed=False),
+            )
 
-            active_choices = [student for student in inquiries.values_list(
-                "students", flat=True)]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
+            active_choices = [
+                student for student in inquiries.values_list("students", flat=True)
+            ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
-            students_with_event = Event.objects.filter(Q(teacher=self.teacher), Q(
-                occupied=True), Q(parent=self.request.user)).values_list("student", flat=True)
+            students_with_event = Event.objects.filter(
+                Q(teacher=self.teacher), Q(occupied=True), Q(parent=self.request.user)
+            ).values_list("student", flat=True)
             for student in choices:
                 if student[0] not in students_with_event:
                     active_choices.append(student[0])
 
-        self.fields['student'].choices = choices
-        self.fields['student'].widget.active_choices = active_choices
+        self.fields["student"].choices = choices
+        self.fields["student"].widget.active_choices = active_choices
 
-    student = forms.MultipleChoiceField(
-        choices=[], widget=StudentSelector(), label='')
+    student = forms.MultipleChoiceField(choices=[], widget=StudentSelector(), label="")
 
 
 class EditEventForm(forms.Form):
     edit_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        self.teacher = kwargs.pop('teacher')
-        self.event = kwargs.pop('event')
+        self.request = kwargs.pop("request")
+        self.teacher = kwargs.pop("teacher")
+        self.event = kwargs.pop("event")
         super(EditEventForm, self).__init__(*args, **kwargs)
 
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
-            choices.append(
-                [student.id, student.first_name + " " + student.last_name])
+            choices.append([student.id, student.first_name + " " + student.last_name])
 
         active_choices = []
-        if SiteSettings.objects.all().first().lead_start > timezone.now().date():  # lead not started yet
+        if (
+            SiteSettings.objects.all().first().lead_start > timezone.now().date()
+        ):  # lead not started yet
             # Es sollen nur Schüler:innen auswählbar sein, bei denen eine Anfrage vorliegt
-            inquiries = Inquiry.objects.filter(Q(type=0), Q(requester=self.teacher), Q(
-                respondent=self.request.user))
+            inquiries = Inquiry.objects.filter(
+                Q(type=0), Q(requester=self.teacher), Q(respondent=self.request.user)
+            )
 
-            active_choices = [student for student in inquiries.values_list(
-                "students", flat=True)]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
+            active_choices = [
+                student for student in inquiries.values_list("students", flat=True)
+            ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
-            students_with_event = Event.objects.filter(Q(teacher=self.teacher), Q(
-                occupied=True), Q(parent=self.request.user)).exclude(id=self.event.id).values_list("student", flat=True)
+            students_with_event = (
+                Event.objects.filter(
+                    Q(teacher=self.teacher),
+                    Q(occupied=True),
+                    Q(parent=self.request.user),
+                )
+                .exclude(id=self.event.id)
+                .values_list("student", flat=True)
+            )
             for student in choices:
                 if student[0] not in students_with_event:
                     active_choices.append(student[0])
 
-        self.fields['student'].choices = choices
-        self.fields['student'].widget.active_choices = active_choices
+        self.fields["student"].choices = choices
+        self.fields["student"].widget.active_choices = active_choices
 
     student = forms.MultipleChoiceField(
-        choices=[], widget=StudentSelector(), label='', required=True)
+        choices=[], widget=StudentSelector(), label="", required=True
+    )
 
 
 # class InquiryForm(forms.Form): #? Irrelevant, da es ein überarbeitetes Interface zum beantworten von Anfragen gibt?
@@ -125,18 +143,29 @@ class EditEventForm(forms.Form):
 
 
 class AdminEventForm(forms.Form):
-    teacher = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.filter(role=1))
+    teacher = forms.ModelMultipleChoiceField(queryset=CustomUser.objects.filter(role=1))
     date = forms.DateField(widget=forms.SelectDateWidget())
-    start_time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'class': 'timepicker'}))
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
     end_time = forms.TimeField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit('submit', 'Speichern'))
+        self.helper.add_input(Submit("submit", "Speichern"))
+
+
+class AdminEventCreationFormulaForm(forms.Form):
+    teacher = forms.ModelMultipleChoiceField(queryset=CustomUser.objects.filter(role=1))
+    date = forms.DateField(
+        widget=forms.SelectDateWidget(), initial=timezone.datetime.now().date
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.add_input(Submit("submit", "Speichern"))
 
 
 class cancelEventForm(forms.Form):

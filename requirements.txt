@@ -1,6 +1,6 @@
 amqp==5.1.1
 arabic-reshaper==3.0.0
-asgiref==3.5.2
+asgiref==3.7.2
 asn1crypto==1.5.1
 async-timeout==4.0.2
 autopep8==1.7.0
@@ -15,14 +15,13 @@ click-plugins==1.1.1
 click-repl==0.2.0
 crispy-bootstrap5==0.7
 cron-descriptor==1.2.35
-cryptography==40.0.0
+cryptography==41.0.4
 cssselect2==0.7.0
 Deprecated==1.2.13
-Django==4.1
+Django==4.2
 django-celery-beat==2.5.0
-django-celery-results==2.5.0
 django-colorfield==0.9.0
-django-cors-headers==3.13.0
+django-cors-headers==4.1.0
 django-crispy-forms==2.0
 django-dbbackup==4.0.2
 django-storages==1.13.2
@@ -60,7 +59,7 @@ svglib==1.5.1
 tinycss2==1.2.1
 toml==0.10.2
 tqdm==4.65.0
-typing-extensions==4.5.0
+typing_extensions==4.5.0
 tzdata==2022.7
 tzlocal==4.3
 uritools==4.0.1

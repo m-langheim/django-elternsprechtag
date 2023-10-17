@@ -13,10 +13,9 @@
                     <p class="h1">Events</p>
                     <p class="text-muted">Hier werden alle gebuchten Termine aufgeführt</p>
                 </div>
-                <!-- !Es muss noch die Funktion zur Generierung von PDFs entwickelt werden -->
-                <!-- <div class="col col-4 d-grid gap-2 justify-content-md-end">
-                    <button class="btn btn-primary p-4" type="button">Download PDF</button>
-                </div> -->
+                    <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
+                        <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" type="button" href="{% url 'parent_generate_pdf' %}"><div>Download</div></a>
+                    </div>
             </div>
 
             <!-- Liste an möglichen Tabs -->
@@ -53,7 +52,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
                                     aria-controls="event-accordion-collapse-{{ event.id }}">
-                                    {{ event.start|time }} - {{event.end|time}}: {{event.teacher.first_name}}
+                                    {{ event.start|time }} - {{event.end|time}} | {{event.teacher.first_name}}
                                     {{event.teacher.last_name}}
                                     {% if event.status == 2 %}
                                     <span
@@ -67,7 +66,7 @@
                                 aria-labelledby="event-accordion-heading-{{ event.id }}"
                                 data-bs-parent="#event-accordion">
                                 <div class="accordion-body">
-                                    <strong>Startzeit: </strong>{{ event.start }} <br />
+                                    <strong>Startzeit: </strong>{{event.start.time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
                                     <strong>Lehrer: </strong>
                                     {{ event.teacher.first_name }} {{ event.teacher.last_name }}<br />
                                     <strong>Schüler:innen: </strong>
@@ -78,7 +77,7 @@
                                     <br />
 
                                     <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
-                                        <a type="button" class="btn btn-outline-danger col-12 col-md-3"
+                                        <a type="button" class="btn btn-outline-danger col-12 col-md-3 mt-2"
                                             href="{% url 'event_per_id' event.id %}">
                                             Details
                                         </a>
@@ -131,15 +130,16 @@
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
+                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first}} <br/>
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
-                            <strong>Event: </strong>
+                            <strong>Termin: </strong>
                             {% if inquiry.inquiry.event != null %}
-                            {{inquiry.inquiry.event.start}}
+                            {{inquiry.inquiry.event.start.time}} ({{inquiry.inquiry.event.start.date.day}}.{{inquiry.inquiry.event.start.date.month}}.{{inquiry.inquiry.event.start.date.year}})
                             {% else %}
                             ---
                             {% endif %}
                             <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
-                                <a class="btn btn-outline-danger col-12 col-xxl-3 col-lg-4 col-md-5" role="button"
+                                <a class="btn btn-outline-danger col-12 col-xxl-3 col-lg-4 col-md-5 mt-2" role="button"
                                     href="{{ inquiry.url }}">Ansehen</a>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
             </div>
             {% if announcements|length > 0 %}
             <div class="accordion" id="announcement-accordion">
-                {% for announcement in announcements %}
+                {% for announcement in announcements|slice:":5" %}
                 <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
                     <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -202,6 +202,13 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if announcements.all|length > 5 %}
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a class="btn btn-outline-danger" role="button" href="{% url "announcements" %}">
+					Weitere Mitteilungen
+				</a>
+			</div>
+			{% endif %}
             {% else %}
             <div class="card m-1">
                 <div class="card-body">

@@ -25,17 +25,19 @@ my_profile.html
 change_password.html
 - change the focus color of the input fields
 
+myEventsList.html
+- Bestätigung und Absage eines Termins aus der Oberfläche direkt
+
+Farbe des Paginators ändern bei der Suche
+
+Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen
+Es muss nochmal an den Leads gearbeitet werden
+Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.
 
 
-Lehrer hat Anfrage erstellt, noch nicht angenommen -> Inquiry edit page -> ist bereits richtig
-Lehrer hat Anfrage erstellt, wurde angenommen -> Termin seite (da wo man wieder termin zurücknehmen kann + details zeigen) -> aktuell falsch
-Eltern hat Anfrage erstellt, noch nicht angenommen -> Termin seite, wo man termin annehmen kann ggf. dieselbe wie da ^) -> aktuell falsch, existiert noch nicht
-Eltern hat Anfrage erstellt, wurde angenommen -> Termin seite (wo man wieder termin zurücknehmen kann + Termin relevant & Details hinzufügen) -> existiert nicht
+gucken, ob überall 
+                        {% csrf_token %} vorhanden is
 
-
-
-
-
-
-termin annehmen in event view
-wenn man anfrage ablehnt + book event -> anfrage  muss unter anfragen auf dashboard auftauchen
+Uhrzeitanträge: No events & uhrzeit darf nicht gleichzeitig möglich sein
+                Startuhrzeit darf nicht nach Enduhrzeit sein
+                
