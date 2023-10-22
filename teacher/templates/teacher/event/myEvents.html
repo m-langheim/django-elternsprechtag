@@ -1,208 +1,238 @@
-{% extends "dashboard/base.html" %}
-{% load crispy_forms_tags %}
-
-{% block title %} Dashboard - Lehrer {% endblock title %}
-
-{% block content %}
+{% extends "dashboard/base.html" %} {% load crispy_forms_tags %} {% block title
+%} Dashboard - Lehrer {% endblock title %} {% block content %}
 <div class="row gx-3 gy-3">
-    <div class="col-12">
-        <div class="card card-body p-0">
-            <div class="p-4">
+	<div class="col-12">
+		<div class="card card-body p-0">
+			<div class="p-4">
+				<p class="h1">Ihre gewünschten Elternsprechtagszeiten</p>
+				<p class="text-secondary">
+					Hier müssen Sie Ihre Elternsprechtagszeiten für die gegebenen Tage
+					angeben. Berücksichtigen Sie hierbei gegebenenfalls das
+					Teilzeitkonzept. Nach Angabe werden die Zeiten durch die Organisatoren
+					geprüft und erscheinen unter dem Punkt vereinbarte
+					Elternsprechtagszeiten.
+				</p>
 
-                <p class="h1">Ausstehende Elternsprechtagszeiten</p>
-                <p class="text-secondary">Hier sind die noch ausstehenden Elternsprechtagszeiten aufgelistet</p>
+				{% if open_formulas|length > 0 %}
+				<ul class="list-group list-group-flush">
+					{% for formula in open_formulas %}
+					<li class="list-group-item">
+						<div class="row gy-1 align-items-center">
+							<!-- <div class="row align-items-center"> -->
+							<div class="col-12 col-md-7 col-xl-9 text-start">
+								Zeitraum für den {{ formula.change_form.date }}
+							</div>
+							<div class="col-12 col-md-5 col-xl-3">
+								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+									{% if formula.change_form.status == 0 %}
+									<a
+										type="button"
+										class="btn btn-outline-danger col-12 col-md-6"
+										href="{{ formula.link }}"
+									>
+										Angeben
+									</a>
+									{% else %}
+									<a
+										type="button"
+										class="btn btn-outline-secondary col-12 col-md-6"
+										href="{{ formula.link }}"
+									>
+										Ausstehend
+									</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+				{% else %} Aktuell gibt es keine unbestimmten Elternsprechtagszeiten {%
+				endif %}
+			</div>
 
-                {% if open_formulas|length > 0 %}
-                <ul class="list-group list-group-flush">
-                    {% for formula in open_formulas %}
-                    <li class="list-group-item">
-                        <div class="row gy-1 align-items-center">
-                            <!-- <div class="row align-items-center"> -->
-                            <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Zeitraum für den {{ formula.change_form.date }}
-                            </div>
-                            <div class="col-12 col-md-5 col-xl-3">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    {% if formula.change_form.status == 0 %}
-                                    <a type="button" class="btn btn-outline-danger col-12 col-md-6"
-                                        href="{{ formula.link }}">
-                                        Angeben
-                                    </a>
-                                    {% else %}
-                                    <a type="button" class="btn btn-outline-secondary col-12 col-md-6"
-                                        href="{{ formula.link }}">
-                                        Ausstehend
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                Aktuell gibt es keine unbestimmten Elternsprechtagszeiten
-                {% endif %}
+			<div class="border-top"></div>
 
-            </div>
+			<div class="pt-4 ps-4 pe-4">
+				<p class="h1">Vereinbarte Elternsprechtagszeiten</p>
+				<p class="text-secondary">
+					Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status
+					"Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.
+				</p>
 
-            <div class="border-top"></div>
+				{% if closed_formulas|length > 0 %}
+				<ul class="list-group list-group-flush">
+					{% for formula in closed_formulas %}
+					<li class="list-group-item">
+						<div class="row gy-1 align-items-center">
+							{% if formula.no_events %}
+							<div class="col-12 col-md-7 col-xl-9 text-start">
+								Anfrage: Keine Termine am {{ formula.date }}
+							</div>
+							{% else %}
+							<div class="col-12 col-md-7 col-xl-9 text-start">
+								Anfrage: Zeitraum für den {{ formula.date }} ({{
+								formula.start_time }} Uhr - {{formula.end_time}} Uhr)
+							</div>
+							{% endif %}
+							<div class="col-12 col-md-5 col-xl-3">
+								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+									{% if formula.status == 2 %}
+									<div class="btn btn-outline-success col-12 col-md-6">
+										Bestätigt
+									</div>
+									{% else %}
+									<div class="btn btn-outline-dark col-12 col-md-6">
+										Abgelehnt
+									</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+				{% else %} Bisher wurden keine Eltersnprechtagszeiten angefragt {% endif
+				%}
+			</div>
 
-            <div class="pt-4 ps-4 pe-4">
+			<div class="border-top"></div>
 
-                <p class="h1">Angefragten Elternsprechtagszeiten</p>
-                <p class="text-secondary">Hier sind die bereits angefragten Zeiten für den nächsten Elternsprechtag aufgelistet</p>
+			<div class="pt-4 ps-4 pe-4">
+				<p class="h1">Ihre Termine</p>
+				{% if events|length > 0 %}
+				<!-- Liste an möglichen Tabs -->
+				<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+					<style>
+						.active {
+							border-color: red !important;
+						}
 
-                {% if closed_formulas|length > 0 %}
-                <ul class="list-group list-group-flush">
-                    {% for formula in closed_formulas %}
-                    <li class="list-group-item">
-                        <div class="row gy-1 align-items-center">
-                            {% if formula.no_events %}
-                            <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Anfrage: Keine Termine am {{ formula.date }}
-                            </div>
-                            {% else %}
-                            <div class="col-12 col-md-7 col-xl-9 text-start">
-                                Anfrage: Zeitraum für den {{ formula.date }} ({{ formula.start_time }} Uhr - 
-                                {{formula.end_time}} Uhr)
-                            </div>
-                            {% endif %}
-                            <div class="col-12 col-md-5 col-xl-3">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    {% if formula.status == 2 %}
-                                    <div class="btn btn-outline-success col-12 col-md-6">
-                                        Bestätigt
-                                    </div>
-                                    {% else %}
-                                    <div class="btn btn-outline-dark col-12 col-md-6">
-                                        Abgelehnt
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                Bisher wurden keine Eltersnprechtagszeiten angefragt
-                {% endif %}
+						/* change this color */
+					</style>
+					{%for key, events in events_dt_dict.items %}
+					<li class="nav-item" role="presentation">
+						<button
+							class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
+							id="pills-{{key}}-tab"
+							data-bs-toggle="pill"
+							data-bs-target="#pills-{{key}}"
+							type="button"
+							role="tab"
+							aria-controls="pills-{{key}}"
+							aria-selected="true"
+						>
+							{{events.first.start|date}}
+						</button>
+					</li>
+					{%endfor%}
+				</ul>
 
-            </div>
+				<div class="tab-content" id="pills-tabContent">
+					{%for key, events in events_dt_dict.items %}
+					<div
+						class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}"
+						id="pills-{{key}}"
+						role="tabpanel"
+						aria-labelledby="pills-{{key}}-tab"
+						tabindex="0"
+					>
+						<ul class="list-group list-group-flush">
+							{% for event in events %}
+							<li class="list-group-item">
+								<div class="row gy-1 align-items-center">
+									<!-- <div class="row align-items-center"> -->
+									<div class="col-12 col-md-7 col-xl-9 text-start">
+										{% if event.occupied %} {{ event.start|time }} - {{
+										event.end|time }} | {% for student in event.student.all %}
+										{{student.first_name}} {{student.last_name}} {% if student
+										!= event.student.last %}, {% endif %} {% endfor %} {% else
+										%} {{ event.start|time }} - {{ event.end|time }} {% endif %}
+									</div>
+									<div class="col-12 col-md-5 col-xl-3">
+										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+											{% if event.occupied %} {% if event.status == 2 %}
+											<style>
+												.specify_color_orange {
+													border-color: #ff8c00 !important;
+													color: #ff8c00 !important;
+												}
 
-            <div class="border-top"></div>
+												.specify_color_orange:hover {
+													background-color: #ff8c00 !important;
+													color: white !important;
+												}
+											</style>
+											<a
+												type="button"
+												class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+												href="{% url 'teacher_event_view' event.id %}"
+											>
+												{% comment %} Hier könnte man das Event vielleicht in
+												Zukunft auch direkt bestätigen {% endcomment %}
+												Angefragt
+											</a>
+											{% else %}
+											<a
+												type="button"
+												class="btn btn-outline-danger col-12 col-md-6"
+												href="{% url 'teacher_event_view' event.id %}"
+											>
+												Belegt
+											</a>
+											{% endif %} {% else %}
+											<div
+												type="button"
+												class="btn btn-outline-success col-12 col-md-6"
+											>
+												Frei
+											</div>
+											{% endif %}
+										</div>
+									</div>
+									<!-- </div> -->
+								</div>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					{%endfor%}
+				</div>
+				{% else %}
 
-            <div class="pt-4 ps-4 pe-4">
-                <p class="h1">Ihre Termine</p>
-            {% if events|length > 0 %}
-            <!-- Liste an möglichen Tabs -->
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <style>
-                    .active {
-                        border-color: red !important;
-                    }
+				<!-- Für den Lehrer wurden noch keine Events gebucht -->
+				<div class="container">
+					<p class="h1">Events</p>
+					<p class="text-muted">
+						Es gibt bei Ihnen bisher keine offenen Termine
+					</p>
+				</div>
+				{% endif %}
+			</div>
 
-                    /* change this color */
-                </style>
-                {%for key, events in events_dt_dict.items %}
-                <li class="nav-item" role="presentation">
-                    <button
-                        class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
-                        id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button"
-                        role="tab" aria-controls="pills-{{key}}" aria-selected="true">
-                        {{events.first.start|date}}</button>
-                </li>
-                {%endfor%}
-            </ul>
-
-            <div class="tab-content" id="pills-tabContent">
-                {%for key, events in events_dt_dict.items %}
-                <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{key}}"
-                    role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
-
-                    <ul class="list-group list-group-flush">
-                        {% for event in events %}
-                        <li class="list-group-item">
-                            <div class="row gy-1 align-items-center">
-                                <!-- <div class="row align-items-center"> -->
-                                <div class="col-12 col-md-7 col-xl-9 text-start">
-                                    {% if event.occupied %}
-                                    {{ event.start|time }} - {{ event.end|time }} | 
-                                    {% for student in event.student.all %}
-										{{student.first_name}} {{student.last_name}}
-										{% if student != event.student.last %}, {% endif %}
-										{% endfor %}
-                                    {% else %}
-                                    {{ event.start|time }} - {{ event.end|time }}
-                                    {% endif %}
-                                </div>
-                                <div class="col-12 col-md-5 col-xl-3">
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        {% if event.occupied %}
-                                                {% if event.status == 2 %}
-                                                    <style>
-                                                        .specify_color_orange {
-                                                            border-color: #FF8C00 !important;
-                                                            color: #FF8C00 !important;
-                                                        }
-
-                                                        .specify_color_orange:hover {
-                                                            background-color: #FF8C00 !important;
-                                                            color: white !important;
-                                                        }
-                                                    </style>
-                                                    <a type="button"
-                                                        class="btn btn-outline-warning col-12 col-md-6 specify_color_orange" href="{% url 'teacher_event_view' event.id %}"> 
-                                                        {% comment %} Hier könnte man das Event vielleicht in Zukunft auch direkt bestätigen {% endcomment %}
-                                                        Angefragt
-                                                    </a>
-                                                {% else %}
-                                                    <a type="button" class="btn btn-outline-danger col-12 col-md-6"
-                                                        href="{% url 'teacher_event_view' event.id %}">
-                                                        Belegt
-                                                    </a>
-                                                {% endif %}
-                                        {% else %}
-                                                <div type="button" class="btn btn-outline-success col-12 col-md-6"
-                                                >
-                                                    Frei
-                                                </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <!-- </div> -->
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                </div>
-                {%endfor%}
-            </div>
-            {% else %}
-
-            <!-- Für den Lehrer wurden noch keine Events gebucht -->
-            <div class="container">
-                <p class="h1">Events</p>
-                <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
-            </div>
-            {% endif %}
-            </div>
-
-            <div class="ps-4 pe-4 pb-4 pt-4">
-                <div class="d-flex d-md-none row">
-                    <div class="d-flex d-md-none">
-                        <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'home' %}">Zurück</a>
-                    </div>
-                </div>
-                <div class="d-none d-md-flex row">
-                    <div class="d-none d-md-flex col-6">
-                        <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2"
-                            href="{% url 'home' %}">Zurück</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endblock content %}
+			<div class="ps-4 pe-4 pb-4 pt-4">
+				<div class="d-flex d-md-none row">
+					<div class="d-flex d-md-none">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+				<div class="d-none d-md-flex row">
+					<div class="d-none d-md-flex col-6">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endblock content %}
+</div>
