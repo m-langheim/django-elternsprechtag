@@ -47,8 +47,7 @@ myEvents.html:
 - Button "An diesem Tag habe ich keine Termine" direkt in der Liste
 
 myEventsEditFormular.html
-
-- Keine Termine ==> An diesem Tag habe ich keine Termine
+- Button zum Zurücksetzen auf Ausgangswerte
 
 Link zum Annehmen oder ablehnen des Termins an Lehrer soll zu einer Seite führen, wo man den Termin nur entweder annehmen oder ablehnen kann.
 

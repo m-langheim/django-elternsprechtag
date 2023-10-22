@@ -23,9 +23,15 @@
 					<li class="list-group-item">
 						<div class="row gy-1 align-items-center">
 							<!-- <div class="row align-items-center"> -->
-							<div class="col-12 col-md-7 col-xl-9 text-start">
-								Zeitraum für den {{ formula.change_form.date }}
-							</div>
+							{% if formula.change_form.status == 0 %}
+								<div class="col-12 col-md-7 col-xl-9 text-start">
+									Zeitraum für den {{ formula.change_form.date }}
+								</div>
+								{% else %}
+								<div class="col-12 col-md-7 col-xl-9 text-start">
+									Angefragt: Zeitraum für den {{ formula.change_form.date }}
+								</div>
+								{% endif %}
 							<div class="col-12 col-md-5 col-xl-3">
 								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 									{% if formula.change_form.status == 0 %}
@@ -70,12 +76,12 @@
 						<div class="row gy-1 align-items-center">
 							{% if formula.no_events %}
 							<div class="col-12 col-md-7 col-xl-9 text-start">
-								Anfrage: Keine Termine am {{ formula.date }}
+								Angefragt: Keine Termine am {{ formula.date }}
 							</div>
 							{% else %}
 							<div class="col-12 col-md-7 col-xl-9 text-start">
-								Anfrage: Zeitraum für den {{ formula.date }} ({{
-								formula.start_time }} Uhr - {{formula.end_time}} Uhr)
+								Angefragt: Zeitraum für den {{ formula.date }} 
+								({{ formula.start_time }} Uhr - {{formula.end_time}} Uhr)
 							</div>
 							{% endif %}
 							<div class="col-12 col-md-5 col-xl-3">
