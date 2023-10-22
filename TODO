@@ -33,6 +33,7 @@ Farbe des Paginators ändern bei der Suche
 
 Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen
 Es muss nochmal an den Leads gearbeitet werden
+
 Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.
 
 gucken, ob überall
@@ -44,12 +45,6 @@ Startuhrzeit darf nicht nach Enduhrzeit sein
 myEvents.html:
 
 - Button "An diesem Tag habe ich keine Termine" direkt in der Liste
-- Ausstehende Elternsprechtagszeiten
-  - Soll klar werden, dass durch Organisatoren noch bestätigt werden muss
-- Ausstehenden Elternsprechtagszeiten ==> Ihre gewünschten Elternsprechtagszeiten
-  - Hier müssen Sie Ihre Elternsprechtagszeiten für die gegebenen Tage angeben. Berücksichtigen Sie hierbei gegebenenfalls das Teilzeitkonzept. Nach Angabe werden die Zeiten durch die Organisatoren geprüft und erscheinen unter dem Punkt vereinbarte Elternsprechtagszeiten.
-- Vereinbarten Elternsprechtagszeiten
-  - Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status "Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.
 
 myEventsEditFormular.html
 

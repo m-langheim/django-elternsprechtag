@@ -1,5 +1,9 @@
-{% extends "dashboard/base.html" %} {% load crispy_forms_tags %} {% block title
-%} Dashboard - Lehrer {% endblock title %} {% block content %}
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %} 
+
+{% block content %}
 <div class="row gx-3 gy-3">
 	<div class="col-12">
 		<div class="card card-body p-0">
@@ -47,13 +51,12 @@
 					</li>
 					{% endfor %}
 				</ul>
-				{% else %} Aktuell gibt es keine unbestimmten Elternsprechtagszeiten {%
-				endif %}
+				{% else %} Aktuell gibt es keine unbestimmten Elternsprechtagszeiten {% endif %}
 			</div>
 
 			<div class="border-top"></div>
 
-			<div class="pt-4 ps-4 pe-4">
+			<div class="p-4">
 				<p class="h1">Vereinbarte Elternsprechtagszeiten</p>
 				<p class="text-secondary">
 					Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status
@@ -92,8 +95,7 @@
 					</li>
 					{% endfor %}
 				</ul>
-				{% else %} Bisher wurden keine Eltersnprechtagszeiten angefragt {% endif
-				%}
+				{% else %} Bisher wurden keine Eltersnprechtagszeiten angefragt {% endif %}
 			</div>
 
 			<div class="border-top"></div>
@@ -143,11 +145,15 @@
 								<div class="row gy-1 align-items-center">
 									<!-- <div class="row align-items-center"> -->
 									<div class="col-12 col-md-7 col-xl-9 text-start">
-										{% if event.occupied %} {{ event.start|time }} - {{
-										event.end|time }} | {% for student in event.student.all %}
-										{{student.first_name}} {{student.last_name}} {% if student
-										!= event.student.last %}, {% endif %} {% endfor %} {% else
-										%} {{ event.start|time }} - {{ event.end|time }} {% endif %}
+										{% if event.occupied %} 
+										{{ event.start|time }} - {{ event.end|time }} | 
+										{% for student in event.student.all %}
+										{{student.first_name}} {{student.last_name}} 
+										{% if student != event.student.last %}, {% endif %} 
+										{% endfor %} 
+										{% else %}
+										{{ event.start|time }} - {{ event.end|time }}
+										{% endif %}
 									</div>
 									<div class="col-12 col-md-5 col-xl-3">
 										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -201,12 +207,9 @@
 				{% else %}
 
 				<!-- Für den Lehrer wurden noch keine Events gebucht -->
-				<div class="container">
-					<p class="h1">Events</p>
 					<p class="text-muted">
 						Es gibt bei Ihnen bisher keine offenen Termine
 					</p>
-				</div>
 				{% endif %}
 			</div>
 
@@ -234,5 +237,5 @@
 			</div>
 		</div>
 	</div>
-	{% endblock content %}
 </div>
+{% endblock content %}
