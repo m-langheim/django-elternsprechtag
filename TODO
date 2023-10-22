@@ -1,31 +1,32 @@
 Übersetzungen hinzufügen
 
-
-
-
-
-
 Register OTP
+
 - beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
 - wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
 
 teacher_change_tags.html
+
 - ggf. Non-JS-Version
 - Cancel-Button
 - leichte Verschiebung wenn ein Div leer wird vermeiden
 
 views.py (profile_settings)
+
 - success message isn't shown correctly -> see TODO in the file
 
 my_profile.html
+
 - change the focus color of the input fields
 - change the size of the profile-picture -> implement it more into the website
 - small size difference to change_password.html ... -> window must be at a specific size
 
 change_password.html
+
 - change the focus color of the input fields
 
 myEventsList.html
+
 - Bestätigung und Absage eines Termins aus der Oberfläche direkt
 
 Farbe des Paginators ändern bei der Suche
@@ -34,10 +35,28 @@ Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantra
 Es muss nochmal an den Leads gearbeitet werden
 Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.
 
-
-gucken, ob überall 
-                        {% csrf_token %} vorhanden is
+gucken, ob überall
+{% csrf_token %} vorhanden is
 
 Uhrzeitanträge: No events & uhrzeit darf nicht gleichzeitig möglich sein
-                Startuhrzeit darf nicht nach Enduhrzeit sein
-                
+Startuhrzeit darf nicht nach Enduhrzeit sein
+
+myEvents.html:
+
+- Button "An diesem Tag habe ich keine Termine" direkt in der Liste
+- Ausstehende Elternsprechtagszeiten
+  - Soll klar werden, dass durch Organisatoren noch bestätigt werden muss
+- Ausstehenden Elternsprechtagszeiten ==> Ihre gewünschten Elternsprechtagszeiten
+  - Hier müssen Sie Ihre Elternsprechtagszeiten für die gegebenen Tage angeben. Berücksichtigen Sie hierbei gegebenenfalls das Teilzeitkonzept. Nach Angabe werden die Zeiten durch die Organisatoren geprüft und erscheinen unter dem Punkt vereinbarte Elternsprechtagszeiten.
+- Vereinbarten Elternsprechtagszeiten
+  - Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status "Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.
+
+myEventsEditFormular.html
+
+- Keine Termine ==> An diesem Tag habe ich keine Termine
+
+Link zum Annehmen oder ablehnen des Termins an Lehrer soll zu einer Seite führen, wo man den Termin nur entweder annehmen oder ablehnen kann.
+
+dashboard.html
+
+- Ablehnen direkt in der Terminliste
