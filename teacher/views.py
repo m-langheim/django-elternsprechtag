@@ -208,10 +208,9 @@ class InquiryView(View):
                 "event": inquiry.event,
             }
             form = self.form_class(initial=initial)
-            print(inquiry)
             return render(
                 request,
-                "teacher/inquiry.html",
+                "teacher/inquiry/viewInquiry.html",
                 {
                     "form": form,
                     "student": inquiry.students.first,
@@ -243,7 +242,7 @@ class InquiryView(View):
                 return redirect("teacher_dashboard")
             return render(
                 request,
-                "teacher/inquiry.html",
+                "teacher/inquiry/viewInquiry.html",
                 {
                     "form": form,
                     "student": inquiry.students.first,
@@ -291,7 +290,17 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
+            #! Hier muss erst überprüft werden, ob es für dieses Kind ein Elternteil gibt
+
+            if not CustomUser.objects.filter(Q(role=0), Q(students=student)).exists():
+                return render(
+                    request,
+                    "teacher/inquiry/noParentInquiry.html",
+                    {"student": student},
+                )
+
             parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
+
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(initial=initial)
 
@@ -305,12 +314,10 @@ class CreateInquiryView(View):
 
         return render(
             request,
-            "teacher/createInquiry.html",
+            "teacher/inquiry/createInquiry.html",
             {
                 "form": form,
                 "student": student,
-                "parent_first_name": parent.first_name,
-                "parent_last_name": parent.last_name,
             },
         )
 
@@ -334,6 +341,14 @@ class CreateInquiryView(View):
                     id=urlsafe_base64_encode(force_bytes(inquiry.first().id)),
                 )
 
+            #! Hier muss erst überprüft werden, ob es für dieses Kind ein Elternteil gibt
+            if not CustomUser.objects.filter(Q(role=0), Q(students=student)).exists():
+                return render(
+                    request,
+                    "teacher/inquiry/noParentInquiry.html",
+                    {"student": student},
+                )
+
             # let the user create a new inquiry
             parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
@@ -350,12 +365,10 @@ class CreateInquiryView(View):
                 return redirect("teacher_dashboard")
         return render(
             request,
-            "teacher/createInquiry.html",
+            "teacher/inquiry/createInquiry.html",
             {
                 "form": form,
                 "student": student,
-                "parent_first_name": parent.first_name,
-                "parent_last_name": parent.last_name,
             },
         )
 
