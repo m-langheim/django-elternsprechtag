@@ -14,5 +14,5 @@ DJANGO_SUPERUSER_PASSWORD=$SUPER_USER_PASSWORD python manage.py createsuperuser 
 
 # Start the production server for Django
 
-gunicorn elternsprechtag.wsgi:application --bind 0.0.0.0:8000 --env DJANGO_SETTINGS_MODULE=elternsprechtag.settings.production -c gunicorn.conf.py
+gunicorn elternsprechtag.wsgi:application --bind 0.0.0.0:8000 --env DJANGO_SETTINGS_MODULE=elternsprechtag.settings.production -c gunicorn.conf.py --log-config log.conf
 # python manage.py runserver 0.0.0.0:8000 --settings=elternsprechtag.settings.production
