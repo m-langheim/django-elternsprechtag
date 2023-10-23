@@ -17,6 +17,8 @@ EXPOSE 8000
 # ENV REDIS_HOST="localhost"
 RUN python manage.py collectstatic --no-input --settings=elternsprechtag.settings.test && python manage.py compilemessages --settings=elternsprechtag.settings.test
 
+RUN mkdir /var/log/gunicorn
+
 RUN chmod +x entrypoint.sh
 
 CMD ["./entrypoint.sh"]
