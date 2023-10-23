@@ -33,6 +33,7 @@ services:
     volumes:
       - media:/app/media
       - static:/app/staticfiles
+      - log:/app/log
     links:
       - redis
     depends_on:
@@ -85,6 +86,10 @@ services:
       # - FTP_USER_PASSWORD=test1234
     links:
       - redis
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
+      - log:/app/log
     depends_on:
       - redis
       - django
@@ -103,3 +108,4 @@ volumes:
   media:
   static:
   db:
+  log:
