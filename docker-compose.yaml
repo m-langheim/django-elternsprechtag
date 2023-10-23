@@ -61,7 +61,7 @@ services:
 
   celery:
     image: janni06/django-elternsprechtag:latest
-    command: celery -A elternsprechtag worker -B --loglevel=DEBUG
+    command: celery -A elternsprechtag worker -B
     environment:
       - TZ=Europe/Berlin
       - REDIS_HOST=redis
