@@ -44,7 +44,7 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_staff",
-                    "is_admin",
+                    "is_superuser",
                     "is_active",
                     "groups",
                     "user_permissions",
@@ -212,7 +212,7 @@ admin.site.register(TeacherExtraData)
 class StudentAdmin(admin.ModelAdmin):
     change_list_template = "authentication/admin/students_changelist.html"
 
-    list_display = ("last_name", "first_name", "registered")
+    list_display = ("last_name", "first_name", "class_name", "registered")
 
     search_fields = ["first_name", "last_name"]
 
