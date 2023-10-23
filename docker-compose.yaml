@@ -33,7 +33,7 @@ services:
     volumes:
       - media:/app/media
       - static:/app/staticfiles
-      - log:/app/log
+      - log:/var/log
     links:
       - redis
     depends_on:
@@ -89,7 +89,7 @@ services:
     volumes:
       - media:/app/media
       - static:/app/staticfiles
-      - log:/app/log
+      - log:/var/log
     depends_on:
       - redis
       - django
