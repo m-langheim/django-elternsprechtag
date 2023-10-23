@@ -11,7 +11,14 @@ from django.template.loader import render_to_string
 
 from .tasks import async_send_mail
 from .models import Upcomming_User, Student, CustomUser, TeacherExtraData, Tag
-from .forms import CustomUserCreationForm, CustomUserChangeForm, AdminCsvImportForm
+from .forms import (
+    CustomUserCreationForm,
+    CustomUserChangeForm,
+    AdminCsvImportForm,
+    AdminImportTeacherForm,
+)
+
+from django.views import View
 
 from django.contrib import messages
 from django.utils.translation import ngettext
@@ -20,6 +27,8 @@ from django.utils.translation import ngettext
 
 
 class CustomUserAdmin(UserAdmin):
+    change_list_template = "authentication/admin/import_teacher.html"
+
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
@@ -76,6 +85,42 @@ class CustomUserAdmin(UserAdmin):
         "last_name",
     )
     ordering = ("email",)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path(
+                "import_teacher/",
+                self.admin_site.admin_view(self.ImportTeacher.as_view()),
+                name="admin_import_teacher",
+            ),
+        ]
+        return my_urls + urls
+
+    class ImportTeacher(View):
+        def get(self, request, *args, **kwargs):
+            form = AdminCsvImportForm()
+            payload = {"form": form}
+            return render(request, "authentication/admin/csv_form.html", payload)
+
+        def post(self, request):
+            form = AdminCsvImportForm(request.POST, request.FILES)
+
+            if form.is_valid():
+                csv_file = request.FILES["csv_file"].read().decode("utf-8-sig")
+                reader = csv.DictReader(io.StringIO(csv_file), delimiter=";")
+
+                for lines in reader:
+                    if "Vorname" in lines and "Nachname" in lines:
+                        print(lines["Vorname"])
+                    email = lines["Mailadresse"]
+                    # Hier wird jetzt der neue Lehrer erstellt
+                    new_teacher = CustomUser(role=1, is_staff=True, email=email)
+                    new_teacher.set_unusable_password()  # Hier wird ein nicht benutzbares Passwort festgelegt
+                    new_teacher.save()
+
+            payload = {"form": form}
+            return render(request, "authentication/admin/csv_form.html", payload)
 
 
 class TagAdmin(admin.ModelAdmin):
