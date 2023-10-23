@@ -15,13 +15,16 @@ from .forms import (
     CustomUserCreationForm,
     CustomUserChangeForm,
     AdminCsvImportForm,
-    AdminImportTeacherForm,
 )
 
 from django.views import View
 
 from django.contrib import messages
 from django.utils.translation import ngettext
+
+from .utils import register_new_teacher
+
+from django.db.models import Q
 
 # Register your models here.
 
@@ -114,10 +117,11 @@ class CustomUserAdmin(UserAdmin):
                     if "Vorname" in lines and "Nachname" in lines:
                         print(lines["Vorname"])
                     email = lines["Mailadresse"]
+                    if not CustomUser.objects.filter(
+                        Q(email=email), Q(role=1), Q(is_active=True)
+                    ):
+                        register_new_teacher(email)
                     # Hier wird jetzt der neue Lehrer erstellt
-                    new_teacher = CustomUser(role=1, is_staff=True, email=email)
-                    new_teacher.set_unusable_password()  # Hier wird ein nicht benutzbares Passwort festgelegt
-                    new_teacher.save()
 
             payload = {"form": form}
             return render(request, "authentication/admin/csv_form.html", payload)
