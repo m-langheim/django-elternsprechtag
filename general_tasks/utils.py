@@ -26,6 +26,8 @@ class EventPDFExport:
             self.user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             raise ("Error could not generate the PDF")
+        self.teacher = self.user.role == 1
+        self.parent = self.user.role == 0
         self.width, self.height = self.pagesize
 
     def _header_footer(self, canvas, doc):
@@ -160,18 +162,28 @@ class EventPDFExport:
                             .strftime("%H:%M")
                         )
                         s = ""
-                        if len(event_per_date.student.all()) == 0:
-                            s = "/"
-                        else:
-                            for student in event_per_date.student.all():
-                                s += "{} {}; ".format(
-                                    student.first_name, student.last_name
-                                )
-                            s = s[:-2]
+                        if self.teacher:
+                            if len(event_per_date.student.all()) == 0:
+                                s = "/"
+                            else:
+                                for student in event_per_date.student.all():
+                                    s += "{} {}; ".format(
+                                        student.first_name, student.last_name
+                                    )
+                                s = s[:-2]
 
-                        b = ""
-                        if event_per_date.status == 2:
-                            b = "| Nicht bestätigt"
+                            b = ""
+                            if event_per_date.status == 2:
+                                b = "| Nicht bestätigt"
+                        if self.parent:
+                            s = "{} {}".format(
+                                event_per_date.teacher.first_name,
+                                event_per_date.teacher.last_name,
+                            )
+
+                            b = ""
+                            if event_per_date.status == 2:
+                                b = "| Nicht bestätigt"
 
                         elements.append(Paragraph(f"{t}  |  {s} {b}", styles["Normal"]))
                         elements.append(Spacer(0, 5))
