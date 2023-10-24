@@ -94,7 +94,7 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
             ),
             path(
                 "add_form",
-                self.create_event_change_formula.as_view(),
+                self.admin_site.admin_view(self.create_event_change_formula.as_view()),
                 name="create_event_change_formula",
             ),
         ]

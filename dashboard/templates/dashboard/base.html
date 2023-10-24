@@ -64,6 +64,10 @@
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
                                             class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                        {% if user.is_superuser %}
+                                        <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
+                                                    class="fa-solid fa-gear"></i>Admin-Interface</a></li>
+                                        {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                     class="fa-solid fa-gear"></i> Mein Profil</a></li>
                                         <li>
@@ -112,6 +116,10 @@
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
                                         class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                    {% if user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
+                                                class="fa-solid fa-gear"></i>Admin-Interface</a></li>
+                                    {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                 class="fa-solid fa-gear"></i> Mein Profil</a></li>
                                     <li>

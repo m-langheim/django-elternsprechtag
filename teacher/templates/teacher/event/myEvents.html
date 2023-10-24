@@ -35,6 +35,18 @@
 							<div class="col-12 col-md-5 col-xl-3">
 								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 									{% if formula.change_form.status == 0 %}
+									<form class="col col-12 col-md-6" method="post" action="{{ formula.link }}">
+										{% csrf_token %}
+										
+										<div class="d-none">{{formula.no_events_form.as_p}}</div>
+									
+										<input
+										type="submit"
+										class="btn btn-outline-secondary col-12"
+										value="Keine Termine"
+									/>
+								</form>
+									
 									<a
 										type="button"
 										class="btn btn-outline-danger col-12 col-md-6"
