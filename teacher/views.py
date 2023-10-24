@@ -364,6 +364,7 @@ class CreateInquiryView(View):
                     type=0,
                 )
                 inquiry.students.set([form.cleaned_data["student"]])
+                inquiry.save()
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
@@ -530,6 +531,7 @@ class EventDetailView(View):
                             Q(requester=parent),
                             Q(respondent=teacher),
                             Q(event=event),
+                            Q(processed=False),
                         )
                     except Inquiry.DoesNotExist:
                         pass
@@ -539,16 +541,17 @@ class EventDetailView(View):
                             Q(requester=parent),
                             Q(respondent=teacher),
                             Q(event=event),
+                            Q(processed=False),
                         )
                         for inquiry in inquiries:
                             inquiry.processed = True
                             inquiry.respondent_reaction = 2
                             inquiry.save()
 
-                            logger = logging.getLogger(__name__)
-                            logger.warn(
-                                "Es waren mehrere unbeantwortete Inquiries verfügbar."
-                            )
+                        logger = logging.getLogger(__name__)
+                        logger.warn(
+                            "Es waren mehrere unbeantwortete Inquiries verfügbar."
+                        )
                     else:
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2

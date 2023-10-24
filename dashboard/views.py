@@ -536,6 +536,7 @@ class EventView(View):
                         Q(requester=request.user),
                         Q(respondent=event.teacher),
                         Q(event=event),
+                        Q(processed=False),
                     )
                 except Inquiry.DoesNotExist:
                     pass
@@ -545,6 +546,7 @@ class EventView(View):
                         Q(requester=request.user),
                         Q(respondent=event.teacher),
                         Q(event=event),
+                        Q(processed=False),
                     )
                     for inquiry in inquiries:
                         inquiry.processed = True

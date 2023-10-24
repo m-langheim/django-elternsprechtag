@@ -14,6 +14,13 @@ from .utils import check_inquiry_reopen
 
 @receiver(post_save, sender=Event)
 def handleInquiries(sender, instance, **kwargs):
+    """
+    Diese Funktion dient dazu nach der Buchung eines Termins mögliche Anfragen Seitens des Lehrers auf beantwortet zu setzen.
+
+    Args:
+        sender (_type_): _description_
+        instance (Event): _description_
+    """
     inquiries = Inquiry.objects.filter(
         Q(type=0),
         Q(requester=instance.teacher),
@@ -30,8 +37,15 @@ def handleInquiries(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Inquiry)
-def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
-    if created:
+def addAnnouncements(sender, instance: Inquiry, **kwargs):
+    """_summary_
+
+    Args:
+        sender (_type_): _description_
+        instance (Inquiry): _description_
+        created (bool): _description_
+    """
+    if not instance.notified:
         if instance.type == 1:
             async_send_mail.delay(
                 "Termin-Anfrage",
@@ -57,14 +71,25 @@ def addAnnouncements(sender, instance: Inquiry, created: bool, **kwargs):
                     timezone.localtime(instance.event.start).time().strftime("%H:%M"),
                 ),
             )
-        elif instance.type == 0:
+            instance.notified = True
+            instance.save()
+        elif instance.type == 0 and len(instance.students.all()) > 0:
+            instance.notified = True
+            instance.save()
+
             async_send_mail.delay(
-                "Termin-Anfrage",
+                "Gesprächsanfrage",
                 render_to_string(
                     "dashboard/email/new_inquiry_parent.html",
                     {
                         "parent": instance.respondent,
                         "teacher": instance.requester,
+                        "students": "\n,".join(
+                            [
+                                "{} {}".format(student.first_name, student.last_name)
+                                for student in instance.students.all()
+                            ]
+                        ),
                         "url": reverse(
                             "inquiry_detail_view",
                             args=[urlsafe_base64_encode(force_bytes(instance.id))],

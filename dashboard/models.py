@@ -115,6 +115,7 @@ class Inquiry(models.Model):
         (3, _("Inquiry dismissed")),
     )
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
+    notified = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Inquiry")

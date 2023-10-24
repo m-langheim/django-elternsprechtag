@@ -47,13 +47,12 @@ Link zum Annehmen oder ablehnen des Termins an Lehrer soll zu einer Seite führe
 
 add formulas funktioniert nicht
 
-Eltern timezone termine Uhrzeit 
-
 Admin neuen Registrierungslink generieren
 
-Email an die Eltern mit flaschem Addressaten
+
 
 Email an Leher wegen Anfrage, obwohl sie an die Eltern gehen sollte
+Grund unklar, kann nicht repliziert werden
 
 Servererror bei emojis
 
@@ -88,3 +87,7 @@ Startuhrzeit darf nicht nach Enduhrzeit sein
 zu viele Zeichen in Absage ==> Server Error 500
 
 Mitteilungen: alle gelesen
+
+Eltern timezone termine Uhrzeit 
+
+Email an die Eltern mit flaschem Addressaten
