@@ -228,10 +228,14 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             messages.SUCCESS,
         )
 
-    list_display = ["student", "email_send"]
+    list_display = ["student_name", "email_send"]
     list_filter = ["email_send"]
-    search_fields = ["student"]
+    search_fields = ["student__first_name", "student__last_name"]
     actions = [sendRegistrationMails, recreateUpcommingUser]
+
+    def student_name(self, obj):
+        return obj.student.first_name + " " + obj.student.last_name
+
     fieldsets = (
         (None, {"fields": ("student", "email_send", "created")}),
         (
@@ -269,9 +273,12 @@ admin.site.register(TeacherExtraData, TeacherExtraDataAdmin)
 class StudentAdmin(admin.ModelAdmin):
     change_list_template = "authentication/admin/students_changelist.html"
 
-    list_display = ("last_name", "first_name", "class_name", "registered")
+    list_display = ("name", "class_name", "registered")
 
     search_fields = ["first_name", "last_name"]
+
+    def name(self, obj):
+        return obj.first_name + " " + obj.last_name
 
     def get_urls(self):
         urls = super().get_urls()
