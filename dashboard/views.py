@@ -610,6 +610,16 @@ def markAnnouncementRead(request, announcement_id):
     return redirect("..")
 
 
+@login_required
+def markAllAnnouncementsRead(request):
+    announcements = Announcements.objects.filter(Q(user=request.user), Q(read=False))
+    for announcement in announcements:
+        announcement.read = True
+        announcement.save()
+    messages.success(request, "Alle Mitteilungen wurden als gelesen markiert.")
+    return redirect("..")
+
+
 def impressum(request):
     try:
         settings = SiteSettings.objects.first()
