@@ -97,6 +97,7 @@ def dashboard(request):
             "events_dict": events_dict,
             "announcements": announcements,
             "event_creation_form_open": event_creation_form_open,
+            "cancel_event_form": cancelEventForm(),
         },
     )
 
