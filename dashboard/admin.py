@@ -18,6 +18,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ngettext
 
+from django.utils import timezone
+
 # Register your models here.
 
 
@@ -123,8 +125,7 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
                 successfull = 0
                 for teacher in form.cleaned_data.get("teacher"):
                     if not EventChangeFormula.objects.filter(
-                        Q(teacher=request.user),
-                        Q(status=0),
+                        Q(teacher=teacher),
                         Q(date=form.cleaned_data.get("date")),
                     ).exists():
                         successfull += 1
