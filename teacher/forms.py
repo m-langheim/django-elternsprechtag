@@ -15,7 +15,7 @@ class createInquiryForm(forms.Form):
     parent = forms.ModelChoiceField(
         queryset=CustomUser.objects.filter(role=0), disabled=True
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
 
     def __init__(self, *args, **kwargs):
         super(createInquiryForm, self).__init__(*args, **kwargs)
@@ -30,7 +30,7 @@ class editInquiryForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
 
     def __init__(self, *args, **kwargs):
         super(editInquiryForm, self).__init__(*args, **kwargs)
@@ -49,7 +49,9 @@ class changePasswordForm(PasswordChangeForm):
 
 class cancelEventForm(forms.Form):
     message = forms.CharField(
-        widget=forms.Textarea, label=_("Explanation why you dismiss the event.")
+        widget=forms.Textarea,
+        label=_("Explanation why you dismiss the event."),
+        max_length=4000,
     )
     book_other_event = forms.BooleanField(
         initial=False, required=False, label=_("Parent should book a different event.")

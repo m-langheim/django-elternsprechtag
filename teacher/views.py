@@ -28,6 +28,8 @@ from django.utils import timezone
 
 from dashboard.utils import check_inquiry_reopen
 
+import logging
+
 
 teacher_decorators = [login_required, teacher_required]
 
@@ -362,6 +364,7 @@ class CreateInquiryView(View):
                     type=0,
                 )
                 inquiry.students.set([form.cleaned_data["student"]])
+                inquiry.save()
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
@@ -382,13 +385,21 @@ def confirm_event(request, event):
     except Event.DoesNotExist:
         messages.error(request, "Dieser Termin konnte nicht gefunden werden")
     else:
+        if (
+            event.status == 0
+        ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+            messages.warning(
+                request,
+                "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+            )
+            return redirect("teacher_dashboard")
+
         event.status = 1
         event.occupied = True
         event.save()
         inquiries = event.inquiry_set.filter(
             Q(requester=event.parent), Q(processed=False)
         )
-        print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
             inquiry.save()
@@ -432,6 +443,15 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+            if (
+                event.status == 0
+            ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+                messages.warning(
+                    request,
+                    "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+                )
+                return redirect("teacher_dashboard")
+
             inquiry_reason = None
 
             inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
@@ -456,6 +476,15 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+            if (
+                event.status == 0
+            ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+                messages.warning(
+                    request,
+                    "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+                )
+                return redirect("teacher_dashboard")
+
             if "cancel_event" in request.POST:
                 cancel_form = self.cancel_form(request.POST)
                 if cancel_form.is_valid():
@@ -502,9 +531,27 @@ class EventDetailView(View):
                             Q(requester=parent),
                             Q(respondent=teacher),
                             Q(event=event),
+                            Q(processed=False),
                         )
                     except Inquiry.DoesNotExist:
                         pass
+                    except Inquiry.MultipleObjectsReturned:
+                        inquiries = inquiry = Inquiry.objects.filter(
+                            Q(type=1),
+                            Q(requester=parent),
+                            Q(respondent=teacher),
+                            Q(event=event),
+                            Q(processed=False),
+                        )
+                        for inquiry in inquiries:
+                            inquiry.processed = True
+                            inquiry.respondent_reaction = 2
+                            inquiry.save()
+
+                        logger = logging.getLogger(__name__)
+                        logger.warn(
+                            "Es waren mehrere unbeantwortete Inquiries verfügbar."
+                        )
                     else:
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2

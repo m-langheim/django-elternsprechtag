@@ -170,4 +170,8 @@ class AdminEventCreationFormulaForm(forms.Form):
 
 class cancelEventForm(forms.Form):
     cancel_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
-    message = forms.CharField(widget=forms.Textarea)
+    message = forms.CharField(
+        widget=forms.Textarea,
+        max_length=4000,
+        help_text="Der Text darf nicht länger als 4000 Zeichen sein.",
+    )

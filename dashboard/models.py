@@ -66,7 +66,7 @@ class EventChangeFormula(models.Model):
         blank=False,
         verbose_name=_("Teacher"),
     )
-    date = models.DateField(blank=False, default=timezone.now(), verbose_name=_("Date"))
+    date = models.DateField(blank=False, default=timezone.now, verbose_name=_("Date"))
     start_time = models.TimeField(blank=True, null=True, verbose_name=_("Start time"))
     end_time = models.TimeField(blank=True, null=True, verbose_name=_("End time"))
     no_events = models.BooleanField(default=False, verbose_name=_("No events"))
@@ -115,6 +115,7 @@ class Inquiry(models.Model):
         (3, _("Inquiry dismissed")),
     )
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
+    notified = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Inquiry")
@@ -124,7 +125,7 @@ class Inquiry(models.Model):
 class Announcements(models.Model):
     TYPE_CHOICES = (
         (0, "Neue Buchungsanfrage"),
-        (1, "Termin absage"),
+        (1, "Terminabsage"),
         (2, "Systembenachrichtigung"),
     )
     announcement_type = models.IntegerField(choices=TYPE_CHOICES, default=0)

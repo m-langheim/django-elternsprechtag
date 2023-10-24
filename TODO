@@ -39,18 +39,55 @@ Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei dene
 gucken, ob überall
 {% csrf_token %} vorhanden is
 
-Uhrzeitanträge: No events & uhrzeit darf nicht gleichzeitig möglich sein
-Startuhrzeit darf nicht nach Enduhrzeit sein
-
-myEvents.html:
-
-- Button "An diesem Tag habe ich keine Termine" direkt in der Liste
 
 myEventsEditFormular.html
 - Button zum Zurücksetzen auf Ausgangswerte
 
 Link zum Annehmen oder ablehnen des Termins an Lehrer soll zu einer Seite führen, wo man den Termin nur entweder annehmen oder ablehnen kann.
 
-dashboard.html
+add formulas funktioniert nicht
 
+Admin neuen Registrierungslink generieren
+
+
+
+Email an Leher wegen Anfrage, obwohl sie an die Eltern gehen sollte
+Grund unklar, kann nicht repliziert werden
+
+Servererror bei emojis
+
+
+
+
+
+
+<!-- Behoben -->
+
+Termin absage -> Terminabsage
+
+PDF: Bei den Eltern wird der Schüler, nicht der Lehrer angezeigt
+
+Servererror 500 wegen mehreren Inquiries (sollte behoben sein)
+    -> Error erst nach senden der Mitteilungen
+    -> Fehler ist entstanden, weil die Anfragen nicht korrekt zurückgesetzt wurden, wenn sie noch nicht beantwortet wurden und der Termin vom Elternteil gelöscht wird
+Mehrere Inquiries die nicht existieren dürften  
+
+Servererror 500 wegen 'user_id' is null (behoben)
+    -> Fehler entsteht, wenn ein Termin abgesagt wurde un der gegenüber den Termin versucht ab zu sagen, obwohl er nicht länger besteht. 
+    
+dashboard.html
 - Ablehnen direkt in der Terminliste
+
+myEvents.html:
+- Button "An diesem Tag habe ich keine Termine" direkt in der Liste
+
+Uhrzeitanträge: No events & uhrzeit darf nicht gleichzeitig möglich sein
+Startuhrzeit darf nicht nach Enduhrzeit sein
+
+zu viele Zeichen in Absage ==> Server Error 500
+
+Mitteilungen: alle gelesen
+
+Eltern timezone termine Uhrzeit 
+
+Email an die Eltern mit flaschem Addressaten

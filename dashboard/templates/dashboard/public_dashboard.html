@@ -66,7 +66,7 @@
                                 aria-labelledby="event-accordion-heading-{{ event.id }}"
                                 data-bs-parent="#event-accordion">
                                 <div class="accordion-body">
-                                    <strong>Startzeit: </strong>{{event.start.time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
+                                    <strong>Startzeit: </strong>{{event.start.time|time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
                                     <strong>Lehrer: </strong>
                                     {{ event.teacher.first_name }} {{ event.teacher.last_name }}<br />
                                     <strong>Schüler:innen: </strong>
@@ -130,7 +130,7 @@
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
-                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first}} <br/>
+                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first }} <br/>
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
                             <strong>Termin: </strong>
                             {% if inquiry.inquiry.event != null %}
