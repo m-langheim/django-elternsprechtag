@@ -551,6 +551,9 @@ def viewMyEvents(request):
         custom_event_change_formulas.append(
             {
                 "change_form": form,
+                "no_events_form": EventChangeFormulaForm(
+                    instance=form, initial={"no_events": True}
+                ),
                 "link": reverse(
                     "teacher_personal_events_edit",
                     args=[urlsafe_base64_encode(force_bytes(form.id))],
@@ -639,6 +642,13 @@ class EditMyEventsDetail(View):
 
         if form.is_valid():
             form.save()
+            if form.cleaned_data["no_events"]:
+                messages.success(
+                    request,
+                    "Sie haben erfolgreich angefragt, dass Sie am {} keine Termine haben.".format(
+                        event_change_formula.date
+                    ),
+                )
             return redirect("teacher_personal_events")
 
         return render(
