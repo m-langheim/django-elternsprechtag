@@ -77,8 +77,9 @@ zu viele Zeichen in Absage ==> Server Error 500
 
 Servererror bei emojis
 
-Servererror 500 wegen mehreren Inquiries
+Servererror 500 wegen mehreren Inquiries (sollte behoben sein)
     -> Error erst nach senden der Mitteilungen
+    -> Fehler ist entstanden, weil die Anfragen nicht korrekt zurückgesetzt wurden, wenn sie noch nicht beantwortet wurden und der Termin vom Elternteil gelöscht wird
 
-Servererror 500 wegen 'user_id' is null
+Servererror 500 wegen 'user_id' is null (behoben)
     -> Fehler entsteht, wenn ein Termin abgesagt wurde un der gegenüber den Termin versucht ab zu sagen, obwohl er nicht länger besteht. 

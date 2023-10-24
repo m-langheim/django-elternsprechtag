@@ -29,6 +29,8 @@ from general_tasks.utils import EventPDFExport
 import datetime
 from django.http import FileResponse
 
+import logging
+
 # Create your views here.
 
 parent_decorators = [login_required, parent_required]
@@ -437,8 +439,6 @@ class InquiryView(View):
             time = timezone.localtime(b_times)
             booked_times.append(time)
 
-        print(events)
-
         return render(
             request,
             "dashboard/inquiry.html",
@@ -502,6 +502,7 @@ class EventView(View):
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id, parent=request.user)
+
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 
@@ -527,6 +528,36 @@ class EventView(View):
                 )
                 # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
                 check_inquiry_reopen(request.user, event.teacher)
+
+                # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+                try:
+                    inquiry = Inquiry.objects.get(
+                        Q(type=1),
+                        Q(requester=request.user),
+                        Q(respondent=event.teacher),
+                        Q(event=event),
+                    )
+                except Inquiry.DoesNotExist:
+                    pass
+                except Inquiry.MultipleObjectsReturned:
+                    inquiries = inquiry = Inquiry.objects.filter(
+                        Q(type=1),
+                        Q(requester=request.user),
+                        Q(respondent=event.teacher),
+                        Q(event=event),
+                    )
+                    for inquiry in inquiries:
+                        inquiry.processed = True
+                        inquiry.save()
+
+                        logger = logging.getLogger(__name__)
+                        logger.warn(
+                            "Es waren mehrere unbeantwortete Inquiries verfügbar."
+                        )
+                else:
+                    inquiry.processed = True
+                    inquiry.save()
+
                 event.parent = None
                 event.status = 0
                 event.occupied = False
