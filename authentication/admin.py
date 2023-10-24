@@ -249,10 +249,18 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
     )
 
 
+class TeacherExtraDataAdmin(admin.ModelAdmin):
+    list_display = ("teacher", "acronym", "show_tags")
+    list_filter = ("tags",)
+
+    def show_tags(self, obj):
+        return ",\n".join([tag.name for tag in obj.tags.all()])
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Upcomming_User, UpcommingsUserAdmin)
-admin.site.register(TeacherExtraData)
+admin.site.register(TeacherExtraData, TeacherExtraDataAdmin)
 
 # CSV Import
 
