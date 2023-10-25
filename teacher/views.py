@@ -29,6 +29,7 @@ from django.utils import timezone
 from dashboard.utils import check_inquiry_reopen
 
 import logging
+import operator
 
 
 teacher_decorators = [login_required, teacher_required]
@@ -113,14 +114,25 @@ def studentList(request):
     if search is None:
         students = Student.objects.all().order_by("first_name").order_by("last_name")
     else:
-        students = (
-            Student.objects.filter(
-                Q(first_name__icontains=search) | Q(last_name__icontains=search)
+        search_split = str(search).split()
+        students = Student.objects.none()
+        for key in search_split:
+            queryset = Student.objects.filter(
+                Q(first_name__icontains=key) | Q(last_name__icontains=key)
             )
-            .order_by("first_name")
-            .order_by("last_name")
-        )
+            if students.intersection(students, queryset).exists():
+                students = students.intersection(students, queryset)
+            else:
+                students = students.union(students, queryset)
 
+        # students = (
+        #     Student.objects.filter(
+        #         Q(first_name__icontains=search) | Q(last_name__icontains=search)
+        #     )
+        #     .order_by("first_name")
+        #     .order_by("last_name")
+        # )
+    students = students.order_by("first_name").order_by("last_name")
     events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)

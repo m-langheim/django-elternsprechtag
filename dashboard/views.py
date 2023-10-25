@@ -110,35 +110,106 @@ def search(request):
     page_number = request.GET.get("page")
 
     if request_search is None:
+        print("Keine Frage")
         result = teachers
-    elif request_search.startswith("#"):
-        request_search = request_search[1:]
-        tags = Tag.objects.filter(
-            Q(name__icontains=request_search) | Q(synonyms__icontains=request_search)
-        ).order_by(
-            "name"
-        )  # get a list of all matching tags
+    # elif request_search.startswith("#"):
+    #     request_search = request_search[1:]
+    #     tags = Tag.objects.filter(
+    #         Q(name__icontains=request_search) | Q(synonyms__icontains=request_search)
+    #     ).order_by(
+    #         "name"
+    #     )  # get a list of all matching tags
 
-        for tag in tags:
-            extraData = teacherExtraData.filter(tags=tag)
+    #     for tag in tags:
+    #         extraData = teacherExtraData.filter(tags=tag)
 
-            for data in extraData:
-                teacher = data.teacher
-                if not teacher in result:
-                    result.append(teacher)
+    #         for data in extraData:
+    #             teacher = data.teacher
+    #             if not teacher in result:
+    #                 result.append(teacher)
+    # else:
+    #     for data in (
+    #         teachers.filter(last_name__icontains=request_search)
+    #         .order_by("first_name")
+    #         .order_by("last_name")
+    #     ):
+    #         if not data in result:
+    #             result.append(data)
+    #     # result = teachers.filter(last_name__icontains=request_search)
+    #     for data in teacherExtraData.filter(acronym__icontains=request_search):
+    #         if not data.teacher in result:
+    #             result.append(data.teacher)
     else:
-        for data in (
-            teachers.filter(last_name__icontains=request_search)
-            .order_by("first_name")
-            .order_by("last_name")
-        ):
-            if not data in result:
-                result.append(data)
-        # result = teachers.filter(last_name__icontains=request_search)
-        for data in teacherExtraData.filter(acronym__icontains=request_search):
-            if not data.teacher in result:
-                result.append(data.teacher)
+        search_split = str(request_search).split()
+        if len(search_split) == 0:
+            result = teachers
+        else:
+            search_teacher_name = CustomUser.objects.none()
+            search_extradata_acronym = CustomUser.objects.none()
+            search_tags = Tag.objects.none()
+            for key in search_split:
+                print(key, "Key")
+                queryset_name = CustomUser.objects.filter(
+                    Q(is_active=True), Q(role=1)
+                ).filter(Q(first_name__icontains=key) | Q(last_name__icontains=key))
 
+                queryset_tags = Tag.objects.filter(
+                    Q(name__icontains=key) | Q(synonyms__icontains=key)
+                )
+
+                search_tags = search_tags.union(search_tags, queryset_tags)
+
+                queryset_acronym = TeacherExtraData.objects.filter(
+                    acronym__icontains=key
+                )
+
+                search_extradata_acronym = search_extradata_acronym.union(
+                    search_extradata_acronym, queryset_acronym
+                )
+
+                if search_teacher_name.intersection(
+                    search_teacher_name, queryset_name
+                ).exists():
+                    print("Exists")
+                    search_teacher_name = search_teacher_name.intersection(
+                        search_teacher_name, queryset_name
+                    )
+                else:
+                    search_teacher_name = search_teacher_name.union(
+                        search_teacher_name, queryset_name
+                    )
+
+                print(queryset_name, queryset_acronym, queryset_tags)
+            # search_teacher = CustomUser.objects.none()
+            search_teacher = []
+            search_extradata_tags = TeacherExtraData.objects.none()
+            search_extradata = TeacherExtraData.objects.none()
+
+            for tag in search_tags:
+                new_extradata = TeacherExtraData.objects.filter(tags=tag)
+                search_extradata_tags = search_extradata_tags.union(
+                    search_extradata_tags, new_extradata
+                )
+
+            search_extradata = search_extradata.union(
+                search_extradata_acronym, search_extradata_tags
+            )
+
+            # TODO: Hier sollte es auch mit Union gemacht werden, um weiterhin ein Queryset zu erhalten, welches sortiert werden kann und damit nur die Übereinstimmungen zwischen mehreren Querysets genommen werden und somit nach möglichkeit eine eindeutige Lehrerwahl entsteht
+            for extradata in search_extradata:
+                if not extradata.teacher in search_teacher:
+                    search_teacher.append(extradata.teacher)
+            for teacher in search_teacher_name:
+                if not teacher in search_teacher:
+                    search_teacher.append(teacher)
+            # print(search_teacher)
+
+            # for extradata in search_extradata:
+            #     new_teacher = extradata.teacher
+            #     search_teacher = search_teacher.union(search_teacher, new_teacher)
+            #     print(search_teacher)
+            # print(search_extradata_tags, search_extradata_acronym, search_extradata)
+            result = search_teacher
     custom_result = []
 
     for teacher in result:

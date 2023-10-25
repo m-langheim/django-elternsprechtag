@@ -45,20 +45,27 @@ myEventsEditFormular.html
 
 Link zum Annehmen oder ablehnen des Termins an Lehrer soll zu einer Seite führen, wo man den Termin nur entweder annehmen oder ablehnen kann.
 
-add formulas funktioniert nicht
+add formulas funktioniert nicht -> Fehler konnte nicht reproduziert werden
 
 Admin neuen Registrierungslink generieren
-
-
+Email Verifizierung bei Registrierung der Eltern
 
 Email an Leher wegen Anfrage, obwohl sie an die Eltern gehen sollte
 Grund unklar, kann nicht repliziert werden
 
 Servererror bei emojis
 
+Termin um eine Uhrzeit abgelehnt -> abgelehnt bleiben
+
+Zeitslot vor und nach Termin sollte geblockt werden
+
+maximale Breite bei Announcements
+
+Termin bestätigt auf Dashboard
 
 
 
+Links in des Mails zum Wiki anpassen
 
 
 <!-- Behoben -->
