@@ -132,7 +132,7 @@ def studentList(request):
         #     .order_by("first_name")
         #     .order_by("last_name")
         # )
-
+    students = students.order_by("first_name").order_by("last_name")
     events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)
