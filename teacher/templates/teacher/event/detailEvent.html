@@ -75,12 +75,21 @@
             <div class="d-flex d-md-none row">
 
                 <div class="d-flex d-md-none col-12">
+                    {% if event.status == 2 %}
+                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
+                        <button type="button" class="btn btn-outline-danger mb-2 me-2" data-bs-toggle="modal"
+                            data-bs-target="#eventCancelModal">
+                            Termin ablehnen
+                        </button>
+                    </div>
+                    {% else %}
                     <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
                         <button type="button" class="btn btn-outline-danger mb-2 me-2" data-bs-toggle="modal"
                             data-bs-target="#eventCancelModal">
                             Termin absagen
                         </button>
                     </div>
+                    {% endif %}
 
                     {% if event.status == 2 %}
                     <div class="d-grid col-6">
@@ -103,10 +112,17 @@
                         href="{% url 'home' %}">Zurück</a>
                 </div>
                 <div class="d-none d-md-flex col justify-content-end">
+                    {% if event.status == 2 %}
+                    <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
+                        data-bs-target="#eventCancelModal">
+                        Termin ablehnen
+                    </button>
+                    {% else %}
                     <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
                         data-bs-target="#eventCancelModal">
                         Termin absagen
                     </button>
+                    {% endif %}
 
                     {% if event.status == 2 %}
                     <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
