@@ -115,23 +115,26 @@ def studentList(request):
         students = Student.objects.all().order_by("first_name").order_by("last_name")
     else:
         search_split = str(search).split()
-        students = Student.objects.none()
-        for key in search_split:
-            queryset = Student.objects.filter(
-                Q(first_name__icontains=key) | Q(last_name__icontains=key)
-            )
-            if students.intersection(students, queryset).exists():
-                students = students.intersection(students, queryset)
-            else:
-                students = students.union(students, queryset)
+        if len(search_split) == 0:
+            students = Student.objects.all()
+        else:
+            students = Student.objects.none()
+            for key in search_split:
+                queryset = Student.objects.filter(
+                    Q(first_name__icontains=key) | Q(last_name__icontains=key)
+                )
+                if students.intersection(students, queryset).exists():
+                    students = students.intersection(students, queryset)
+                else:
+                    students = students.union(students, queryset)
 
-        # students = (
-        #     Student.objects.filter(
-        #         Q(first_name__icontains=search) | Q(last_name__icontains=search)
-        #     )
-        #     .order_by("first_name")
-        #     .order_by("last_name")
-        # )
+            # students = (
+            #     Student.objects.filter(
+            #         Q(first_name__icontains=search) | Q(last_name__icontains=search)
+            #     )
+            #     .order_by("first_name")
+            #     .order_by("last_name")
+            # )
     students = students.order_by("first_name").order_by("last_name")
     events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
