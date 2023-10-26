@@ -1,12 +1,12 @@
-!!! Dies ist eine neune Funktion. Wenden Sie sich bitte bei Fehlern umgehend an die zuständige Lehrkraft. !!! 
-
 Guten Tag,
 
 unter dem folgenden Link können Sie Ihren Lehreraccount aktivieren und einrichten:
 {{ current_site }}{% url 'teacher_new_registartion_view' uidb64=uid token=token %}
+
 Der Link verliert an Gültigkeit, sobald Sie Ihren Account einmal aktiviert haben. Die Aktivierung erfolgt mit der erfolgreichen Eingabe Ihrer Daten.
 
-Falls Sie Hilfe bei der Ersteinrichtung Ihres Accounts benötigen, können Sie diese hier finden: https://wiki.jhg-elternsprechtag.de/
+Falls Sie Hilfe bei der Ersteinrichtung Ihres Accounts benötigen, nutzen Sie bitte die Anleitung auf folgender Seite: https://wiki.jhg-elternsprechtag.de/books/registrierung/page/registrierung
+Sollte diese Erklärung Ihre Fragen nicht beantworten, melden Sie sich bitte unter elternsprechtagsportal@jhgcloud.de.
 
 Mit freundlichen Grüßen
     Ihr Elternsprechtagsportal-Team

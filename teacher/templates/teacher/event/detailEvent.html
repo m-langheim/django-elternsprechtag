@@ -31,27 +31,30 @@
                     {{event.start|time}} Uhr - {{event.end|time}} Uhr
                 </p>
             </div>
+            
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
                     Terminwunsch:
                 </p>
                 <p class="col">
-                    {% if inquiry_reason %}
+                    {% if inquiry|length > 0 %}
                     Lehrkraft
                     {% else %}
                     Eltern
                     {% endif %}
                 </p>
             </div>
-            {% if inquiry_reason %}
+            {% if inquiry|length > 0 %}
+            {% if inquiry.first.reason %}
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
                     Begründung:
                 </p>
                 <p class="col">
-                    {{ inquiry_reason }}
+                    {{ inquiry.first.reason }}
                 </p>
             </div>
+            {% endif %}
             {% endif %}
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
@@ -66,10 +69,10 @@
             </div>
             <div class="row">
                 <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Lehrkraft:
+                    Elternteil:
                 </p>
                 <p class="col">
-                    {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                    {{ event.parent.first_name }} {{ event.parent.last_name }}
                 </p>
             </div>
             <div class="d-flex d-md-none row">
