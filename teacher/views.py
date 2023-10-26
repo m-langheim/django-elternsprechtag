@@ -469,8 +469,11 @@ class EventDetailView(View):
 
             inquiry_reason = None
 
-            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+            inquiry = Inquiry.objects.filter(
+                Q(event=event), Q(requester=request.user), Q(type=0)
+            )  #! so abgeändert, dass nur eine Anfrage durchgelassen wird, die auch vo Lehrer kommt
 
+            #! Ich habe das abgeändert, damit direkt die gesamte Anfrage weitergeleitet wird.
             if inquiry:
                 inquiry_reason = inquiry[0].reason
 
@@ -481,7 +484,8 @@ class EventDetailView(View):
                 context={
                     "cancel_event": cancel_form,
                     "event": event,
-                    "inquiry_reason": inquiry_reason,
+                    # "inquiry_reason": inquiry_reason,
+                    "inquiry": inquiry,
                 },
             )
 
