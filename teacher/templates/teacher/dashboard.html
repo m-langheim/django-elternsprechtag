@@ -95,7 +95,7 @@
 								aria-labelledby="event-accordion-heading-{{ event.id }}"
 								data-bs-parent="#event-accordion">
 								<div class="accordion-body">
-									<strong>Startzeit: </strong>{{event.start.time}}
+									<strong>Startzeit: </strong>{{event.start | time}}
 									({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})
 									<br />
 									<strong>Schüler:innen: </strong>
