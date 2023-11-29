@@ -6,7 +6,7 @@ from django.db.models import Q
 from .tokens import teacher_registration_token, parent_registration_token
 
 import os
-
+from django.utils import timezone
 from django.template.loader import render_to_string
 
 from .tasks import async_send_mail
@@ -50,6 +50,31 @@ def register_new_teacher(email: str):
         async_send_mail.delay(subject, email, new_teacher.email)
     else:
         raise "Nutzer existiert bereits"
+
+
+def parent_registration_check_otp_verified(user_data: Upcomming_User) -> bool:
+    if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
+        return True
+    else:
+        user_data.otp_verified = False
+        user_data.save()
+        return False
+
+
+def parent_registration_link_deprecated(user_data: Upcomming_User) -> bool:
+    if user_data.created + timezone.timedelta(days=30) < timezone.now():
+        student = user_data.student
+        user_data.delete()
+        Upcomming_User.objects.create(student=student)
+        return True
+    return False
+
+
+def string_shortener(string: str, total_length=21) -> str:
+    if len(string) >= total_length:
+        string = string[: total_length - 3]
+        string = string + "..."
+    return string
 
 
 def send_parent_registration_mail(up_user: Upcomming_User):

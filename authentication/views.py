@@ -16,115 +16,309 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 import os
 from django.views import View
+from django.views.generic.base import TemplateView
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
 from .tokens import teacher_registration_token, parent_registration_token
-from .utils import send_parent_registration_mail
+from .utils import (
+    send_parent_registration_mail,
+    parent_registration_check_otp_verified,
+    string_shortener,
+    parent_registration_link_deprecated,
+)
 
 
-def register(request, user_token, key_token):
-    # First checks and initialization
+class RegistrationStartView(View):
+    def get(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
 
-    if user_token is None or key_token is None:
-        return redirect("help_register")
-
-    user_data = Upcomming_User.objects.filter(
-        Q(user_token=user_token), Q(access_key=key_token)
-    )
-
-    if not user_data.exists():
-        return render(request, "authentication/register/link_error.html")
-
-    user_data = user_data.first()
-
-    if user_data.created + timezone.timedelta(days=30) < timezone.now():
-        student = user_data.student
-        user_data.delete()
-        Upcomming_User.objects.create(student=student)
-        return render(request, "authentication/register/link_deprecated.html")
-
-    # Show different pages
-
-    if user_data.otp_verified:  # OTP verified
-        if (
-            user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now()
-        ):  # OTP not verified in the last 3 hours
-            # Page where you can choose to login or register
-
-            if (
-                request.GET.get("login", False) and request.user.is_authenticated
-            ):  # Clicked on 'login' and logged into an account again
-                # Which type of account
-
-                if (
-                    request.user.role == 0
-                ):  # Logged into a parent account -> Add the student to this account
-                    user = request.user
-                    user.students.add(user_data.student)
-                    user.save()
-                    name = user_data.student
-                    user_data.delete()
-
-                    # TODO: Email, dass Schüler zum Account hinzugefügt wurde
-
-                    messages.success(
-                        request, f"You added {name} to your parent account."
-                    )  # TODO: Hier kann man auch die message durch eine Mitteilung ersetzen.
-                    return redirect("home")
-                else:  # Logged into teacher or staff account -> Logout and re-login
-                    logout(request)
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            if not parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_check_otp",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            if user_data.parent_email:
+                try:
+                    existing_user = CustomUser.objects.get(email=user_data.parent_email)
+                except CustomUser.DoesNotExist:
                     return render(
                         request,
-                        "authentication/register/unusable_account.html",
-                        {"path": request.get_full_path()},
+                        "authentication/register/register_parent_email_specified.html",
+                        {"parent_email": user_data.parent_email},
                     )
-
-            if request.GET.get("register", False):  # Clicked on 'register'
-                # Clicked on 'submit' or load this page
-
-                if request.method == "POST":  # Clicked on 'submit'
-                    form = Parent_Input_email_Form(request.POST)
-                    if form.is_valid():
-                        user_data.parent_email = form.cleaned_data["email"]
-                        user_data.save()
-
-                        send_parent_registration_mail(user_data)
-
                 else:
-                    form = Parent_Input_email_Form()
+                    if existing_user.role == 0:
+                        return redirect(
+                            "parent_register_link_account",
+                            user_token=user_token,
+                            key_token=key_token,
+                        )
 
-                return render(
-                    request,
-                    "authentication/register/register_parent.html",
-                    {"register_parent_account": form},
-                )
-
-            # Set name for the register-choose page
-
-            name = str(user_data.student)
-            if len(name) > 20:
-                name = name[:18]
-                name = name + "..."
+            form = Parent_Input_email_Form()
 
             return render(
                 request,
-                "authentication/register/register_choose.html",
-                {"child_name": name, "path": request.get_full_path()},
+                "authentication/register/register_parent.html",
+                {"register_parent_account": form},
             )
 
-        else:  # OTP verified more than 3 hours ago
-            user_data.otp_verified = False
-            user_data.save()
+    def post(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            if not parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_check_otp",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            if user_data.parent_email:
+                try:
+                    existing_user = CustomUser.objects.get(email=user_data.parent_email)
+                except CustomUser.DoesNotExist:
+                    return render(
+                        request,
+                        "authentication/register/register_parent_email_specified.html",
+                        {"parent_email": user_data.parent_email},
+                    )
+                else:
+                    if existing_user.role == 0:
+                        return redirect(
+                            "parent_register_link_account",
+                            user_token=user_token,
+                            key_token=key_token,
+                        )
+
+            form = Parent_Input_email_Form(request.POST)
+
+            if form.is_valid():
+                email = form.cleaned_data["email"]
+                try:
+                    existing_user = CustomUser.objects.get(email=email)
+                except CustomUser.DoesNotExist:
+                    user_data.parent_email = email
+                    user_data.save()
+
+                    send_parent_registration_mail(user_data)
+                else:
+                    if existing_user.role == 0:
+                        user_data.parent_email = email
+                        user_data.save()
+                        return redirect(
+                            "parent_register_link_account",
+                            user_token=user_token,
+                            key_token=key_token,
+                        )
+                        # return render(
+                        #     request,
+                        #     "authentication/register/register_parent_email_specified.html",
+                        #     {"parent_email": email},
+                        # )  # todo Hier muss fertig gestellt werden, was passieren soll, wenn es bereits einen Account gibt mit Weiterleitung und so
+                    messages.error(
+                        request,
+                        "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
+                    )
+                    form = Parent_Input_email_Form()
+            return render(
+                request,
+                "authentication/register/register_parent.html",
+                {"register_parent_account": form},
+            )
+
+
+class RegistrationAccountLinkChooseView(View):
+    def get(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            if not parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_check_otp",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            if not user_data.parent_email:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            try:
+                existing_user = CustomUser.objects.get(email=user_data.parent_email)
+            except CustomUser.DoesNotExist:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            else:
+                if existing_user.role != 0:
+                    messages.error(
+                        request,
+                        "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
+                    )
+                    return redirect(
+                        "parent_register",
+                        user_token=user_token,
+                        key_token=key_token,
+                    )
+
+
+class RegistrationAccountLinkLoginView(
+    View
+):  # ? Sollte dies nur über einen Link möglich sein, damit die emails immer verdeckt bleiben? Dann wäre es aber weniger Nutzerfreundlich
+    def get(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            if not parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_check_otp",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            if not user_data.parent_email:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            try:
+                existing_user = CustomUser.objects.get(email=user_data.parent_email)
+            except CustomUser.DoesNotExist:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            else:
+                if existing_user.role != 0:
+                    messages.error(
+                        request,
+                        "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
+                    )
+                    return redirect(
+                        "parent_register",
+                        user_token=user_token,
+                        key_token=key_token,
+                    )
+                form = ParentRegistrationLoginForm(
+                    initial={"email": user_data.parent_email}
+                )
+                return render(
+                    request,
+                    "authentication/register/register_parent_link_existiing_login.html",
+                    {"form": form},
+                )
+
+    def post(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            if not parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_check_otp",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            if not user_data.parent_email:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            try:
+                existing_user = CustomUser.objects.get(email=user_data.parent_email)
+            except CustomUser.DoesNotExist:
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+            else:
+                if existing_user.role != 0:
+                    messages.error(
+                        request,
+                        "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
+                    )
+                    return redirect(
+                        "parent_register",
+                        user_token=user_token,
+                        key_token=key_token,
+                    )
+                form = ParentRegistrationLoginForm(
+                    request.POST, initial={"email": user_data.parent_email}
+                )
+
+                if form.is_valid():
+                    username = form.cleaned_data["email"]
+                    password = form.cleaned_data["password"]
+
+                    if existing_user.check_password(password):
+                        existing_user.students.add(user_data.student)
+                        existing_user.save()
+                        messages.success(
+                            request,
+                            f"You added {str(user_data.student)} to your parent account.",
+                        )
+                        user_data.delete()
+                        return redirect("parent_register_success")
+                return render(
+                    request,
+                    "authentication/register/register_parent_link_existiing_login.html",
+                    {"form": form},
+                )
+
+
+class RegistrationCheckOtpView(View):
+    def get(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None:
+            if parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+
             form = Register_OTP(user_token=user_token, key_token=key_token)
 
-            # Set name for the register-otp page
-
-            name = str(user_data.student)
-            if len(name) > 20:
-                name = name[:18]
-                name = name + "..."
+            name = string_shortener(str(user_data.student))
 
             return render(
                 request,
@@ -132,10 +326,22 @@ def register(request, user_token, key_token):
                 {"otp_form": form, "child_name": name},
             )
 
-    else:  # OTP not verified
-        # Clicked on 'submit' or load this page
+    def post(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
 
-        if request.method == "POST":  # Clicked on 'submit'
+        if user_data is not None:
+            if parent_registration_check_otp_verified(user_data):
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
+                )
+
             form = Register_OTP(
                 request.POST, user_token=user_token, key_token=key_token
             )
@@ -144,33 +350,172 @@ def register(request, user_token, key_token):
                 user_data.otp_verified_date = timezone.now()
                 user_data.save()
 
-                # Set name for the register-choose page
-
-                name = str(user_data.student)
-                if len(name) > 20:
-                    name = name[:18]
-                    name = name + "..."
-
-                return render(
-                    request,
-                    "authentication/register/register_choose.html",
-                    {"child_name": name, "path": request.get_full_path()},
+                return redirect(
+                    "parent_register",
+                    user_token=user_token,
+                    key_token=key_token,
                 )
-        else:
-            form = Register_OTP(user_token=user_token, key_token=key_token)
 
-        # Set name for the register-otp page
+            name = string_shortener(str(user_data.student))
 
-        name = str(user_data.student)
-        if len(name) > 20:
-            name = name[:18]
-            name = name + "..."
+            return render(
+                request,
+                "authentication/register/register_otp.html",
+                {"otp_form": form, "child_name": name},
+            )
 
-        return render(
-            request,
-            "authentication/register/register_otp.html",
-            {"otp_form": form, "child_name": name},
-        )
+
+class RegistrationSuccessView(TemplateView):
+    template_name = "authentication/register/register_parent_success.html"
+
+
+# def register(request, user_token, key_token):
+#     # First checks and initialization
+
+#     if user_token is None or key_token is None:
+#         return redirect("help_register")
+
+#     user_data = Upcomming_User.objects.filter(
+#         Q(user_token=user_token), Q(access_key=key_token)
+#     )
+
+#     if not user_data.exists():
+#         return render(request, "authentication/register/link_error.html")
+
+#     user_data = user_data.first()
+
+#     if user_data.created + timezone.timedelta(days=30) < timezone.now():
+#         student = user_data.student
+#         user_data.delete()
+#         Upcomming_User.objects.create(student=student)
+#         return render(request, "authentication/register/link_deprecated.html")
+
+#     # Show different pages
+
+#     if user_data.otp_verified:  # OTP verified
+#         if (
+#             user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now()
+#         ):  # OTP not verified in the last 3 hours
+#             # Page where you can choose to login or register
+
+#             if (
+#                 request.GET.get("login", False) and request.user.is_authenticated
+#             ):  # Clicked on 'login' and logged into an account again
+#                 # Which type of account
+
+#                 if (
+#                     request.user.role == 0
+#                 ):  # Logged into a parent account -> Add the student to this account
+#                     user = request.user
+#                     user.students.add(user_data.student)
+#                     user.save()
+#                     name = user_data.student
+#                     user_data.delete()
+
+#                     # TODO: Email, dass Schüler zum Account hinzugefügt wurde
+
+#                     messages.success(
+#                         request, f"You added {name} to your parent account."
+#                     )  # TODO: Hier kann man auch die message durch eine Mitteilung ersetzen.
+#                     return redirect("home")
+#                 else:  # Logged into teacher or staff account -> Logout and re-login
+#                     logout(request)
+#                     return render(
+#                         request,
+#                         "authentication/register/unusable_account.html",
+#                         {"path": request.get_full_path()},
+#                     )
+
+#             if request.GET.get("register", False):  # Clicked on 'register'
+#                 # Clicked on 'submit' or load this page
+
+#                 if request.method == "POST":  # Clicked on 'submit'
+#                     form = Parent_Input_email_Form(request.POST)
+#                     if form.is_valid():
+#                         user_data.parent_email = form.cleaned_data["email"]
+#                         user_data.save()
+
+#                         send_parent_registration_mail(user_data)
+
+#                 else:
+#                     form = Parent_Input_email_Form()
+
+#                 return render(
+#                     request,
+#                     "authentication/register/register_parent.html",
+#                     {"register_parent_account": form},
+#                 )
+
+#             # Set name for the register-choose page
+
+#             name = str(user_data.student)
+#             if len(name) > 20:
+#                 name = name[:18]
+#                 name = name + "..."
+
+#             return render(
+#                 request,
+#                 "authentication/register/register_choose.html",
+#                 {"child_name": name, "path": request.get_full_path()},
+#             )
+
+#         else:  # OTP verified more than 3 hours ago
+#             user_data.otp_verified = False
+#             user_data.save()
+#             form = Register_OTP(user_token=user_token, key_token=key_token)
+
+#             # Set name for the register-otp page
+
+#             name = str(user_data.student)
+#             if len(name) > 20:
+#                 name = name[:18]
+#                 name = name + "..."
+
+#             return render(
+#                 request,
+#                 "authentication/register/register_otp.html",
+#                 {"otp_form": form, "child_name": name},
+#             )
+
+#     else:  # OTP not verified
+#         # Clicked on 'submit' or load this page
+
+#         if request.method == "POST":  # Clicked on 'submit'
+#             form = Register_OTP(
+#                 request.POST, user_token=user_token, key_token=key_token
+#             )
+#             if form.is_valid():
+#                 user_data.otp_verified = True
+#                 user_data.otp_verified_date = timezone.now()
+#                 user_data.save()
+
+#                 # Set name for the register-choose page
+
+#                 name = str(user_data.student)
+#                 if len(name) > 20:
+#                     name = name[:18]
+#                     name = name + "..."
+
+#                 return render(
+#                     request,
+#                     "authentication/register/register_choose.html",
+#                     {"child_name": name, "path": request.get_full_path()},
+#                 )
+#         else:
+#             form = Register_OTP(user_token=user_token, key_token=key_token)
+
+#         # Set name for the register-otp page
+
+#         name = str(user_data.student)
+#         if len(name) > 20:
+#             name = name[:18]
+#             name = name + "..."
+
+#         return render(
+#             request,
+#             "authentication/register/register_otp.html",
+#             {"otp_form": form, "child_name": name},
+#         )
 
 
 #! Dies ist die alte Version
@@ -361,7 +706,7 @@ def register(request, user_token, key_token):
 #         )
 
 
-class ParentRegistrationView(View):
+class ParentCreateAccountView(View):
     def get(self, request, user_token, key_token, token):
         try:
             up_user = Upcomming_User.objects.get(
@@ -383,7 +728,7 @@ class ParentRegistrationView(View):
         )
         if up_user is not None and parent_registration_token.check_token(
             up_user, token
-        ):
+        ):  # todo Hier muss noch überprüft werden, ob es bereits einen Nutzer mit der email gibt
             payload = {
                 "up_user": up_user,
                 "form": Register_Parent_Account(
@@ -430,7 +775,7 @@ class ParentRegistrationView(View):
                     request,
                     "Wir haben Ihren Elternaccount nun erstellt. Sie können sich im Folgenden anmelden.",
                 )
-                return redirect("login")
+                return redirect("parent_register_success")
             payload = {"user": up_user, "form": form}
             return render(
                 request,

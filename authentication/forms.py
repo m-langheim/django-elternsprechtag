@@ -255,6 +255,21 @@ class Register_Parent_Account(forms.Form):  # register (parent account)
             )
 
 
+class ParentRegistrationLoginForm(forms.Form):
+    email = email = forms.CharField(
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
+        label=False,
+        disabled=True,
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "Password", "autocomplete": "off"}
+        ),
+        max_length=255,
+        label=False,
+    )
+
+
 class TeacherRegistrationForm(forms.Form):
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),

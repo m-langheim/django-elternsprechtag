@@ -3,10 +3,30 @@ from django.contrib.auth import views as auth_views
 from .views import *
 
 urlpatterns = [
-    path("register/<user_token>/<key_token>/", register),
+    # path("register/<user_token>/<key_token>/", register),
     path(
-        "register/<user_token>/<key_token>/<token>/",
-        ParentRegistrationView.as_view(),
+        "register/<user_token>/<key_token>/",
+        RegistrationStartView.as_view(),
+        name="parent_register",
+    ),
+    path(
+        "register/<user_token>/<key_token>/otp/",
+        RegistrationCheckOtpView.as_view(),
+        name="parent_check_otp",
+    ),
+    path(
+        "register/success/",
+        RegistrationSuccessView.as_view(),
+        name="parent_register_success",
+    ),
+    path(
+        "register/<user_token>/<key_token>/link_account/login/",
+        RegistrationAccountLinkLoginView.as_view(),
+        name="parent_register_link_account",
+    ),
+    path(
+        "register/<user_token>/<key_token>/<token>/new_account",
+        ParentCreateAccountView.as_view(),
         name="parent_create_account",
     ),
     path(
