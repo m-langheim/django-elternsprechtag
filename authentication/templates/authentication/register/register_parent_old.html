@@ -29,6 +29,10 @@
                     {% load crispy_forms_tags %}
 
                     {{ register_parent_account.email|as_crispy_field }}
+                    {{ register_parent_account.first_name|as_crispy_field }}
+                    {{ register_parent_account.last_name|as_crispy_field }}
+                    {{ register_parent_account.password|as_crispy_field }}
+                    {{ register_parent_account.confirm_password|as_crispy_field }}
 
                     <!-- TODO: Formhelper is missing, no hints for pw , also errors are missing-->
 
@@ -71,6 +75,10 @@
     <p>{% translate 'Please sign up your parent account' %}</p>
     {% csrf_token %}
     {{ register_parent_account.email|as_crispy_field }}
+    {{ register_parent_account.first_name|as_crispy_field }}
+    {{ register_parent_account.last_name|as_crispy_field }}
+    {{ register_parent_account.password|as_crispy_field }}
+    {{ register_parent_account.confirm_password|as_crispy_field }}
     <input type="submit" value="Submit" class="button">
 </form> -->
 {% endblock content %}

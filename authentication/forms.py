@@ -196,10 +196,18 @@ class Register_OTP(forms.Form):  # one time password
             )
 
 
+class Parent_Input_email_Form(forms.Form):
+    email = forms.CharField(
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
+        label=False,
+    )
+
+
 class Register_Parent_Account(forms.Form):  # register (parent account)
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
         label=False,
+        disabled=True,
     )
     first_name = forms.CharField(
         widget=forms.TextInput(

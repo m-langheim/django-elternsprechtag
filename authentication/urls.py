@@ -5,6 +5,11 @@ from .views import *
 urlpatterns = [
     path("register/<user_token>/<key_token>/", register),
     path(
+        "register/<user_token>/<key_token>/<token>/",
+        ParentRegistrationView.as_view(),
+        name="parent_create_account",
+    ),
+    path(
         "login/",
         auth_views.LoginView.as_view(
             template_name="authentication/login.html",

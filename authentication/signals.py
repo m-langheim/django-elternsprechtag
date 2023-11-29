@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from .models import Student, Upcomming_User, CustomUser, TeacherExtraData
 from django.template.loader import render_to_string
@@ -19,8 +19,7 @@ def add_access(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Student)
 # add groups for all new classes when a student is registered
 def add_groups(sender, instance, **kwargs):
-    class_group = Group.objects.get_or_create(
-        name="class_"+instance.class_name)
+    class_group = Group.objects.get_or_create(name="class_" + instance.class_name)
 
     parent = CustomUser.objects.filter(students=instance)
     if parent.exists():  # ! all groups are reseted when new student data gets imported
@@ -39,9 +38,29 @@ def add_teacher_data(sender, instance, created, **kwargs):
     if created and instance.role == 1:
         TeacherExtraData.objects.create(teacher=instance)
 
+
 # signal when new Upcomming_User object saved to send email to the child
 
 # Das hier soll in einen extra View geschoben werden und nicht automatisch passieren.
+
+
+@receiver(pre_save, sender=Upcomming_User)
+def upcomingUserParentEmailChanged(sender, instance: Upcomming_User, *args, **kwargs):
+    try:
+        current_email = Upcomming_User.objects.get(pk=instance.pk).parent_email
+    except Upcomming_User.DoesNotExist:
+        pass
+    else:
+        new_email = instance.parent_email
+        print(new_email, current_email)
+        if new_email != current_email and instance.parent_registration_email_send:
+            instance.parent_registration_email_send = False
+            instance.save()
+
+
+def upcomingUserParentSendEmail(sender, instance: Upcomming_User, *args, **kwargs):
+    if instance.parent_registration_email_send and instance.parent_email:
+        print("Send registration email")
 
 
 # @receiver(post_save, sender=Upcomming_User)
