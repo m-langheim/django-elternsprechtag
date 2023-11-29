@@ -87,49 +87,6 @@ def register(request, user_token, key_token):
                 if request.method == "POST":  # Clicked on 'submit'
                     form = Parent_Input_email_Form(request.POST)
                     if form.is_valid():
-                        # cu = CustomUser(
-                        #     email=form.cleaned_data["email"],
-                        #     first_name=form.cleaned_data["first_name"],
-                        #     last_name=form.cleaned_data["last_name"],
-                        #     role=0,
-                        # )
-                        # cu.set_password(form.cleaned_data["password"])
-                        # cu.save()
-                        # studi = user_data.student
-                        # cu.students.add(studi)
-                        # cu.save()
-                        # user_data.delete()
-
-                        # # Send confirmation mails
-                        # async_send_mail.delay(
-                        #     "Registrierung erfolgreich",
-                        #     render_to_string(
-                        #         "authentication/register/register_finished_email.txt",
-                        #         {
-                        #             "user": cu,
-                        #             "current_site": os.environ.get("PUBLIC_URL"),
-                        #         },
-                        #     ),
-                        #     cu.email,
-                        # )
-                        # async_send_mail.delay(
-                        #     "Registrierung erfolgreich",
-                        #     render_to_string(
-                        #         "authentication/register/register_finished_email_student.txt",
-                        #         {"user": studi},
-                        #     ),
-                        #     studi.child_email,
-                        # )
-
-                        # if request.user.is_authenticated:
-                        #     logout(request)
-                        #     messages.info(
-                        #         request,
-                        #         "You are logged out to continue the registration process.",
-                        #     )
-
-                        # return redirect("login")
-
                         user_data.parent_email = form.cleaned_data["email"]
                         user_data.save()
 
