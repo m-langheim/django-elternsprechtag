@@ -67,27 +67,31 @@ class RegistrationStartView(View):
                     )
                 else:
                     if existing_user.role == 0:
-                        # return redirect(
-                        #     "parent_register_link_account",
-                        #     user_token=user_token,
-                        #     key_token=key_token,
-                        # )
-                        return render(
-                            request,
-                            "authentication/register/register_parent_link_existing_choose.html",
-                            {
-                                "email": user_data.parent_email,
-                                "user_token": user_token,
-                                "key_token": key_token,
-                            },
+                        return redirect(
+                            "parent_register_link_account",
+                            user_token=user_token,
+                            key_token=key_token,
                         )
+                        # return render(
+                        #     request,
+                        #     "authentication/register/register_parent_link_existing_choose.html",
+                        #     {
+                        #         "email": user_data.parent_email,
+                        #         "user_token": user_token,
+                        #         "key_token": key_token,
+                        #     },
+                        # )
 
             form = Parent_Input_email_Form()
 
             return render(
                 request,
                 "authentication/register/register_parent.html",
-                {"register_parent_account": form},
+                {
+                    "register_parent_account": form,
+                    "user_token": user_token,
+                    "key_token": key_token,
+                },
             )
 
     def post(self, request, user_token, key_token, *args, **kwargs):
@@ -112,7 +116,11 @@ class RegistrationStartView(View):
                     return render(
                         request,
                         "authentication/register/register_parent_email_specified.html",
-                        {"parent_email": user_data.parent_email},
+                        {
+                            "parent_email": user_data.parent_email,
+                            "user_token": user_token,
+                            "key_token": key_token,
+                        },
                     )
                 else:
                     if existing_user.role == 0:
@@ -164,7 +172,11 @@ class RegistrationStartView(View):
             return render(
                 request,
                 "authentication/register/register_parent.html",
-                {"register_parent_account": form},
+                {
+                    "register_parent_account": form,
+                    "user_token": user_token,
+                    "key_token": key_token,
+                },
             )
 
 
@@ -189,6 +201,7 @@ class RegistrationResetView(View):
             )
 
 
+#! Wahrscheinlich ist diese Funktion nicht länger benötigt
 @method_decorator(
     [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
 )
@@ -287,7 +300,11 @@ class RegistrationAccountLinkLoginView(
                 return render(
                     request,
                     "authentication/register/register_parent_link_existiing_login.html",
-                    {"form": form},
+                    {
+                        "form": form,
+                        "user_token": user_token,
+                        "key_token": key_token,
+                    },
                 )
 
     def post(self, request, user_token, key_token, *args, **kwargs):
@@ -350,7 +367,11 @@ class RegistrationAccountLinkLoginView(
                 return render(
                     request,
                     "authentication/register/register_parent_link_existiing_login.html",
-                    {"form": form},
+                    {
+                        "form": form,
+                        "user_token": user_token,
+                        "key_token": key_token,
+                    },
                 )
 
 
@@ -454,6 +475,8 @@ class ParentCreateAccountView(View):
                 "form": Register_Parent_Account(
                     initial={"email": up_user.parent_email}
                 ),
+                "user_token": user_token,
+                "key_token": key_token,
             }
             return render(
                 request,
@@ -496,7 +519,12 @@ class ParentCreateAccountView(View):
                     "Wir haben Ihren Elternaccount nun erstellt. Sie können sich im Folgenden anmelden.",
                 )
                 return redirect("parent_register_success")
-            payload = {"user": up_user, "form": form}
+            payload = {
+                "user": up_user,
+                "form": form,
+                "user_token": user_token,
+                "key_token": key_token,
+            }
             return render(
                 request,
                 "authentication/register/register_parent_account.html",

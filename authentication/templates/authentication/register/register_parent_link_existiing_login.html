@@ -47,6 +47,10 @@
                     {% endfor %} -->
                     <div class="d-grid ms-3 me-3 pt-4 pb-3 mt-5">
                         <input type="submit" class="btn btn-outline-danger" value="Register">
+                        <button type="button" class="btn btn-outline-secondary mt-2" data-bs-toggle="modal"
+											data-bs-target="#resetParentCreationModal">
+											Keine Email bekommen?
+										</button>
                     </div>
                 </form>
             </div>
@@ -55,7 +59,25 @@
 </div>
 
 
-
+<div class="modal fade" id="resetParentCreationModal" tabindex="-1" aria-labelledby="resetParentCreationModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="resetParentCreationModalLabel">Zurücksetzen</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+            <div class="modal-body">
+                Es ist nicht Ihre Email, die gerade angezeigt wird? Dann drücken Sie bitte auf "Registrierung neustarten".
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">Abbrechen</button>
+                <a class="btn btn-outline-danger" href="{%  url 'parent_registration_reset' user_token=user_token key_token=key_token %}">Registrierung neustarten</a>
+            </div>
+		</div>
+	</div>
+</div>
 
 
 <!-- <head>
