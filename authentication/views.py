@@ -29,7 +29,13 @@ from .utils import (
     parent_registration_link_deprecated,
 )
 
+from django.utils.decorators import method_decorator
+from .decorators import valid_custom_user_link, upcomming_user_otp_validated
 
+
+@method_decorator(
+    [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
+)
 class RegistrationStartView(View):
     def get(self, request, user_token, key_token, *args, **kwargs):
         try:
@@ -57,10 +63,19 @@ class RegistrationStartView(View):
                     )
                 else:
                     if existing_user.role == 0:
-                        return redirect(
-                            "parent_register_link_account",
-                            user_token=user_token,
-                            key_token=key_token,
+                        # return redirect(
+                        #     "parent_register_link_account",
+                        #     user_token=user_token,
+                        #     key_token=key_token,
+                        # )
+                        return render(
+                            request,
+                            "authentication/register/register_parent_link_existing_choose.html",
+                            {
+                                "email": user_data.parent_email,
+                                "user_token": user_token,
+                                "key_token": key_token,
+                            },
                         )
 
             form = Parent_Input_email_Form()
@@ -140,6 +155,30 @@ class RegistrationStartView(View):
             )
 
 
+class RegistrationResetView(View):
+    def get(self, request, user_token, key_token, *args, **kwargs):
+        try:
+            user_data = Upcomming_User.objects.get(
+                Q(user_token=user_token), Q(access_key=key_token)
+            )
+        except:
+            user_data = None
+
+        if user_data is not None and not parent_registration_link_deprecated(user_data):
+            user_data.parent_email = None
+            user_data.parent_registration_email_send = False
+            user_data.save()
+
+            return redirect(
+                "parent_register",
+                user_token=user_token,
+                key_token=key_token,
+            )
+
+
+@method_decorator(
+    [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
+)
 class RegistrationAccountLinkChooseView(View):
     def get(self, request, user_token, key_token, *args, **kwargs):
         try:
@@ -183,6 +222,9 @@ class RegistrationAccountLinkChooseView(View):
                     )
 
 
+@method_decorator(
+    [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
+)
 class RegistrationAccountLinkLoginView(
     View
 ):  # ? Sollte dies nur über einen Link möglich sein, damit die emails immer verdeckt bleiben? Dann wäre es aber weniger Nutzerfreundlich
@@ -299,6 +341,7 @@ class RegistrationAccountLinkLoginView(
                 )
 
 
+@method_decorator(valid_custom_user_link, name="dispatch")
 class RegistrationCheckOtpView(View):
     def get(self, request, user_token, key_token, *args, **kwargs):
         try:
@@ -369,6 +412,7 @@ class RegistrationSuccessView(TemplateView):
     template_name = "authentication/register/register_parent_success.html"
 
 
+@method_decorator(valid_custom_user_link, name="dispatch")
 class ParentCreateAccountView(View):
     def get(self, request, user_token, key_token, token):
         try:

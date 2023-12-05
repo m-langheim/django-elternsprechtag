@@ -30,6 +30,11 @@ urlpatterns = [
         name="parent_create_account",
     ),
     path(
+        "register/<user_token>/<key_token>/reset",
+        RegistrationResetView.as_view(),
+        name="parent_registration_reset",
+    ),
+    path(
         "login/",
         auth_views.LoginView.as_view(
             template_name="authentication/login.html",
