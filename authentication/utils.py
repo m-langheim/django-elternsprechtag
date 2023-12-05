@@ -53,7 +53,10 @@ def register_new_teacher(email: str):
 
 
 def parent_registration_check_otp_verified(user_data: Upcomming_User) -> bool:
-    if user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now():
+    if (
+        user_data.otp_verified_date + timezone.timedelta(hours=3) > timezone.now()
+        and user_data.otp_verified
+    ):
         return True
     else:
         user_data.otp_verified = False

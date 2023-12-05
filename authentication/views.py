@@ -59,7 +59,11 @@ class RegistrationStartView(View):
                     return render(
                         request,
                         "authentication/register/register_parent_email_specified.html",
-                        {"parent_email": user_data.parent_email},
+                        {
+                            "parent_email": user_data.parent_email,
+                            "user_token": user_token,
+                            "key_token": key_token,
+                        },
                     )
                 else:
                     if existing_user.role == 0:
@@ -129,6 +133,15 @@ class RegistrationStartView(View):
                     user_data.save()
 
                     send_parent_registration_mail(user_data)
+                    return render(
+                        request,
+                        "authentication/register/register_parent_email_specified.html",
+                        {
+                            "parent_email": user_data.parent_email,
+                            "user_token": user_token,
+                            "key_token": key_token,
+                        },
+                    )
                 else:
                     if existing_user.role == 0:
                         user_data.parent_email = email
