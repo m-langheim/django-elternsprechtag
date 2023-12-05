@@ -22,42 +22,26 @@
                 <div class="progress-bar bg-danger" style="width: 66%;"></div>
             </div>
             <div class="card-body d-grid p-4 ps-5 pe-5 text-center">
-                <form method="post">
                     <h1 class="pb-3">Register</h1>
                     <p class="pb-3 text-secondary">Enter your personal data to create a new parent account</p>
-                    {% csrf_token %}
-                    {% load crispy_forms_tags %}
-
-                    {{ form.email|as_crispy_field }}
-                    {{ form.password|as_crispy_field }}
-
-                    <!-- TODO: Formhelper is missing, no hints for pw , also errors are missing-->
-
-                    <!-- {% for error in otp_form.otp6.errors.as_data %}
-                    {% if error.code == 'invalid_type' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting only of digits</div>
-                    {% elif error.code == 'invalid_length' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting of 6 digits</div>
-                    {% elif error.code == 'incorrect_code' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter the
-                        correct verification code</div>
-                    {% endif %}
-                    {% endfor %} -->
+                    <div class="card ms-5 me-5 mb-3 mt-3"
+                    style="border-radius: 10px; box-shadow: inset 0 .5rem 1rem rgba(102, 102, 102, 0.15)!important;">
+                    <div class="card-body d-grid text-center fs-4" style="overflow: hidden;">
+                        {{ email }}
+                    </div>
+                </div>
                     <div class="d-grid ms-3 me-3 pt-4 pb-3 mt-5">
-                        <input type="submit" class="btn btn-outline-danger" value="Register">
-                        <button type="button" class="btn btn-outline-secondary mt-2" data-bs-toggle="modal"
+                        <a class="btn btn-outline-danger" href="{% url "parent_register_link_account" user_token=user_token key_token=key_token %}">Jetzt verknüpfen</a>
+                        <a class="btn btn-outline-danger">Per Mail verknüpfen</a>
+                        <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
 											data-bs-target="#resetParentCreationModal">
-											Keine Email bekommen?
+											Nicht Ihre Email?
 										</button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="resetParentCreationModal" tabindex="-1" aria-labelledby="resetParentCreationModalLabel"
 	aria-hidden="true">
@@ -78,22 +62,4 @@
 		</div>
 	</div>
 </div>
-
-
-<!-- <head>
-    {% load static %}
-    <link href="{% static 'authentication/style_register_parent.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-</head>
-{% load crispy_forms_tags %}
-<form method="post">
-    <div class="fortschritt_balken">
-        <div class="fortschritt"></div>
-    </div>
-    <h1>{% translate 'Sign up' %}</h1>
-    <p>{% translate 'Please sign up your parent account' %}</p>
-    {% csrf_token %}
-    {{ form.email|as_crispy_field }}
-    <input type="submit" value="Submit" class="button">
-</form> -->
 {% endblock content %}

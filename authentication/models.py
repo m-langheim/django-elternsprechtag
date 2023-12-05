@@ -179,7 +179,7 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     )
     email_send = models.BooleanField(default=False, verbose_name=_("Email send"))
 
-    parent_email = models.EmailField(blank=True)
+    parent_email = models.EmailField(blank=True, null=True)
     parent_registration_email_send = models.BooleanField(default=False)
 
     def __str__(self):
