@@ -372,6 +372,7 @@ class RegistrationAccountLinkLoginView(
                         "form": form,
                         "user_token": user_token,
                         "key_token": key_token,
+                        "error": True
                     },
                 )
 
