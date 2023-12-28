@@ -1,10 +1,5 @@
 Übersetzungen hinzufügen
 
-Register OTP
-
-- beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
-- wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
-
 teacher_change_tags.html
 
 - ggf. Non-JS-Version
@@ -69,6 +64,7 @@ Links in des Mails zum Wiki anpassen
 
 Einstellungen für Mails
 
+Wenn man die Email für den Registrierungsprozess ändert, funktionieren beide Links, die dann geschickt wurden.
 
 <!-- Behoben -->
 

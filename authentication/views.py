@@ -17,6 +17,7 @@ from django.utils.encoding import force_bytes
 import os
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.contrib.auth.password_validation import password_validators_help_text_html
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -477,6 +478,7 @@ class ParentCreateAccountView(View):
                 ),
                 "user_token": user_token,
                 "key_token": key_token,
+                "validators": password_validators_help_text_html,
             }
             return render(
                 request,
@@ -524,6 +526,7 @@ class ParentCreateAccountView(View):
                 "form": form,
                 "user_token": user_token,
                 "key_token": key_token,
+                "validators": password_validators_help_text_html,
             }
             return render(
                 request,

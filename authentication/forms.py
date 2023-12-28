@@ -10,6 +10,9 @@ from .models import CustomUser
 from django.utils.translation import gettext as _
 from .models import *
 from django.db.models import Q
+from django.contrib.auth.password_validation import validate_password
+
+from crispy_forms.helper import FormHelper
 
 
 class CustomAuthForm(AuthenticationForm):  # login
@@ -235,6 +238,7 @@ class Parent_Input_email_Form(forms.Form):
 
 
 class Register_Parent_Account(forms.Form):  # register (parent account)
+
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
         label=False,
@@ -245,12 +249,14 @@ class Register_Parent_Account(forms.Form):  # register (parent account)
             attrs={"placeholder": "First Name", "autocomplete": "off"}
         ),
         label=False,
+        required=True,
     )
     last_name = forms.CharField(
         widget=forms.TextInput(
             attrs={"placeholder": "Last Name", "autocomplete": "off"}
         ),
         label=False,
+        required=True,
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
@@ -258,32 +264,33 @@ class Register_Parent_Account(forms.Form):  # register (parent account)
         ),
         max_length=255,
         label=False,
+        required=True,
     )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"placeholder": "Confirm Password", "autocomplete": "off"}
+            attrs={"class": "form-control", "placeholder": "Confirm Password", "autocomplete": "off"} #Use "Form-control" to get the same design as "as_crispy_field" but no error etc.
         ),
         max_length=255,
         label=False,
+        required=True,
     )
 
-    def clean_confirm_password(
-        self,
-    ):  # ? Wird hier auch die Sicherheit des Passwortes geprüft oder kann jedes Passwort eingegeben werden?
+    def clean_confirm_password(self):  # ? Wird hier auch die Sicherheit des Passwortes geprüft oder kann jedes Passwort eingegeben werden? -> Now via validate_password(...)
         password = self.cleaned_data["password"]
         confirm_password = self.cleaned_data["confirm_password"]
-        email = self.cleaned_data["email"]
+        # email = self.cleaned_data["email"]
 
         if password != confirm_password:
             raise forms.ValidationError(
                 "The passwords do not match", code="passwords_wrong"
             )
+        validate_password(password, user=None, password_validators=None)
 
-        if CustomUser.objects.filter(email=email).exists():
-            raise forms.ValidationError(
-                "This email is already in use. Please select another one.",
-                code="email_",
-            )
+        # if CustomUser.objects.filter(email=email).exists():
+        #     raise forms.ValidationError(
+        #         "This email is already in use. Please select another one.",
+        #         code="email_",
+        #     )
 
 
 class ParentRegistrationLoginForm(forms.Form):

@@ -3,6 +3,7 @@
 {% block title %} Register {% endblock title %}
 
 {% block content %}
+<!--Registration 4.1 -->
 
 <head>
     {% load static %}
@@ -15,72 +16,53 @@
     }
 </style>
 <!--<div class="row justify-content-center align-items-center" style="min-height: 80vh;">-->
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-        <div class="card shadow" style="border-radius: 10px;">
-            <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
-                aria-valuemax="100" style="height: 7px;">
-                <div class="progress-bar bg-danger" style="width: 66%;"></div>
-            </div>
-            <div class="card-body d-grid p-4 ps-5 pe-5 text-center">
-                <form method="post">
-                    <h1 class="pb-3">Register</h1>
-                    <p class="pb-3 text-secondary">Enter your personal data to create a new parent account</p>
-                    {% csrf_token %}
-                    {% load crispy_forms_tags %}
+<div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+    <div class="card shadow" style="border-radius: 10px;">
+        <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
+            aria-valuemax="100" style="height: 7px;">
+            <div class="progress-bar bg-danger" style="width: 75%;"></div>
+        </div>
+        <div class="card-body d-grid p-4 ps-5 pe-5 text-center">
+            <form method="post">
+                <h1 class="pb-3">Register</h1>
+                <p class="pb-3 text-secondary">Enter your personal data to create a new parent account</p>
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
 
-                    {{ form.email|as_crispy_field }}
-                    {{ form.first_name|as_crispy_field }}
-                    {{ form.last_name|as_crispy_field }}
-                    {{ form.password|as_crispy_field }}
-                    {{ form.confirm_password|as_crispy_field }}
+                {{ form.email|as_crispy_field }}
+                {{ form.first_name|as_crispy_field }}
+                {{ form.last_name|as_crispy_field }}
+                {{ form.password|as_crispy_field }}
+                <div class="text-start text-secondary" style="font-size: .875em;">
+                    {{ validators }}
+                </div>
+                {{ form.confirm_password }}
 
-                    <!-- TODO: Formhelper is missing, no hints for pw , also errors are missing-->
+                {% if form.confirm_password.errors %}
+                {% with form.confirm_password.errors.as_data.0.code as code %}
+                {% if code == 'passwords_wrong' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter two identical passwords</div>
+                {% elif code == 'password_too_short' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password longer than 8 chars</div>
+                {% elif code == 'password_too_common' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a more unusual password</div>
+                {% elif code == 'password_entirely_numeric' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password consisting not only of numbers</div>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
 
-                    <!-- {% for error in otp_form.otp6.errors.as_data %}
-                    {% if error.code == 'invalid_type' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting only of digits</div>
-                    {% elif error.code == 'invalid_length' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting of 6 digits</div>
-                    {% elif error.code == 'incorrect_code' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter the
-                        correct verification code</div>
-                    {% endif %}
-                    {% endfor %} -->
-                    <div class="d-grid ms-3 me-3 pt-4 pb-3 mt-5">
-                        <input type="submit" class="btn btn-outline-danger" value="Register">
-                        <button type="button" class="btn btn-outline-secondary mt-2" data-bs-toggle="modal"
-                        data-bs-target="#resetParentCreationModal">
-                        Keine Email bekommen?
-                    </button>
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid ms-3 me-3 pt-4 pb-3 mt-5">
+                    <input type="submit" class="btn btn-outline-danger" value="Register">
+                </div>
+            </form>
         </div>
     </div>
+</div>
 <!--</div>-->
 
 
-<div class="modal fade" id="resetParentCreationModal" tabindex="-1" aria-labelledby="resetParentCreationModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="resetParentCreationModalLabel">Zurücksetzen</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-            <div class="modal-body">
-                Es ist nicht Ihre Email, die gerade angezeigt wird? Dann drücken Sie bitte auf "Registrierung neustarten".
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal">Abbrechen</button>
-                <a class="btn btn-outline-danger" href="{%  url 'parent_registration_reset' user_token=user_token key_token=key_token %}">Registrierung neustarten</a>
-            </div>
-		</div>
-	</div>
-</div>
+
 
 
 <!-- <head>
