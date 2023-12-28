@@ -1,5 +1,7 @@
 Übersetzungen hinzufügen
 
+rearrage the height of the divs in base depending on possible messages -> calculate the height of each of them and remove this from the whole height + put it to the margin to the top
+
 teacher_change_tags.html
 
 - ggf. Non-JS-Version
