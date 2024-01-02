@@ -68,6 +68,8 @@ Einstellungen für Mails
 
 Wenn man die Email für den Registrierungsprozess ändert, funktionieren beide Links, die dann geschickt wurden.
 
+Die Sortierung für die Vorlagen von Mails in Authentication muss einheitlich gemacht werden. Entweder alles in einen Ordner oder alle unter einem Ordner mail ...
+
 <!-- Behoben -->
 
 Termin absage -> Terminabsage
