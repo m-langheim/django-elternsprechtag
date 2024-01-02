@@ -66,7 +66,7 @@
                                 aria-labelledby="event-accordion-heading-{{ event.id }}"
                                 data-bs-parent="#event-accordion">
                                 <div class="accordion-body">
-                                    <strong>Startzeit: </strong>{{event.start.time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
+                                    <strong>Startzeit: </strong>{{event.start|time}} ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}}) <br />
                                     <strong>Lehrer: </strong>
                                     {{ event.teacher.first_name }} {{ event.teacher.last_name }}<br />
                                     <strong>Schüler:innen: </strong>
@@ -130,11 +130,11 @@
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
-                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first}} <br/>
+                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first }} <br/>
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
                             <strong>Termin: </strong>
                             {% if inquiry.inquiry.event != null %}
-                            {{inquiry.inquiry.event.start.time}} ({{inquiry.inquiry.event.start.date.day}}.{{inquiry.inquiry.event.start.date.month}}.{{inquiry.inquiry.event.start.date.year}})
+                            {{inquiry.inquiry.event.start | time}} ({{inquiry.inquiry.event.start.date.day}}.{{inquiry.inquiry.event.start.date.month}}.{{inquiry.inquiry.event.start.date.year}})
                             {% else %}
                             ---
                             {% endif %}
@@ -162,7 +162,7 @@
             </div>
             {% if announcements|length > 0 %}
             <div class="accordion" id="announcement-accordion">
-                {% for announcement in announcements %}
+                {% for announcement in announcements|slice:":5" %}
                 <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
                     <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -202,6 +202,13 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if announcements.all|length > 5 %}
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a class="btn btn-outline-danger" role="button" href="{% url "announcements" %}">
+					Weitere Mitteilungen
+				</a>
+			</div>
+			{% endif %}
             {% else %}
             <div class="card m-1">
                 <div class="card-body">

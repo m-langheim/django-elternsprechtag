@@ -1,6 +1,8 @@
 {% extends "dashboard/base.html" %}
 {% block title %} Dashboard - Lehrer {% endblock title %}
 {% block head %}{% endblock head %}
+{% load crispy_forms_tags %}
+
 {% block content %}
 {% if event_creation_form_open %}
 <div class="card border-danger mb-3">
@@ -93,7 +95,7 @@
 								aria-labelledby="event-accordion-heading-{{ event.id }}"
 								data-bs-parent="#event-accordion">
 								<div class="accordion-body">
-									<strong>Startzeit: </strong>{{event.start.time}}
+									<strong>Startzeit: </strong>{{event.start | time}}
 									({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})
 									<br />
 									<strong>Schüler:innen: </strong>
@@ -102,6 +104,14 @@
 									{% if student != event.student.last %}, {% endif %}
 									{% endfor %}<br />
 									<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+										<button type="button" class="btn btn-outline-secondary mt-2" data-bs-toggle="modal"
+											data-bs-target="#eventCancelModal{{event.id}}">
+											{% if event.status == 2 %}
+											Termin ablehnen
+											{% else %}
+											Termin absagen
+											{% endif %}
+										</button>
 										<a type="button" class="btn btn-outline-danger mt-2"
 											href="{% url 'teacher_event_view' event.id %}">
 											Details
@@ -135,7 +145,7 @@
 		<div class="h-auto d-grid gap-3">
 			<div class="container">
 				<p class="h1">Anfragen</p>
-				<p class="text-muted">Ihre Anfragen an einzelne Schüler</p>
+				<p class="text-muted">Ihre Anfragen an einzelne Schüler:innen</p>
 			</div>
 
 			{% if inquiries|length > 0 %}
@@ -185,7 +195,7 @@
 			</div>
 			{% if announcements|length > 0 %}
 			<div class="accordion" id="announcement-accordion">
-				{% for announcement in announcements %}
+				{% for announcement in announcements|slice:":5" %}
 				<div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
 					<h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
 						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -224,6 +234,13 @@
 				</div>
 				{% endfor %}
 			</div>
+			{% if announcements.all|length > 5 %}
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a class="btn btn-outline-danger" role="button" href="{% url "announcements" %}">
+					Weitere Mitteilungen
+				</a>
+			</div>
+			{% endif %}
 			{% else %}
 			<div class="card m-1">
 				<div class="card-body">
@@ -238,8 +255,34 @@
 	</div>
 </div>
 
-{% for event in events %} {% if event.status == 2 %}
-<!-- Modal -->
+{% for event in events %}
+<!-- Event Cancel Modal: Hier kann der Lehrer seinen Termin wieder absagen. -->
+<div class="modal fade" id="eventCancelModal{{event.id}}" tabindex="-1" aria-labelledby="eventCancelModal{{event.id}}Label"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="eventCancelModal{{event.id}}Label">Termin absagen</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="{% url 'teacher_event_view' event.id  %}" method="post">
+				{% csrf_token %}
+				{{cancel_event_form.cancel_event}}
+				<div class="modal-body">
+					{{ cancel_event_form.message|as_crispy_field }}
+					{{cancel_event_form.book_other_event|as_crispy_field}}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary"
+						data-bs-dismiss="modal">Abbrechen</button>
+					<input type="submit" class="btn btn-outline-danger" value="Termin absagen" />
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% if event.status == 2 %}
+<!-- Event Confirmation Modal -->
 <div class="modal fade" id="eventModal{{event.id}}" tabindex="-1" aria-labelledby="eventModal{{event.id}}Label"
 	aria-hidden="true">
 	<div class="modal-dialog">

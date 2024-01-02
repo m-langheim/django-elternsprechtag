@@ -60,7 +60,13 @@
                                         {% endif %}
                                         {% if user.role == 1 %}
                                         <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
-                                                    class="fa-solid fa-calendar-days"></i> Schüler:innen</a></li>
+                                                    class="fa-solid fa-calendar-days"></i> Meine Termine</a></li>
+                                        {% endif %}
+                                        <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
+                                            class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                        {% if user.is_superuser %}
+                                        <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
+                                                    class="fa-solid fa-gear"></i>Admin-Interface</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                     class="fa-solid fa-gear"></i> Mein Profil</a></li>
@@ -76,6 +82,7 @@
                             </ul>
                         </div>
                     </div>
+{% comment %} Das Folgende ist erstmal nur zu Testzwecken!!! {% endcomment %}
 
                     <!-- Großer Bildschirm -->
                     <form class="d-none d-lg-block col-6 col-xl-4 col-lg-5 col-xxl-3" style="margin-top: 10.5px;"
@@ -107,6 +114,12 @@
                                     {% if user.role == 1 %}
                                     <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
                                                 class="fa-solid fa-calendar-days"></i> Meine Termine</a></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
+                                        class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                    {% if user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
+                                                class="fa-solid fa-gear"></i>Admin-Interface</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                 class="fa-solid fa-gear"></i> Mein Profil</a></li>

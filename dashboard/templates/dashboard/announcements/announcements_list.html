@@ -1,0 +1,79 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %} Dashboard - Mitteilungen{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <p class="h1">Mitteilungen</p>
+    <p class="text-muted">Hier werden Ihnen ihre persönlichen, ungelesenen Mitteilungen angezeigt.</p>
+</div>
+{% if object_list|length > 0 %}
+<div class="accordion" id="announcement-accordion">
+    {% for announcement in object_list %}
+    <div class="accordion-item" id="announcement-accordion-item-{{ announcement.id }}">
+        <h2 class="accordion-header" id="announcement-accordion-heading-{{ announcement.id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#announcement-accordion-collapse-{{ announcement.id }}"
+                aria-expanded="false" aria-controls="announcement-accordion-collapse-{{ announcement.id }}">
+                {{ announcement.get_announcement_type_display }}
+            </button>
+        </h2>
+        <div id="announcement-accordion-collapse-{{ announcement.id }}" class="accordion-collapse collapse"
+            aria-labelledby="announcement-accordion-heading-{{ announcement.id }}"
+            data-bs-parent="#announcement-accordion">
+            <div class="accordion-body">
+                {{announcement.message|safe|linebreaks}}
+                <!-- <strong>Elternteil: </strong>
+                {{ announcement.announcement.respondent.first_name }} {{
+                announcement.announcement.respondent.last_name }}<br />
+                <strong>Grund: </strong> {{ announcement.announcement.reason }}<br />
+                <strong>Event: </strong>
+                {% if announcement.announcement.event != null %}
+                {{announcement.announcement.event.start}}
+                {% else %}
+                ---
+                {% endif %}
+                {{announcement.encodedID}} -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a class="btn btn-outline-secondary" role="button"
+                        href="{% url 'mark_annuncement_read' announcement.encodedID %}">Gelesen</a>
+                    {% if announcement.action_link %}
+
+                    <a class="btn btn-outline-danger" role="button"
+                        href="{{ announcement.action_link }}">{{announcement.action_name}}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card m-1">
+    <div class="card-body">
+        <p class="h5 card-title">Keine Mitteilungen</p>
+        <p class="card-text">
+            Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.
+        </p>
+    </div>
+</div>
+{% endif %}
+<div class="row gy-1 mt-1">
+    <div class="d-none d-lg-block col-lg-8">
+        <a type="button" class="btn btn-outline-secondary col-12 col-lg-3 col-xl-2"
+            href="{% url 'home' %}">Zurück</a>
+    </div>
+    <!-- Hier wird nur spacing benötigt -->
+    <div class="col-12 col-lg-4 col-xl-4 d-flex justify-content-end">
+        <div class="col-12 col-xl-8 row gx-1 gy-1">
+            <a href="{% url 'mark_all_announcements_read' %}" class="btn btn-outline-danger col-12">
+                Alle als gelesen markieren
+            </a>
+            <div class="d-block d-lg-none col-12">
+                <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                    href="{% url 'home' %}">Zurück</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

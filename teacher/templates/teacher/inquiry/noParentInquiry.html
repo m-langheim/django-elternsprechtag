@@ -1,0 +1,51 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% comment %} Dies wird zurzeit nur für eine Anzeige verwendet, in Zukunft soll hier auch die Terminbuchung bei nicht registrierten Schüler:innen möglich sein {% endcomment %}
+
+{% block title %} Dashboard - Lehrer {% endblock title %}
+
+{% block content %}
+
+<div class="row gx-3 gy-3">
+	<div class="col-12">
+		<div class="card card-body p-4">
+			<p class="h1">Anfrage erstellen</p>
+			<p class="text-secondary">
+				Stellen Sie hier eine Anfrage für {{ student.first_name }} {{student.last_name}}
+			</p>
+			<div class="alert alert-warning d-flex align-items-center" role="alert">
+				<div>
+					<h4>Kein Elternteil verfügbar.</h4>
+					<br />
+					Für {{ student.first_name }} {{student.last_name}} hat sich bisher
+					kein Elternteil registriert. Treffen Sie daher bitte mit
+					{{student.first_name}} persönliche eine Absprache über einen möglichen
+					Termin.
+				</div>
+			</div>
+				<div class="d-flex d-md-none row">
+					<div class="d-flex d-md-none col-12">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12 col-lg-3"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+
+				<div class="d-none d-md-flex row">
+					<div class="d-none d-md-flex col">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

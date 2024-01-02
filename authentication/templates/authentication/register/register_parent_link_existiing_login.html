@@ -1,0 +1,90 @@
+{% extends "authentication/base.html" %}
+{% load i18n %}
+{% block title %} Register {% endblock title %}
+
+{% block content %}
+<!-- Register 3/4.2 -->
+
+<head>
+    {% load static %}
+    <!-- <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
+</head>
+<style>
+    #div_id_password {
+        margin-bottom: 0.5vh !important;
+    }
+</style>
+<!--<div class="row justify-content-center align-items-center" style="min-height: 80vh;">-->
+<div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+    <div class="card shadow" style="border-radius: 10px;">
+        <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
+            aria-valuemax="100" style="height: 7px;">
+            <div class="progress-bar bg-danger" style="width: 66%;"></div>
+        </div>
+        <div class="card-body d-grid p-4 ps-5 pe-5 text-center">
+            <form method="post">
+                <h1 class="pb-3">Register</h1>
+                <p class="pb-3 text-secondary">Please login to add your child to your parent account</p>
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+
+                {{ form.email|as_crispy_field }}
+                {{ form.password|as_crispy_field }}
+
+                {% if error %}
+                <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Password not correct</div>
+                {% endif %}
+                <a class="d-grid mt-5" style="text-decoration: none;" href="{% url 'password_reset' %}">
+                    Forgot password?
+                </a>
+                <div class="d-grid ms-3 me-3 pt-4 pb-3">
+                    <input type="submit" class="btn btn-outline-danger" value="Login">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--</div>-->
+
+
+<div class="modal fade" id="resetParentCreationModal" tabindex="-1" aria-labelledby="resetParentCreationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="resetParentCreationModalLabel">Zurücksetzen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Es ist nicht Ihre Email, die gerade angezeigt wird? Dann drücken Sie bitte auf "Registrierung
+                neustarten".
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <a class="btn btn-outline-danger"
+                    href="{%  url 'parent_registration_reset' user_token=user_token key_token=key_token %}">Registrierung
+                    neustarten</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <head>
+    {% load static %}
+    <link href="{% static 'authentication/style_register_parent.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+{% load crispy_forms_tags %}
+<form method="post">
+    <div class="fortschritt_balken">
+        <div class="fortschritt"></div>
+    </div>
+    <h1>{% translate 'Sign up' %}</h1>
+    <p>{% translate 'Please sign up your parent account' %}</p>
+    {% csrf_token %}
+    {{ form.email|as_crispy_field }}
+    <input type="submit" value="Submit" class="button">
+</form> -->
+{% endblock content %}

@@ -28,6 +28,9 @@ from django.utils import timezone
 
 from dashboard.utils import check_inquiry_reopen
 
+import logging
+import operator
+
 
 teacher_decorators = [login_required, teacher_required]
 
@@ -97,6 +100,7 @@ def dashboard(request):
             "events_dict": events_dict,
             "announcements": announcements,
             "event_creation_form_open": event_creation_form_open,
+            "cancel_event_form": cancelEventForm(),
         },
     )
 
@@ -110,14 +114,28 @@ def studentList(request):
     if search is None:
         students = Student.objects.all().order_by("first_name").order_by("last_name")
     else:
-        students = (
-            Student.objects.filter(
-                Q(first_name__icontains=search) | Q(last_name__icontains=search)
-            )
-            .order_by("first_name")
-            .order_by("last_name")
-        )
+        search_split = str(search).split()
+        if len(search_split) == 0:
+            students = Student.objects.all()
+        else:
+            students = Student.objects.none()
+            for key in search_split:
+                queryset = Student.objects.filter(
+                    Q(first_name__icontains=key) | Q(last_name__icontains=key)
+                )
+                if students.intersection(students, queryset).exists():
+                    students = students.intersection(students, queryset)
+                else:
+                    students = students.union(students, queryset)
 
+            # students = (
+            #     Student.objects.filter(
+            #         Q(first_name__icontains=search) | Q(last_name__icontains=search)
+            #     )
+            #     .order_by("first_name")
+            #     .order_by("last_name")
+            # )
+    students = students.order_by("first_name").order_by("last_name")
     events = Event.objects.filter(Q(teacher=request.user))
     inquiries = Inquiry.objects.filter(
         Q(requester=request.user) | Q(respondent=request.user)
@@ -208,10 +226,9 @@ class InquiryView(View):
                 "event": inquiry.event,
             }
             form = self.form_class(initial=initial)
-            print(inquiry)
             return render(
                 request,
-                "teacher/inquiry.html",
+                "teacher/inquiry/viewInquiry.html",
                 {
                     "form": form,
                     "student": inquiry.students.first,
@@ -243,7 +260,7 @@ class InquiryView(View):
                 return redirect("teacher_dashboard")
             return render(
                 request,
-                "teacher/inquiry.html",
+                "teacher/inquiry/viewInquiry.html",
                 {
                     "form": form,
                     "student": inquiry.students.first,
@@ -291,7 +308,17 @@ class CreateInquiryView(View):
                 )
 
             # let the user create a new inquiry
+            #! Hier muss erst überprüft werden, ob es für dieses Kind ein Elternteil gibt
+
+            if not CustomUser.objects.filter(Q(role=0), Q(students=student)).exists():
+                return render(
+                    request,
+                    "teacher/inquiry/noParentInquiry.html",
+                    {"student": student},
+                )
+
             parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
+
             initial = {"student": student, "parent": parent}
             form = createInquiryForm(initial=initial)
 
@@ -304,9 +331,12 @@ class CreateInquiryView(View):
                 )
 
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student,
-                    "parent_first_name": parent.first_name,
-                    "parent_last_name": parent.last_name}
+            request,
+            "teacher/inquiry/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+            },
         )
 
     def post(self, request, studentID):
@@ -329,6 +359,14 @@ class CreateInquiryView(View):
                     id=urlsafe_base64_encode(force_bytes(inquiry.first().id)),
                 )
 
+            #! Hier muss erst überprüft werden, ob es für dieses Kind ein Elternteil gibt
+            if not CustomUser.objects.filter(Q(role=0), Q(students=student)).exists():
+                return render(
+                    request,
+                    "teacher/inquiry/noParentInquiry.html",
+                    {"student": student},
+                )
+
             # let the user create a new inquiry
             parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
             initial = {"student": student, "parent": parent}
@@ -341,12 +379,16 @@ class CreateInquiryView(View):
                     type=0,
                 )
                 inquiry.students.set([form.cleaned_data["student"]])
+                inquiry.save()
                 messages.success(request, "Anfrage erstellt")
                 return redirect("teacher_dashboard")
         return render(
-            request, "teacher/createInquiry.html", {"form": form, "student": student,
-                    "parent_first_name": parent.first_name,
-                    "parent_last_name": parent.last_name}
+            request,
+            "teacher/inquiry/createInquiry.html",
+            {
+                "form": form,
+                "student": student,
+            },
         )
 
 
@@ -358,13 +400,21 @@ def confirm_event(request, event):
     except Event.DoesNotExist:
         messages.error(request, "Dieser Termin konnte nicht gefunden werden")
     else:
+        if (
+            event.status == 0
+        ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+            messages.warning(
+                request,
+                "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+            )
+            return redirect("teacher_dashboard")
+
         event.status = 1
         event.occupied = True
         event.save()
         inquiries = event.inquiry_set.filter(
             Q(requester=event.parent), Q(processed=False)
         )
-        print(inquiries)
         for inquiry in inquiries:
             inquiry.processed = True
             inquiry.save()
@@ -408,10 +458,22 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+            if (
+                event.status == 0
+            ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+                messages.warning(
+                    request,
+                    "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+                )
+                return redirect("teacher_dashboard")
+
             inquiry_reason = None
 
-            inquiry = Inquiry.objects.filter(Q(event=event), Q(requester=request.user))
+            inquiry = Inquiry.objects.filter(
+                Q(event=event), Q(requester=request.user), Q(type=0)
+            )  #! so abgeändert, dass nur eine Anfrage durchgelassen wird, die auch vo Lehrer kommt
 
+            #! Ich habe das abgeändert, damit direkt die gesamte Anfrage weitergeleitet wird.
             if inquiry:
                 inquiry_reason = inquiry[0].reason
 
@@ -422,7 +484,8 @@ class EventDetailView(View):
                 context={
                     "cancel_event": cancel_form,
                     "event": event,
-                    "inquiry_reason": inquiry_reason,
+                    # "inquiry_reason": inquiry_reason,
+                    "inquiry": inquiry,
                 },
             )
 
@@ -432,6 +495,15 @@ class EventDetailView(View):
         except Event.DoesNotExist:
             raise Http404("Der Termin konnte nicht gefunden werden")
         else:
+            if (
+                event.status == 0
+            ):  # * Hier wird überprüft, ob der Termin zum Zeitpunkt der Abfrage noch vergeben ist.
+                messages.warning(
+                    request,
+                    "Dieser Termin ist nicht länger vergeben und kann somit nicht von Ihnen aufgerufen oder bearbeitet werden.",
+                )
+                return redirect("teacher_dashboard")
+
             if "cancel_event" in request.POST:
                 cancel_form = self.cancel_form(request.POST)
                 if cancel_form.is_valid():
@@ -478,9 +550,27 @@ class EventDetailView(View):
                             Q(requester=parent),
                             Q(respondent=teacher),
                             Q(event=event),
+                            Q(processed=False),
                         )
                     except Inquiry.DoesNotExist:
                         pass
+                    except Inquiry.MultipleObjectsReturned:
+                        inquiries = inquiry = Inquiry.objects.filter(
+                            Q(type=1),
+                            Q(requester=parent),
+                            Q(respondent=teacher),
+                            Q(event=event),
+                            Q(processed=False),
+                        )
+                        for inquiry in inquiries:
+                            inquiry.processed = True
+                            inquiry.respondent_reaction = 2
+                            inquiry.save()
+
+                        logger = logging.getLogger(__name__)
+                        logger.warn(
+                            "Es waren mehrere unbeantwortete Inquiries verfügbar."
+                        )
                     else:
                         inquiry.processed = True
                         inquiry.respondent_reaction = 2
@@ -527,6 +617,9 @@ def viewMyEvents(request):
         custom_event_change_formulas.append(
             {
                 "change_form": form,
+                "no_events_form": EventChangeFormulaForm(
+                    instance=form, initial={"no_events": True}
+                ),
                 "link": reverse(
                     "teacher_personal_events_edit",
                     args=[urlsafe_base64_encode(force_bytes(form.id))],
@@ -540,12 +633,47 @@ def viewMyEvents(request):
         Q(status=2) | Q(status=3),
     )
 
+    teacher = request.user
+
+    events = Event.objects.filter(Q(teacher=teacher))
+
+    events_dt = Event.objects.filter(Q(teacher=teacher))
+
+    dates = []
+    datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
+    for datetime_object in datetime_objects:
+        if timezone.localtime(datetime_object).date() not in [
+            date.date() for date in dates
+        ]:
+            dates.append(datetime_object.astimezone(pytz.UTC))
+
+    events_dt_dict = {}
+    for date in dates:
+        events_dt_dict[str(date.date())] = Event.objects.filter(
+            Q(teacher=teacher),
+            Q(
+                start__gte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                )
+            ),
+            Q(
+                start__lte=timezone.datetime.combine(
+                    date.date(),
+                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                )
+            ),
+        ).order_by("start")
+
     return render(
         request,
         "teacher/event/myEvents.html",
         {
             "open_formulas": custom_event_change_formulas,
             "closed_formulas": closed_formulars,
+            "events": events,
+            "events_dt": events_dt,
+            "events_dt_dict": events_dt_dict,
         },
     )
 
@@ -580,6 +708,13 @@ class EditMyEventsDetail(View):
 
         if form.is_valid():
             form.save()
+            if form.cleaned_data["no_events"]:
+                messages.success(
+                    request,
+                    "Sie haben erfolgreich angefragt, dass Sie am {} keine Termine haben.".format(
+                        event_change_formula.date
+                    ),
+                )
             return redirect("teacher_personal_events")
 
         return render(

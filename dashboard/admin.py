@@ -18,6 +18,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ngettext
 
+from django.utils import timezone
+
 # Register your models here.
 
 
@@ -41,8 +43,6 @@ class EventAdmin(admin.ModelAdmin):
                 "dashboard/admin/addEvents.html",
                 context={"form": AdminEventForm},
             )
-            # async_create_events.delay()
-            # return redirect("..")
 
         def post(self, request):
             form = AdminEventForm(request.POST)
@@ -94,7 +94,7 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
             ),
             path(
                 "add_form",
-                self.create_event_change_formula.as_view(),
+                self.admin_site.admin_view(self.create_event_change_formula.as_view()),
                 name="create_event_change_formula",
             ),
         ]
@@ -107,17 +107,25 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
                 "dashboard/admin/addEvents.html",
                 context={"form": AdminEventCreationFormulaForm},
             )
-            # async_create_events.delay()
-            # return redirect("..")
 
         def post(self, request):
             form = AdminEventCreationFormulaForm(request.POST)
             if form.is_valid():
+                messages.info(
+                    request,
+                    "Es werden für {} Formulare erstellt.".format(
+                        "\n,".join(
+                            [
+                                teacher.email
+                                for teacher in form.cleaned_data.get("teacher")
+                            ]
+                        )
+                    ),
+                )
                 successfull = 0
                 for teacher in form.cleaned_data.get("teacher"):
                     if not EventChangeFormula.objects.filter(
-                        Q(teacher=request.user),
-                        Q(status=0),
+                        Q(teacher=teacher),
                         Q(date=form.cleaned_data.get("date")),
                     ).exists():
                         successfull += 1
@@ -131,12 +139,10 @@ class EventChangeFormulaAdmin(admin.ModelAdmin):
                                 request.user
                             ),
                         )
-                    messages.success(
-                        request,
-                        "Es wurden {} Anträge erfolgreich erstellt.".format(
-                            successfull
-                        ),
-                    )
+                messages.success(
+                    request,
+                    "Es wurden {} Anträge erfolgreich erstellt.".format(successfull),
+                )
 
                 return redirect("admin:dashboard_eventchangeformula_changelist")
             return render(

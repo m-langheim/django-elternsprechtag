@@ -24,6 +24,7 @@ services:
       - EMAIL_HOST_PASSWORD=email
       - PUBLIC_URL=http://localhost:8080
       - EMAIL_COMPLETE=email@example.com
+      - TZ=Europe/Berlin
       # optional for backup configuration
       # - USE_FTP_BACKUP=false
       # - FTP_SERVER=ftp.test.com
@@ -32,6 +33,7 @@ services:
     volumes:
       - media:/app/media
       - static:/app/staticfiles
+      - log:/var/log
     links:
       - redis
     depends_on:
@@ -60,7 +62,7 @@ services:
 
   celery:
     image: janni06/django-elternsprechtag:latest
-    command: celery -A elternsprechtag worker -B --loglevel=DEBUG
+    command: celery -A elternsprechtag worker -B
     environment:
       - TZ=Europe/Berlin
       - REDIS_HOST=redis
@@ -76,13 +78,18 @@ services:
       - EMAIL_HOST_PASSWORD=email
       - PUBLIC_URL=http://localhost:8080
       - EMAIL_COMPLETE=email@example.com
+      - TZ=Europe/Berlin
       # optional for backup configuration
-      - USE_FTP_BACKUP=true
-      - FTP_SERVER=ftp.test.com
-      - FTP_USERNAME=test
-      - FTP_USER_PASSWORD=test1234
+      # - USE_FTP_BACKUP=true
+      # - FTP_SERVER=ftp.test.com
+      # - FTP_USERNAME=test
+      # - FTP_USER_PASSWORD=test1234
     links:
       - redis
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
+      - log:/var/log
     depends_on:
       - redis
       - django
@@ -101,3 +108,4 @@ volumes:
   media:
   static:
   db:
+  log:

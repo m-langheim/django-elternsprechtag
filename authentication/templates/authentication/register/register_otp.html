@@ -3,7 +3,7 @@
 {% block title %} {% translate 'Register' %} {% endblock title %}
 
 {% block content %}
-
+<!--Registration 1 -->
 
 <head>
     {% load static %}
@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
 </head>
 
-<style>
+<!-- <style>
     #id_otp6 {
         margin-bottom: 0.5vh !important;
     }
-</style>
-<script>
+</style> -->
+<!--<script>
     function changefocus1(element) {
         if (element.value.length === parseInt(element.attributes["maxlength"].value)) {
             document.getElementById("id_otp2").focus()
@@ -60,21 +60,22 @@
             document.getElementById("id_otp5").setSelectionRange(1, 1);
         }
     }
-</script>
+</script>-->
 
 <!-- In das Script muss noch herein, dass beim Kopieren der Text auf die Fields aufgeteilt wird -> does not work -->
 
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-        <div class="card shadow" style="border-radius: 10px;">
-            <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
-                aria-valuemax="100" style="height: 7px;">
-                <div class="progress-bar bg-danger" style="width: 0%;"></div>
-            </div>
-            <div class="card-body d-grid p-4 ps-5 pe-5">
-                <form method="post">
-                    <h1 class="pb-3 text-center">Verification</h1>
-                    <p class="text-secondary text-center">Please verify your identity to add this student to your
+<!--<div class="row justify-content-center align-items-center" style="min-height: 80vh;">-->
+<div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+    <div class="card shadow" style="border-radius: 10px;">
+        <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
+            aria-valuemax="100" style="height: 7px;">
+            <div class="progress-bar bg-danger" style="width: 0%;"></div>
+        </div>
+        <div class="card-body d-grid p-4 ps-5 pe-5">
+            <form method="post">
+                <h1 class="pb-3 text-center">Verification</h1>
+                <p class="text-secondary text-center">Please verify first by entering the given verification code</p>
+                <!--<p class="text-secondary text-center">Please verify your identity to add this student to your
                         parent account</p>
                     <div class="card ms-5 me-5 mb-3 mt-3"
                         style="border-radius: 10px; box-shadow: inset 0 .5rem 1rem rgba(102, 102, 102, 0.15)!important;">
@@ -82,11 +83,14 @@
                             {{ child_name }}
                         </div>
                     </div>
-                    <p class="pb-2 text-secondary text-center">Please enter the given verification code</p>
-                    <div class="row gx-3">
-                        {% csrf_token %}
-                        {% load crispy_forms_tags %}
-                        <div class="col">
+                <p class="pb-2 text-secondary text-center">Please enter the given verification code</p>-->
+                <div class="row gx-3">
+                    {% csrf_token %}
+                    {% load crispy_forms_tags %}
+                    <div class="col">
+                        {{ otp_form.otp }}
+                    </div>
+                    <!--<div class="col">
                             {{ otp_form.otp1 }}
                         </div>
                         <div class="col">
@@ -103,27 +107,29 @@
                         </div>
                         <div class="col">
                             {{ otp_form.otp6 }}
-                        </div>
-                    </div>
-                    {% for error in otp_form.otp6.errors.as_data %}
-                    {% if error.code == 'invalid_type' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting only of digits</div>
-                    {% elif error.code == 'invalid_length' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
-                        code consisting of 6 digits</div>
-                    {% elif error.code == 'incorrect_code' %}
-                    <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter the
-                        correct verification code</div>
-                    {% endif %}
-                    {% endfor %}
-
-                    <div class="d-grid ms-3 me-3 pt-5 pb-3">
-                        <input type="submit" class="btn btn-outline-danger" value="Submit">
-                    </div>
-                </form>
-            </div>
+                        </div>-->
+                </div>
+                {% for error in otp_form.otp.errors.as_data %}
+                {% if error.code == 'invalid_type' %}
+                <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
+                    code consisting only of digits</div>
+                {% elif error.code == 'invalid_length' %}
+                <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter a
+                    code consisting of 6 digits</div>
+                {% elif error.code == 'incorrect_code' %}
+                <div class="position-absolute text-danger"><i class="fa-solid fa-caret-right"></i> Please enter the
+                    correct verification code</div>
+                {% endif %}
+                {% endfor %}
+                <p class="text-secondary text-center d-grid mt-5">
+                    Press 'Submit' to check the code and start adding {{ child_name }} to your parent account
+                </p>
+                <div class="d-grid ms-3 me-3 pt-4 pb-3">
+                    <input type="submit" class="btn btn-outline-danger" value="Submit">
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<!--</div>-->
 {% endblock content %}
