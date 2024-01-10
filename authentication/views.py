@@ -560,7 +560,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     # email_html = render_to_string(
-                    #     "authentication/email/password_reset/password_reset_email_html.html", c)
+                    #     "authentication/email/password_reset/password_reset_email.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
                     # async_send_mail.delay(
