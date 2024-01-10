@@ -198,7 +198,7 @@ msgstr "Zukünftige Nutzer"
 #: authentication/templates/authentication/login.html:4
 #: authentication/templates/authentication/password-reset/password_reset_complete.html:4
 #: authentication/templates/authentication/password-reset/password_reset_confirm.html:4
-#: authentication/templates/authentication/register/register_choose.html:3
+#: authentication/templates/authentication/register_parent/register_choose.html:3
 msgid "Login"
 msgstr "Anmelden"
 
@@ -225,13 +225,13 @@ msgstr "Passwort"
 msgid "Password reset on %(site_name)s"
 msgstr "Passwort zurücksetzen für %(site_name)s"
 
-#: authentication/templates/authentication/register/link_deprecated.html:4
-#: authentication/templates/authentication/register/link_error.html:4
-#: authentication/templates/authentication/register/unusable_account.html:4
+#: authentication/templates/authentication/register_parent/link_deprecated.html:4
+#: authentication/templates/authentication/register_parent/link_error.html:4
+#: authentication/templates/authentication/register_parent/unusable_account.html:4
 msgid "Invalid link"
 msgstr "Ungültiger Link"
 
-#: authentication/templates/authentication/register/link_deprecated.html:8
+#: authentication/templates/authentication/register_parent/link_deprecated.html:8
 #, fuzzy
 #| msgid ""
 #| "This link is not valid. Please correct your link or ask for a new one!"
@@ -240,27 +240,27 @@ msgstr ""
 "Dieser Link ist ungültig. Bitte korrigieren Sie den Link oder erkundigen Sie "
 "sich nach einem neuen."
 
-#: authentication/templates/authentication/register/link_error.html:8
+#: authentication/templates/authentication/register_parent/link_error.html:8
 msgid "This link is not valid. Please correct your link or ask for a new one!"
 msgstr ""
 "Dieser Link ist ungültig. Bitte korrigieren Sie den Link oder erkundigen Sie "
 "sich nach einem neuen."
 
-#: authentication/templates/authentication/register/register_otp.html:3
+#: authentication/templates/authentication/register_parent/register_otp.html:3
 msgid "Register"
 msgstr "Registrieren"
 
-#: authentication/templates/authentication/register/register_parent.html:74
+#: authentication/templates/authentication/register_parent/register_parent.html:74
 msgid "Sign up"
 msgstr "Anmelden"
 
-#: authentication/templates/authentication/register/register_parent.html:75
+#: authentication/templates/authentication/register_parent/register_parent.html:75
 #, fuzzy
 #| msgid "Please log into your parent account"
 msgid "Please sign up your parent account"
 msgstr "Bitte melden Sie sich mit Ihrem Elternaccount an"
 
-#: authentication/templates/authentication/register/unusable_account.html:8
+#: authentication/templates/authentication/register_parent/unusable_account.html:8
 #, fuzzy
 #| msgid "Please log into your parent account"
 msgid "Please use a parent account for your child!"
