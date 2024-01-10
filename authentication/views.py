@@ -372,7 +372,7 @@ class RegistrationAccountLinkLoginView(
                         "form": form,
                         "user_token": user_token,
                         "key_token": key_token,
-                        "error": True
+                        "error": True,
                     },
                 )
 
@@ -549,7 +549,7 @@ def password_reset_request(request):
                 for user in associated_users:
                     subject = "Password Reset Requested"
                     email_template_name = (
-                        "authentication/password-reset/password_reset_email.txt"
+                        "authentication/email/password_reset/password_reset_email.txt"
                     )
                     c = {
                         "email": user.email,
@@ -560,7 +560,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     # email_html = render_to_string(
-                    #     "authentication/password-reset/password_reset_email_html.html", c)
+                    #     "authentication/email/password_reset/password_reset_email_html.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
                     # async_send_mail.delay(
