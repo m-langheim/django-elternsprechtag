@@ -571,7 +571,7 @@ def password_reset_request(request):
     password_reset_form = CustomPasswordResetForm()
     return render(
         request=request,
-        template_name="authentication/password-reset/password_reset.html",
+        template_name="authentication/password-reset/password_reset_request.html",
         context={"password_reset_form": password_reset_form},
     )
 
