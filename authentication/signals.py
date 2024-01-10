@@ -71,7 +71,7 @@ def upcomingUserParentSendEmail(sender, instance: Upcomming_User, *args, **kwarg
 #         current_site = os.environ.get("PUBLIC_URL")
 #         email_subject = "Anmeldelink für den Elternsprechtag"
 #         email_body = render_to_string(
-#             'authentication/email/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
+#             'authentication/email/register_parent/link.html', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
 
 #         async_send_mail.delay(email_subject, email_body,
 #                               instance.student.child_email)

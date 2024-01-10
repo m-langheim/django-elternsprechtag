@@ -31,7 +31,7 @@ def register_new_teacher(email: str):
 
         subject = "Teacher Registration"
         email_template_name = (
-            "authentication/teacher_registration/teacher_registration_email.txt"
+            "authentication/email/register_teacher/teacher_registration_email.txt"
         )
         c = {
             "email": new_teacher.email,
@@ -42,7 +42,7 @@ def register_new_teacher(email: str):
         }
         email = render_to_string(email_template_name, c)
         # email_html = render_to_string(
-        #     "authentication/password-reset/password_reset_email_html.html", c)
+        #     "authentication/email/password_reset/password_reset_email_html.html", c)
         # send_mail(subject, email, 'admin@example.com',
         #           [user.email], fail_silently=False)
         # async_send_mail.delay(
@@ -84,7 +84,7 @@ def send_parent_registration_mail(up_user: Upcomming_User):
     if not up_user.parent_registration_email_send and up_user.parent_email:
         subject = "Teacher Registration"
         email_template_name = (
-            "authentication/email/registration_email/parent_registration_email.txt"
+            "authentication/email/register_parent/parent_registration_email.txt"
         )
         token = parent_registration_token.make_token(up_user)
         c = {
@@ -100,7 +100,7 @@ def send_parent_registration_mail(up_user: Upcomming_User):
         )
         email = render_to_string(email_template_name, c)
         # email_html = render_to_string(
-        #     "authentication/password-reset/password_reset_email_html.html", c)
+        #     "authentication/email/password_reset/password_reset_email_html.html", c)
         # send_mail(subject, email, 'admin@example.com',
         #           [user.email], fail_silently=False)
         # async_send_mail.delay(
