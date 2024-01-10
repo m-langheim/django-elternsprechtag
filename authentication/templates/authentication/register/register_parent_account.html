@@ -7,7 +7,6 @@
 
 <head>
     {% load static %}
-    <!-- <link href="{% static 'authentication/style_login.css' %}" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
 </head>
 <style>
@@ -15,7 +14,7 @@
         margin-bottom: 0.5vh !important;
     }
 </style>
-<!--<div class="row justify-content-center align-items-center" style="min-height: 80vh;">-->
+
 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
     <div class="card shadow" style="border-radius: 10px;">
         <div class="progress shadow-sm" role="progressbar" aria-label="" aria-valuenow="75" aria-valuemin="0"
@@ -59,26 +58,5 @@
         </div>
     </div>
 </div>
-<!--</div>-->
 
-
-
-
-
-<!-- <head>
-    {% load static %}
-    <link href="{% static 'authentication/style_register_parent.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-</head>
-{% load crispy_forms_tags %}
-<form method="post">
-    <div class="fortschritt_balken">
-        <div class="fortschritt"></div>
-    </div>
-    <h1>{% translate 'Sign up' %}</h1>
-    <p>{% translate 'Please sign up your parent account' %}</p>
-    {% csrf_token %}
-    {{ form.email|as_crispy_field }}
-    <input type="submit" value="Submit" class="button">
-</form> -->
 {% endblock content %}
