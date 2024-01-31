@@ -59,7 +59,7 @@ class RegistrationStartView(View):
                 except CustomUser.DoesNotExist:
                     return render(
                         request,
-                        "authentication/register/register_parent_email_specified.html",
+                        "authentication/register_parent/register_parent_email_specified.html",
                         {
                             "parent_email": user_data.parent_email,
                             "user_token": user_token,
@@ -75,7 +75,7 @@ class RegistrationStartView(View):
                         )
                         # return render(
                         #     request,
-                        #     "authentication/register/register_parent_link_existing_choose.html",
+                        #     "authentication/register_parent/register_parent_link_existing_choose.html",
                         #     {
                         #         "email": user_data.parent_email,
                         #         "user_token": user_token,
@@ -87,7 +87,7 @@ class RegistrationStartView(View):
 
             return render(
                 request,
-                "authentication/register/register_parent.html",
+                "authentication/register_parent/register_parent_specify_email.html",
                 {
                     "register_parent_account": form,
                     "user_token": user_token,
@@ -116,7 +116,7 @@ class RegistrationStartView(View):
                 except CustomUser.DoesNotExist:
                     return render(
                         request,
-                        "authentication/register/register_parent_email_specified.html",
+                        "authentication/register_parent/register_parent_email_specified.html",
                         {
                             "parent_email": user_data.parent_email,
                             "user_token": user_token,
@@ -144,7 +144,7 @@ class RegistrationStartView(View):
                     send_parent_registration_mail(user_data)
                     return render(
                         request,
-                        "authentication/register/register_parent_email_specified.html",
+                        "authentication/register_parent/register_parent_email_specified.html",
                         {
                             "parent_email": user_data.parent_email,
                             "user_token": user_token,
@@ -162,7 +162,7 @@ class RegistrationStartView(View):
                         )
                         # return render(
                         #     request,
-                        #     "authentication/register/register_parent_email_specified.html",
+                        #     "authentication/register_parent/register_parent_email_specified.html",
                         #     {"parent_email": email},
                         # )  # todo Hier muss fertig gestellt werden, was passieren soll, wenn es bereits einen Account gibt mit Weiterleitung und so
                     messages.error(
@@ -172,7 +172,7 @@ class RegistrationStartView(View):
                     form = Parent_Input_email_Form()
             return render(
                 request,
-                "authentication/register/register_parent.html",
+                "authentication/register_parent/register_parent_specify_email.html",
                 {
                     "register_parent_account": form,
                     "user_token": user_token,
@@ -300,7 +300,7 @@ class RegistrationAccountLinkLoginView(
                 )
                 return render(
                     request,
-                    "authentication/register/register_parent_link_existiing_login.html",
+                    "authentication/register_parent/register_parent_link_existing_account.html",
                     {
                         "form": form,
                         "user_token": user_token,
@@ -367,7 +367,7 @@ class RegistrationAccountLinkLoginView(
                         return redirect("parent_register_success")
                 return render(
                     request,
-                    "authentication/register/register_parent_link_existiing_login.html",
+                    "authentication/register_parent/register_parent_link_existing_account.html",
                     {
                         "form": form,
                         "user_token": user_token,
@@ -401,7 +401,7 @@ class RegistrationCheckOtpView(View):
 
             return render(
                 request,
-                "authentication/register/register_otp.html",
+                "authentication/register_parent/register_parent_otp.html",
                 {"otp_form": form, "child_name": name},
             )
 
@@ -439,13 +439,13 @@ class RegistrationCheckOtpView(View):
 
             return render(
                 request,
-                "authentication/register/register_otp.html",
+                "authentication/register_parent/register_parent_otp.html",
                 {"otp_form": form, "child_name": name},
             )
 
 
 class RegistrationSuccessView(TemplateView):
-    template_name = "authentication/register/register_parent_success.html"
+    template_name = "authentication/register_parent/register_parent_success.html"
 
 
 @method_decorator(valid_custom_user_link, name="dispatch")
@@ -483,7 +483,7 @@ class ParentCreateAccountView(View):
             }
             return render(
                 request,
-                "authentication/register/register_parent_account.html",
+                "authentication/register_parent/register_parent_create_account.html",
                 payload,
             )
         else:
@@ -531,7 +531,7 @@ class ParentCreateAccountView(View):
             }
             return render(
                 request,
-                "authentication/register/register_parent_account.html",
+                "authentication/register_parent/register_parent_create_account.html",
                 payload,
             )
         else:
@@ -560,7 +560,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     # email_html = render_to_string(
-                    #     "authentication/email/password_reset/password_reset_email_html.html", c)
+                    #     "authentication/email/password_reset/password_reset_email.html", c)
                     # send_mail(subject, email, 'admin@example.com',
                     #           [user.email], fail_silently=False)
                     # async_send_mail.delay(
@@ -571,7 +571,7 @@ def password_reset_request(request):
     password_reset_form = CustomPasswordResetForm()
     return render(
         request=request,
-        template_name="authentication/password-reset/password_reset.html",
+        template_name="authentication/password-reset/password_reset_request.html",
         context={"password_reset_form": password_reset_form},
     )
 
@@ -592,7 +592,7 @@ class TeacherRegistrationView(View):
             }
             return render(
                 request,
-                "authentication/teacher_registration/teacher_registration.html",
+                "authentication/register_teacher/teacher_registration.html",
                 payload,
             )
         else:
@@ -623,7 +623,7 @@ class TeacherRegistrationView(View):
             payload = {"user": user, "form": form}
             return render(
                 request,
-                "authentication/teacher_registration/teacher_registration.html",
+                "authentication/register_teacher/teacher_registration.html",
                 payload,
             )
         else:

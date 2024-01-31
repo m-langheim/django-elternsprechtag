@@ -141,7 +141,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                "authentication/email/register_parent/link.html",
+                "authentication/email/register_parent/register_parent_child_email.txt",
                 {
                     "current_site": current_site,
                     "id": up_user.user_token,
@@ -150,7 +150,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                 },
             )
             email_html_body = render_to_string(
-                "authentication/email/register_parent/link_html.html",
+                "authentication/email/register_parent/register_parent_child_email.html",
                 {
                     "current_site": current_site,
                     "id": up_user.user_token,
@@ -190,7 +190,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             current_site = os.environ.get("PUBLIC_URL")
             email_subject = "Anmeldelink für den Elternsprechtag"
             email_str_body = render_to_string(
-                "authentication/email/register_parent/link.html",
+                "authentication/email/register_parent/register_parent_child_email.txt",
                 {
                     "current_site": current_site,
                     "id": new_up_user.user_token,
@@ -199,7 +199,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                 },
             )
             email_html_body = render_to_string(
-                "authentication/email/register_parent/link_html.html",
+                "authentication/email/register_parent/register_parent_child_email.html",
                 {
                     "current_site": current_site,
                     "id": new_up_user.user_token,

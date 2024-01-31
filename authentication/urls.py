@@ -52,14 +52,14 @@ urlpatterns = [
     path(
         "password-reset/done/",
         auth_views.PasswordResetDoneView.as_view(
-            template_name="authentication/password-reset/password_reset_done.html"
+            template_name="authentication/password-reset/password_reset_submitted_request.html"
         ),
         name="password_reset_done",
     ),
     path(
         "password-reset-confirm/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
-            template_name="authentication/password-reset/password_reset_confirm.html",
+            template_name="authentication/password-reset/password_reset_set_password.html",
             form_class=CustomSetPasswordForm,
         ),
         name="password_reset_confirm",
