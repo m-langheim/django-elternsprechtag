@@ -1,10 +1,9 @@
-{% extends "authentication/base.html" %}
-{% load i18n %}
-
-{% block title %} {% translate 'Invalid link' %} {% endblock title %}
-
-{% block content %}
-<h1>
-    {% translate 'This link is not valid. Please correct your link or ask for a new one!' %}
-</h1>
-{% endblock content %}
+{% 
+    include "error_file_template.html" with 
+    page_title="Link invalid" 
+    page_sub_title="This registration link is invalid" 
+    page_icon="link-slash" 
+    page_icon_color="text-warning"
+    page_error_summary="There are two possibilities: \n This link was already used to register the student or there is a spell-mistake in the link you entered. Therefor the referenced student could not be found." 
+    page_action_site_visitor="If you are sure that you chose the most recent link, please contact staff to get a new registration link."
+%}  
