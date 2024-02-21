@@ -1,10 +1,13 @@
-Sehr geehrte Damen und Herren,
-mit dem folgenden Link können Sie sich bei dem Elternsprechtagsportal registrieren.
+Dear parent,
+
+Please use the following link to register your student:
 {{ current_site }}/register/{{ id }}/{{ key }}/
 
-Das benötigte Einmalkennwort lautet: {{ otp }}
+Use the following One-Time-Password when signing up: <strong>{{ otp }}</strong>.
 
-Hilfe: https://wiki.jhg-elternsprechtag.de/books/registrierung-KOD/page/registrierung
+Yours sincerely
 
-Mit freundlichen Grüßen
-    Ihr Elternsprechtagsportal-Team
+Elternsprechtagsteam
+
+Need help?
+Please take a look at our Wikipedia before asking any member of staff for help: wiki.jhg-elternsprechtag.de
