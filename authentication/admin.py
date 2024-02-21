@@ -24,6 +24,8 @@ from django.utils.translation import ngettext
 
 from .utils import register_new_teacher
 
+import datetime
+
 from django.db.models import Q
 
 # Register your models here.
@@ -138,24 +140,26 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
     def sendRegistrationMails(self, request, queryset):
         successfull_updates = 0
         for up_user in queryset:
-            current_site = os.environ.get("PUBLIC_URL")
-            email_subject = "Anmeldelink für den Elternsprechtag"
+            email_subject = "Registration link for the parent consultation day"
             email_str_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.txt",
                 {
-                    "current_site": current_site,
-                    "id": up_user.user_token,
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "current_site": os.environ.get("PUBLIC_URL"),
                     "key": up_user.access_key,
+                    "id": up_user.user_token,
                     "otp": up_user.otp,
                 },
             )
             email_html_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.html",
                 {
-                    "current_site": current_site,
-                    "id": up_user.user_token,
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "current_site": os.environ.get("PUBLIC_URL"),
                     "key": up_user.access_key,
+                    "id": up_user.user_token,
                     "otp": up_user.otp,
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
             )
 
@@ -165,6 +169,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                 up_user.student.child_email,
                 email_html_body=email_html_body,
             )
+
             up_user.email_send = True
             up_user.save()
             successfull_updates += 1
@@ -185,26 +190,29 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
         for up_user in queryset:
             student = up_user.student
             up_user.delete()
+
             new_up_user = Upcomming_User.objects.create(student=student)
 
-            current_site = os.environ.get("PUBLIC_URL")
-            email_subject = "Anmeldelink für den Elternsprechtag"
+            email_subject = "Registration link for the parent consultation day"
             email_str_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.txt",
                 {
-                    "current_site": current_site,
-                    "id": new_up_user.user_token,
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "current_site": os.environ.get("PUBLIC_URL"),
                     "key": new_up_user.access_key,
+                    "id": new_up_user.user_token,
                     "otp": new_up_user.otp,
                 },
             )
             email_html_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.html",
                 {
-                    "current_site": current_site,
-                    "id": new_up_user.user_token,
-                    "key": new_up_user.access_key,
-                    "otp": new_up_user.otp,
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "key": up_user.access_key,
+                    "id": up_user.user_token,
+                    "otp": up_user.otp,
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
             )
 
@@ -214,6 +222,7 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                 new_up_user.student.child_email,
                 email_html_body=email_html_body,
             )
+
             new_up_user.email_send = True
             new_up_user.save()
             successfull_updates += 1

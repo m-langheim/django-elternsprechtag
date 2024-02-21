@@ -9,6 +9,8 @@ import os
 from django.utils import timezone
 from django.template.loader import render_to_string
 
+import datetime
+
 from .tasks import async_send_mail
 
 
@@ -29,25 +31,33 @@ def register_new_teacher(email: str):
         new_teacher.set_unusable_password()  # Hier wird ein nicht benutzbares Passwort festgelegt
         new_teacher.save()
 
-        subject = "Teacher Registration"
-        email_template_name = (
-            "authentication/email/register_teacher/register_teacher_email.txt"
+        email_subject = "Teacher registration"
+        email_str_body = render_to_string(
+            "authentication/email/register_teacher/register_teacher_email.txt",
+            {
+                "user": new_teacher,
+                "current_site": os.environ.get("PUBLIC_URL"),
+                "uid": urlsafe_base64_encode(force_bytes(new_teacher.pk)),
+                "token": teacher_registration_token.make_token(new_teacher),
+            },
         )
-        c = {
-            "email": new_teacher.email,
-            "uid": urlsafe_base64_encode(force_bytes(new_teacher.pk)),
-            "user": new_teacher,
-            "token": teacher_registration_token.make_token(new_teacher),
-            "current_site": os.environ.get("PUBLIC_URL"),
-        }
-        email = render_to_string(email_template_name, c)
-        # email_html = render_to_string(
-        #     "authentication/email/password_reset/password_reset_email.html", c)
-        # send_mail(subject, email, 'admin@example.com',
-        #           [user.email], fail_silently=False)
-        # async_send_mail.delay(
-        #     subject, email, user.email, email_html_body=email_html)
-        async_send_mail.delay(subject, email, new_teacher.email)
+        email_html_body = render_to_string(
+            "authentication/email/register_teacher/register_teacher_email.html",
+            {
+                "user": new_teacher,
+                "current_site": os.environ.get("PUBLIC_URL"),
+                "uid": urlsafe_base64_encode(force_bytes(new_teacher.pk)),
+                "token": teacher_registration_token.make_token(new_teacher),
+                "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+            },
+        )
+
+        async_send_mail.delay(
+            email_subject,
+            email_str_body,
+            new_teacher.email,
+            email_html_body=email_html_body,
+        )
     else:
         raise "Nutzer existiert bereits"
 
@@ -82,27 +92,30 @@ def string_shortener(string: str, total_length=21) -> str:
 
 def send_parent_registration_mail(up_user: Upcomming_User):
     if not up_user.parent_registration_email_send and up_user.parent_email:
-        subject = "Teacher Registration"
-        email_template_name = (
-            "authentication/email/register_parent/register_parent_parent_email.txt"
-        )
-        token = parent_registration_token.make_token(up_user)
-        c = {
-            "email": up_user.parent_email,
-            "up_user": up_user,
-            "token": token,
-            "current_site": os.environ.get("PUBLIC_URL"),
-        }
-        print(
-            token,
-            parent_registration_token.check_token(up_user, token),
-            up_user.parent_email,
-        )
-        email = render_to_string(email_template_name, c)
-        # email_html = render_to_string(
-        #     "authentication/email/password_reset/password_reset_email.html", c)
-        # send_mail(subject, email, 'admin@example.com',
-        #           [user.email], fail_silently=False)
-        # async_send_mail.delay(
-        #     subject, email, user.email, email_html_body=email_html)
-        async_send_mail.delay(subject, email, up_user.parent_email)
+            email_subject = "Continue registration for the parent consultation day"
+            email_str_body = render_to_string(
+                "authentication/email/register_parent/register_parent_parent_email.txt",
+                {
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "email": up_user.parent_email,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "token": parent_registration_token.make_token(up_user),
+                }
+            )
+            email_html_body = render_to_string(
+                "authentication/email/register_parent/register_parent_parent_email.html",
+                {
+                    "user": up_user, #ggf kann man das nicht so machen
+                    "email": up_user.parent_email,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "token": parent_registration_token.make_token(up_user),
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                },
+            )
+
+            async_send_mail.delay(
+                email_subject,
+                email_str_body,
+                up_user.parent_email,
+                email_html_body=email_html_body,
+            )

@@ -61,19 +61,3 @@ def upcomingUserParentEmailChanged(sender, instance: Upcomming_User, *args, **kw
 def upcomingUserParentSendEmail(sender, instance: Upcomming_User, *args, **kwargs):
     if instance.parent_registration_email_send and instance.parent_email:
         print("Send registration email")
-
-
-# @receiver(post_save, sender=Upcomming_User)
-# def send_email(sender, instance, created, **kwargs):
-#     if created:
-#         print(instance)
-#         # current_site = "127.0.0.1:8000"
-#         current_site = os.environ.get("PUBLIC_URL")
-#         email_subject = "Anmeldelink für den Elternsprechtag"
-#         email_body = render_to_string(
-#             'authentication/email/register_parent/register_parent_child_email.txt', {'current_site': current_site, 'id': instance.user_token, 'key': instance.access_key, 'otp': instance.otp})
-
-#         async_send_mail.delay(email_subject, email_body,
-#                               instance.student.child_email)
-#         # send_mail(email_subject, email_body, settings.EMAIL_HOST_USER,
-#         #           [instance.student.child_email])
