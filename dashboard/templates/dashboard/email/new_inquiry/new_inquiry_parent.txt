@@ -1,0 +1,8 @@
+Dear {{ parent.first_name }} {{ parent.last_name }},
+
+You have got a new appointment request from {{ teacher.first_name }} {{ teacher.last_name }}.
+
+Click on the following button to take a look at this request:
+{{ current_site }}{{ url }}
+
+Please make an appointment on this page.
