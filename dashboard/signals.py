@@ -7,6 +7,7 @@ from authentication.tasks import async_send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 import os
+import datetime
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 from .utils import check_inquiry_reopen
@@ -47,19 +48,50 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
     """
     if not instance.notified:
         if instance.type == 1:
-            async_send_mail.delay(
-                "Termin-Anfrage",
-                render_to_string(
-                    "dashboard/email/new_inquiry_teacher.html",
-                    {
-                        "parent": instance.requester,
-                        "teacher": instance.respondent,
-                        "url": reverse("teacher_event_view", args=[instance.event.id]),
-                        "current_site": os.environ.get("PUBLIC_URL"),
-                    },
-                ),
-                instance.respondent.email,
+
+            email_subject = "New appointment request"
+            email_str_body = render_to_string(
+                "dashboard/email/new_inquiry_teacher.txt",
+                {
+                    
+                    "parent": instance.requester,
+                    "teacher": instance.respondent,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "url": reverse("teacher_event_view", args=[instance.event.id]),
+                    
+                    #"students": "\n,".join(
+                    #    [
+                    #        "{} {}".format(student.first_name, student.last_name)
+                    #        for student in instance.students.all()
+                    #    ]
+                    #),
+                },
             )
+            email_html_body = render_to_string(
+                "dashboard/email/new_inquiry_teacher.html",
+                {
+                    "parent": instance.requester,
+                    "teacher": instance.respondent,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "url": reverse("teacher_event_view", args=[instance.event.id]),
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                    
+                    #"students": "\n,".join(
+                    #    [
+                    #        "{} {}".format(student.first_name, student.last_name)
+                    #        for student in instance.students.all()
+                    #    ]
+                    #),
+                },
+            )
+
+            async_send_mail.delay(
+                email_subject,
+                email_str_body,
+                instance.respondent.email,
+                email_html_body=email_html_body,
+            )
+
             Announcements.objects.create(
                 user=instance.respondent,
                 message="%s bittet um den Termin am %s um %s Uhr. Bitte bestätigen Sie den Termin."
@@ -77,28 +109,55 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
             instance.notified = True
             instance.save()
 
-            async_send_mail.delay(
-                "Gesprächsanfrage",
-                render_to_string(
-                    "dashboard/email/new_inquiry_parent.html",
-                    {
-                        "parent": instance.respondent,
-                        "teacher": instance.requester,
-                        "students": "\n,".join(
-                            [
-                                "{} {}".format(student.first_name, student.last_name)
-                                for student in instance.students.all()
-                            ]
-                        ),
-                        "url": reverse(
-                            "inquiry_detail_view",
-                            args=[urlsafe_base64_encode(force_bytes(instance.id))],
-                        ),
-                        "current_site": os.environ.get("PUBLIC_URL"),
-                    },
-                ),
-                instance.respondent.email,
+            email_subject = "New appointment request"
+            email_str_body = render_to_string(
+                "dashboard/email/new_inquiry_parent.txt",
+                {
+                    
+                    "parent": instance.respondent,
+                    "teacher": instance.requester,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "url": reverse(
+                        "inquiry_detail_view",
+                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
+                    ),
+                    
+                    #"students": "\n,".join(
+                    #    [
+                    #        "{} {}".format(student.first_name, student.last_name)
+                    #        for student in instance.students.all()
+                    #    ]
+                    #),
+                },
             )
+            email_html_body = render_to_string(
+                "dashboard/email/new_inquiry_parent.html",
+                {
+                    "parent": instance.respondent,
+                    "teacher": instance.requester,
+                    "current_site": os.environ.get("PUBLIC_URL"),
+                    "url": reverse(
+                        "inquiry_detail_view",
+                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
+                    ),
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                    
+                    #"students": "\n,".join(
+                    #    [
+                    #        "{} {}".format(student.first_name, student.last_name)
+                    #        for student in instance.students.all()
+                    #    ]
+                    #),
+                },
+            )
+
+            async_send_mail.delay(
+                email_subject,
+                email_str_body,
+                instance.respondent.email,
+                email_html_body=email_html_body,
+            )
+
             Announcements.objects.create(
                 user=instance.respondent,
                 message="%s bittet Sie darum einen Termin zu erstellen"
