@@ -29,9 +29,7 @@ class Student(models.Model):  # Schüler
         verbose_name_plural = _("Students")
 
 
-class CustomUser(
-    AbstractBaseUser, PermissionsMixin
-):  # Erwachsene (also alle außer Schüler)
+class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle außer Schüler)
     CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
     email = models.EmailField(_("Email"), unique=True)
