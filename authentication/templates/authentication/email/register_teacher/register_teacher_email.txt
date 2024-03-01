@@ -1,7 +1,7 @@
 Dear teacher,
 
 Use the following link to activate and set up your teacher account:
-{{ current_site }}{% url 'teacher_new_registartion_view' uidb64=uid token=token %}
+{{ url }}
 
 The activation is finished when entering your data successfully. The link will be invalid from then on.
 

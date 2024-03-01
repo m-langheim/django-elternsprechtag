@@ -34,7 +34,25 @@
                 {{ form.acronym|as_crispy_field }}
 
                 {{ form.password|as_crispy_field }}
-                {{ form.confirm_password|as_crispy_field }}
+                <div class="text-start text-secondary" style="font-size: .875em;">
+                    {{ validators }}
+                </div>
+                {{ form.confirm_password }}
+
+                {% if form.confirm_password.errors %}
+                {% with form.confirm_password.errors.as_data.0.code as code %}
+                {% if code == 'passwords_wrong' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter two identical passwords</div>
+                {% elif code == 'password_too_short' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password longer than 8 chars</div>
+                {% elif code == 'password_too_common' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a more unusual password</div>
+                {% elif code == 'password_entirely_numeric' %}
+                <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password consisting not only of numbers</div>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+
 
                 <!-- TODO: Formhelper is missing, no hints for pw , also errors are missing-->
 

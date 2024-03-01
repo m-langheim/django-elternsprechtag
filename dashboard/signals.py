@@ -56,8 +56,8 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                     
                     "parent": instance.requester,
                     "teacher": instance.respondent,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "url": reverse("teacher_event_view", args=[instance.event.id]),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("teacher_event_view", args=[instance.event.id]),
+
                     
                     #"students": "\n,".join(
                     #    [
@@ -72,8 +72,7 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                 {
                     "parent": instance.requester,
                     "teacher": instance.respondent,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "url": reverse("teacher_event_view", args=[instance.event.id]),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("teacher_event_view", args=[instance.event.id]),
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                     
                     #"students": "\n,".join(
@@ -116,11 +115,8 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                     
                     "parent": instance.respondent,
                     "teacher": instance.requester,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "url": reverse(
-                        "inquiry_detail_view",
-                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
-                    ),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("inquiry_detail_view", args=[urlsafe_base64_encode(force_bytes(instance.id))]),
+
                     
                     #"students": "\n,".join(
                     #    [
@@ -135,11 +131,8 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                 {
                     "parent": instance.respondent,
                     "teacher": instance.requester,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "url": reverse(
-                        "inquiry_detail_view",
-                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
-                    ),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("inquiry_detail_view", args=[urlsafe_base64_encode(force_bytes(instance.id))]),
+
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                     
                     #"students": "\n,".join(

@@ -8,6 +8,7 @@ from .tokens import teacher_registration_token, parent_registration_token
 import os
 from django.utils import timezone
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 import datetime
 
@@ -36,9 +37,7 @@ def register_new_teacher(email: str):
             "authentication/email/register_teacher/register_teacher_email.txt",
             {
                 "user": new_teacher,
-                "current_site": os.environ.get("PUBLIC_URL"),
-                "uid": urlsafe_base64_encode(force_bytes(new_teacher.pk)),
-                "token": teacher_registration_token.make_token(new_teacher),
+                "url": str(os.environ.get("PUBLIC_URL")) + reverse("teacher_new_registartion_view", kwargs={"uidb64": urlsafe_base64_encode(force_bytes(new_teacher.pk)), "token": teacher_registration_token.make_token(new_teacher)}),
             },
         )
         email_html_body = render_to_string(
@@ -98,8 +97,7 @@ def send_parent_registration_mail(up_user: Upcomming_User):
                 {
                     "user": up_user, #ggf kann man das nicht so machen
                     "email": up_user.parent_email,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "token": parent_registration_token.make_token(up_user),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("parent_create_account", kwargs={"user_token": up_user.user_token, "key_token": up_user.access_key, "token": parent_registration_token.make_token(up_user)}),
                 }
             )
             email_html_body = render_to_string(
@@ -107,8 +105,7 @@ def send_parent_registration_mail(up_user: Upcomming_User):
                 {
                     "user": up_user, #ggf kann man das nicht so machen
                     "email": up_user.parent_email,
-                    "current_site": os.environ.get("PUBLIC_URL"),
-                    "token": parent_registration_token.make_token(up_user),
+                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("parent_create_account", kwargs={"user_token": up_user.user_token, "key_token": up_user.access_key, "token": parent_registration_token.make_token(up_user)}),
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
             )

@@ -18,6 +18,7 @@ import os
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.contrib.auth.password_validation import password_validators_help_text_html
+from django.urls import reverse
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -554,9 +555,7 @@ def password_reset_request(request):
                         "authentication/email/password_reset/password_reset_email.txt",
                         {
                             "user": user,
-                            "current_site": os.environ.get("PUBLIC_URL"),
-                            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                            "token": default_token_generator.make_token(user),
+                            "url": str(os.environ.get("PUBLIC_URL")) + reverse("password_reset_confirm", kwargs={"uidb64": urlsafe_base64_encode(force_bytes(user.pk)), "token": default_token_generator.make_token(user)}),
                         },
                     )
                     email_html_body = render_to_string(
@@ -598,10 +597,11 @@ class TeacherRegistrationView(View):
             payload = {
                 "user": user,
                 "form": TeacherRegistrationForm(initial={"email": user.email}),
+                "validators": password_validators_help_text_html,
             }
             return render(
                 request,
-                "authentication/register_teacher/teacher_registration.html",
+                "authentication/register_teacher/register_teacher_create_account.html",
                 payload,
             )
         else:
@@ -629,10 +629,10 @@ class TeacherRegistrationView(View):
                     "Ihr Lehreraccount wurde nun erfolgreich erstellt. Sie können sich nun anmelden.",
                 )
                 return redirect("login")
-            payload = {"user": user, "form": form}
+            payload = {"user": user, "form": form, "validators": password_validators_help_text_html}
             return render(
                 request,
-                "authentication/register_teacher/teacher_registration.html",
+                "authentication/register_teacher/register_teacher_create_account.html",
                 payload,
             )
         else:

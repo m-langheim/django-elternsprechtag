@@ -1,7 +1,7 @@
 Dear parent,
 
 Use the following link to activate and set up your parent account:
-{{ current_site }}{% url 'parent_create_account' user_token=up_user.user_token key_token=up_user.access_key token=token %}
+{{ url }}
 
 The activation is finished when entering your data successfully. The link will be invalid from then on.
 
