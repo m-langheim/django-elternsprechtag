@@ -69,15 +69,13 @@ Die Sortierung für die Vorlagen von Mails in Authentication muss einheitlich ge
 Höhe base mit messages hat nicht gut / nicht wirklich funktioniert
 rearrage the height of the divs in base depending on possible messages -> calculate the height of each of them and remove this from the whole height + put it to the margin to the top
 
-emails überall einheitlich
-
 error pages sind nirgendwo
-
-teacher registration no design update
 
 Eigene Administratorseite
 
 email, wenn registrierung abgeschlossen (email (txt) besteht, aber nicht verwendet)
+
+leads?!
 
 <!-- Behoben -->
 

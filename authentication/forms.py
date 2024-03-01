@@ -87,7 +87,7 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ("email",)
 
 
-class Register_OTP(forms.Form):  # one time password
+class Register_OTP(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user_token = kwargs.pop("user_token")
         self.key_token = kwargs.pop("key_token")
@@ -105,81 +105,6 @@ class Register_OTP(forms.Form):  # one time password
         max_length=6,
         min_length=6
     )
-
-    # old otp:
-    #otp1 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus1(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-    #otp2 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus2(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-    #otp3 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus3(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-    #otp4 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus4(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-    #otp5 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus5(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-    #otp6 = forms.CharField(
-    #    label=False,
-    #    widget=forms.TextInput(
-    #        attrs={
-    #            "class": "form-control text-center",
-    #            "onkeyup": "changefocus6(this)",
-    #            "autocomplete": "off",
-    #        }
-    #    ),
-    #    required=True,
-    #    max_length=1,
-    #)
-
     def clean_otp(self):
         otp = self.cleaned_data["otp"]
         user_data = Upcomming_User.objects.get(
@@ -195,41 +120,7 @@ class Register_OTP(forms.Form):  # one time password
             raise forms.ValidationError(
                 "This verification code is not correct.", code="incorrect_code"
             )
-
-    # old otp:
-    #def clean_otp6(self):
-    #    otp1 = self.cleaned_data["otp1"]
-    #    otp2 = self.cleaned_data["otp2"]
-    #    otp3 = self.cleaned_data["otp3"]
-    #    otp4 = self.cleaned_data["otp4"]
-    #    otp5 = self.cleaned_data["otp5"]
-    #    otp6 = self.cleaned_data["otp6"]
-    #    user_data = Upcomming_User.objects.get(
-    #        Q(user_token=self.user_token), Q(access_key=self.key_token)
-    #    )
-
-        # Clear the fields if any error arises
-
-    #    if not (
-    #        otp1.isdigit()
-    #        and otp2.isdigit()
-    #        and otp3.isdigit()
-    #        and otp4.isdigit()
-    #        and otp5.isdigit()
-    #        and otp6.isdigit()
-    #    ):
-    #        raise forms.ValidationError(
-    #            "The code does not only exist of digits.", code="invalid_type"
-    #        )
-
-    #    if str(user_data.otp) != (
-    #        str(otp1) + str(otp2) + str(otp3) + str(otp4) + str(otp5) + str(otp6)
-    #    ):
-    #        raise forms.ValidationError(
-    #            "This verification code is not correct.", code="incorrect_code"
-    #        )
-
-
+        
 class Parent_Input_email_Form(forms.Form):
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
@@ -237,7 +128,7 @@ class Parent_Input_email_Form(forms.Form):
     )
 
 
-class Register_Parent_Account(forms.Form):  # register (parent account)
+class Register_Parent_Account(forms.Form):
 
     email = forms.CharField(
         widget=forms.EmailInput(attrs={"placeholder": "Email", "autocomplete": "off"}),
@@ -275,22 +166,15 @@ class Register_Parent_Account(forms.Form):  # register (parent account)
         required=True,
     )
 
-    def clean_confirm_password(self):  # ? Wird hier auch die Sicherheit des Passwortes geprüft oder kann jedes Passwort eingegeben werden? -> Now via validate_password(...)
+    def clean_confirm_password(self):
         password = self.cleaned_data["password"]
         confirm_password = self.cleaned_data["confirm_password"]
-        # email = self.cleaned_data["email"]
 
         if password != confirm_password:
             raise forms.ValidationError(
                 "The passwords do not match", code="passwords_wrong"
             )
         validate_password(password, user=None, password_validators=None)
-
-        # if CustomUser.objects.filter(email=email).exists():
-        #     raise forms.ValidationError(
-        #         "This email is already in use. Please select another one.",
-        #         code="email_",
-        #     )
 
 
 class ParentRegistrationLoginForm(forms.Form):
