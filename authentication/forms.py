@@ -343,10 +343,20 @@ class TeacherRegistrationForm(forms.Form):
     )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"placeholder": "Confirm Password", "autocomplete": "off"}
+            attrs={"class": "form-control", "placeholder": "Confirm Password", "autocomplete": "off"}
         ),
         max_length=255,
         label=False,
+        required=True,
+    )
+
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Confirm Password", "autocomplete": "off"} #Use "Form-control" to get the same design as "as_crispy_field" but no error etc.
+        ),
+        max_length=255,
+        label=False,
+        required=True,
     )
 
     def clean_confirm_password(self):
@@ -357,6 +367,7 @@ class TeacherRegistrationForm(forms.Form):
             raise forms.ValidationError(
                 "The passwords do not match", code="passwords_wrong"
             )
+        validate_password(password, user=None, password_validators=None)
 
 
 # These are all forms regarding the admin interface

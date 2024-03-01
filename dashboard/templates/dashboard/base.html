@@ -12,10 +12,11 @@
     <title>{% block title %}{% endblock %}</title>
 
     {% load static %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body class="d-flex flex-column h-100">
+    {% if user.is_authenticated %}
     <nav class="navbar navbar-expand-lg bg-white navbar-white border-bottom text-dark shadow-sm">
         <div class="container-fluid">
             <div class="content">
@@ -139,6 +140,7 @@
             </div>
         </div>
     </nav>
+    {% endif %}
     <main class="flex-shrink-0">
         <div class="main-content">
             {% if messages %}

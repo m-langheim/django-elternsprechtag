@@ -1,10 +1,9 @@
-{% extends "authentication/base.html" %}
-{% load i18n %}
-
-{% block title %} {% translate 'Invalid link' %} {% endblock title %}
-
-{% block content %}
-<h1>
-    {% translate 'This link isnt valid anymore. You got an email with a new one.' %}
-</h1>
-{% endblock content %}
+{% 
+    include "error_file_template.html" with 
+    page_title="Link deprecated" 
+    page_sub_title="The registration link you tried to access is deprecated" 
+    page_icon="link-clock" 
+    page_icon_color="text-warning"
+    page_error_summary="The link you entered was deactivated for security reasons." 
+    page_action_site_visitor="We have just send a new registration email to your child. Please use the specified link to proceed with registration."
+%}  

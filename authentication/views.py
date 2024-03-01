@@ -18,6 +18,7 @@ import os
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.contrib.auth.password_validation import password_validators_help_text_html
+from django.urls import reverse
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -29,6 +30,8 @@ from .utils import (
     string_shortener,
     parent_registration_link_deprecated,
 )
+
+import datetime
 
 from django.utils.decorators import method_decorator
 from .decorators import valid_custom_user_link, upcomming_user_otp_validated
@@ -547,26 +550,31 @@ def password_reset_request(request):
             associated_users = CustomUser.objects.filter(Q(email=data))
             if associated_users.exists():
                 for user in associated_users:
-                    subject = "Password Reset Requested"
-                    email_template_name = (
-                        "authentication/email/password_reset/password_reset_email.txt"
+                    email_subject = "Reset password"
+                    email_str_body = render_to_string(
+                        "authentication/email/password_reset/password_reset_email.txt",
+                        {
+                            "user": user,
+                            "url": str(os.environ.get("PUBLIC_URL")) + reverse("password_reset_confirm", kwargs={"uidb64": urlsafe_base64_encode(force_bytes(user.pk)), "token": default_token_generator.make_token(user)}),
+                        },
                     )
-                    c = {
-                        "email": user.email,
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        "user": user,
-                        "token": default_token_generator.make_token(user),
-                        "current_site": os.environ.get("PUBLIC_URL"),
-                    }
-                    email = render_to_string(email_template_name, c)
-                    # email_html = render_to_string(
-                    #     "authentication/email/password_reset/password_reset_email.html", c)
-                    # send_mail(subject, email, 'admin@example.com',
-                    #           [user.email], fail_silently=False)
-                    # async_send_mail.delay(
-                    #     subject, email, user.email, email_html_body=email_html)
-                    async_send_mail.delay(subject, email, user.email)
-                    # return redirect("password_reset_done")
+                    email_html_body = render_to_string(
+                        "authentication/email/password_reset/password_reset_email.html",
+                        {
+                            "user": user,
+                            "current_site": os.environ.get("PUBLIC_URL"),
+                            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                            "token": default_token_generator.make_token(user),
+                            "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                        },
+                    )
+
+                    async_send_mail.delay(
+                        email_subject,
+                        email_str_body,
+                        user.email,
+                        email_html_body=email_html_body,
+                    )
             return redirect("password_reset_done")
     password_reset_form = CustomPasswordResetForm()
     return render(
@@ -589,10 +597,11 @@ class TeacherRegistrationView(View):
             payload = {
                 "user": user,
                 "form": TeacherRegistrationForm(initial={"email": user.email}),
+                "validators": password_validators_help_text_html,
             }
             return render(
                 request,
-                "authentication/register_teacher/teacher_registration.html",
+                "authentication/register_teacher/register_teacher_create_account.html",
                 payload,
             )
         else:
@@ -620,10 +629,10 @@ class TeacherRegistrationView(View):
                     "Ihr Lehreraccount wurde nun erfolgreich erstellt. Sie können sich nun anmelden.",
                 )
                 return redirect("login")
-            payload = {"user": user, "form": form}
+            payload = {"user": user, "form": form, "validators": password_validators_help_text_html}
             return render(
                 request,
-                "authentication/register_teacher/teacher_registration.html",
+                "authentication/register_teacher/register_teacher_create_account.html",
                 payload,
             )
         else:
