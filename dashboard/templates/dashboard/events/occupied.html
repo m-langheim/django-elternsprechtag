@@ -1,7 +1,10 @@
-{% extends "dashboard/base.html" %}
-
-{% block title %} Dashboard {% endblock title %}
-
-{% block content %}
-<h1>This event is already occupied</h1>
-{% endblock content %}
+{% 
+    include "error_file_template.html" with 
+    page_title="Event already occupied" 
+    page_sub_title="This event is occupied by another parent" 
+    page_icon="circle-xmark" 
+    page_icon_color="text-muted" 
+    page_cta_text="Go back to events" 
+    page_error_summary="Another parent chose this event and occupied it while you were away. Please choose a different event." 
+    page_link="/" 
+%}  

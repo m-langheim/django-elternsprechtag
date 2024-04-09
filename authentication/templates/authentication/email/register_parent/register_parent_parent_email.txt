@@ -1,0 +1,13 @@
+Dear parent,
+
+Use the following link to activate and set up your parent account:
+{{ url }}
+
+The activation is finished when entering your data successfully. The link will be invalid from then on.
+
+Yours sincerely
+
+Elternsprechtagsteam
+
+Need help?
+Please take a look at our Wikipedia before asking any member of staff for help: wiki.jhg-elternsprechtag.de

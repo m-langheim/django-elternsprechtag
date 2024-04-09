@@ -29,9 +29,7 @@ class Student(models.Model):  # Schüler
         verbose_name_plural = _("Students")
 
 
-class CustomUser(
-    AbstractBaseUser, PermissionsMixin
-):  # Erwachsene (also alle außer Schüler)
+class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle außer Schüler)
     CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
     email = models.EmailField(_("Email"), unique=True)
@@ -178,6 +176,9 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
         Student, on_delete=models.CASCADE, verbose_name=_("Student")
     )
     email_send = models.BooleanField(default=False, verbose_name=_("Email send"))
+
+    parent_email = models.EmailField(blank=True, null=True)
+    parent_registration_email_send = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{_("Access for")} {self.student}'

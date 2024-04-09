@@ -1,10 +1,5 @@
 Übersetzungen hinzufügen
 
-Register OTP
-
-- beim Einfügen des Textes soll dieser auf die Fields aufgeteilt werden (register_otp.html - scripts)
-- wenn ein Validationerror arises sollen alle Fields gelöscht und gecleared werden (forms.py - Register_OTP)
-
 teacher_change_tags.html
 
 - ggf. Non-JS-Version
@@ -31,7 +26,7 @@ myEventsList.html
 
 Farbe des Paginators ändern bei der Suche
 
-Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen
+Es soll die Möglichkeit geben, dass Lehrer bei Eltern die doppelte Zeit beantragen -> soll nicht grundsätzlich als Option angeboten werden
 Es muss nochmal an den Leads gearbeitet werden
 
 Lehrer sollen auch Anfragen an Kinder ohne Elternteil schicken können, bei denen dann über ausnahme Regelungen geregelt wird, wie der Termin abgesprochen wird. Z.B. fordert der Lehrer einen spezifischen Termin an und das Kind erhält eine Bestätigungsmail.
@@ -67,6 +62,22 @@ Fehler wenn man nach der Registrierung der Eltern die Schüler ändern will -> Z
 
 Links in des Mails zum Wiki anpassen
 
+Einstellungen für Mails
+
+Die Sortierung für die Vorlagen von Mails in Authentication muss einheitlich gemacht werden. Entweder alles in einen Ordner oder alle unter einem Ordner mail ...
+
+Höhe base mit messages hat nicht gut / nicht wirklich funktioniert
+rearrage the height of the divs in base depending on possible messages -> calculate the height of each of them and remove this from the whole height + put it to the margin to the top
+
+error pages sind nirgendwo
+
+Eigene Administratorseite
+
+email, wenn registrierung abgeschlossen (email (txt) besteht, aber nicht verwendet)
+
+leads?!
+
+authentication views.py 477
 
 <!-- Behoben -->
 

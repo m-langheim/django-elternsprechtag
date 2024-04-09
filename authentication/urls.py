@@ -3,7 +3,37 @@ from django.contrib.auth import views as auth_views
 from .views import *
 
 urlpatterns = [
-    path("register/<user_token>/<key_token>/", register),
+    # path("register/<user_token>/<key_token>/", register),
+    path(
+        "register/<user_token>/<key_token>/",
+        RegistrationStartView.as_view(),
+        name="parent_register",
+    ),
+    path(
+        "register/<user_token>/<key_token>/otp/",
+        RegistrationCheckOtpView.as_view(),
+        name="parent_check_otp",
+    ),
+    path(
+        "register/success/",
+        RegistrationSuccessView.as_view(),
+        name="parent_register_success",
+    ),
+    path(
+        "register/<user_token>/<key_token>/link_account/login/",
+        RegistrationAccountLinkLoginView.as_view(),
+        name="parent_register_link_account",
+    ),
+    path(
+        "register/<user_token>/<key_token>/<token>/new_account",
+        ParentCreateAccountView.as_view(),
+        name="parent_create_account",
+    ),
+    path(
+        "register/<user_token>/<key_token>/reset",
+        RegistrationResetView.as_view(),
+        name="parent_registration_reset",
+    ),
     path(
         "login/",
         auth_views.LoginView.as_view(
@@ -22,14 +52,14 @@ urlpatterns = [
     path(
         "password-reset/done/",
         auth_views.PasswordResetDoneView.as_view(
-            template_name="authentication/password-reset/password_reset_done.html"
+            template_name="authentication/password-reset/password_reset_submitted_request.html"
         ),
         name="password_reset_done",
     ),
     path(
         "password-reset-confirm/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
-            template_name="authentication/password-reset/password_reset_confirm.html",
+            template_name="authentication/password-reset/password_reset_set_password.html",
             form_class=CustomSetPasswordForm,
         ),
         name="password_reset_confirm",
@@ -47,12 +77,3 @@ urlpatterns = [
         name="teacher_new_registartion_view",
     ),
 ]
-
-# path('password-reset/',
-#          auth_views.PasswordResetView.as_view(
-#              template_name='authentication/password-reset/password_reset.html',
-#              subject_template_name='authentication/password-reset/password_reset_subject.txt',
-#              email_template_name='authentication/password-reset/password_reset_email.html',
-#              success_url='/login/'
-#          ),
-#          name='password_reset'),
