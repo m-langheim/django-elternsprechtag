@@ -153,11 +153,8 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + "/"
                     + str(up_user.access_key)
                     + "/",
-                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
-                    + up_user.otp
-                    + "</strong>.",
                 },
-            )  #!Hier habe ich ein wenig gefuscht
+            )
             email_html_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.html",
                 {
@@ -169,9 +166,12 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + "/"
                     + str(up_user.access_key)
                     + "/",
+                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
+                    + up_user.otp
+                    + "</strong>.",
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
-            )
+            )  #!Hier habe ich ein wenig gefuscht
 
             async_send_mail.delay(
                 email_subject,
@@ -216,9 +216,6 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + "/"
                     + str(new_up_user.access_key)
                     + "/",
-                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
-                    + up_user.otp
-                    + "</strong>.",
                 },
             )
             email_html_body = render_to_string(
@@ -233,8 +230,11 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + str(new_up_user.access_key)
                     + "/",
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
+                    + up_user.otp
+                    + "</strong>.",
                 },
-            )
+            )  #!Hier habe ich ein wenig gefuscht
 
             async_send_mail.delay(
                 email_subject,
