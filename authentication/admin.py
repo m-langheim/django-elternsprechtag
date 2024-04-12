@@ -171,14 +171,20 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + "</strong>.",
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
-            )  #!Hier habe ich ein wenig gefuscht
+            )  #!Hier habe ich ein wenig gefuscht; dies wird gerade nicht genutzt!
 
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     up_user.student.child_email,
+            #     email_html_body=email_html_body,
+            # )
+            
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 up_user.student.child_email,
-                email_html_body=email_html_body,
-            )
+            ) #! Hier wird keine HTML versandt
 
             up_user.email_send = True
             up_user.save()
@@ -234,14 +240,20 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
                     + up_user.otp
                     + "</strong>.",
                 },
-            )  #!Hier habe ich ein wenig gefuscht
+            )  #!Hier habe ich ein wenig gefuscht; wird nicht genutzt!
 
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     new_up_user.student.child_email,
+            #     email_html_body=email_html_body,
+            # ) 
+            
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 new_up_user.student.child_email,
-                email_html_body=email_html_body,
-            )
+            ) #! Hier wird keine HTML versandt
 
             new_up_user.email_send = True
             new_up_user.save()
