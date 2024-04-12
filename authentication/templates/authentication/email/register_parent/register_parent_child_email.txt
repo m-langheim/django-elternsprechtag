@@ -3,7 +3,7 @@ Dear parent,
 Please use the following link to register your student:
 {{ url }}
 
-Use the following One-Time-Password when signing up: <strong>{{ otp }}</strong>.
+Use the following One-Time-Password when signing up: {{ otp }}.
 
 Yours sincerely
 

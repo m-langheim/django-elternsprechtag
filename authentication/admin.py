@@ -145,20 +145,33 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             email_str_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.txt",
                 {
-                    "user": up_user, #ggf kann man das nicht so machen
+                    "user": up_user,  # ggf kann man das nicht so machen
                     "otp": up_user.otp,
-                    "url": str(os.environ.get("PUBLIC_URL")) + "/register/" + str(up_user.user_token) + str(up_user.access_key) + "/",
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(up_user.user_token)
+                    + "/"
+                    + str(up_user.access_key)
+                    + "/",
                 },
             )
             email_html_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.html",
                 {
-                    "user": up_user, #ggf kann man das nicht so machen
+                    "user": up_user,  # ggf kann man das nicht so machen
                     "otp": up_user.otp,
-                    "url": str(os.environ.get("PUBLIC_URL")) + "/register/" + str(up_user.user_token) + str(up_user.access_key) + "/",
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(up_user.user_token)
+                    + "/"
+                    + str(up_user.access_key)
+                    + "/",
+                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
+                    + up_user.otp
+                    + "</strong>.",
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
-            )
+            )  #!Hier habe ich ein wenig gefuscht
 
             async_send_mail.delay(
                 email_subject,
@@ -189,25 +202,39 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             up_user.delete()
 
             new_up_user = Upcomming_User.objects.create(student=student)
+            new_up_user.save()
 
             email_subject = "Registration link for the parent consultation day"
             email_str_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.txt",
                 {
-                    "user": up_user, #ggf kann man das nicht so machen
+                    "user": up_user,  # ggf kann man das nicht so machen
                     "otp": new_up_user.otp,
-                    "url": str(os.environ.get("PUBLIC_URL")) + "/register/" + str(new_up_user.user_token) + str(new_up_user.access_key) + "/",
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(new_up_user.user_token)
+                    + "/"
+                    + str(new_up_user.access_key)
+                    + "/",
                 },
             )
             email_html_body = render_to_string(
                 "authentication/email/register_parent/register_parent_child_email.html",
                 {
-                    "user": up_user, #ggf kann man das nicht so machen
+                    "user": up_user,  # ggf kann man das nicht so machen
                     "otp": up_user.otp,
-                    "url": str(os.environ.get("PUBLIC_URL")) + "/register/" + str(up_user.user_token) + str(up_user.access_key) + "/",
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(new_up_user.user_token)
+                    + "/"
+                    + str(new_up_user.access_key)
+                    + "/",
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
+                    + up_user.otp
+                    + "</strong>.",
                 },
-            )
+            )  #!Hier habe ich ein wenig gefuscht
 
             async_send_mail.delay(
                 email_subject,
