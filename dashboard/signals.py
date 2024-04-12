@@ -82,14 +82,20 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                     #    ]
                     #),
                 },
-            )
+            ) #! Dies wird derzeit nicht benutzt
 
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     instance.respondent.email,
+            #     email_html_body=email_html_body,
+            # )
+            
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 instance.respondent.email,
-                email_html_body=email_html_body,
-            )
+            ) #! Hier wird keine HTML versendet
 
             Announcements.objects.create(
                 user=instance.respondent,
@@ -142,14 +148,20 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                     #    ]
                     #),
                 },
-            )
+            ) #! Dies wird derzeit nicht benutzt
 
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     instance.respondent.email,
+            #     email_html_body=email_html_body,
+            # )
+            
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 instance.respondent.email,
-                email_html_body=email_html_body,
-            )
+            )#! Hier wird keine HTML versendet
 
             Announcements.objects.create(
                 user=instance.respondent,

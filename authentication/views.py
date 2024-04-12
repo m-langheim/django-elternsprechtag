@@ -555,7 +555,16 @@ def password_reset_request(request):
                         "authentication/email/password_reset/password_reset_email.txt",
                         {
                             "user": user,
-                            "url": str(os.environ.get("PUBLIC_URL")) + reverse("password_reset_confirm", kwargs={"uidb64": urlsafe_base64_encode(force_bytes(user.pk)), "token": default_token_generator.make_token(user)}),
+                            "url": str(os.environ.get("PUBLIC_URL"))
+                            + reverse(
+                                "password_reset_confirm",
+                                kwargs={
+                                    "uidb64": urlsafe_base64_encode(
+                                        force_bytes(user.pk)
+                                    ),
+                                    "token": default_token_generator.make_token(user),
+                                },
+                            ),
                         },
                     )
                     email_html_body = render_to_string(
@@ -567,14 +576,20 @@ def password_reset_request(request):
                             "token": default_token_generator.make_token(user),
                             "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                         },
-                    )
+                    )  #! Dies wird derzeit nicht benutzt
+
+                    # async_send_mail.delay(
+                    #     email_subject,
+                    #     email_str_body,
+                    #     user.email,
+                    #     email_html_body=email_html_body,
+                    # )
 
                     async_send_mail.delay(
                         email_subject,
                         email_str_body,
                         user.email,
-                        email_html_body=email_html_body,
-                    )
+                    )  #! Hier wird keine HTML versendet!
             return redirect("password_reset_done")
     password_reset_form = CustomPasswordResetForm()
     return render(
@@ -629,7 +644,11 @@ class TeacherRegistrationView(View):
                     "Ihr Lehreraccount wurde nun erfolgreich erstellt. Sie können sich nun anmelden.",
                 )
                 return redirect("login")
-            payload = {"user": user, "form": form, "validators": password_validators_help_text_html}
+            payload = {
+                "user": user,
+                "form": form,
+                "validators": password_validators_help_text_html,
+            }
             return render(
                 request,
                 "authentication/register_teacher/register_teacher_create_account.html",

@@ -49,14 +49,20 @@ def register_new_teacher(email: str):
                 "token": teacher_registration_token.make_token(new_teacher),
                 "date": datetime.datetime.now().strftime("%d.%m.%Y"),
             },
-        )
+        ) #! Dies wird gerade nicht benutzt!
 
+        # async_send_mail.delay(
+        #     email_subject,
+        #     email_str_body,
+        #     new_teacher.email,
+        #     email_html_body=email_html_body,
+        # )
+        
         async_send_mail.delay(
             email_subject,
             email_str_body,
             new_teacher.email,
-            email_html_body=email_html_body,
-        )
+        ) #! Hier wird keine HTML versandt
     else:
         raise "Nutzer existiert bereits"
 
@@ -108,11 +114,17 @@ def send_parent_registration_mail(up_user: Upcomming_User):
                     "url": str(os.environ.get("PUBLIC_URL")) + reverse("parent_create_account", kwargs={"user_token": up_user.user_token, "key_token": up_user.access_key, "token": parent_registration_token.make_token(up_user)}),
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
                 },
-            )
+            ) #! Dies wird derzeit nicht benutzt
 
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     up_user.parent_email,
+            #     email_html_body=email_html_body,
+            # )
+            
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 up_user.parent_email,
-                email_html_body=email_html_body,
-            )
+            ) #! Hier wird keine HTML versendet!
