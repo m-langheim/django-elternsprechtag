@@ -16,14 +16,14 @@ def add_access(sender, instance, created, **kwargs):
         Upcomming_User.objects.create(student=instance)
 
 
-@receiver(post_save, sender=Student)
-# add groups for all new classes when a student is registered
-def add_groups(sender, instance, **kwargs):
-    class_group = Group.objects.get_or_create(name="class_" + instance.class_name)
+# @receiver(post_save, sender=Student) #! Die Gruppen werden bisher nicht benutzt und führen derzeit zu Problemen, somit werden sie deaktiviert
+# # add groups for all new classes when a student is registered
+# def add_groups(sender, instance, **kwargs):
+#     class_group = Group.objects.get_or_create(name="class_" + instance.class_name)
 
-    parent = CustomUser.objects.filter(students=instance)
-    if parent.exists():  # ! all groups are reseted when new student data gets imported
-        class_group.user_set.add(parent)
+#     parent = CustomUser.objects.filter(students=instance)
+#     if parent.exists():  # ! all groups are reseted when new student data gets imported
+#         class_group.user_set.add(parent)
 
 
 # @receiver(post_save, sender=CustomUser)
