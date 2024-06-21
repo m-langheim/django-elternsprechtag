@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "celery",
+    "celery_progress",
+    "django_celery_beat",
     "crispy_forms",
     "dbbackup",
     "crispy_bootstrap5",
@@ -49,9 +52,9 @@ INSTALLED_APPS = [
     "dashboard",
     "teacher",
     "profile_settings",
-    "django_celery_beat",
     "general_tasks",
     "colorfield",
+    "administrative",
 ]
 
 MIDDLEWARE = [

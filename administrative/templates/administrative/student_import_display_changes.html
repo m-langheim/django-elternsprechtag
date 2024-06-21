@@ -1,0 +1,64 @@
+{% extends 'administrative/administrative_base.html' %}
+
+{% block control_content %}
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="unchanged_students-heading">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#unchanged_students" aria-expanded="true" aria-controls="unchanged_students">
+          Unchanged students
+        </button>
+      </h2>
+      <div id="unchanged_students" class="accordion-collapse collapse show" aria-labelledby="unchanged_students-heading">
+        <div class="accordion-body">
+          <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="new_students-heading">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#new_students" aria-expanded="false" aria-controls="new_students">
+          Newly created students
+        </button>
+      </h2>
+      <div id="new_students" class="accordion-collapse collapse" aria-labelledby="new_students-heading">
+        <div class="accordion-body">
+          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="changed_students-heading">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#changed_students" aria-expanded="false" aria-controls="changed_students">
+          Chnaged students
+        </button>
+      </h2>
+      <div id="changed_students" class="accordion-collapse collapse" aria-labelledby="changed_students-heading">
+        <div class="accordion-body">
+          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="delete_students-heading">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#delete_students" aria-expanded="false" aria-controls="delete_students">
+            Deleted students
+          </button>
+        </h2>
+        <div id="delete_students" class="accordion-collapse collapse" aria-labelledby="delete_students-heading">
+          <div class="accordion-body">
+            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col d-flex">
+        <div class="btn btn-outline-secondary mt-2" id="cancel_button">Abbrechen</div>
+    </div>
+    <div class="col d-flex justify-content-end">
+        <a class="btn btn-outline-danger mt-2" href="{% url 'student_import_apply_all_changes' %}">
+            Apply all
+        </a>
+    </div>
+</div>
+{% endblock %}

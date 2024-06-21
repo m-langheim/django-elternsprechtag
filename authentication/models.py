@@ -29,7 +29,40 @@ class Student(models.Model):  # Schüler
         verbose_name_plural = _("Students")
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle außer Schüler)
+class StudentChange(models.Model):
+    CHOICES_OPERATION = (
+        (0, "no changes"),
+        (1, "Create new Student"),
+        (2, "Field Changes"),
+        (3, "Delete Student"),
+    )
+
+    operation = models.IntegerField(choices=CHOICES_OPERATION, default=0, blank=False)
+    student = models.ForeignKey(
+        Student,
+        verbose_name=_("Student"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    shield_id = models.CharField(max_length=38, null=True, blank=True)
+    first_name = models.CharField(_("First name"), max_length=48, null=True, blank=True)
+    last_name = models.CharField(_("Last name"), max_length=48, null=True, blank=True)
+    child_email = models.EmailField(
+        _("Child emails"), max_length=200, null=True, blank=True
+    )
+    class_name = models.CharField(
+        _("Name of class"), max_length=4, null=True, blank=True
+    )
+    approved = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now)
+    applied = models.BooleanField(default=False)
+    applied_time = models.DateTimeField(null=True, blank=True)
+
+
+class CustomUser(
+    AbstractBaseUser, PermissionsMixin
+):  # Erwachsene (also alle außer Schüler)
     CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
     email = models.EmailField(_("Email"), unique=True)
