@@ -508,4 +508,85 @@ class ParentEditView(View):
         except:
             messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
         else:
-            return render(request, "administrative/users/parents/parent_edit.html")
+            form = ParentEditForm(instance=parent)
+            return render(
+                request,
+                "administrative/users/parents/parent_edit.html",
+                {"form": form, "parent": parent},
+            )
+
+    def post(self, request, parent_id):
+        try:
+            parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
+        except:
+            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+        else:
+            form = ParentEditForm(request.POST, instance=parent)
+            if form.is_valid():
+                form.save()
+            return render(
+                request,
+                "administrative/users/parents/parent_edit.html",
+                {"form": form, "parent": parent},
+            )
+
+
+class TeacherEditView(View):
+    def get(self, request, pk):
+        try:
+            teacher = CustomUser.objects.get(Q(pk=pk), Q(role=1))
+        except:
+            messages.error(request, "Something went wrong")
+        else:
+            print(teacher.teacherextradata.tags.all())
+            teacher_form = TeacherEditForm(
+                initial={
+                    "first_name": teacher.first_name,
+                    "last_name": teacher.last_name,
+                    "email": teacher.email,
+                    "acronym": teacher.teacherextradata.acronym,
+                    "tags": teacher.teacherextradata.tags.all(),
+                }
+            )
+            return render(
+                request,
+                "administrative/users/teachers/teacher_edit.html",
+                {"form": teacher_form},
+            )
+
+    def post(self, request, pk):
+        try:
+            teacher = CustomUser.objects.get(Q(pk=pk), Q(role=1))
+        except:
+            messages.error(request, "Something went wrong")
+        else:
+            teacher_form = TeacherEditForm(
+                request.POST,
+                initial={
+                    "first_name": teacher.first_name,
+                    "last_name": teacher.last_name,
+                    "email": teacher.email,
+                    "acronym": teacher.teacherextradata.acronym,
+                    "tags": teacher.teacherextradata.tags.all(),
+                },
+            )
+
+            if teacher_form.is_valid():
+                teacher.first_name = teacher_form.cleaned_data["first_name"]
+                teacher.last_name = teacher_form.cleaned_data["last_name"]
+                teacher.email = teacher_form.cleaned_data["email"]
+                teacher.save()
+
+                extra_data = teacher.teacherextradata
+                extra_data.acronym = teacher_form.cleaned_data["acronym"]
+                extra_data.save()
+
+                messages.success(
+                    request, "Die Änderungen wurden erfolgreich übernommen."
+                )
+
+            return render(
+                request,
+                "administrative/users/teachers/teacher_edit.html",
+                {"form": teacher_form},
+            )

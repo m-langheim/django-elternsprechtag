@@ -3,14 +3,6 @@
 {% block control_content %}
 
 <div class="card card-body p-4">
-    {% if not parent.is_active %}
-    <div class="alert alert-warning d-flex align-items-center" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-          This user is not active.
-        </div>
-      </div>
-    {% endif %}
     <form method="POST">
         {{ form | crispy }}
         {% csrf_token %}

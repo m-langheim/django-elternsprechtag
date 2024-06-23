@@ -8,6 +8,9 @@
     <div class="col-8">
         <p class="h1">Events</p>
         <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+      </div>
+      <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
+  </div>  
         <ul class="nav nav-pills">
     <li class="nav-item">
       <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
@@ -16,9 +19,7 @@
       <a class="nav-link" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
     </li>
   </ul>
-    </div>
-    <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
-</div>
+    
     <div class="container">
 
 {% render_table events_table %}

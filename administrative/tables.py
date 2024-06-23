@@ -117,6 +117,15 @@ class TeachersTable(tables.Table):
             "teacherextradata.tags",
         )
 
+    # teachers_edit_view
+    edit = tables.LinkColumn(
+        "teachers_edit_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Edit",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
+
 
 class Eventstable(tables.Table):
     class Meta:

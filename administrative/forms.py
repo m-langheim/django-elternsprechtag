@@ -9,7 +9,7 @@ from django.contrib.auth.forms import (
 from django.utils.translation import gettext as _
 from .models import *
 from dashboard.models import EventChangeFormula
-from authentication.models import CustomUser
+from authentication.models import CustomUser, Tag
 from django.utils import timezone
 from django.db.models import Q
 
@@ -33,3 +33,24 @@ class EventChangeFormularForm(forms.Form):
         queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple
     )
     date = forms.DateField(initial=timezone.datetime.now().date, widget=forms.DateInput)
+
+
+class ParentEditForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "first_name",
+            "last_name",
+            "students",
+            "email",
+            "is_active",
+        )
+
+
+class TeacherEditForm(forms.Form):
+    email = forms.EmailField()
+    first_name = forms.CharField(max_length=48)
+    last_name = forms.CharField(max_length=48)
+    acronym = forms.CharField(max_length=3)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all())
+    image = forms.ImageField(required=False)

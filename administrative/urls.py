@@ -67,6 +67,11 @@ urlpatterns = [
         TeacherTableView.as_view(),
         name="teachers_table",
     ),
+    path(
+        "users/teachers/<pk>/edit",
+        TeacherEditView.as_view(),
+        name="teachers_edit_view",
+    ),
     ## Events ##
     path(
         "events/",
