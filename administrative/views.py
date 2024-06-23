@@ -24,12 +24,13 @@ from django.utils.encoding import force_bytes, force_str
 
 import datetime
 
-from .forms import CsvImportForm, AdminStudentEditForm
+from .forms import *
 from .tasks import *
 from .tables import *
 from django_tables2 import SingleTableView
 
 from dashboard.models import Event, EventChangeFormula
+from dashboard.tasks import async_create_events_special
 
 import csv, io, os
 
@@ -284,20 +285,29 @@ class StudentDetailView(View):
 
 class AdministrativeFormulaApprovalView(View):
     def get(self, request):
-        formulars = EventChangeFormula.objects.filter(date__gte=timezone.now())
+        formulars = EventChangeFormula.objects.filter(
+            Q(date__gte=timezone.now()), Q(status=1)
+        )
         formulars_table = EventFormularActionTable(formulars)
 
         approved_formulars_table = EventFormularOldTable(
             EventChangeFormula.objects.filter(Q(status=2) | Q(status=3))
         )
 
+        upcomming_formulars_table = EventFormularUpcommingTable(
+            EventChangeFormula.objects.filter(Q(date__gte=timezone.now()), Q(status=0))
+        )
+
+        formular_form = EventChangeFormularForm()
+
         return render(
             request,
             "administrative/time_slots/overview.html",
             {
                 "action_table": formulars_table,
-                "upcomming_table": formulars_table,
+                "upcomming_table": upcomming_formulars_table,
                 "approved_formulars_table": approved_formulars_table,
+                "change_formular": formular_form,
             },
         )
 
@@ -306,9 +316,97 @@ class EventsListView(View):
     def get(self, request):
         events = Event.objects.filter(start__gte=timezone.now())
         events_table = Eventstable(events)
+        events_table.paginate(page=request.GET.get("page", 1), per_page=25)
+
+        formular_form = EventChangeFormularForm()
 
         return render(
             request,
             "administrative/time_slots/events_table.html",
-            {"events_table": events_table},
+            {"events_table": events_table, "change_formular": formular_form},
         )
+
+
+class EventBlockView(View):
+    def get(self, request, event_id):
+        try:
+            event = Event.objects.get(pk=event_id)
+        except Event.DoesNotExist:
+            messages.error(request, "Das gesuchte Event konnte nicht gefunden werden.")
+            return redirect("..")
+        else:
+            event.occupied = True
+            event.status = 1
+            event.save()
+            return redirect("..")
+
+
+class EventChangeFormularAddView(View):
+    def post(self, request):
+        form = EventChangeFormularForm(request.POST)
+
+        if form.is_valid():
+            date = form.cleaned_data["date"]
+            teachers = form.cleaned_data["teacher"]
+
+            for teacher in teachers:
+                EventChangeFormula.objects.create(teacher=teacher, date=date)
+            return redirect("administrative_event_formular_view")
+
+
+class EventChangeFormularApproveView(View):
+    def get(self, request, formular_id):
+        try:
+            formula = EventChangeFormula.objects.get(pk=formular_id)
+        except EventChangeFormula.DoesNotExist:
+            messages.error(
+                request, "Das gegebene Formular konnte nicht gefunden werden"
+            )
+            return redirect("administrative_event_formular_view")
+        else:
+            if formula.status != 1:
+                messages.warning(
+                    request,
+                    "Sie können diesen Antrag nicht ablehnen, da er sich hierzu im falschen Status befindet.",
+                )
+                return redirect("administrative_event_formular_view")
+
+            if not formula.no_events:
+                async_create_events_special.delay(
+                    [formula.teacher.id],
+                    formula.date.strftime("%Y-%m-%d"),
+                    formula.start_time.strftime("%H:%M:%S"),
+                    formula.end_time.strftime("%H:%M:%S"),
+                )
+
+            formula.status = 2
+            formula.save()
+
+            messages.success(request, "Die Termine werden nun erstellt.")
+
+            return redirect("administrative_event_formular_view")
+
+
+class EventChangeFormularDisapproveView(View):
+    def get(self, request, formular_id):
+        try:
+            formula = EventChangeFormula.objects.get(pk=formular_id)
+        except EventChangeFormula.DoesNotExist:
+            messages.error(
+                request, "Das gegebene Formular konnte nicht gefunden werden"
+            )
+            return redirect("administrative_event_formular_view")
+        else:
+            if formula.status != 1:
+                messages.warning(
+                    request,
+                    "Sie können diesen Antrag nicht ablehnen, da er sich hierzu im falschen Status befindet.",
+                )
+                return redirect("administrative_event_formular_view")
+
+            formula.status = 3
+            formula.save()
+
+            messages.success(request, "Die Termine werden nun erstellt.")
+
+            return redirect("administrative_event_formular_view")

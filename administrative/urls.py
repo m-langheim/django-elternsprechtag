@@ -64,8 +64,28 @@ urlpatterns = [
         name="administrative_event_list_view",
     ),
     path(
+        "events/<event_id>/block",
+        EventBlockView.as_view(),
+        name="administrative_event_block_view",
+    ),
+    path(
         "events/formulars/",
         AdministrativeFormulaApprovalView.as_view(),
         name="administrative_event_formular_view",
+    ),
+    path(
+        "events/formulars/add/",
+        EventChangeFormularAddView.as_view(),
+        name="administrative_event_formular_add_view",
+    ),
+    path(
+        "events/formulars/<int:formular_id>/approve/",
+        EventChangeFormularApproveView.as_view(),
+        name="administrative_event_formular_approve_view",
+    ),
+    path(
+        "events/formulars/<int:formular_id>/disapprove/",
+        EventChangeFormularDisapproveView.as_view(),
+        name="administrative_event_formular_disapprove_view",
     ),
 ]

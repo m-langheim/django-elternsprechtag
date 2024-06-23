@@ -60,6 +60,21 @@ class EventFormularActionTable(tables.Table):
             "date",
         )
 
+    approve = tables.LinkColumn(
+        "administrative_event_formular_approve_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Approve",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
+    disapprove = tables.LinkColumn(
+        "administrative_event_formular_disapprove_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Disapprove",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
+
 
 class EventFormularUpcommingTable(tables.Table):
     class Meta:
@@ -104,4 +119,12 @@ class TeachersTable(tables.Table):
 class Eventstable(tables.Table):
     class Meta:
         model = Event
-        fields = ("teacher", "start")
+        fields = ("teacher.teacherextradata.acronym", "start", "status")
+
+    block = tables.LinkColumn(
+        "administrative_event_block_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Block",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
