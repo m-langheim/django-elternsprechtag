@@ -1,13 +1,14 @@
 {% extends "dashboard/base.html" %}
 
-{% block title %} Dashboard - Profile {% endblock title %}
+{% block title %} Administrative {% endblock title %}
 
 {% block content %}
 
-{% url 'student_import_filepload' as import_fileupload %}
-{% url 'profile_change_password' as change_password_url %}
-{% url 'profile_edit_tag_view' as edit_tags_url %}
-{% url 'profile_student_list' as student_list %}
+
+{% url 'administrative_dashboard' as dashboard_url %}
+{% url 'student_list_view' as student_list_view %}
+{% url 'administrative_users_view' as users_view %}
+{% url 'administrative_event_list_view' as event_view %}
 
 <script>
     function blur(event) {
@@ -20,23 +21,32 @@
         <div class="btn-group col-12">
             <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 data-bs-auto-close="true" aria-expanded="false" onclick="blur(this);">
-                {% if request.get_full_path == import_fileupload %}
-                Import students
-                {% elif request.get_full_path == change_password_url %}
-                Kennwort
-                {% elif request.get_full_path == edit_tags_url %}
-                Tags
+                {% if dashboard_url == request.get_full_path %}
+                Dashboard
+                {% elif users_view in request.get_full_path %}
+                Users
+                {% elif student_list_view in request.get_full_path %}
+                Students
+                {% elif event_view in request.get_full_path %}
+                Events
                 {% endif %}
             </button>
             <ul class="dropdown-menu col-12">
                 <li>
-                    <a class="dropdown-item" href="{% url 'student_import_filepload' %}">Import Students</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="{% url 'profile_change_password' %}">
-                        Kennwort
+                    <a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
+                        Dashboard
                     </a>
                 </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'parents_table' %}">Users</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'student_list_view' %}">Students</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">Events</a>
+                </li>
+                
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
@@ -50,13 +60,22 @@
         <ul class="nav flex-column nav-tabs p-2 card card-body" style="border-radius: 0.5rem;"
             role="tablist" aria-orientation="vertical" id="profilePageTabs">
             <li class="nav-item mb-1" role="presentation">
-                <a class="nav-link {% if request.get_full_path == my_profile_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'student_import_filepload' %}">Import Students</a>
+                <a class="nav-link {% if request.get_full_path == dashboard_url %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_dashboard' %}">Dashbaord</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
-                <a class="nav-link {% if request.get_full_path == change_password_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_change_password' %}">Sicherheit</a>
+                <a class="nav-link {% if users_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'parents_table' %}">Users</a>
             </li>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if student_list_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'student_list_view' %}">Students</a>
+            </li>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if event_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">Events</a>
+            </li>
+            
             <li>
                 <div class="dropdown-divider"></div>
             </li>
@@ -67,10 +86,10 @@
         </ul>
     </div>
     <div class="col-12 col-sm-8 col-xl-10 col-lg-9">
-        <div class="card card-body p-4">
+        {% comment %} <div class="card card-body p-4"> {% endcomment %}
             {% block control_content %}
             {% endblock control_content %}
-        </div>
+        {% comment %} </div> {% endcomment %}
     </div>
 </div>
 {% endblock content %}

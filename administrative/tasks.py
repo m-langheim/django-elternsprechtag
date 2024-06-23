@@ -68,7 +68,11 @@ def apply_student_changes(self):
     progress_recorder.total = len(approved_changes)
 
     for change in approved_changes:
-        if change.operation == 1:
+        if change.operation == 0:
+            change.applied = True
+            change.applied_time = timezone.now()
+            change.save()
+        elif change.operation == 1:
             student = Student.objects.create(
                 shield_id=change.shield_id,
                 first_name=change.first_name,
@@ -120,7 +124,12 @@ def apply_and_approve_student_changes(self, changes_list):
     progress_recorder.total = len(approved_changes)
 
     for change in approved_changes:
-        if change.operation == 1:
+        if change.operation == 0:
+            change.applied = True
+            change.approved = True
+            change.applied_time = timezone.now()
+            change.save()
+        elif change.operation == 1:
             student = Student.objects.create(
                 shield_id=change.shield_id,
                 first_name=change.first_name,
@@ -163,3 +172,5 @@ def apply_and_approve_student_changes(self, changes_list):
             student.delete()
 
         progress_recorder.increment_progress()
+
+    return "All changes applied"

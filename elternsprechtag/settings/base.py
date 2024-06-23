@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_tables2",
     "celery",
     "celery_progress",
     "django_celery_beat",
@@ -187,3 +188,6 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
 # CELERY_RESULT_BACKEND = 'django-db'
+
+# TABLES2 Configuration
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"

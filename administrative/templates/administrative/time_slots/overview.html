@@ -1,0 +1,20 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block control_content %}
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-action-tab" data-bs-toggle="tab" data-bs-target="#nav-action" type="button" role="tab" aria-controls="nav-action" aria-selected="true">Waiting for Action</button>
+      <button class="nav-link" id="nav-edited-tab" data-bs-toggle="tab" data-bs-target="#nav-edited" type="button" role="tab" aria-controls="nav-edited" aria-selected="false">Approved</button>
+      <button class="nav-link" id="nav-upcomming-tab" data-bs-toggle="tab" data-bs-target="#nav-upcomming" type="button" role="tab" aria-controls="nav-upcomming" aria-selected="false">Upcomming</button>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-action" role="tabpanel" aria-labelledby="nav-action-tab">
+        {% render_table action_table %}
+    </div>
+    <div class="tab-pane fade" id="nav-edited" role="tabpanel" aria-labelledby="nav-edited-tab">{% render_table approved_formulars_table %}</div>
+    <div class="tab-pane fade" id="nav-upcomming" role="tabpanel" aria-labelledby="nav-upcomming-tab">{% render_table upcomming_table %}</div>
+  </div>
+
+{% endblock %}

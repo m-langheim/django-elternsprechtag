@@ -1,0 +1,35 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block control_content %}
+<div class="card card-body p-4">
+<div class="h-auto d-grid gap-3">
+    <div class="container">
+        <p class="h1">Student</p>
+        <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+    </div>
+
+    <div class="row">
+        <div class="col d-flex justify-content-end">
+            <a class="btn btn-outline-danger mt-2" href="{% url 'student_edit_view' pk=student.pk %}">
+                Edit
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <p class="h1">Parents</p>
+        <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col d-flex">
+        <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Zurück</a>
+    </div>
+    <div class="col d-flex justify-content-end">
+        <a class="btn btn-outline-danger mt-2" href="{% url 'student_edit_view' pk=student.pk %}">
+            Edit
+        </a>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block control_content %}
+{% render_table events_table %}
+{% endblock %}

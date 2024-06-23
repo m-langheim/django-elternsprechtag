@@ -1,6 +1,7 @@
 {% extends 'administrative/administrative_base.html' %}
 
 {% block control_content %}
+<div class="card card-body p-4">
 <!-- Download Status -->
 <div class="container" style="height: 120px;">
 		<div class="text-center" style="font-size: 14px">
@@ -13,6 +14,7 @@
         </div>
         <div id="celery-result">
         </div>
+</div>
 </div>
 
 {% block progress_bar_js %}

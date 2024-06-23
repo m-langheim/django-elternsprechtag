@@ -24,6 +24,14 @@ class Student(models.Model):  # Schüler
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def parent(self):
+        try:
+            parent = CustomUser.objects.get(students=self)
+        except CustomUser.DoesNotExist:
+            return None
+        else:
+            return parent
+
     class Meta:
         verbose_name = _("Student")
         verbose_name_plural = _("Students")
