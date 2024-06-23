@@ -12,6 +12,11 @@ urlpatterns = [
     ),
     path("students/<pk>/edit", StudentEdit.as_view(), name="student_edit_view"),
     path(
+        "students/<pk>/send_registration_mail",
+        UpcommingUserSendRegistrationMail.as_view(),
+        name="administrative_student_send_registration_mail",
+    ),
+    path(
         "students/import/upload/",
         StudentImportStart.as_view(),
         name="student_import_filepload",
@@ -51,6 +56,11 @@ urlpatterns = [
         "users/parents/",
         ParentTableView.as_view(),
         name="parents_table",
+    ),
+    path(
+        "users/parents/<parent_id>/edit",
+        ParentEditView.as_view(),
+        name="parent_edit_view",
     ),
     path(
         "users/teachers/",

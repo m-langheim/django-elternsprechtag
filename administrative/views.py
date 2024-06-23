@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from authentication.models import StudentChange, CustomUser
+from authentication.models import StudentChange, CustomUser, Upcomming_User
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
@@ -28,6 +28,7 @@ from .forms import *
 from .tasks import *
 from .tables import *
 from django_tables2 import SingleTableView
+from general_tasks.tasks import async_send_mail
 
 from dashboard.models import Event, EventChangeFormula
 from dashboard.tasks import async_create_events_special
@@ -275,12 +276,100 @@ class StudentDetailView(View):
             messages.error(request, "The entry could not be found.")
             return redirect("student_list_view")
         else:
+            parent = student.parent()
+            if parent:
+                return render(
+                    request,
+                    "administrative/student/student_detail_view.html",
+                    {"student": student, "parent": parent},
+                )
+            else:
+                one_time_login, created = Upcomming_User.objects.get_or_create(
+                    student=student
+                )
 
-            return render(
-                request,
-                "administrative/student/student_detail_view.html",
-                {"student": student},
+                return render(
+                    request,
+                    "administrative/student/student_detail_view.html",
+                    {
+                        "student": student,
+                        "one_time_login": one_time_login,
+                        "sign_up_url": str(os.environ.get("PUBLIC_URL"))
+                        + "/register/"
+                        + str(one_time_login.user_token)
+                        + "/"
+                        + str(one_time_login.access_key)
+                        + "/",
+                    },
+                )
+
+
+class UpcommingUserSendRegistrationMail(View):
+    def get(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+            up_user = Upcomming_User.objects.get(student=student)
+        except:
+            messages.warning(request, "Es ist etwas schief gelaufen")
+            return redirect("..")
+        else:
+            if (
+                up_user.created + timezone.timedelta(days=15) < timezone.now()
+                or up_user.email_send
+            ):
+                up_user.delete()
+
+                up_user = Upcomming_User.objects.create(student=student)
+                up_user.save()
+
+            email_subject = "Registration link for the parent consultation day"
+            email_str_body = render_to_string(
+                "authentication/email/register_parent/register_parent_child_email.txt",
+                {
+                    "user": up_user,  # ggf kann man das nicht so machen
+                    "otp": up_user.otp,
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(up_user.user_token)
+                    + "/"
+                    + str(up_user.access_key)
+                    + "/",
+                },
             )
+            email_html_body = render_to_string(
+                "authentication/email/register_parent/register_parent_child_email.html",
+                {
+                    "user": up_user,  # ggf kann man das nicht so machen
+                    "otp": up_user.otp,
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + "/register/"
+                    + str(up_user.user_token)
+                    + "/"
+                    + str(up_user.access_key)
+                    + "/",
+                    "template_text_bottom": "Use the following One-Time-Password when signing up: <strong>"
+                    + up_user.otp
+                    + "</strong>.",
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                },
+            )  #!Hier habe ich ein wenig gefuscht; dies wird gerade nicht genutzt!
+
+            # async_send_mail.delay(
+            #     email_subject,
+            #     email_str_body,
+            #     up_user.student.child_email,
+            #     email_html_body=email_html_body,
+            # )
+
+            async_send_mail.delay(
+                email_subject,
+                email_str_body,
+                up_user.student.child_email,
+            )  #! Hier wird keine HTML versandt
+            up_user.email_send = True
+            up_user.save()
+            messages.success(request, "Die Registrieungsmail wurde versendet.")
+            return redirect("student_details_view", student.pk)
 
 
 class AdministrativeFormulaApprovalView(View):
@@ -410,3 +499,13 @@ class EventChangeFormularDisapproveView(View):
             messages.success(request, "Die Termine werden nun erstellt.")
 
             return redirect("administrative_event_formular_view")
+
+
+class ParentEditView(View):
+    def get(self, request, parent_id):
+        try:
+            parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
+        except:
+            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+        else:
+            return render(request, "administrative/users/parents/parent_edit.html")

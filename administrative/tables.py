@@ -24,13 +24,6 @@ class StudentTable(tables.Table):
         text="View",
         attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
     )
-    edit = tables.LinkColumn(
-        "student_edit_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
-    )
 
 
 class StudentChangeTable(tables.Table):
@@ -103,6 +96,15 @@ class ParentsTable(tables.Table):
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "students")
+
+    # parent_edit_view
+    edit = tables.LinkColumn(
+        "parent_edit_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Edit",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
 
 
 class TeachersTable(tables.Table):
