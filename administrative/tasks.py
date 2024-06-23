@@ -1,9 +1,10 @@
 from celery import shared_task
-from authentication.models import StudentChange, Student
+from authentication.models import StudentChange, Student, CustomUser
 import csv, io, os
 from celery_progress.backend import ProgressRecorder
 from django.utils import timezone
 from django.db.models import Q
+from authentication.utils import register_new_teacher
 
 
 @shared_task(bind=True)
@@ -174,3 +175,22 @@ def apply_and_approve_student_changes(self, changes_list):
         progress_recorder.increment_progress()
 
     return "All changes applied"
+
+
+@shared_task(bind=True)
+def proccess_teacher_file_import(self, csv_file, *args, **kwargs):
+    reader = csv.DictReader(io.StringIO(csv_file), delimiter=";")
+
+    reader_list = list(reader)
+    progress_recorder = ProgressRecorder(self)
+    length = len(reader_list)
+
+    for index, line in enumerate(reader_list):
+        if "Vorname" in line and "Nachname" in line:
+            print(line["Vorname"])
+        email = line["Mailadresse"]
+        if not CustomUser.objects.filter(Q(email=email), Q(role=1), Q(is_active=True)):
+            register_new_teacher(email)
+        progress_recorder.set_progress(index, length)
+
+    return "All teachers imported"

@@ -92,7 +92,7 @@ class StudentImportStart(View):
             process_task = process_studentimport_fileupload.delay(csv_file)
             return render(
                 request,
-                "administrative/student/student_import_progress.html",
+                "administrative/student/progress.html",
                 {
                     "task_id": process_task.task_id,
                     "success_url": reverse("student_import_listchanges"),
@@ -164,7 +164,7 @@ class StudentImportApproveAndApplyAll(View):
 
         return render(
             request,
-            "administrative/student/student_import_progress.html",
+            "administrative/student/progress.html",
             {"task_id": task.task_id, "success_url": reverse("student_list_view")},
         )
 
@@ -181,7 +181,7 @@ class StudentImportApproveAndApplyWithOperation(View):
 
         return render(
             request,
-            "administrative/student/student_import_progress.html",
+            "administrative/student/progress.html",
             {
                 "task_id": task.task_id,
                 "success_url": reverse("student_import_listchanges"),
@@ -198,7 +198,7 @@ class StudentImportApproveAndApply(View):
 
             return render(
                 request,
-                "administrative/student/student_import_progress.html",
+                "administrative/student/progress.html",
                 {
                     "task_id": task.task_id,
                     "success_url": reverse("student_import_listchanges"),
@@ -590,3 +590,33 @@ class TeacherEditView(View):
                 "administrative/users/teachers/teacher_edit.html",
                 {"form": teacher_form},
             )
+
+
+class TeacherImportView(View):
+    def get(self, request):
+        form = CsvImportForm()
+        return render(
+            request, "administrative/users/teachers/teacher_import.html", {"form": form}
+        )
+
+    def post(self, request, *args, **kwargs):
+        csv_import = CsvImportForm(request, request.FILES)
+
+        try:
+            csv_file = request.FILES["csv_file"].read().decode("utf-8-sig")
+            process_task = proccess_teacher_file_import.delay(csv_file)
+            return render(
+                request,
+                "administrative/student/progress.html",
+                {
+                    "task_id": process_task.task_id,
+                    "success_url": reverse("teachers_table"),
+                },
+            )
+        except:
+            csv_import.add_error("csv_file", "The file could not be read")
+        return render(
+            request,
+            "administrative/users/teachers/teacher_import.html",
+            {"form": csv_import},
+        )

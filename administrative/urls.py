@@ -68,6 +68,11 @@ urlpatterns = [
         name="teachers_table",
     ),
     path(
+        "users/teachers/import/",
+        TeacherImportView.as_view(),
+        name="teachers_import",
+    ),
+    path(
         "users/teachers/<pk>/edit",
         TeacherEditView.as_view(),
         name="teachers_edit_view",
