@@ -26,6 +26,7 @@ import datetime
 
 from .forms import *
 from .tasks import *
+from .utils import *
 from .tables import *
 from django_tables2 import SingleTableView
 from general_tasks.tasks import async_send_mail
@@ -92,7 +93,7 @@ class StudentImportStart(View):
             process_task = process_studentimport_fileupload.delay(csv_file)
             return render(
                 request,
-                "administrative/student/progress.html",
+                "administrative/progress.html",
                 {
                     "task_id": process_task.task_id,
                     "success_url": reverse("student_import_listchanges"),
@@ -164,7 +165,7 @@ class StudentImportApproveAndApplyAll(View):
 
         return render(
             request,
-            "administrative/student/progress.html",
+            "administrative/progress.html",
             {"task_id": task.task_id, "success_url": reverse("student_list_view")},
         )
 
@@ -181,7 +182,7 @@ class StudentImportApproveAndApplyWithOperation(View):
 
         return render(
             request,
-            "administrative/student/progress.html",
+            "administrative/progress.html",
             {
                 "task_id": task.task_id,
                 "success_url": reverse("student_import_listchanges"),
@@ -198,7 +199,7 @@ class StudentImportApproveAndApply(View):
 
             return render(
                 request,
-                "administrative/student/progress.html",
+                "administrative/progress.html",
                 {
                     "task_id": task.task_id,
                     "success_url": reverse("student_import_listchanges"),
@@ -370,6 +371,17 @@ class UpcommingUserSendRegistrationMail(View):
             up_user.save()
             messages.success(request, "Die Registrieungsmail wurde versendet.")
             return redirect("student_details_view", student.pk)
+
+
+class ResetStudentParentRelationshipView(View):
+    def get(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+        except:
+            messages.error(request, "Der Schüler konnte nicht gefunden werden.")
+        else:
+            reset_student_parent_relationship(student)
+            return redirect("..")
 
 
 class AdministrativeFormulaApprovalView(View):
@@ -607,7 +619,7 @@ class TeacherImportView(View):
             process_task = proccess_teacher_file_import.delay(csv_file)
             return render(
                 request,
-                "administrative/student/progress.html",
+                "administrative/progress.html",
                 {
                     "task_id": process_task.task_id,
                     "success_url": reverse("teachers_table"),

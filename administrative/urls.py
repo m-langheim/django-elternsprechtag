@@ -12,6 +12,11 @@ urlpatterns = [
     ),
     path("students/<pk>/edit", StudentEdit.as_view(), name="student_edit_view"),
     path(
+        "students/<pk>/reset_relationship",
+        ResetStudentParentRelationshipView.as_view(),
+        name="student_reset_relationship_view",
+    ),
+    path(
         "students/<pk>/send_registration_mail",
         UpcommingUserSendRegistrationMail.as_view(),
         name="administrative_student_send_registration_mail",

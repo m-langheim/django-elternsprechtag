@@ -9,7 +9,7 @@ from django.contrib.auth.forms import (
 from django.utils.translation import gettext as _
 from .models import *
 from dashboard.models import EventChangeFormula
-from authentication.models import CustomUser, Tag
+from authentication.models import CustomUser, Tag, Student
 from django.utils import timezone
 from django.db.models import Q
 
@@ -45,6 +45,10 @@ class ParentEditForm(forms.ModelForm):
             "email",
             "is_active",
         )
+
+    students = forms.ModelMultipleChoiceField(
+        queryset=Student.objects, widget=forms.SelectMultiple
+    )
 
 
 class TeacherEditForm(forms.Form):

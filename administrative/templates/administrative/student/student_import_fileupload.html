@@ -3,7 +3,18 @@
 {% block control_content %}
 
 {% if unapproved_changes %}
-<a href="{% url 'student_import_listchanges' %}">View</a>
+<div class="card border-danger mb-3">
+	<div class="card-body row">
+		<div class="col col-12 col-md-8">
+			<h5 class="card-title">Offene Änderungen</h5>
+			<div class="card-text">Es gibt mehrere Änderungen an der Schülerdatenbank, die Sie noch nicht bestätigt haben. Bitte fahren Sie mit den Änderungen fort. </div>
+		</div>
+		<div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+			<a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">Jetzt ansehen</a>
+		</div>
+	</div>
+</div>
+{% comment %} <a href="{% url 'student_import_listchanges' %}">View</a> {% endcomment %}
 {% endif %}
 
 <div class="card card-body p-4">

@@ -77,6 +77,9 @@
         </div>
         <div class="row">
             <div class="col d-flex justify-content-end">
+                <a class="btn btn-outline-danger mt-2" href="{% url 'student_reset_relationship_view' pk=student.pk %}">
+                    Reset
+                </a>
                 <a class="btn btn-outline-danger mt-2" href="{% url 'parent_edit_view' parent_id=parent.pk %}">
                     Edit
                 </a>
@@ -134,11 +137,6 @@
 <div class="row">
     <div class="col d-flex">
         <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Zurück</a>
-    </div>
-    <div class="col d-flex justify-content-end">
-        <a class="btn btn-outline-danger mt-2" href="{% url 'student_edit_view' pk=student.pk %}">
-            Edit
-        </a>
     </div>
 </div>
 </div>
