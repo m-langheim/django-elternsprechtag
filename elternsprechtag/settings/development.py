@@ -89,4 +89,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.look_for_open_inquiries",
         "schedule": crontab(minute="*/1"),
     },
+    "dayly_cleanup_task": {
+        "task": "general_tasks.tasks.dayly_cleanup_task",
+        "schedule": crontab(minute="*/1"),
+    },
 }

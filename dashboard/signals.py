@@ -53,18 +53,16 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
             email_str_body = render_to_string(
                 "dashboard/email/new_inquiry_teacher.txt",
                 {
-                    
                     "parent": instance.requester,
                     "teacher": instance.respondent,
-                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("teacher_event_view", args=[instance.event.id]),
-
-                    
-                    #"students": "\n,".join(
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + reverse("teacher_event_view", args=[instance.event.id]),
+                    # "students": "\n,".join(
                     #    [
                     #        "{} {}".format(student.first_name, student.last_name)
                     #        for student in instance.students.all()
                     #    ]
-                    #),
+                    # ),
                 },
             )
             email_html_body = render_to_string(
@@ -72,17 +70,17 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                 {
                     "parent": instance.requester,
                     "teacher": instance.respondent,
-                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("teacher_event_view", args=[instance.event.id]),
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + reverse("teacher_event_view", args=[instance.event.id]),
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
-                    
-                    #"students": "\n,".join(
+                    # "students": "\n,".join(
                     #    [
                     #        "{} {}".format(student.first_name, student.last_name)
                     #        for student in instance.students.all()
                     #    ]
-                    #),
+                    # ),
                 },
-            ) #! Dies wird derzeit nicht benutzt
+            )  #! Dies wird derzeit nicht benutzt
 
             # async_send_mail.delay(
             #     email_subject,
@@ -90,12 +88,12 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
             #     instance.respondent.email,
             #     email_html_body=email_html_body,
             # )
-            
+
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 instance.respondent.email,
-            ) #! Hier wird keine HTML versendet
+            )  #! Hier wird keine HTML versendet
 
             Announcements.objects.create(
                 user=instance.respondent,
@@ -118,18 +116,19 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
             email_str_body = render_to_string(
                 "dashboard/email/new_inquiry_parent.txt",
                 {
-                    
                     "parent": instance.respondent,
                     "teacher": instance.requester,
-                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("inquiry_detail_view", args=[urlsafe_base64_encode(force_bytes(instance.id))]),
-
-                    
-                    #"students": "\n,".join(
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + reverse(
+                        "inquiry_detail_view",
+                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
+                    ),
+                    # "students": "\n,".join(
                     #    [
                     #        "{} {}".format(student.first_name, student.last_name)
                     #        for student in instance.students.all()
                     #    ]
-                    #),
+                    # ),
                 },
             )
             email_html_body = render_to_string(
@@ -137,18 +136,20 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
                 {
                     "parent": instance.respondent,
                     "teacher": instance.requester,
-                    "url": str(os.environ.get("PUBLIC_URL")) + reverse("inquiry_detail_view", args=[urlsafe_base64_encode(force_bytes(instance.id))]),
-
+                    "url": str(os.environ.get("PUBLIC_URL"))
+                    + reverse(
+                        "inquiry_detail_view",
+                        args=[urlsafe_base64_encode(force_bytes(instance.id))],
+                    ),
                     "date": datetime.datetime.now().strftime("%d.%m.%Y"),
-                    
-                    #"students": "\n,".join(
+                    # "students": "\n,".join(
                     #    [
                     #        "{} {}".format(student.first_name, student.last_name)
                     #        for student in instance.students.all()
                     #    ]
-                    #),
+                    # ),
                 },
-            ) #! Dies wird derzeit nicht benutzt
+            )  #! Dies wird derzeit nicht benutzt
 
             # async_send_mail.delay(
             #     email_subject,
@@ -156,12 +157,12 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
             #     instance.respondent.email,
             #     email_html_body=email_html_body,
             # )
-            
+
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 instance.respondent.email,
-            )#! Hier wird keine HTML versendet
+            )  #! Hier wird keine HTML versendet
 
             Announcements.objects.create(
                 user=instance.respondent,
@@ -175,7 +176,7 @@ def freeEvents(sender, instance, **kwarg):
     inquiriy = instance
     event = inquiriy.event
 
-    if inquiriy.type == 1 and not inquiriy.processed:
+    if inquiriy.type == 1 and not inquiriy.processed and event:
         check_inquiry_reopen(event.parent, event.teacher)
         event.parent = None
         event.student.clear()

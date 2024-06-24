@@ -116,6 +116,7 @@ class Inquiry(models.Model):
     )
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
     notified = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = _("Inquiry")
@@ -186,6 +187,24 @@ class SiteSettings(SingletonModel):
         ),
     )
     impressum = models.URLField(max_length=200, default="")
+    keep_events = models.DurationField(default=timezone.timedelta(days=30))
+    delete_events = models.BooleanField(default=True)
+    keep_student_changes = models.DurationField(default=timezone.timedelta(days=60))
+    delete_student_changes = models.BooleanField(default=False)
+    keep_announcements = models.DurationField(default=timezone.timedelta(days=30))
+    delete_announcements = models.BooleanField(default=True)
+    keep_event_change_formulas = models.DurationField(
+        default=timezone.timedelta(days=30)
+    )
+    delete_event_change_formulas = models.BooleanField(default=False)
+
+    def get_default_inquiry_behavior():
+        return [
+            dict({"type": 0, "delete": True, "keep_for_days": 30}),
+            dict({"type": 1, "delete": True, "keep_for_days": 30}),
+        ]
+
+    iquiry_bahvior = models.JSONField(default=get_default_inquiry_behavior)
 
     class Meta:
         verbose_name = _("SiteSettings")
