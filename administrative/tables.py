@@ -51,6 +51,8 @@ class EventFormularActionTable(tables.Table):
             "type",
             "teacher",
             "date",
+            "start_time",
+            "end_time",
         )
 
     approve = tables.LinkColumn(
@@ -77,6 +79,15 @@ class EventFormularUpcommingTable(tables.Table):
             "teacher",
             "date",
         )
+
+    # administrative_event_formular_edit_view
+    edit = tables.LinkColumn(
+        "administrative_event_formular_edit_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Edit",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
 
 
 class EventFormularOldTable(tables.Table):

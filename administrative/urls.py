@@ -104,6 +104,11 @@ urlpatterns = [
         name="administrative_event_formular_add_view",
     ),
     path(
+        "events/formulars/<pk>/edit/",
+        EditTimeSlotView.as_view(),
+        name="administrative_event_formular_edit_view",
+    ),
+    path(
         "events/formulars/<int:formular_id>/approve/",
         EventChangeFormularApproveView.as_view(),
         name="administrative_event_formular_approve_view",

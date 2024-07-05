@@ -413,6 +413,38 @@ class AdministrativeFormulaApprovalView(View):
         )
 
 
+class EditTimeSlotView(View):
+    def get(self, request, pk):
+        try:
+            formula = EventChangeFormula.objects.get(pk=pk)
+        except:
+            messages.error(request, "Somethin went wrong.")
+        else:
+            form = EventChangeFormulaEditForm(instance=formula)
+            return render(
+                request,
+                "administrative/time_slots/edit_time_slots.html",
+                {"form": form},
+            )
+
+    def post(self, request, pk):
+        try:
+            formula = EventChangeFormula.objects.get(pk=pk)
+        except:
+            messages.error(request, "Somethin went wrong.")
+        else:
+            form = EventChangeFormulaEditForm(request.POST, instance=formula)
+
+            if form.is_valid():
+                form.save()
+                return redirect("administrative_event_formular_view")
+            return render(
+                request,
+                "administrative/time_slots/edit_time_slots.html",
+                {"form": form},
+            )
+
+
 class EventsListView(View):
     def get(self, request):
         events = Event.objects.filter(start__gte=timezone.now())

@@ -35,6 +35,29 @@ class EventChangeFormularForm(forms.Form):
     date = forms.DateField(initial=timezone.datetime.now().date, widget=forms.DateInput)
 
 
+class EventChangeFormulaEditForm(forms.ModelForm):
+    class Meta:
+        model = EventChangeFormula
+        fields = (
+            "start_time",
+            "end_time",
+            "no_events",
+        )
+
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
+
+    def save(self, commit=True):
+        self.instance.status = 1
+        if not self.cleaned_data.get("no_events"):
+            self.instance.start_time = self.cleaned_data.get("start_time")
+            self.instance.end_time = self.cleaned_data.get("end_time")
+        else:
+            self.instance.no_events = True
+        self.instance.save()
+        return super(EventChangeFormulaEditForm, self).save(commit=commit)
+
+
 class ParentEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
