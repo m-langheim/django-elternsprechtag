@@ -21,6 +21,11 @@ class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
 
 
+class TeacherImportForm(forms.Form):
+    csv_file = forms.FileField(required=False)
+    teacher_email = forms.EmailField(required=False)
+
+
 class AdminStudentEditForm(forms.Form):
     first_name = forms.CharField(label=_("First name"), max_length=48)
     last_name = forms.CharField(label=_("Last name"), max_length=48)

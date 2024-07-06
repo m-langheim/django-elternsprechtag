@@ -2,6 +2,27 @@ import django_tables2 as tables
 from django_tables2.utils import Accessor
 from authentication.models import Student, StudentChange, CustomUser
 from dashboard.models import Event, EventChangeFormula
+from django.utils.html import format_html
+
+
+class StudentExtrainformaionColumn(tables.Column):
+    def render(self, value):
+        student = Student.objects.get(pk=value)
+
+        column_text = ""
+
+        if not student.parent():
+            if not student.upcomming_user.email_send:
+                column_text += (
+                    "<i class='fa-solid fa-triangle-exclamation text-danger'></i>"
+                )
+            else:
+                column_text += "<i class='fa-solid fa-user-plus text-warning'></i>"
+        else:
+            column_text += (
+                "<i class='fa-solid fa-person-circle-check text-success'></i>"
+            )
+        return format_html(column_text)
 
 
 class StudentTable(tables.Table):
@@ -17,6 +38,7 @@ class StudentTable(tables.Table):
 
     child_email = tables.EmailColumn(orderable=False)
     parent = tables.Column(accessor="parent", orderable=False)
+    info = StudentExtrainformaionColumn(accessor="pk", orderable=False)
     details = tables.LinkColumn(
         "student_details_view",
         args=[Accessor("pk")],

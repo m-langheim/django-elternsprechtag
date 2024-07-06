@@ -689,31 +689,48 @@ class TeacherEditView(View):
 @method_decorator(login_staff, name="dispatch")
 class TeacherImportView(View):
     def get(self, request):
-        form = CsvImportForm()
-        return render(
-            request, "administrative/users/teachers/teacher_import.html", {"form": form}
-        )
-
-    def post(self, request, *args, **kwargs):
-        csv_import = CsvImportForm(request, request.FILES)
-
-        try:
-            csv_file = request.FILES["csv_file"].read().decode("utf-8-sig")
-            process_task = proccess_teacher_file_import.delay(csv_file)
-            return render(
-                request,
-                "administrative/progress.html",
-                {
-                    "task_id": process_task.task_id,
-                    "success_url": reverse("teachers_table"),
-                },
-            )
-        except:
-            csv_import.add_error("csv_file", "The file could not be read")
+        bulk_form = TeacherImportForm()
         return render(
             request,
             "administrative/users/teachers/teacher_import.html",
-            {"form": csv_import},
+            {"form": bulk_form},
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = TeacherImportForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            if form.cleaned_data["csv_file"]:
+                try:
+                    csv_file = form.cleaned_data["csv_file"].read().decode("utf-8-sig")
+                    process_task = proccess_teacher_file_import.delay(csv_file)
+                    return render(
+                        request,
+                        "administrative/progress.html",
+                        {
+                            "task_id": process_task.task_id,
+                            "success_url": reverse("teachers_table"),
+                        },
+                    )
+                except:
+                    form.add_error("csv_file", "The file could not be read")
+            elif form.cleaned_data["teacher_email"]:
+                email = form.cleaned_data["teacher_email"]
+                if not CustomUser.objects.filter(
+                    Q(email=email), Q(role=1), Q(is_active=True)
+                ):
+                    register_new_teacher(email)
+                    messages.success(request, "Lehrkraft wurde hinzugefügt")
+                    return redirect("teachers_table")
+            else:
+                form.add_error(
+                    "csv_file",
+                    error="Es muss mindestens eines der Felder ausgefüllt werden.",
+                )
+        return render(
+            request,
+            "administrative/users/teachers/teacher_import.html",
+            {"form": form},
         )
 
 
