@@ -1,0 +1,65 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block control_content %}
+<div class="h-auto d-grid gap-3">
+  <div class="container row">
+    <div class="col-8">
+      <p class="h1">Events</p>
+      <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+    </div>
+    <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
+  </div>    
+  <ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'administrative_event_list_view' %}">Events</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
+  </li>
+</ul>
+  <div class="container">
+
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-action-tab" data-bs-toggle="tab" data-bs-target="#nav-action" type="button" role="tab" aria-controls="nav-action" aria-selected="true">Waiting for Action</button>
+        <button class="nav-link" id="nav-edited-tab" data-bs-toggle="tab" data-bs-target="#nav-edited" type="button" role="tab" aria-controls="nav-edited" aria-selected="false">Approved</button>
+        <button class="nav-link" id="nav-upcomming-tab" data-bs-toggle="tab" data-bs-target="#nav-upcomming" type="button" role="tab" aria-controls="nav-upcomming" aria-selected="false">Upcomming</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-action" role="tabpanel" aria-labelledby="nav-action-tab">
+          {% render_table action_table %}
+      </div>
+      <div class="tab-pane fade" id="nav-edited" role="tabpanel" aria-labelledby="nav-edited-tab">{% render_table approved_formulars_table %}</div>
+      <div class="tab-pane fade" id="nav-upcomming" role="tabpanel" aria-labelledby="nav-upcomming-tab">{% render_table upcomming_table %}</div>
+    </div>
+
+</div>
+</div>
+
+<div class="modal fade" id="formularModal" tabindex="-1" aria-labelledby="formularModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formularModalLabel">Add Fomular</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'administrative_event_formular_add_view'  %}" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+              Die Eintragung von Terminen soll stets durch die Angefragte Lehrkraft vorgenommen werden. In diesem Fenster können Sie für die ausgewählten Lehrkräften an einem Tag die Möglichkeit zur Eventerstellung bieten.
+              {{ change_formular|crispy }}
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal">Abbrechen</button>
+              <input type="submit" class="btn btn-outline-danger" value="Add" />
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

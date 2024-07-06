@@ -146,7 +146,7 @@ class AdminEventForm(forms.Form):
     teacher = forms.ModelMultipleChoiceField(queryset=CustomUser.objects.filter(role=1))
     date = forms.DateField(widget=forms.SelectDateWidget())
     start_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
-    end_time = forms.TimeField()
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

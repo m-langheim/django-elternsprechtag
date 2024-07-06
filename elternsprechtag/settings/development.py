@@ -62,6 +62,7 @@ EMAIL_COMPLETE = "test@example.com"
 # Celery Settings
 # CELERY_BROKER_URL = "sqla+sqlite:///" + os.path.join(BASE_DIR, 'db.sqlite3')
 CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 CELERY_TIMEZONE = "Europe/Berlin"
 
 # CELERY BEAT
@@ -86,6 +87,10 @@ CELERY_BEAT_SCHEDULE = {
     },
     "look_for_open_inquiries": {
         "task": "general_tasks.tasks.look_for_open_inquiries",
+        "schedule": crontab(minute="*/1"),
+    },
+    "dayly_cleanup_task": {
+        "task": "general_tasks.tasks.dayly_cleanup_task",
         "schedule": crontab(minute="*/1"),
     },
 }

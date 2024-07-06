@@ -1,0 +1,24 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block control_content %}
+<div class="row">
+  <div class="col-8">
+      <p class="h1">Users</p>
+      <p class="text-muted">Hier werden alle Elternzugänge aufgeführt. Elternteile werden durch die Registrierung von Kindern hinzugefügt.</p>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y">Hinzufügen</a></div> {% endcomment %}
+</div>  
+<nav class="nav nav-tabs">
+    <li class="nav-item">
+    <a class="nav-link active" href="{% url 'parents_table' %}">Parents</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'teachers_table' %}">Teacher</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="#">Others</a>
+    </li>
+  </nav>
+{% render_table parents_table %}
+{% endblock %}

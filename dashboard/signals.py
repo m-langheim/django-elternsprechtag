@@ -176,7 +176,7 @@ def freeEvents(sender, instance, **kwarg):
     inquiriy = instance
     event = inquiriy.event
 
-    if inquiriy.type == 1 and not inquiriy.processed:
+    if inquiriy.type == 1 and not inquiriy.processed and event:
         check_inquiry_reopen(event.parent, event.teacher)
         event.parent = None
         event.student.clear()

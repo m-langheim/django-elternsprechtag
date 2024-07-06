@@ -1,0 +1,13 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% block control_content %}
+
+{% if unapproved_changes %}
+<a href="{% url 'student_import_listchanges' %}">View</a>
+{% endif %}
+
+<div class="card card-body p-4">
+    {% crispy form %}
+</div>
+
+{% endblock %}
