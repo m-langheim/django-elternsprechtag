@@ -118,4 +118,5 @@ urlpatterns = [
         EventChangeFormularDisapproveView.as_view(),
         name="administrative_event_formular_disapprove_view",
     ),
+    path("settings/", SettingsView.as_view(), name="administrative_settings"),
 ]

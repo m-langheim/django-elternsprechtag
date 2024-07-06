@@ -22,7 +22,15 @@
     
     <div class="container">
 
-{% render_table events_table %}
+      {% if filter %}
+    <form action="" method="get" class="form form-inline">
+        {{filter.form.teacher | as_crispy_field}}
+        {{filter.form.start | as_crispy_field}}
+        {{filter.form.status | as_crispy_field}}
+        <input type="submit" class="btn btn-outline-danger" value="Filter" />
+    </form>
+{% endif %}
+{% render_table table %}
 
 </div>
 </div>

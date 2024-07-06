@@ -8,6 +8,7 @@ from django.contrib.auth.forms import (
 )
 from django.utils.translation import gettext as _
 from .models import *
+from dashboard.models import SiteSettings
 from dashboard.models import EventChangeFormula
 from authentication.models import CustomUser, Tag, Student
 from django.utils import timezone
@@ -81,3 +82,9 @@ class TeacherEditForm(forms.Form):
     acronym = forms.CharField(max_length=3)
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all())
     image = forms.ImageField(required=False)
+
+
+class SettingsEditForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        exclude = ("",)

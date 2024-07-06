@@ -81,6 +81,12 @@ class EventChangeFormula(models.Model):
     class Meta:
         verbose_name = _("Event creation formula")
         verbose_name_plural = _("Event creation formulas")
+        permissions = [
+            (
+                "approve_disapprove",
+                "Can approve/disapprove the formulars for other users",
+            )
+        ]
 
 
 # Allgemeine Anfragen, also Terminanfragen von den Eltern an die Lehrer und die ufforderung für ein Termin von den Eltern an die Schüler

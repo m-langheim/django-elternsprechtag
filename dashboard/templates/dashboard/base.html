@@ -68,6 +68,8 @@
                                         {% if user.is_superuser %}
                                         <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
                                                     class="fa-solid fa-gear"></i>Admin-Interface</a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}"><i
+                                                        class="fa-solid fa-gear"></i>Control</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                     class="fa-solid fa-gear"></i> Mein Profil</a></li>
@@ -121,6 +123,8 @@
                                     {% if user.is_superuser %}
                                     <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
                                                 class="fa-solid fa-gear"></i>Admin-Interface</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}"><i
+                                                    class="fa-solid fa-gear"></i>Control</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                 class="fa-solid fa-gear"></i> Mein Profil</a></li>

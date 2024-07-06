@@ -1,3 +1,4 @@
+from typing import Dict
 from django.shortcuts import render, redirect
 from authentication.models import StudentChange, CustomUser, Upcomming_User
 from django.db.models import Q
@@ -13,6 +14,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 import os
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView
@@ -28,8 +31,12 @@ from .forms import *
 from .tasks import *
 from .utils import *
 from .tables import *
-from django_tables2 import SingleTableView
+from .filters import *
+from django_tables2 import SingleTableView, SingleTableMixin
+from django_filters.views import FilterView
 from general_tasks.tasks import async_send_mail
+
+from django.contrib.admin.views.decorators import staff_member_required
 
 from dashboard.models import Event, EventChangeFormula
 from dashboard.tasks import async_create_events_special
@@ -38,12 +45,16 @@ import csv, io, os
 
 from django.utils.decorators import method_decorator
 
+login_staff = [login_required, staff_member_required]
 
+
+@method_decorator(login_staff, name="dispatch")
 class AdministrativeDashboard(View):
     def get(self, request, *args, **kwargs):
         return render(request, "administrative/administrative_dashboard.html")
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentListView(SingleTableView):
     model = Student
     table_class = StudentTable
@@ -51,6 +62,7 @@ class StudentListView(SingleTableView):
     template_name = "administrative/student/student_list_view.html"
 
 
+@method_decorator(login_staff, name="dispatch")
 class ParentTableView(View):
     def get(self, request):
         parents = CustomUser.objects.filter(role=0)
@@ -63,6 +75,7 @@ class ParentTableView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class TeacherTableView(View):
     def get(self, request):
         teachers = CustomUser.objects.filter(role=1)
@@ -75,6 +88,7 @@ class TeacherTableView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportStart(View):
     def get(self, request, *args, **kwargs):
         csv_import = CsvImportForm()
@@ -108,6 +122,7 @@ class StudentImportStart(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportListChanges(View):
     def get(self, request, *args, **kwargs):
         if not StudentChange.objects.filter(approved=False).exists():
@@ -144,6 +159,7 @@ class StudentImportListChanges(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportCancel(View):
     def get(self, request):
         latest_changes = StudentChange.objects.filter(
@@ -155,6 +171,7 @@ class StudentImportCancel(View):
         return redirect("student_import_filepload")
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportApproveAndApplyAll(View):
     def get(self, request):
         changes = StudentChange.objects.filter(approved=False)
@@ -170,6 +187,7 @@ class StudentImportApproveAndApplyAll(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportApproveAndApplyWithOperation(View):
     def get(self, request, operation):
         changes = StudentChange.objects.filter(
@@ -190,6 +208,7 @@ class StudentImportApproveAndApplyWithOperation(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentImportApproveAndApply(View):
     def get(self, request, pk):
         try:
@@ -211,6 +230,7 @@ class StudentImportApproveAndApply(View):
             return redirect("student_import_listchanges")
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentEdit(View):
     def get(self, request, pk):
         try:
@@ -269,6 +289,7 @@ class StudentEdit(View):
             )
 
 
+@method_decorator(login_staff, name="dispatch")
 class StudentDetailView(View):
     def get(self, request, pk):
         try:
@@ -305,6 +326,7 @@ class StudentDetailView(View):
                 )
 
 
+@method_decorator(login_staff, name="dispatch")
 class UpcommingUserSendRegistrationMail(View):
     def get(self, request, pk):
         try:
@@ -373,6 +395,7 @@ class UpcommingUserSendRegistrationMail(View):
             return redirect("student_details_view", student.pk)
 
 
+@method_decorator(login_staff, name="dispatch")
 class ResetStudentParentRelationshipView(View):
     def get(self, request, pk):
         try:
@@ -384,6 +407,8 @@ class ResetStudentParentRelationshipView(View):
             return redirect("..")
 
 
+@method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.approve_disapprove"), name="dispatch")
 class AdministrativeFormulaApprovalView(View):
     def get(self, request):
         formulars = EventChangeFormula.objects.filter(
@@ -413,6 +438,7 @@ class AdministrativeFormulaApprovalView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class EditTimeSlotView(View):
     def get(self, request, pk):
         try:
@@ -445,21 +471,40 @@ class EditTimeSlotView(View):
             )
 
 
-class EventsListView(View):
-    def get(self, request):
-        events = Event.objects.filter(start__gte=timezone.now())
-        events_table = Eventstable(events)
-        events_table.paginate(page=request.GET.get("page", 1), per_page=25)
+# class EventsListView(View):
+#     def get(self, request):
+#         events = Event.objects.filter(start__gte=timezone.now())
+#         events_table = Eventstable(events)
+#         events_table.paginate(page=request.GET.get("page", 1), per_page=25)
 
-        formular_form = EventChangeFormularForm()
+#         formular_form = EventChangeFormularForm()
 
-        return render(
-            request,
-            "administrative/time_slots/events_table.html",
-            {"events_table": events_table, "change_formular": formular_form},
-        )
+#         return render(
+#             request,
+#             "administrative/time_slots/events_table.html",
+#             {"events_table": events_table, "change_formular": formular_form},
+#         )
 
 
+@method_decorator(login_staff, name="dispatch")
+class EventsListView(SingleTableMixin, FilterView):
+    table_class = Eventstable
+    template_name = "administrative/time_slots/events_table.html"
+    model = Event
+    filterset_class = EventFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["change_formular"] = EventChangeFormularForm()
+        # context["filter"].form.helper = EventFilterFormHelper()
+        # print(context["filter"].form)
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        return Event.objects.filter(start__gte=timezone.now()).all()
+
+
+@method_decorator(login_staff, name="dispatch")
 class EventBlockView(View):
     def get(self, request, event_id):
         try:
@@ -474,6 +519,7 @@ class EventBlockView(View):
             return redirect("..")
 
 
+@method_decorator(login_staff, name="dispatch")
 class EventChangeFormularAddView(View):
     def post(self, request):
         form = EventChangeFormularForm(request.POST)
@@ -487,6 +533,7 @@ class EventChangeFormularAddView(View):
             return redirect("administrative_event_formular_view")
 
 
+@method_decorator(login_staff, name="dispatch")
 class EventChangeFormularApproveView(View):
     def get(self, request, formular_id):
         try:
@@ -520,6 +567,7 @@ class EventChangeFormularApproveView(View):
             return redirect("administrative_event_formular_view")
 
 
+@method_decorator(login_staff, name="dispatch")
 class EventChangeFormularDisapproveView(View):
     def get(self, request, formular_id):
         try:
@@ -545,6 +593,7 @@ class EventChangeFormularDisapproveView(View):
             return redirect("administrative_event_formular_view")
 
 
+@method_decorator(login_staff, name="dispatch")
 class ParentEditView(View):
     def get(self, request, parent_id):
         try:
@@ -575,6 +624,7 @@ class ParentEditView(View):
             )
 
 
+@method_decorator(login_staff, name="dispatch")
 class TeacherEditView(View):
     def get(self, request, pk):
         try:
@@ -636,6 +686,7 @@ class TeacherEditView(View):
             )
 
 
+@method_decorator(login_staff, name="dispatch")
 class TeacherImportView(View):
     def get(self, request):
         form = CsvImportForm()
@@ -663,4 +714,14 @@ class TeacherImportView(View):
             request,
             "administrative/users/teachers/teacher_import.html",
             {"form": csv_import},
+        )
+
+
+@method_decorator(login_staff, name="dispatch")
+class SettingsView(View):
+    def get(self, request, *args, **kwargs):
+        instance = SiteSettings.objects.all().first()
+        edit_form = SettingsEditForm(instance=instance)
+        return render(
+            request, "administrative/settings/settings_edit.html", {"form": edit_form}
         )
