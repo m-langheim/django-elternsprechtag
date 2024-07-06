@@ -85,7 +85,7 @@ class TeacherEditForm(forms.Form):
     first_name = forms.CharField(max_length=48)
     last_name = forms.CharField(max_length=48)
     acronym = forms.CharField(max_length=3)
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all())
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
     image = forms.ImageField(required=False)
 
 
