@@ -38,6 +38,39 @@ class Event(models.Model):  # Termin
 
     room = models.CharField(default=None, blank=True, null=True, max_length=3)
 
+    lead_start = models.DateField(
+        default=timezone.now, help_text=_("Specify when all parents can book events")
+    )
+
+    lead_inquiry_start = models.DateField(
+        default=timezone.now,
+        help_text=_(
+            "Specify when parents with inquiries can start booking for corresponding events"
+        ),
+    )
+
+    lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
+    lead_allow_same_day = models.BooleanField(default=True)
+
+    LEAD_STATUS_CHOICES = (
+        (0, "No one is allowed to book this event"),
+        (
+            1,
+            "Only parents with special treatment are currently allowed to book this event.",
+        ),
+        (
+            2,
+            "All parents who received an inquiry from this teacher are allowed to book this event.",
+        ),
+        (3, "All parents are allowed to book this event."),
+    )
+
+    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+
+    lead_status_last_change = models.DateTimeField(default=timezone.now)
+
+    lead_manual_override = models.BooleanField(default=False)
+
     STATUS_CHOICES = (
         (0, _("Unoccupied")),
         (1, _("Occupied")),
@@ -47,9 +80,78 @@ class Event(models.Model):  # Termin
 
     occupied = models.BooleanField(default=False)
 
+    def check_time_lead_active(self):
+        event_in_future = self.start > timezone.now()
+        lead_started = self.lead_start <= timezone.now().date()
+        event_same_day = (
+            self.lead_allow_same_day or self.start.date() > timezone.now().date()
+        )
+
+        if event_in_future and lead_started and event_same_day:
+            return True
+
+        return False
+
+    def check_time_lead_inquiry_active(self):
+        event_in_future = self.start > timezone.now()
+        lead_inquiry_started = self.lead_inquiry_start <= timezone.now().date()
+        event_same_day = (
+            self.lead_allow_same_day or self.start.date() > timezone.now().date()
+        )
+
+        if (
+            event_in_future and lead_inquiry_started and event_same_day
+        ) or self.lead_active:
+            return True
+
+        return False
+
+    def update_event_lead_status(self):
+        if (
+            self.check_time_lead_active
+            and self.lead_start > self.lead_status_last_change.date()
+            and not self.lead_manual_override
+        ):
+            self.lead_status = 3
+            self.save()
+        elif (
+            self.check_time_lead_inquiry_active
+            and self.lead_inquiry_start > self.lead_status_last_change.date()
+            and not self.lead_manual_override
+        ):
+            self.lead_status = 2
+            self.save()
+        elif (
+            timezone.now().date() <= self.lead_inquiry_start
+            and not self.lead_manual_override
+        ):
+            self.lead_status = 1
+            self.save()
+        else:
+            self.lead_status = 0
+            self.save()
+
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        permissions = [
+            (
+                "book_event",
+                "The user is allowed to book an event. Without this permission the user will be completely blocked from booking.",
+            ),  #! Aktuell nicht in Benutzung
+            (
+                "inquiry_prebook_event",
+                "The user is allowed to book an event because an inquiry was issued to him.",
+            ),
+            (
+                "condition_prebook_event",
+                "The user is allowed to book an event before the official booking period because he has an e.g. medical condition.",
+            ),
+            (
+                "book_double_event",
+                "The user is allowed to book a double event with all teachers because of an medical condition.",
+            ),  #! Aktuell nicht in Benutzung
+        ]
 
 
 class EventChangeFormula(models.Model):

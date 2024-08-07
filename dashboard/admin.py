@@ -24,10 +24,55 @@ from django.utils import timezone
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("teacher", "start", "end", "status")
+    list_display = (
+        "teacher",
+        "start",
+        "end",
+        "status",
+        "lead_status",
+    )
     search_fields = ("teacher__first_name", "teacher__last_name", "teacher__email")
     change_list_template = "dashboard/admin/events.html"
-    list_filter = ("occupied", "status")
+    list_filter = ("occupied", "status", "lead_status")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "start",
+                    "end",
+                    "teacher",
+                    "status",
+                    "occupied",
+                ),
+            },
+        ),
+        (
+            "Occupation",
+            {
+                "fields": (
+                    "parent",
+                    "student",
+                )
+            },
+        ),
+        (
+            "Booking",
+            {
+                "fields": (
+                    "lead_start",
+                    "lead_inquiry_start",
+                    "lead_end_timedelta",
+                    "lead_allow_same_day",
+                    "lead_status",
+                    "lead_status_last_change",
+                    "lead_manual_override",
+                ),
+                "classes": ["collapse"],
+            },
+        ),
+    )
 
     def get_urls(self):
         urls = super().get_urls()

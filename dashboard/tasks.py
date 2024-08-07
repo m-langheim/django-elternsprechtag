@@ -49,3 +49,9 @@ def async_create_events_special(teachers: list, date: str, start_t: str, end_t: 
                     end=timezone.make_aware(start + duration),
                 )
             start = start + duration
+
+
+@shared_task
+def all_events_update_event_lead_status():
+    for event in Event.objects.all():
+        event.update_event_lead_status()
