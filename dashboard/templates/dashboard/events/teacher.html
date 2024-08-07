@@ -137,7 +137,51 @@
                                 </div>
                                 <div class="col-12 col-md-5 col-xl-3">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        {% if event.occupied %}
+                                        {% if event.bookable %}
+                                            {% if event.booked %}
+                                                <a type="button" class="btn btn-outline-success col-12 col-md-6"
+                                                    href="{% url 'event_per_id' event.id %}">
+                                                    Gebucht
+                                                </a>
+                                            {% elif event.inquiry_pending %}
+                                                <style>
+                                                    .specify_color_orange {
+                                                        border-color: #FF8C00 !important;
+                                                        color: #FF8C00 !important;
+                                                    }
+
+                                                    .specify_color_orange:hover {
+                                                        background-color: #FF8C00 !important;
+                                                        color: white !important;
+                                                    }
+                                                </style>
+                                                <a type="button"
+                                                    class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
+                                                    href="{% url 'event_per_id' event.id %}">
+                                                    Angefragt
+                                                </a>
+                                            {% else %}
+                                                <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                                    href="{% url 'book_event_per_id' event.id %}">
+                                                    Anfragen
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if event.occupied %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Belegt
+                                                </a>
+                                            {% elif event.time_conflict %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Zeitkonflikt
+                                                </a>
+                                            {% else %}
+                                                <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
+                                                    Blockiert
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% comment %} {% if event.occupied %}
                                             {% if event.parent == user %}
                                                 {% if event.status == 2 %}
                                                     <style>
@@ -168,7 +212,7 @@
                                                 </a>
                                             {% endif %}
                                         {% else %}
-                                            {% if event.start in booked_times %}
+                                            {% if event.time_conflict %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
                                                     Zeitkonflikt
                                                 </a>
@@ -178,7 +222,7 @@
                                                     Anfragen
                                                 </a>
                                             {% endif %}
-                                        {% endif %}
+                                        {% endif %} {% endcomment %}
                                     </div>
                                 </div>
                                 <!-- </div> -->

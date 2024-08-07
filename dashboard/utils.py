@@ -1,6 +1,15 @@
-from .models import Inquiry, Event, CustomUser
+from .models import Inquiry, Event, CustomUser, SiteSettings
 from django.db.models import Q
 from django.utils import timezone
+
+PERSONAL_EVENT_STATUS = (
+    (0, "Event bookable"),
+    (1, "Inquiry pending"),
+    (2, "Booked"),
+    (3, "Occupied"),
+    (4, "Blocked"),
+    (5, "Time conflict"),
+)
 
 
 def check_inquiry_reopen(parent: CustomUser, teacher: CustomUser):
@@ -14,6 +23,17 @@ def check_inquiry_reopen(parent: CustomUser, teacher: CustomUser):
             inquiry.processed = False
             inquiry.event = None
             inquiry.save()
+
+
+def check_event_time_conflict(parent: CustomUser, event: Event):
+    min_event_seperation = SiteSettings.objects.first().min_event_seperation
+    conflicting_events = Event.objects.filter(
+        Q(parent=parent),
+        Q(start__lte=event.end + min_event_seperation)
+        | Q(end__gte=event.start - min_event_seperation),
+    )
+
+    return conflicting_events.exists()
 
 
 def check_parent_book_event_allowed(
@@ -62,3 +82,26 @@ def check_parent_book_event_allowed(
         return events.exists()
     else:
         raise ValueError("One of the attributes teacher or event must be set.")
+
+
+def check_event_bookable(parent: CustomUser, event: Event):
+    if event.occupied and event.parent != parent:
+        return PERSONAL_EVENT_STATUS[3][0]
+    elif event.occupied and event.parent == parent:
+        match event.status:
+            case 1:
+                return PERSONAL_EVENT_STATUS[2][0]
+            case 2:
+                return PERSONAL_EVENT_STATUS[1][0]
+    if check_parent_book_event_allowed(parent, event) and not check_event_time_conflict(
+        parent, event
+    ):
+        return PERSONAL_EVENT_STATUS[0][0]  # Parent is allowed to book the event
+    elif check_parent_book_event_allowed(parent, event) and check_event_time_conflict(
+        parent, event
+    ):
+        return PERSONAL_EVENT_STATUS[5][0]  # Time conflict
+    else:
+        return PERSONAL_EVENT_STATUS[4][
+            0
+        ]  # There is an other conflict like not having the current permission level or an inquiry

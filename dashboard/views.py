@@ -31,7 +31,7 @@ from django.http import FileResponse
 
 import logging
 
-from .helpers import create_event_date_dict
+from .helpers import create_event_date_dict, event_date_dict_add_book_information
 
 # Create your views here.
 
@@ -58,33 +58,6 @@ def public_dashboard(request):
     # Hier werden alle events anhand ihres Datums aufgeteilt
     events = Event.objects.filter(Q(parent=request.user), Q(occupied=True))
     events_dict = create_event_date_dict(events)
-    # dates = []
-
-    # datetime_objects = events.order_by("start").values_list("start", flat=True)
-    # for datetime_object in datetime_objects:
-    #     if timezone.localtime(datetime_object).date() not in [
-    #         date.date() for date in dates
-    #     ]:
-    #         # print(datetime_object.astimezone(pytz.UTC).date())
-    #         dates.append(datetime_object.astimezone(pytz.UTC))
-
-    # events_dict = {}
-    # for date in dates:
-    #     #! Spontane Änderung aufgrund von Problemen auf dem Server
-    #     events_dict[str(date.date())] = events.filter(
-    #         Q(
-    #             start__gte=timezone.datetime.combine(
-    #                 date.date(),
-    #                 timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-    #             )
-    #         ),
-    #         Q(
-    #             start__lte=timezone.datetime.combine(
-    #                 date.date(),
-    #                 timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-    #             )
-    #         ),
-    #     ).order_by("start")
 
     announcements = Announcements.objects.filter(
         Q(user=request.user), Q(read=False)
@@ -259,46 +232,10 @@ def bookEventTeacherList(request, teacher_id):
         # personal_booked_events = []
         # for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
         #     personal_booked_events.append({'event': event, 'url': reverse('event_per_id', args=[event.id])})
-        events_dt_dict = create_event_date_dict(events)
+        events_dt_dict = event_date_dict_add_book_information(
+            request.user, create_event_date_dict(events)
+        )
         personal_booked_events = events.filter(Q(occupied=True), Q(parent=request.user))
-
-        # events_dt = Event.objects.filter(Q(teacher=teacher))
-
-        # dates = []
-        # datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
-        # for datetime_object in datetime_objects:
-        #     if timezone.localtime(datetime_object).date() not in [
-        #         date.date() for date in dates
-        #     ]:
-        #         # print(datetime_object.astimezone(pytz.UTC).date())
-        #         dates.append(datetime_object.astimezone(pytz.UTC))
-
-        # events_dt_dict = {}
-        # # print(Event.objects.filter(Q(teacher=teacher)).order_by(
-        # #     'start').values_list("start", flat=True))
-        # # print("DATES", dates)
-        # for date in dates:
-        #     # print("TIME", timezone.datetime.combine(date.date(),
-        #     #       timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()))
-
-        #     #! Spontane Änderung aufgrund von Problemen auf dem Server
-        #     events_dt_dict[str(date.date())] = Event.objects.filter(
-        #         Q(teacher=teacher),
-        #         Q(
-        #             start__gte=timezone.datetime.combine(
-        #                 date.date(),
-        #                 timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-        #             )
-        #         ),
-        #         Q(
-        #             start__lte=timezone.datetime.combine(
-        #                 date.date(),
-        #                 timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-        #             )
-        #         ),
-        #     ).order_by("start")
-
-        # print(events_dt_dict)
 
         tags = TeacherExtraData.objects.get(teacher=teacher).tags.all().order_by("name")
 
@@ -382,7 +319,7 @@ class bookEventView(View):
             booked_times.append(time)
 
         parent_can_book_event = check_parent_book_event_allowed(
-            parent=request.user, teacher=event.teacher
+            parent=request.user, event=event
         )
 
         if not parent_can_book_event:
@@ -400,19 +337,16 @@ class bookEventView(View):
         )
 
     def post(self, request, event_id):
-        # try:
-        #     event = Event.objects.get(id=event_id)
-        # except Event.MultipleObjectsReturned:
-        #     print("error")
-        # except Event.DoesNotExist:
-        #     raise Http404("This event was not found")
-        # else:
         event = get_object_or_404(Event, id=event_id)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
+
+        parent_can_book_event = check_parent_book_event_allowed(
+            parent=request.user, event=event
+        )
         # , initial={"choices": event.student}
         form = BookForm(request.POST, request=request, teacher=event.teacher)
-        if form.is_valid():
+        if form.is_valid() and parent_can_book_event:
             students = []
             for student in form.cleaned_data["student"]:
                 try:
@@ -439,6 +373,9 @@ class bookEventView(View):
             messages.success(request, "Angefragt")
             return redirect("event_per_id", event_id=event.id)
 
+        elif not parent_can_book_event:
+            messages.error(request, "You are not allowed to book this event.")
+
         teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
         url = reverse("event_teacher_list", args=[teacher_id])
 
@@ -455,7 +392,7 @@ class bookEventView(View):
             {
                 "event": event,
                 "book_form": form,
-                "teacher_url": url,
+                "back_url": url,
                 "booked_times": booked_times,
             },
         )

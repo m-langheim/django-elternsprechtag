@@ -11,7 +11,51 @@ from django.utils.encoding import force_str, force_bytes
 
 from django.utils.translation import gettext as _
 
+
 # Create your models here.
+class TeacherEventGroup(models.Model):
+    date = models.DateField(default=timezone.now)
+    teacher = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
+    )
+
+    lead_start = models.DateField(
+        default=timezone.now, help_text=_("Specify when all parents can book events")
+    )
+
+    lead_inquiry_start = models.DateField(
+        default=timezone.now,
+        help_text=_(
+            "Specify when parents with inquiries can start booking for corresponding events"
+        ),
+    )
+
+    lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
+    lead_allow_same_day = models.BooleanField(default=True)
+
+    LEAD_STATUS_CHOICES = (
+        (0, "No one is allowed to book this event"),
+        (
+            1,
+            "Only parents with special treatment are currently allowed to book this event.",
+        ),
+        (
+            2,
+            "All parents who received an inquiry from this teacher are allowed to book this event.",
+        ),
+        (3, "All parents are allowed to book this event."),
+    )
+
+    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+
+    lead_status_last_change = models.DateTimeField(default=timezone.now)
+
+    lead_manual_override = models.BooleanField(default=False)
+
+    room = models.CharField(max_length=5, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.teacher} - {str(self.date)}"
 
 
 class Event(models.Model):  # Termin
@@ -20,7 +64,9 @@ class Event(models.Model):  # Termin
     teacher = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
     )  # limit_choices_to={'role': 1} besagt, dass nur Nutzer, wo der Wert role glwich 1 ist eingesetzt werden können, also es wird verhindert, dass Eltern oder andere als Lehrer in Terminen gespeichert werden
-
+    events_group = models.ForeignKey(
+        TeacherEventGroup, on_delete=models.CASCADE, null=True
+    )
     parent = models.ForeignKey(
         CustomUser,
         on_delete=models.SET_NULL,
@@ -289,10 +335,14 @@ class SiteSettings(SingletonModel):
         ),
     )
     event_duration = models.DurationField(
-        default=datetime.timedelta(seconds=0),
+        default=datetime.timedelta(minutes=7, seconds=30),
         help_text=_(
             "Here you can set the general length of an event. The lenth applies to all events created with the function."
         ),
+    )
+    min_event_seperation = models.DurationField(
+        default=timezone.timedelta(minutes=5),
+        help_text="Here you can set the time between two events a parent can book. You should enter some time here to account for overtime and change of rooms.",
     )
     impressum = models.URLField(max_length=200, default="")
     keep_events = models.DurationField(default=timezone.timedelta(days=30))

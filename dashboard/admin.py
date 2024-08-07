@@ -2,7 +2,14 @@ from django.contrib import admin
 
 from django.db.models import Q
 from authentication.models import CustomUser
-from .models import Event, Inquiry, SiteSettings, Announcements, EventChangeFormula
+from .models import (
+    Event,
+    Inquiry,
+    SiteSettings,
+    Announcements,
+    EventChangeFormula,
+    TeacherEventGroup,
+)
 from .forms import AdminEventForm, AdminEventCreationFormulaForm
 
 from django.utils.translation import gettext as _
@@ -332,3 +339,4 @@ admin.site.register(Inquiry, InquiryAdmin)
 admin.site.register(SiteSettings)
 admin.site.register(Announcements)
 admin.site.register(EventChangeFormula, EventChangeFormulaAdmin)
+admin.site.register(TeacherEventGroup)
