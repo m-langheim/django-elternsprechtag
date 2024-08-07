@@ -204,7 +204,10 @@ def openNewEventChangeFormulaOnDisapprove(sender, instance, *args, **kwargs):
 @receiver(pre_save, sender=Event)
 def checkManualChangeEventAllowedParents(sender, instance, *args, **kwargs):
     current = instance
-    previouse = Event.objects.get(id=instance.id)
-
-    if current.lead_status != previouse.lead_status:
-        instance.lead_status_last_change = timezone.now()
+    try:
+        previouse = Event.objects.get(id=instance.id)
+    except Event.DoesNotExist:
+        pass
+    else:
+        if current.lead_status != previouse.lead_status:
+            instance.lead_status_last_change = timezone.now()
