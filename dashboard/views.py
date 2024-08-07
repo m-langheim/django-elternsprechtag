@@ -23,13 +23,15 @@ from django.http import Http404
 from django.conf import settings
 import pytz
 
-from .utils import check_inquiry_reopen
+from .utils import check_inquiry_reopen, check_parent_book_event_allowed
 
 from general_tasks.utils import EventPDFExport
 import datetime
 from django.http import FileResponse
 
 import logging
+
+from .helpers import create_event_date_dict
 
 # Create your views here.
 
@@ -55,33 +57,34 @@ def public_dashboard(request):
 
     # Hier werden alle events anhand ihres Datums aufgeteilt
     events = Event.objects.filter(Q(parent=request.user), Q(occupied=True))
-    dates = []
+    events_dict = create_event_date_dict(events)
+    # dates = []
 
-    datetime_objects = events.order_by("start").values_list("start", flat=True)
-    for datetime_object in datetime_objects:
-        if timezone.localtime(datetime_object).date() not in [
-            date.date() for date in dates
-        ]:
-            # print(datetime_object.astimezone(pytz.UTC).date())
-            dates.append(datetime_object.astimezone(pytz.UTC))
+    # datetime_objects = events.order_by("start").values_list("start", flat=True)
+    # for datetime_object in datetime_objects:
+    #     if timezone.localtime(datetime_object).date() not in [
+    #         date.date() for date in dates
+    #     ]:
+    #         # print(datetime_object.astimezone(pytz.UTC).date())
+    #         dates.append(datetime_object.astimezone(pytz.UTC))
 
-    events_dict = {}
-    for date in dates:
-        #! Spontane Änderung aufgrund von Problemen auf dem Server
-        events_dict[str(date.date())] = events.filter(
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
-            ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                )
-            ),
-        ).order_by("start")
+    # events_dict = {}
+    # for date in dates:
+    #     #! Spontane Änderung aufgrund von Problemen auf dem Server
+    #     events_dict[str(date.date())] = events.filter(
+    #         Q(
+    #             start__gte=timezone.datetime.combine(
+    #                 date.date(),
+    #                 timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+    #             )
+    #         ),
+    #         Q(
+    #             start__lte=timezone.datetime.combine(
+    #                 date.date(),
+    #                 timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    #             )
+    #         ),
+    #     ).order_by("start")
 
     announcements = Announcements.objects.filter(
         Q(user=request.user), Q(read=False)
@@ -256,44 +259,44 @@ def bookEventTeacherList(request, teacher_id):
         # personal_booked_events = []
         # for event in Event.objects.filter(Q(occupied=True), Q(parent=request.user)):
         #     personal_booked_events.append({'event': event, 'url': reverse('event_per_id', args=[event.id])})
-
+        events_dt_dict = create_event_date_dict(events)
         personal_booked_events = events.filter(Q(occupied=True), Q(parent=request.user))
 
-        events_dt = Event.objects.filter(Q(teacher=teacher))
+        # events_dt = Event.objects.filter(Q(teacher=teacher))
 
-        dates = []
-        datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
-        for datetime_object in datetime_objects:
-            if timezone.localtime(datetime_object).date() not in [
-                date.date() for date in dates
-            ]:
-                # print(datetime_object.astimezone(pytz.UTC).date())
-                dates.append(datetime_object.astimezone(pytz.UTC))
+        # dates = []
+        # datetime_objects = events_dt.order_by("start").values_list("start", flat=True)
+        # for datetime_object in datetime_objects:
+        #     if timezone.localtime(datetime_object).date() not in [
+        #         date.date() for date in dates
+        #     ]:
+        #         # print(datetime_object.astimezone(pytz.UTC).date())
+        #         dates.append(datetime_object.astimezone(pytz.UTC))
 
-        events_dt_dict = {}
-        # print(Event.objects.filter(Q(teacher=teacher)).order_by(
-        #     'start').values_list("start", flat=True))
-        # print("DATES", dates)
-        for date in dates:
-            # print("TIME", timezone.datetime.combine(date.date(),
-            #       timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()))
+        # events_dt_dict = {}
+        # # print(Event.objects.filter(Q(teacher=teacher)).order_by(
+        # #     'start').values_list("start", flat=True))
+        # # print("DATES", dates)
+        # for date in dates:
+        #     # print("TIME", timezone.datetime.combine(date.date(),
+        #     #       timezone.datetime.strptime("00:00:00", "%H:%M:%S").time()))
 
-            #! Spontane Änderung aufgrund von Problemen auf dem Server
-            events_dt_dict[str(date.date())] = Event.objects.filter(
-                Q(teacher=teacher),
-                Q(
-                    start__gte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(
-                    start__lte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                    )
-                ),
-            ).order_by("start")
+        #     #! Spontane Änderung aufgrund von Problemen auf dem Server
+        #     events_dt_dict[str(date.date())] = Event.objects.filter(
+        #         Q(teacher=teacher),
+        #         Q(
+        #             start__gte=timezone.datetime.combine(
+        #                 date.date(),
+        #                 timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+        #             )
+        #         ),
+        #         Q(
+        #             start__lte=timezone.datetime.combine(
+        #                 date.date(),
+        #                 timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+        #             )
+        #         ),
+        #     ).order_by("start")
 
         # print(events_dt_dict)
 
@@ -308,6 +311,10 @@ def bookEventTeacherList(request, teacher_id):
             time = timezone.localtime(event)
             booked_times.append(time)
 
+        parent_can_book_event = check_parent_book_event_allowed(
+            parent=request.user, teacher=teacher
+        )
+
     return render(
         request,
         "dashboard/events/teacher.html",
@@ -315,11 +322,12 @@ def bookEventTeacherList(request, teacher_id):
             "teacher": teacher,
             "events": events,
             "personal_booked_events": personal_booked_events,
-            "events_dt": events_dt,
+            "events_dt": events,
             "events_dt_dict": events_dt_dict,
             "tags": tags,
             "image": image,
             "booked_times": booked_times,
+            "parent_can_book_event": parent_can_book_event,
         },
     )
 
@@ -372,6 +380,13 @@ class bookEventView(View):
         ).values_list("start", flat=True):
             time = timezone.localtime(b_times)
             booked_times.append(time)
+
+        parent_can_book_event = check_parent_book_event_allowed(
+            parent=request.user, teacher=event.teacher
+        )
+
+        if not parent_can_book_event:
+            messages.warning(request, "You are not allowed to book this event!")
 
         return render(
             request,
