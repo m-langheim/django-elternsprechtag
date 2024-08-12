@@ -99,7 +99,12 @@ urlpatterns = [
         name="administrative_event_formular_view",
     ),
     path(
-        "events/formulars/add/",
+        "events/formulars/add/new_date",
+        EventAddNewDateAndFormularsView.as_view(),
+        name="administrative_event_formular_new_date_add_view",
+    ),
+    path(
+        "events/formulars/add/<event_group_id>",
         EventChangeFormularAddView.as_view(),
         name="administrative_event_formular_add_view",
     ),

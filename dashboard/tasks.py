@@ -1,5 +1,5 @@
 from time import sleep
-from dashboard.models import Event, SiteSettings, Inquiry
+from dashboard.models import Event, SiteSettings, Inquiry, EventChangeFormula
 import datetime
 from django.db.models import Q
 from celery import shared_task
@@ -9,7 +9,6 @@ from authentication.models import CustomUser
 
 @shared_task
 def async_create_events():
-    sleep(10)
     teachers = CustomUser.objects.filter(role=1)
 
     time_start = SiteSettings.objects.all().first().time_start
@@ -48,6 +47,29 @@ def async_create_events_special(teachers: list, date: str, start_t: str, end_t: 
                     start=timezone.make_aware(start),
                     end=timezone.make_aware(start + duration),
                 )
+            start = start + duration
+
+
+@shared_task
+def apply_event_change_formular(formular_id: int):
+    try:
+        formular = EventChangeFormula.objects.get(id=formular_id)
+    except:
+        pass
+    else:
+        start = timezone.datetime.combine(formular.date, formular.start_time)
+        end = timezone.datetime.combine(formular.date, formular.end_time)
+        teacher = formular.teacher
+        duration = SiteSettings.objects.all().first().event_duration
+
+        while start + duration <= end:
+            Event.objects.get_or_create(
+                teacher=teacher,
+                main_event_group=formular.main_event_group,
+                teacher_event_group=formular.teacher_event_group,
+                start=start,
+                end=start + duration,
+            )
             start = start + duration
 
 

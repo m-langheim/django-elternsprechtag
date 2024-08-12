@@ -9,7 +9,12 @@ from django.contrib.auth.forms import (
 from django.utils.translation import gettext as _
 from .models import *
 from dashboard.models import SiteSettings
-from dashboard.models import EventChangeFormula
+from dashboard.models import (
+    EventChangeFormula,
+    Event,
+    MainEventGroup,
+    TeacherEventGroup,
+)
 from authentication.models import CustomUser, Tag, Student
 from django.utils import timezone
 from django.db.models import Q
@@ -34,11 +39,18 @@ class AdminStudentEditForm(forms.Form):
 
 
 class EventChangeFormularForm(forms.Form):
-
     teacher = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple
     )
-    date = forms.DateField(initial=timezone.datetime.now().date, widget=forms.DateInput)
+
+
+class EventAddNewDateForm(forms.Form):
+    date = forms.DateField()
+    teacher = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple
+    )
+    lead_start = forms.DateField()
+    lead_inquiry_start = forms.DateField()
 
 
 class EventChangeFormulaEditForm(forms.ModelForm):

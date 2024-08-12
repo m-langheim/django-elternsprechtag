@@ -22,6 +22,7 @@ from django.urls import reverse
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.shortcuts import get_object_or_404
 
 import datetime
 
@@ -37,7 +38,7 @@ from general_tasks.tasks import async_send_mail
 from django.contrib.admin.views.decorators import staff_member_required
 
 from dashboard.models import Event, EventChangeFormula
-from dashboard.tasks import async_create_events_special
+from dashboard.tasks import async_create_events_special, apply_event_change_formular
 
 import csv, io, os
 
@@ -424,6 +425,16 @@ class AdministrativeFormulaApprovalView(View):
 
         formular_form = EventChangeFormularForm()
 
+        dates = MainEventGroup.objects.filter(date__gte=timezone.now())
+        date_context = []
+        for date in dates:
+            date_context.append(
+                {
+                    "date": date.date,
+                    "id": force_str(urlsafe_base64_encode(force_bytes(date.id))),
+                }
+            )
+
         return render(
             request,
             "administrative/time_slots/overview.html",
@@ -432,6 +443,8 @@ class AdministrativeFormulaApprovalView(View):
                 "upcomming_table": upcomming_formulars_table,
                 "approved_formulars_table": approved_formulars_table,
                 "change_formular": formular_form,
+                "change_formular_new": EventAddNewDateForm(),
+                "dates": date_context,
             },
         )
 
@@ -493,7 +506,18 @@ class EventsListView(SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        dates = MainEventGroup.objects.filter(date__gte=timezone.now())
+        date_context = []
+        for date in dates:
+            date_context.append(
+                {
+                    "date": date.date,
+                    "id": force_str(urlsafe_base64_encode(force_bytes(date.id))),
+                }
+            )
         context["change_formular"] = EventChangeFormularForm()
+        context["dates"] = date_context
+        context["change_formular_new"] = EventAddNewDateForm()
         # context["filter"].form.helper = EventFilterFormHelper()
         # print(context["filter"].form)
         return context
@@ -519,15 +543,64 @@ class EventBlockView(View):
 
 @method_decorator(login_staff, name="dispatch")
 class EventChangeFormularAddView(View):
-    def post(self, request):
+    def post(self, request, event_group_id):
+        main_event_group = get_object_or_404(
+            MainEventGroup, id=force_str(urlsafe_base64_decode(event_group_id))
+        )
+
         form = EventChangeFormularForm(request.POST)
 
         if form.is_valid():
-            date = form.cleaned_data["date"]
+            date = main_event_group.date
             teachers = form.cleaned_data["teacher"]
 
             for teacher in teachers:
-                EventChangeFormula.objects.create(teacher=teacher, date=date)
+                teacher_event_group, created = TeacherEventGroup.objects.get_or_create(
+                    main_event_group=main_event_group,
+                    lead_start=main_event_group.lead_start,
+                    lead_inquiry_start=main_event_group.lead_inquiry_start,
+                    teacher=teacher,
+                )
+                EventChangeFormula.objects.get_or_create(
+                    teacher=teacher,
+                    date=date,
+                    main_event_group=main_event_group,
+                    teacher_event_group=teacher_event_group,
+                    status=0,
+                )
+            return redirect("administrative_event_formular_view")
+
+
+@method_decorator(login_staff, name="dispatch")
+class EventAddNewDateAndFormularsView(View):
+    def post(self, request):
+        form = EventAddNewDateForm(request.POST)
+
+        if form.is_valid():
+
+            date = form.cleaned_data["date"]
+            teachers = form.cleaned_data["teacher"]
+
+            main_event_group, created = MainEventGroup.objects.get_or_create(
+                date=date,
+                lead_start=form.cleaned_data["lead_start"],
+                lead_inquiry_start=form.cleaned_data["lead_inquiry_start"],
+            )
+
+            for teacher in teachers:
+                teacher_event_group, created = TeacherEventGroup.objects.get_or_create(
+                    main_event_group=main_event_group,
+                    lead_start=main_event_group.lead_start,
+                    lead_inquiry_start=main_event_group.lead_inquiry_start,
+                    teacher=teacher,
+                )
+                EventChangeFormula.objects.get_or_create(
+                    teacher=teacher,
+                    date=date,
+                    main_event_group=main_event_group,
+                    teacher_event_group=teacher_event_group,
+                    status=0,
+                )
             return redirect("administrative_event_formular_view")
 
 
@@ -550,12 +623,13 @@ class EventChangeFormularApproveView(View):
                 return redirect("administrative_event_formular_view")
 
             if not formula.no_events:
-                async_create_events_special.delay(
-                    [formula.teacher.id],
-                    formula.date.strftime("%Y-%m-%d"),
-                    formula.start_time.strftime("%H:%M:%S"),
-                    formula.end_time.strftime("%H:%M:%S"),
-                )
+                # async_create_events_special.delay(
+                #     [formula.teacher.id],
+                #     formula.date.strftime("%Y-%m-%d"),
+                #     formula.start_time.strftime("%H:%M:%S"),
+                #     formula.end_time.strftime("%H:%M:%S"),
+                # )
+                apply_event_change_formular.delay(formula.id)
 
             formula.status = 2
             formula.save()

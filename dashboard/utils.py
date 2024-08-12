@@ -1,4 +1,11 @@
-from .models import Inquiry, Event, CustomUser, SiteSettings
+from .models import (
+    Inquiry,
+    Event,
+    CustomUser,
+    SiteSettings,
+    MainEventGroup,
+    TeacherEventGroup,
+)
 from django.db.models import Q
 from django.utils import timezone
 
@@ -105,3 +112,48 @@ def check_event_bookable(parent: CustomUser, event: Event):
         return PERSONAL_EVENT_STATUS[4][
             0
         ]  # There is an other conflict like not having the current permission level or an inquiry
+
+
+def addEvent(
+    teacher: CustomUser,
+    start: timezone.datetime,
+    end: timezone.datetime,
+    lead_start: timezone.datetime.date = None,
+    lead_inquiry_start: timezone.datetime.date = None,
+) -> Event:
+
+    if start > end:
+        raise ValueError("The events end time must be later than the event start time.")
+    if lead_start and lead_start > start:
+        raise ValueError("The lead start must be set before the event start.")
+    if lead_start and lead_inquiry_start and lead_start > lead_inquiry_start:
+        raise ValueError(
+            "The lead inquiry field is designed to be set before the lead start value.",
+        )
+
+    if not lead_start or not lead_inquiry_start:
+        lead_start = start.date() - timezone.timedelta(days=7)
+        lead_inquiry_start = start.date() - timezone.timedelta(days=14)
+
+    main_event_group = MainEventGroup.objects.get_or_create(
+        Q(date=start.date()),
+        Q(lead_start=lead_start),
+        Q(lead_inquiry_start=lead_inquiry_start),
+    )
+
+    teacher_event_group = TeacherEventGroup.objects.get_or_create(
+        Q(teacher=teacher),
+        Q(main_event_group=main_event_group),
+        Q(lead_start=lead_start),
+        Q(lead_inquiry_start=lead_inquiry_start),
+    )
+
+    event = Event.objects.get_or_create(
+        Q(teacher=teacher),
+        Q(start=start),
+        Q(end=end),
+        Q(main_event_group=main_event_group),
+        Q(teacher_event_group=teacher_event_group),
+    )
+
+    return event

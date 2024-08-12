@@ -1,16 +1,10 @@
-{% extends 'administrative/administrative_base.html' %}
+{% extends 'administrative/time_slots/time_slots_base.html' %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 
-{% block control_content %}
+{% block time_slot_content %}
 <div class="h-auto d-grid gap-3">
-    <div class="container row">
-    <div class="col-8">
-        <p class="h1">Events</p>
-        <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
-      </div>
-      <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
-  </div>  
+    <div class="container row"> 
         <ul class="nav nav-pills">
     <li class="nav-item">
       <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
@@ -34,27 +28,4 @@
 
 </div>
 </div>
-
-<div class="modal fade" id="formularModal" tabindex="-1" aria-labelledby="formularModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="formularModalLabel">Add Fomular</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="{% url 'administrative_event_formular_add_view'  %}" method="post">
-            {% csrf_token %}
-            <div class="modal-body">
-                Die Eintragung von Terminen soll stets durch die Angefragte Lehrkraft vorgenommen werden. In diesem Fenster können Sie für die ausgewählten Lehrkräften an einem Tag die Möglichkeit zur Eventerstellung bieten.
-                {{ change_formular|crispy }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal">Abbrechen</button>
-                <input type="submit" class="btn btn-outline-danger" value="Add" />
-            </div>
-        </form>
-      </div>
-    </div>
-  </div>
 {% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+
+{% block control_content %}
+<div class="h-auto d-grid gap-3">
+    <div class="container row">
+    <div class="col-8">
+        <p class="h1">Events</p>
+        <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+      </div>
+      <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
+  </div> 
+  {% block time_slot_content %} 
+        <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
+    </li>
+  </ul>
+    
+    <div class="container">
+
+      {% if filter %}
+    <form action="" method="get" class="form form-inline">
+        {{filter.form.teacher | as_crispy_field}}
+        {{filter.form.start | as_crispy_field}}
+        {{filter.form.status | as_crispy_field}}
+        <input type="submit" class="btn btn-outline-danger" value="Filter" />
+    </form>
+{% endif %}
+{% render_table table %}
+
+</div>
+</div>
+{% endblock time_slot_content %}
+
+<div class="modal fade" id="formularModal" tabindex="-1" aria-labelledby="formularModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formularModalLabel">Add Fomular</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <style>
+              .active {
+                  border-color: red !important;
+              }
+  
+              /* change this color */
+          </style>
+          {%for date in dates %}
+          <li class="nav-item" role="presentation">
+              <button
+                  class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active{%endif%}"
+                  id="pills-{{date.id}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{date.id}}" type="button"
+                  role="tab" aria-controls="pills-{{date.id}}" aria-selected="true">
+                  {{date.date|date}}</button>
+  
+          </li>
+          {%endfor%}
+          <li class="nav-item" role="presentation">
+            <button
+                class="nav-link bg-white text-danger border border-light"
+                id="pills-new-tab" data-bs-toggle="pill" data-bs-target="#pills-new" type="button"
+                role="tab" aria-controls="pills-new" aria-selected="true">
+                Add new</button>
+
+        </li>
+      </ul>
+      <div class="tab-content" id="pills-tabContent">
+        {%for date in dates %}
+        <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}" id="pills-{{date.id}}"
+            role="tabpanel" aria-labelledby="pills-{{date.id}}-tab" tabindex="0">
+
+            <form action="{% url 'administrative_event_formular_add_view' event_group_id=date.id %}" method="post">
+              {% csrf_token %}
+                    Die Eintragung von Terminen soll stets durch die Angefragte Lehrkraft vorgenommen werden. In diesem Fenster können Sie für die ausgewählten Lehrkräften an einem Tag die Möglichkeit zur Eventerstellung bieten.
+                  {{ change_formular|crispy }}
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary"
+                      data-bs-dismiss="modal">Abbrechen</button>
+                  <input type="submit" class="btn btn-outline-danger" value="Add" />
+              </div>
+          </form>
+        </div>
+        {%endfor%}
+        <div class="tab-pane fade" id="pills-new"
+            role="tabpanel" aria-labelledby="pills-new-tab" tabindex="0">
+            <form action="{% url 'administrative_event_formular_new_date_add_view' %}" method="post">
+              {% csrf_token %}
+              <div class="modal-body">
+                  Die Eintragung von Terminen soll stets durch die Angefragte Lehrkraft vorgenommen werden. In diesem Fenster können Sie für die ausgewählten Lehrkräften an einem Tag die Möglichkeit zur Eventerstellung bieten.
+                  {{ change_formular_new|crispy }}
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary"
+                      data-bs-dismiss="modal">Abbrechen</button>
+                  <input type="submit" class="btn btn-outline-danger" value="Add" />
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
