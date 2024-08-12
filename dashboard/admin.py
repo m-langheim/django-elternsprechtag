@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 from django.db.models import Q
+from django.http import HttpRequest
+from django.http.response import HttpResponse
 from authentication.models import CustomUser
 from .models import (
     Event,
@@ -9,8 +11,9 @@ from .models import (
     Announcements,
     EventChangeFormula,
     TeacherEventGroup,
+    MainEventGroup,
 )
-from .forms import AdminEventForm, AdminEventCreationFormulaForm
+from .forms import AdminEventForm, AdminEventCreationFormulaForm, EventCreationForm
 
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
@@ -26,8 +29,13 @@ from django.contrib import messages
 from django.utils.translation import ngettext
 
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 
 # Register your models here.
+
+
+class EventTeacherGroupAdmin(admin.TabularInline):
+    model = TeacherEventGroup
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -42,13 +50,40 @@ class EventAdmin(admin.ModelAdmin):
     change_list_template = "dashboard/admin/events.html"
     list_filter = ("occupied", "status", "lead_status")
 
+    #! Hier muss noch die Möglichkeit hinzugefügt werden über das Admin Portal ein Event zu erstellen. Dies ist derzeit nur in mehreren Schritten möglich.
+    # def add_view(
+    #     self, request: HttpRequest, form_url: str = "", extra_context=None
+    # ) -> HttpResponse:
+    #     if request.method == "POST":
+    #         form = EventCreationForm(request.POST)
+
+    #         if form.is_valid():
+    #             form.save()
+    #             return HttpResponseRedirect(reverse("admin:dashboard_event_changelist"))
+    #     else:
+    #         form = EventCreationForm()
+
+    #     return self.render_change_form(
+    #         request,
+    #         context={
+    #             "form": form,
+    #             "is_popup": True,
+    #             "add": True,
+    #             "change": False,
+    #         },
+    #         add=True,
+    #     )
+
     fieldsets = (
         (
             None,
             {
                 "fields": (
-                    "start",
-                    "end",
+                    ("main_event_group", "teacher_event_group"),
+                    (
+                        "start",
+                        "end",
+                    ),
                     "teacher",
                     "status",
                     "occupied",
@@ -68,10 +103,6 @@ class EventAdmin(admin.ModelAdmin):
             "Booking",
             {
                 "fields": (
-                    "lead_start",
-                    "lead_inquiry_start",
-                    "lead_end_timedelta",
-                    "lead_allow_same_day",
                     "lead_status",
                     "lead_status_last_change",
                     "lead_manual_override",
@@ -81,35 +112,35 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
 
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [
-            path("add-events/", self.add_events.as_view()),
-        ]
-        return my_urls + urls
+    # def get_urls(self):
+    #     urls = super().get_urls()
+    #     my_urls = [
+    #         path("add-events/", self.add_events.as_view()),
+    #     ]
+    #     return my_urls + urls
 
-    class add_events(View):
-        def get(self, request):
-            return render(
-                request,
-                "dashboard/admin/addEvents.html",
-                context={"form": AdminEventForm},
-            )
+    # class add_events(View):
+    #     def get(self, request):
+    #         return render(
+    #             request,
+    #             "dashboard/admin/addEvents.html",
+    #             context={"form": AdminEventForm},
+    #         )
 
-        def post(self, request):
-            form = AdminEventForm(request.POST)
-            if form.is_valid():
-                async_create_events_special.delay(
-                    [teacher.id for teacher in form.cleaned_data["teacher"]],
-                    form.cleaned_data["date"].strftime("%Y-%m-%d"),
-                    form.cleaned_data["start_time"].strftime("%H:%M:%S"),
-                    form.cleaned_data["end_time"].strftime("%H:%M:%S"),
-                )
+    #     def post(self, request):
+    #         form = AdminEventForm(request.POST)
+    #         if form.is_valid():
+    #             async_create_events_special.delay(
+    #                 [teacher.id for teacher in form.cleaned_data["teacher"]],
+    #                 form.cleaned_data["date"].strftime("%Y-%m-%d"),
+    #                 form.cleaned_data["start_time"].strftime("%H:%M:%S"),
+    #                 form.cleaned_data["end_time"].strftime("%H:%M:%S"),
+    #             )
 
-                return redirect("..")
-            return render(
-                request, "dashboard/admin/addEvents.html", context={"form": form}
-            )
+    #             return redirect("..")
+    #         return render(
+    #             request, "dashboard/admin/addEvents.html", context={"form": form}
+    #         )
 
 
 class InquiryAdmin(admin.ModelAdmin):
@@ -340,3 +371,4 @@ admin.site.register(SiteSettings)
 admin.site.register(Announcements)
 admin.site.register(EventChangeFormula, EventChangeFormulaAdmin)
 admin.site.register(TeacherEventGroup)
+admin.site.register(MainEventGroup)

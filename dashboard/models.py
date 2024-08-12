@@ -10,11 +10,33 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
 from django.utils.translation import gettext as _
+from django.db.models import Q
 
 
 # Create your models here.
-class TeacherEventGroup(models.Model):
+class MainEventGroup(models.Model):
     date = models.DateField(default=timezone.now)
+
+    lead_start = models.DateField(
+        default=timezone.now, help_text=_("Specify when all parents can book events")
+    )
+
+    lead_inquiry_start = models.DateField(
+        default=timezone.now,
+        help_text=_(
+            "Specify when parents with inquiries can start booking for corresponding events"
+        ),
+    )
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+
+    def __str__(self):
+        return f"Event group - {str(self.date)}"
+
+
+class TeacherEventGroup(models.Model):
+    # date = models.DateField(default=timezone.now)
+    main_event_group = models.ForeignKey(MainEventGroup, on_delete=models.CASCADE)
     teacher = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
     )
@@ -46,25 +68,24 @@ class TeacherEventGroup(models.Model):
         (3, "All parents are allowed to book this event."),
     )
 
-    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
-
-    lead_status_last_change = models.DateTimeField(default=timezone.now)
-
     lead_manual_override = models.BooleanField(default=False)
 
     room = models.CharField(max_length=5, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.teacher} - {str(self.date)}"
+        return f"{self.teacher} - {str(self.main_event_group.date)}"
 
 
 class Event(models.Model):  # Termin
     # identifier für diesen speziellen Termin
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    main_event_group = models.ForeignKey(
+        MainEventGroup, on_delete=models.CASCADE, null=True
+    )
     teacher = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
     )  # limit_choices_to={'role': 1} besagt, dass nur Nutzer, wo der Wert role glwich 1 ist eingesetzt werden können, also es wird verhindert, dass Eltern oder andere als Lehrer in Terminen gespeichert werden
-    events_group = models.ForeignKey(
+    teacher_event_group = models.ForeignKey(
         TeacherEventGroup, on_delete=models.CASCADE, null=True
     )
     parent = models.ForeignKey(
@@ -82,21 +103,21 @@ class Event(models.Model):  # Termin
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 
-    room = models.CharField(default=None, blank=True, null=True, max_length=3)
+    # room = models.CharField(default=None, blank=True, null=True, max_length=3)
 
-    lead_start = models.DateField(
-        default=timezone.now, help_text=_("Specify when all parents can book events")
-    )
+    # lead_start = models.DateField(
+    #     default=timezone.now, help_text=_("Specify when all parents can book events")
+    # )
 
-    lead_inquiry_start = models.DateField(
-        default=timezone.now,
-        help_text=_(
-            "Specify when parents with inquiries can start booking for corresponding events"
-        ),
-    )
+    # lead_inquiry_start = models.DateField(
+    #     default=timezone.now,
+    #     help_text=_(
+    #         "Specify when parents with inquiries can start booking for corresponding events"
+    #     ),
+    # )
 
-    lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
-    lead_allow_same_day = models.BooleanField(default=True)
+    # lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
+    # lead_allow_same_day = models.BooleanField(default=True)
 
     LEAD_STATUS_CHOICES = (
         (0, "No one is allowed to book this event"),
@@ -126,28 +147,35 @@ class Event(models.Model):  # Termin
 
     occupied = models.BooleanField(default=False)
 
+    def get_event_lead_data(self):
+        return self.events_group
+
     def check_time_lead_active(self):
+        event_group = self.get_event_lead_data()
         event_in_future = self.start > timezone.now()
-        lead_started = self.lead_start <= timezone.now().date()
+        lead_started = event_group.lead_start <= timezone.now().date()
         event_same_day = (
-            self.lead_allow_same_day or self.start.date() > timezone.now().date()
+            event_group.lead_allow_same_day or self.start.date() > timezone.now().date()
         )
 
-        if event_in_future and lead_started and event_same_day:
+        if (
+            event_in_future and lead_started and event_same_day
+        ) or self.lead_status == 3:
             return True
 
         return False
 
     def check_time_lead_inquiry_active(self):
-        event_in_future = self.start > timezone.now()
-        lead_inquiry_started = self.lead_inquiry_start <= timezone.now().date()
+        event_group = self.get_event_lead_data()
+        event_in_future = event_group.start > timezone.now()
+        lead_inquiry_started = event_group.lead_inquiry_start <= timezone.now().date()
         event_same_day = (
-            self.lead_allow_same_day or self.start.date() > timezone.now().date()
+            event_group.lead_allow_same_day or self.start.date() > timezone.now().date()
         )
 
         if (
             event_in_future and lead_inquiry_started and event_same_day
-        ) or self.lead_active:
+        ) or self.lead_status >= 2:
             return True
 
         return False
@@ -176,6 +204,32 @@ class Event(models.Model):  # Termin
         else:
             self.lead_status = 0
             self.save()
+
+    def check_parent_can_book_event(self, parent: CustomUser) -> bool:
+        """This function is designed to check if a specified parent user account is allowed to book the specific event.
+
+        Args:
+            parent (CustomUser): Pass in the parent
+
+        Returns:
+            bool: Describes wether or not the parent is able to book this specific event
+        """
+        if parent.role != 0:
+            raise ValueError("The specified user is not a parent.")
+        if self.lead_status == 3:
+            return True
+        elif (
+            self.lead_status == 2
+            and Inquiry.objects.filter(
+                Q(requester=self.teacher), Q(respondent=parent), Q(processed=False)
+            ).exists()
+        ):
+            return True
+        elif self.lead_status == 1 and parent.has_perm(
+            "dashboard.condition_prebook_event"
+        ):
+            return True
+        return False
 
     class Meta:
         verbose_name = _("Event")
@@ -207,6 +261,12 @@ class EventChangeFormula(models.Model):
 
     TYPE_CHOICES = ((0, _("Submit of personal timeslots")),)
     type = models.IntegerField(choices=TYPE_CHOICES, default=0)
+    main_event_group = models.ForeignKey(
+        MainEventGroup, on_delete=models.CASCADE, null=True, blank=True
+    )
+    teacher_event_group = models.ForeignKey(
+        TeacherEventGroup, on_delete=models.CASCADE, null=True, blank=True
+    )
     teacher = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,

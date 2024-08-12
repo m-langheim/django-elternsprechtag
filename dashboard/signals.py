@@ -1,6 +1,13 @@
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from .models import Event, Inquiry, Announcements, EventChangeFormula
+from .models import (
+    Event,
+    Inquiry,
+    Announcements,
+    EventChangeFormula,
+    MainEventGroup,
+    TeacherEventGroup,
+)
 from django.db.models import Q
 from django.utils import timezone
 from authentication.tasks import async_send_mail
@@ -211,3 +218,23 @@ def checkManualChangeEventAllowedParents(sender, instance, *args, **kwargs):
     else:
         if current.lead_status != previouse.lead_status:
             instance.lead_status_last_change = timezone.now()
+
+
+@receiver(pre_save, sender=MainEventGroup)
+def updateLeadDates(sender, instance, *args, **kwargs):
+    current = instance
+    try:
+        previouse = MainEventGroup.objects.get(id=current.id)
+    except MainEventGroup.DoesNotExist:
+        pass
+    else:
+        if (
+            previouse.lead_start != current.lead_start
+            or previouse.lead_inquiry_start != current.lead_inquiry_start
+        ):
+            for teacher_event_group in TeacherEventGroup.objects.filter(
+                Q(main_event_group=previouse), Q(lead_manual_override=False)
+            ):
+                teacher_event_group.lead_start = instance.lead_start
+                teacher_event_group.lead_inquiry_start = instance.lead_inquiry_start
+                teacher_event_group.save()

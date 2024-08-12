@@ -1,5 +1,13 @@
+from typing import Any
 from django import forms
-from .models import Student, Inquiry, SiteSettings, Event
+from .models import (
+    Student,
+    Inquiry,
+    SiteSettings,
+    Event,
+    MainEventGroup,
+    TeacherEventGroup,
+)
 from authentication.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
@@ -175,3 +183,72 @@ class cancelEventForm(forms.Form):
         max_length=4000,
         help_text="Der Text darf nicht länger als 4000 Zeichen sein.",
     )
+
+
+class EventCreationForm(forms.BaseInlineFormSet):
+    class Meta:
+        model = Event
+        fields = ["teacher", "start", "end"]
+
+    teacher = forms.ModelChoiceField(
+        queryset=CustomUser.objects.filter(role=1), required=True
+    )
+    start = forms.DateTimeField(required=True)
+    end = forms.DateTimeField(required=True)
+    lead_start = forms.DateField(required=False)
+    lead_inquiry_start = forms.DateField(required=False)
+
+    def clean(self) -> dict[str, Any]:
+        cleaned_data = super(EventCreationForm, self).clean()
+        start = cleaned_data.get("start")
+        end = cleaned_data.get("end")
+        lead_start = cleaned_data.get("lead_start")
+        lead_inquiry_start = cleaned_data.get("lead_inquiry_start")
+        if start > end:
+            self.add_error(
+                "end", "The events end time must be later than the event start time."
+            )
+        if lead_start > start:
+            self.add_error(
+                "lead_start", "The lead start must be set before the event start."
+            )
+        if lead_start > lead_inquiry_start:
+            self.add_error(
+                "lead_inquiry_start",
+                "The lead inquiry field is designed to be set before the lead start value.",
+            )
+        return cleaned_data
+
+    def save(self):
+        teacher = self.cleaned_data["teacher"]
+        start = self.cleaned_data["start"]
+        end = self.cleaned_data["end"]
+
+        if self.cleaned_data["lead_start"] and self.cleaned_data["lead_inquiry_start"]:
+            lead_start = self.cleaned_data["lead_start"]
+            lead_inquiry_start = self.cleaned_data["lead_inquiry_start"]
+        else:
+            lead_start = start.date() - timezone.timedelta(days=7)
+            lead_inquiry_start = start.date() - timezone.timedelta(days=14)
+
+        main_event_group = MainEventGroup.objects.get_or_create(
+            Q(date=start.date()),
+            Q(lead_start=lead_start),
+            Q(lead_inquiry_start=lead_inquiry_start),
+        )
+        teacher_event_group = TeacherEventGroup.objects.get_or_create(
+            Q(teacher=self.cleaned_data["teacher"]),
+            Q(main_event_group=main_event_group),
+            Q(lead_start=lead_start),
+            Q(lead_inquiry_start=lead_inquiry_start),
+        )
+        event = Event.objects.create(
+            main_event_group=main_event_group,
+            teacher_event_group=teacher_event_group,
+            teacher=teacher,
+            start=start,
+            end=end,
+        )
+        event.save()
+
+        return event
