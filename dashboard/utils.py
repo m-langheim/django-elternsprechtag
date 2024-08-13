@@ -34,12 +34,11 @@ def check_inquiry_reopen(parent: CustomUser, teacher: CustomUser):
 
 def check_event_time_conflict(parent: CustomUser, event: Event):
     min_event_seperation = SiteSettings.objects.first().min_event_seperation
-    conflicting_events = Event.objects.filter(
-        Q(parent=parent),
-        Q(start__lte=event.end + min_event_seperation)
-        | Q(end__gte=event.start - min_event_seperation),
+    conflicting_events = (
+        Event.objects.filter(Q(parent=parent))
+        .exclude(start__gt=event.end + min_event_seperation)
+        .exclude(end__lt=event.start - min_event_seperation)
     )
-
     return conflicting_events.exists()
 
 
@@ -56,7 +55,9 @@ def check_parent_book_event_allowed(
             case 0:
                 return False
             case 1:
-                return parent.has_perm("dashboard.condition_prebook_event")
+                return parent.has_perm(
+                    "dashboard.condition_prebook_event"
+                ) and not check_event_time_conflict(parent, event)
             case 2:
                 inquiry = Inquiry.objects.filter(
                     Q(type=0),
@@ -65,9 +66,9 @@ def check_parent_book_event_allowed(
                     Q(processed=False),
                 )
 
-                return inquiry.exists()
+                return inquiry.exists() and not check_event_time_conflict(parent, event)
             case 3:
-                return True
+                return True and not check_event_time_conflict(parent, event)
     elif teacher:
         lead_min_status = 3
         inquiry = Inquiry.objects.filter(
@@ -92,68 +93,68 @@ def check_parent_book_event_allowed(
 
 
 def check_event_bookable(parent: CustomUser, event: Event):
-    if event.occupied and event.parent != parent:
+    if (
+        event.occupied and event.parent != parent
+    ):  # Das Event wurde gebucht und ist von einem anderen Elternteil belegt
         return PERSONAL_EVENT_STATUS[3][0]
-    elif event.occupied and event.parent == parent:
+    elif (
+        event.occupied and event.parent == parent
+    ):  # Das Event wurde von dem angegebenen Elternteil gebucht
         match event.status:
             case 1:
                 return PERSONAL_EVENT_STATUS[2][0]
             case 2:
                 return PERSONAL_EVENT_STATUS[1][0]
-    if check_parent_book_event_allowed(parent, event) and not check_event_time_conflict(
-        parent, event
-    ):
+    if check_parent_book_event_allowed(parent, event):
         return PERSONAL_EVENT_STATUS[0][0]  # Parent is allowed to book the event
-    elif check_parent_book_event_allowed(parent, event) and check_event_time_conflict(
-        parent, event
-    ):
-        return PERSONAL_EVENT_STATUS[5][0]  # Time conflict
-    else:
+    elif not check_event_time_conflict(parent, event):
         return PERSONAL_EVENT_STATUS[4][
             0
         ]  # There is an other conflict like not having the current permission level or an inquiry
+    else:
+        return PERSONAL_EVENT_STATUS[5][0]  # Time conflict
 
 
-def addEvent(
-    teacher: CustomUser,
-    start: timezone.datetime,
-    end: timezone.datetime,
-    lead_start: timezone.datetime.date = None,
-    lead_inquiry_start: timezone.datetime.date = None,
-) -> Event:
+# def addEvent(
+#     teacher: CustomUser,
+#     start: timezone.datetime,
+#     end: timezone.datetime,
+#     lead_start: timezone.datetime.date = None,
+#     lead_inquiry_start: timezone.datetime.date = None,
+# ) -> Event:
 
-    if start > end:
-        raise ValueError("The events end time must be later than the event start time.")
-    if lead_start and lead_start > start:
-        raise ValueError("The lead start must be set before the event start.")
-    if lead_start and lead_inquiry_start and lead_start > lead_inquiry_start:
-        raise ValueError(
-            "The lead inquiry field is designed to be set before the lead start value.",
-        )
+#     if start > end:
+#         raise ValueError("The events end time must be later than the event start time.")
+#     if lead_start and lead_start > start:
+#         raise ValueError("The lead start must be set before the event start.")
+#     if lead_start and lead_inquiry_start and lead_start > lead_inquiry_start:
+#         raise ValueError(
+#             "The lead inquiry field is designed to be set before the lead start value.",
+#         )
 
-    if not lead_start or not lead_inquiry_start:
-        lead_start = start.date() - timezone.timedelta(days=7)
-        lead_inquiry_start = start.date() - timezone.timedelta(days=14)
+#     if not lead_start or not lead_inquiry_start:
+#         lead_start = start.date() - timezone.timedelta(days=7)
+#         lead_inquiry_start = start.date() - timezone.timedelta(days=14)
 
-    day_group = DayEventGroup.objects.get_or_create(
-        Q(date=start.date()),
-        Q(lead_start=lead_start),
-        Q(lead_inquiry_start=lead_inquiry_start),
-    )
+#     day_group = DayEventGroup.objects.get_or_create(
+#         Q(date=start.date()),
+#         Q(lead_start=lead_start),
+#         Q(lead_inquiry_start=lead_inquiry_start),
+#     )
 
-    teacher_event_group = TeacherEventGroup.objects.get_or_create(
-        Q(teacher=teacher),
-        Q(day_group=day_group),
-        Q(lead_start=lead_start),
-        Q(lead_inquiry_start=lead_inquiry_start),
-    )
+#     teacher_event_group = TeacherEventGroup.objects.get_or_create(
+#         Q(teacher=teacher),
+#         Q(day_group=day_group),
+#         Q(lead_start=lead_start),
+#         Q(lead_inquiry_start=lead_inquiry_start),
+#     )
 
-    event = Event.objects.get_or_create(
-        Q(teacher=teacher),
-        Q(start=start),
-        Q(end=end),
-        Q(day_group=day_group),
-        Q(teacher_event_group=teacher_event_group),
-    )
+#     event = Event.objects.get_or_create(
+#         Q(teacher=teacher),
+#         Q(start=start),
+#         Q(end=end),
+#         Q(day_group=day_group),
+#         Q(teacher_event_group=teacher_event_group),
+#     )
 
-    return event
+#     return event

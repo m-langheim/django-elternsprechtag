@@ -27,14 +27,19 @@ class StudentSelector(forms.CheckboxSelectMultiple):
         return option
 
 
-class BookForm(forms.Form):  # * Hier wurde einiges verändert
+class BookForm(forms.ModelForm):  # * Hier wurde einiges verändert
     book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
-        self.teacher = kwargs.pop("teacher")
+        initial = kwargs.pop("initial", {})
         super(BookForm, self).__init__(*args, **kwargs)
 
+        teacher = self.instance.teacher
+        try:
+            inqury_student = initial["student"]
+        except:
+            inqury_student = []
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
@@ -43,12 +48,10 @@ class BookForm(forms.Form):  # * Hier wurde einiges verändert
         active_choices = []
 
         # ! Muss nochmal getestet werden
-        if (
-            SiteSettings.objects.all().first().lead_start > timezone.now().date()
-        ):  # lead not started yet
+        if self.instance.lead_status == 2:  # lead not started yet
             inquiries = Inquiry.objects.filter(
                 Q(type=0),
-                Q(requester=self.teacher),
+                Q(requester=teacher),
                 Q(respondent=self.request.user),
                 Q(event=None),
                 Q(processed=False),
@@ -57,19 +60,30 @@ class BookForm(forms.Form):  # * Hier wurde einiges verändert
             active_choices = [
                 student for student in inquiries.values_list("students", flat=True)
             ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
+            if len(inqury_student) == 1:
+                active_choices.remove(inqury_student[0])
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
             students_with_event = Event.objects.filter(
-                Q(teacher=self.teacher), Q(occupied=True), Q(parent=self.request.user)
+                Q(teacher=teacher), Q(occupied=True), Q(parent=self.request.user)
             ).values_list("student", flat=True)
             for student in choices:
                 if student[0] not in students_with_event:
                     active_choices.append(student[0])
+            if len(inqury_student) == 1:
+                active_choices.remove(inqury_student[0])
 
+        self.initial["student"] = initial.get("student", [])
         self.fields["student"].choices = choices
         self.fields["student"].widget.active_choices = active_choices
 
-    student = forms.MultipleChoiceField(choices=[], widget=StudentSelector(), label="")
+    class Meta:
+        model = Event
+        fields = ("student",)
+
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(), widget=StudentSelector(), label=""
+    )
 
 
 class EditEventForm(forms.Form):
