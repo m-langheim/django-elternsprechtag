@@ -45,4 +45,9 @@ urlpatterns = [
         EventChangeFormularDisapproveView.as_view(),
         name="administrative_event_formular_disapprove_view",
     ),
+    path(
+        "event/<event_id>/",
+        EventDetailView.as_view(),
+        name="administrative_event_detail_view",
+    ),
 ]

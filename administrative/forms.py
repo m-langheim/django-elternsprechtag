@@ -111,3 +111,15 @@ class SettingsEditForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         exclude = ("",)
+
+
+class EventEditForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        exclude = ("teacher_event_group", "day_group")
+
+    teacher = forms.ModelChoiceField(
+        queryset=CustomUser.objects.filter(role=1), disabled=True
+    )
+    start = forms.DateTimeField()
+    end = forms.DateTimeField()

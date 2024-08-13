@@ -46,6 +46,7 @@ from django.utils.decorators import method_decorator
 
 login_staff = [login_required, staff_member_required]
 
+
 @method_decorator(login_staff, name="dispatch")
 @method_decorator(permission_required("dashboard.approve_disapprove"), name="dispatch")
 class AdministrativeFormulaApprovalView(View):
@@ -149,6 +150,30 @@ class EventsListView(SingleTableMixin, FilterView):
         return Event.objects.filter(start__gte=timezone.now()).all()
 
 
+class EventDetailView(View):
+    def get(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        edit_form = EventEditForm(instance=event)
+        return render(
+            request,
+            "administrative/events/event_edit.html",
+            {"form": edit_form, "event": event},
+        )
+
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        edit_form = EventEditForm(instance=event, data=request.POST)
+
+        if edit_form.is_valid():
+            edit_form.save()
+
+        return render(
+            request,
+            "administrative/events/event_edit.html",
+            {"form": edit_form, "event": event},
+        )
+
+
 @method_decorator(login_staff, name="dispatch")
 class EventBlockView(View):
     def get(self, request, event_id):
@@ -158,8 +183,8 @@ class EventBlockView(View):
             messages.error(request, "Das gesuchte Event konnte nicht gefunden werden.")
             return redirect("..")
         else:
-            event.occupied = True
-            event.status = 1
+            event.lead_status = 0
+            event.lead_manual_override = True
             event.save()
             return redirect("..")
 

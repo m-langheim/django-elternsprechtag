@@ -160,6 +160,28 @@ class TeachersTable(tables.Table):
     )
 
 
+class EventExtraInformationColumn(tables.Column):
+    def render(self, value):
+        event = Event.objects.get(pk=value)
+
+        column_text = ""
+
+        if not event.lead_status == 0:
+            match event.status:
+                case 1:
+                    column_text += "<i class='fa-solid fa-circle-xmark'></i>"
+                case 2:
+                    column_text += "<i class='fa-solid fa-file-contract'></i>"
+            match event.lead_status:
+                case 1:
+                    column_text += "<i class='fa-solid fa-notes-medical'></i>"
+                case 2:
+                    column_text += "<i class='fa-solid fa-code-pull-request'></i>"
+        else:
+            column_text += "<i class='fa-solid fa-lock text-danger'></i>"
+        return format_html(column_text)
+
+
 class Eventstable(tables.Table):
     class Meta:
         model = Event
@@ -172,3 +194,11 @@ class Eventstable(tables.Table):
         text="Block",
         attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
     )
+    view = tables.LinkColumn(
+        "administrative_event_detail_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="View",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
+    info = EventExtraInformationColumn(accessor="pk", orderable=False)

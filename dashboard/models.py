@@ -135,22 +135,6 @@ class Event(models.Model):  # Termin
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 
-    # room = models.CharField(default=None, blank=True, null=True, max_length=3)
-
-    # lead_start = models.DateField(
-    #     default=timezone.now, help_text=_("Specify when all parents can book events")
-    # )
-
-    # lead_inquiry_start = models.DateField(
-    #     default=timezone.now,
-    #     help_text=_(
-    #         "Specify when parents with inquiries can start booking for corresponding events"
-    #     ),
-    # )
-
-    # lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
-    # lead_allow_same_day = models.BooleanField(default=True)
-
     LEAD_STATUS_CHOICES = (
         (0, "No one is allowed to book this event"),
         (
@@ -262,6 +246,9 @@ class Event(models.Model):  # Termin
         ):
             return True
         return False
+
+    def __str__(self):
+        return f"Termin von {self.teacher} am {self.start.date()} von {self.start.time()} bis {self.end.time()}"
 
     class Meta:
         verbose_name = _("Event")
