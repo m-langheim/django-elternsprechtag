@@ -3,7 +3,7 @@ from .models import (
     Event,
     CustomUser,
     SiteSettings,
-    MainEventGroup,
+    DayEventGroup,
     TeacherEventGroup,
 )
 from django.db.models import Q
@@ -135,7 +135,7 @@ def addEvent(
         lead_start = start.date() - timezone.timedelta(days=7)
         lead_inquiry_start = start.date() - timezone.timedelta(days=14)
 
-    main_event_group = MainEventGroup.objects.get_or_create(
+    day_group = DayEventGroup.objects.get_or_create(
         Q(date=start.date()),
         Q(lead_start=lead_start),
         Q(lead_inquiry_start=lead_inquiry_start),
@@ -143,7 +143,7 @@ def addEvent(
 
     teacher_event_group = TeacherEventGroup.objects.get_or_create(
         Q(teacher=teacher),
-        Q(main_event_group=main_event_group),
+        Q(day_group=day_group),
         Q(lead_start=lead_start),
         Q(lead_inquiry_start=lead_inquiry_start),
     )
@@ -152,7 +152,7 @@ def addEvent(
         Q(teacher=teacher),
         Q(start=start),
         Q(end=end),
-        Q(main_event_group=main_event_group),
+        Q(day_group=day_group),
         Q(teacher_event_group=teacher_event_group),
     )
 

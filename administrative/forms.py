@@ -12,8 +12,9 @@ from dashboard.models import SiteSettings
 from dashboard.models import (
     EventChangeFormula,
     Event,
-    MainEventGroup,
+    DayEventGroup,
     TeacherEventGroup,
+    BaseEventGroup,
 )
 from authentication.models import CustomUser, Tag, Student
 from django.utils import timezone
@@ -45,6 +46,11 @@ class EventChangeFormularForm(forms.Form):
 
 
 class EventAddNewDateForm(forms.Form):
+    base_event = forms.ModelChoiceField(
+        queryset=BaseEventGroup.objects.filter(valid_until__gte=timezone.now().date()),
+        empty_label="Neues Base Event erstellen",
+        required=False,
+    )
     date = forms.DateField()
     teacher = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple

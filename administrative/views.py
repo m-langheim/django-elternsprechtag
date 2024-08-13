@@ -50,7 +50,23 @@ login_staff = [login_required, staff_member_required]
 @method_decorator(login_staff, name="dispatch")
 class AdministrativeDashboard(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "administrative/administrative_dashboard.html")
+        data = [
+            Event.objects.filter(lead_status=0).count(),
+            Event.objects.filter(lead_status=1).count(),
+            Event.objects.filter(lead_status=2).count(),
+            Event.objects.filter(lead_status=3).count(),
+        ]
+        labels = [
+            "Blockiert",
+            "Beschränkt auf Berechtigte",
+            "Beschränkt auf Anfragen",
+            "Offen",
+        ]
+        return render(
+            request,
+            "administrative/administrative_dashboard.html",
+            {"labels": labels, "data": data},
+        )
 
 
 @method_decorator(login_staff, name="dispatch")
@@ -425,7 +441,7 @@ class AdministrativeFormulaApprovalView(View):
 
         formular_form = EventChangeFormularForm()
 
-        dates = MainEventGroup.objects.filter(date__gte=timezone.now())
+        dates = DayEventGroup.objects.filter(date__gte=timezone.now()).order_by("date")
         date_context = []
         for date in dates:
             date_context.append(
@@ -482,21 +498,6 @@ class EditTimeSlotView(View):
             )
 
 
-# class EventsListView(View):
-#     def get(self, request):
-#         events = Event.objects.filter(start__gte=timezone.now())
-#         events_table = Eventstable(events)
-#         events_table.paginate(page=request.GET.get("page", 1), per_page=25)
-
-#         formular_form = EventChangeFormularForm()
-
-#         return render(
-#             request,
-#             "administrative/time_slots/events_table.html",
-#             {"events_table": events_table, "change_formular": formular_form},
-#         )
-
-
 @method_decorator(login_staff, name="dispatch")
 class EventsListView(SingleTableMixin, FilterView):
     table_class = Eventstable
@@ -506,7 +507,7 @@ class EventsListView(SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        dates = MainEventGroup.objects.filter(date__gte=timezone.now())
+        dates = DayEventGroup.objects.filter(date__gte=timezone.now()).order_by("date")
         date_context = []
         for date in dates:
             date_context.append(
@@ -518,8 +519,6 @@ class EventsListView(SingleTableMixin, FilterView):
         context["change_formular"] = EventChangeFormularForm()
         context["dates"] = date_context
         context["change_formular_new"] = EventAddNewDateForm()
-        # context["filter"].form.helper = EventFilterFormHelper()
-        # print(context["filter"].form)
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -544,27 +543,27 @@ class EventBlockView(View):
 @method_decorator(login_staff, name="dispatch")
 class EventChangeFormularAddView(View):
     def post(self, request, event_group_id):
-        main_event_group = get_object_or_404(
-            MainEventGroup, id=force_str(urlsafe_base64_decode(event_group_id))
+        day_group = get_object_or_404(
+            DayEventGroup, id=force_str(urlsafe_base64_decode(event_group_id))
         )
 
         form = EventChangeFormularForm(request.POST)
 
         if form.is_valid():
-            date = main_event_group.date
+            date = day_group.date
             teachers = form.cleaned_data["teacher"]
 
             for teacher in teachers:
                 teacher_event_group, created = TeacherEventGroup.objects.get_or_create(
-                    main_event_group=main_event_group,
-                    lead_start=main_event_group.lead_start,
-                    lead_inquiry_start=main_event_group.lead_inquiry_start,
+                    day_group=day_group,
+                    lead_start=day_group.lead_start,
+                    lead_inquiry_start=day_group.lead_inquiry_start,
                     teacher=teacher,
                 )
                 EventChangeFormula.objects.get_or_create(
                     teacher=teacher,
                     date=date,
-                    main_event_group=main_event_group,
+                    day_group=day_group,
                     teacher_event_group=teacher_event_group,
                     status=0,
                 )
@@ -577,11 +576,18 @@ class EventAddNewDateAndFormularsView(View):
         form = EventAddNewDateForm(request.POST)
 
         if form.is_valid():
-
+            base_event = form.cleaned_data["base_event"]
             date = form.cleaned_data["date"]
             teachers = form.cleaned_data["teacher"]
 
-            main_event_group, created = MainEventGroup.objects.get_or_create(
+            if not base_event:
+                base_event = BaseEventGroup.objects.create(
+                    lead_start=form.cleaned_data["lead_start"],
+                    lead_inquiry_start=form.cleaned_data["lead_inquiry_start"],
+                )
+
+            day_group, created = DayEventGroup.objects.get_or_create(
+                base_event=base_event,
                 date=date,
                 lead_start=form.cleaned_data["lead_start"],
                 lead_inquiry_start=form.cleaned_data["lead_inquiry_start"],
@@ -589,15 +595,15 @@ class EventAddNewDateAndFormularsView(View):
 
             for teacher in teachers:
                 teacher_event_group, created = TeacherEventGroup.objects.get_or_create(
-                    main_event_group=main_event_group,
-                    lead_start=main_event_group.lead_start,
-                    lead_inquiry_start=main_event_group.lead_inquiry_start,
+                    day_group=day_group,
+                    lead_start=day_group.lead_start,
+                    lead_inquiry_start=day_group.lead_inquiry_start,
                     teacher=teacher,
                 )
                 EventChangeFormula.objects.get_or_create(
                     teacher=teacher,
                     date=date,
-                    main_event_group=main_event_group,
+                    day_group=day_group,
                     teacher_event_group=teacher_event_group,
                     status=0,
                 )

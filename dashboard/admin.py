@@ -11,7 +11,8 @@ from .models import (
     Announcements,
     EventChangeFormula,
     TeacherEventGroup,
-    MainEventGroup,
+    DayEventGroup,
+    BaseEventGroup,
 )
 from .forms import AdminEventForm, AdminEventCreationFormulaForm, EventCreationForm
 
@@ -34,8 +35,14 @@ from django.http import HttpResponseRedirect
 # Register your models here.
 
 
-class EventTeacherGroupAdmin(admin.TabularInline):
-    model = TeacherEventGroup
+class DayEventGroupInlineAdmin(admin.StackedInline):
+    model = DayEventGroup
+    extra = 0
+
+
+class BaseEventGroupAdmin(admin.ModelAdmin):
+    model = BaseEventGroup
+    inlines = [DayEventGroupInlineAdmin]
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -79,7 +86,7 @@ class EventAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    ("main_event_group", "teacher_event_group"),
+                    ("day_group", "teacher_event_group"),
                     (
                         "start",
                         "end",
@@ -371,4 +378,4 @@ admin.site.register(SiteSettings)
 admin.site.register(Announcements)
 admin.site.register(EventChangeFormula, EventChangeFormulaAdmin)
 admin.site.register(TeacherEventGroup)
-admin.site.register(MainEventGroup)
+admin.site.register(BaseEventGroup, BaseEventGroupAdmin)

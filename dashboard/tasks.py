@@ -65,7 +65,7 @@ def apply_event_change_formular(formular_id: int):
         while start + duration <= end:
             Event.objects.get_or_create(
                 teacher=teacher,
-                main_event_group=formular.main_event_group,
+                day_group=formular.day_group,
                 teacher_event_group=formular.teacher_event_group,
                 start=start,
                 end=start + duration,

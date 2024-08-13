@@ -5,7 +5,7 @@ from .models import (
     Inquiry,
     Announcements,
     EventChangeFormula,
-    MainEventGroup,
+    DayEventGroup,
     TeacherEventGroup,
 )
 from django.db.models import Q
@@ -220,12 +220,12 @@ def checkManualChangeEventAllowedParents(sender, instance, *args, **kwargs):
             instance.lead_status_last_change = timezone.now()
 
 
-@receiver(pre_save, sender=MainEventGroup)
+@receiver(pre_save, sender=DayEventGroup)
 def updateLeadDates(sender, instance, *args, **kwargs):
     current = instance
     try:
-        previouse = MainEventGroup.objects.get(id=current.id)
-    except MainEventGroup.DoesNotExist:
+        previouse = DayEventGroup.objects.get(id=current.id)
+    except DayEventGroup.DoesNotExist:
         pass
     else:
         if (
@@ -233,7 +233,7 @@ def updateLeadDates(sender, instance, *args, **kwargs):
             or previouse.lead_inquiry_start != current.lead_inquiry_start
         ):
             for teacher_event_group in TeacherEventGroup.objects.filter(
-                Q(main_event_group=previouse), Q(lead_manual_override=False)
+                Q(day_group=previouse), Q(lead_manual_override=False)
             ):
                 teacher_event_group.lead_start = instance.lead_start
                 teacher_event_group.lead_inquiry_start = instance.lead_inquiry_start

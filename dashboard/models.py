@@ -14,7 +14,41 @@ from django.db.models import Q
 
 
 # Create your models here.
-class MainEventGroup(models.Model):
+class BaseEventGroup(models.Model):
+    def get_default_valid_until():
+        return timezone.now() + timezone.timedelta(days=7)
+
+    lead_start = models.DateField(
+        default=timezone.now, help_text=_("Specify when all parents can book events")
+    )
+
+    lead_inquiry_start = models.DateField(
+        default=timezone.now,
+        help_text=_(
+            "Specify when parents with inquiries can start booking for corresponding events"
+        ),
+    )
+
+    valid_until = models.DateField(default=get_default_valid_until)
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+
+    def __str__(self):
+        days = DayEventGroup.objects.filter(base_event=self).order_by("date")
+        title_str = f"Elternsprechtag am "
+
+        for index, day in enumerate(days):
+            if index == 0:
+                title_str += f"{day.date.strftime('%d.%m.%Y')}"
+            elif index == days.count() - 1:
+                title_str += f" und {day.date.strftime('%d.%m.%Y')}"
+            else:
+                title_str += f", {day.date.strftime('%d.%m.%Y')}"
+        return title_str
+
+
+class DayEventGroup(models.Model):
+    base_event = models.ForeignKey(BaseEventGroup, on_delete=models.CASCADE, null=True)
     date = models.DateField(default=timezone.now)
 
     lead_start = models.DateField(
@@ -36,7 +70,7 @@ class MainEventGroup(models.Model):
 
 class TeacherEventGroup(models.Model):
     # date = models.DateField(default=timezone.now)
-    main_event_group = models.ForeignKey(MainEventGroup, on_delete=models.CASCADE)
+    day_group = models.ForeignKey(DayEventGroup, on_delete=models.CASCADE)
     teacher = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
     )
@@ -73,15 +107,13 @@ class TeacherEventGroup(models.Model):
     room = models.CharField(max_length=5, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.teacher} - {str(self.main_event_group.date)}"
+        return f"{self.teacher} - {str(self.day_group.date)}"
 
 
 class Event(models.Model):  # Termin
     # identifier für diesen speziellen Termin
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    main_event_group = models.ForeignKey(
-        MainEventGroup, on_delete=models.CASCADE, null=True
-    )
+    day_group = models.ForeignKey(DayEventGroup, on_delete=models.CASCADE, null=True)
     teacher = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, limit_choices_to={"role": 1}
     )  # limit_choices_to={'role': 1} besagt, dass nur Nutzer, wo der Wert role glwich 1 ist eingesetzt werden können, also es wird verhindert, dass Eltern oder andere als Lehrer in Terminen gespeichert werden
@@ -261,8 +293,8 @@ class EventChangeFormula(models.Model):
 
     TYPE_CHOICES = ((0, _("Submit of personal timeslots")),)
     type = models.IntegerField(choices=TYPE_CHOICES, default=0)
-    main_event_group = models.ForeignKey(
-        MainEventGroup, on_delete=models.CASCADE, null=True, blank=True
+    day_group = models.ForeignKey(
+        DayEventGroup, on_delete=models.CASCADE, null=True, blank=True
     )
     teacher_event_group = models.ForeignKey(
         TeacherEventGroup, on_delete=models.CASCADE, null=True, blank=True
@@ -303,6 +335,7 @@ class Inquiry(models.Model):
         (0, "Anfrage zur Buchung eines Termins (Lehrer->Eltern)"),
         (1, "Anfrage zur Bestätigung eines Termins (Eltern->Lehrer)"),
     )
+    base_event = models.ForeignKey(BaseEventGroup, on_delete=models.CASCADE, null=True)
     type = models.IntegerField(choices=CHOICES_INQUIRYTYPE, default=0)
     requester = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="%(class)s_requester"
