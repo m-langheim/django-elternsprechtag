@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
-from ..forms import BookForm, cancelEventForm, EditEventForm, BookWithInquiryForm
+from ..forms import BookForm, cancelEventForm, EditEventForm
 from ..decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
@@ -127,7 +127,11 @@ class bookEventView(View):
             form = BookForm(instance=event, request=request)
             teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
             back_url = reverse("event_teacher_list", args=[teacher_id])
-
+        if event.lead_status == 2:
+            messages.info(
+                request,
+                "Dieser Termin ist derzeit in der Verfügbarkeit eingeschränkt. Aus diesem Grund müssen Sie mindestens einen der markierten Lernenden zur Buchung des Termins anwählen.",
+            )
         return render(
             request,
             "dashboard/events/book.html",
@@ -267,12 +271,19 @@ class EventView(View):
         event = get_object_or_404(Event, id=event_id, parent=request.user)
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
+        elif not event.occupied:
+            return redirect("book_event_per_id", event_id)
+
         edit_form = EditEventForm(
             instance=event,
             request=request,
-            # teacher=event.teacher,
-            # initial={"student": [student.id for student in event.student.all()]},
         )
+
+        if event.lead_status == 2:
+            messages.info(
+                request,
+                "Dieser Termin ist derzeit in der Verfügbarkeit eingeschränkt. Aus diesem Grund müssen Sie mindestens einen der markierten Lernenden zur Buchung des Termins anwählen.",
+            )
         return render(
             request,
             "dashboard/events/view.html",
@@ -289,18 +300,18 @@ class EventView(View):
 
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
+        elif not event.occupied:
+            return redirect("book_event_per_id", event_id)
 
         edit_form = EditEventForm(
+            request.POST,
             instance=event,
             request=request,
-            # teacher=event.teacher,
-            # event=event,
-            initial={"student": [student.id for student in event.student.all()]},
         )
 
         if edit_form.is_valid():
             students = []
-            for student in edit_form.cleaned_data["student"]:
+            for student in edit_form.cleaned_data["all_students"]:
                 model_student = get_object_or_404(Student, id=student)
                 students.append(model_student)
             # ? validation of students needed or given through the form
@@ -326,6 +337,9 @@ class EventView(View):
 
 
 class CancelEventView(View):
+    def get(self, request, event_id):
+        return redirect("event_per_id", event_id)
+
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id, parent=request.user)
 
