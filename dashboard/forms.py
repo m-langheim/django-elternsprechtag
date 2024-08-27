@@ -11,6 +11,7 @@ from .models import (
 from authentication.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -27,28 +28,44 @@ class StudentSelector(forms.CheckboxSelectMultiple):
         return option
 
 
-class BookForm(forms.ModelForm):  # * Hier wurde einiges verändert
+class BookForm(forms.Form):
     book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
-        initial = kwargs.pop("initial", {})
+        self.inquiry: Inquiry = kwargs.pop("inquiry", None)
+        self.instance = kwargs.pop("instance")
         super(BookForm, self).__init__(*args, **kwargs)
 
         teacher = self.instance.teacher
-        try:
-            inqury_student = initial["student"]
-        except:
-            inqury_student = []
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
         for student in self.request.user.students.all():
             choices.append([student.id, student.first_name + " " + student.last_name])
 
-        active_choices = []
+        # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
+        students_with_event = Event.objects.filter(
+            Q(teacher=teacher), Q(occupied=True), Q(parent=self.request.user)
+        ).values_list("student", flat=True)
 
-        # ! Muss nochmal getestet werden
-        if self.instance.lead_status == 2:  # lead not started yet
+        active_choices = [
+            student[0] if student[0] not in students_with_event else None
+            for student in choices
+        ]
+
+        necessary_choices = []
+
+        if self.inquiry:
+            # If an inquiry is provided, one of the inquiry students (should be limited to one) must be selected. Other students can be selected in addition.
+            for student in self.inquiry.students.all():
+                choices.remove(
+                    [student.id, student.first_name + " " + student.last_name]
+                )
+                active_choices.remove(student.id)
+                self.fields["necessary_student"].widget = self.fields[
+                    "necessary_student"
+                ].hidden_widget()
+        elif self.instance.lead_status == 2:  # lead not started yet
             inquiries = Inquiry.objects.filter(
                 Q(type=0),
                 Q(requester=teacher),
@@ -56,24 +73,95 @@ class BookForm(forms.ModelForm):  # * Hier wurde einiges verändert
                 Q(event=None),
                 Q(processed=False),
             )
+            for inquiry in inquiries:
+                for student in inquiry.students.all():
+                    necessary_choices.append(
+                        [student.id, student.first_name + " " + student.last_name]
+                    )
+                    choices.remove(
+                        [student.id, student.first_name + " " + student.last_name]
+                    )
+        else:
+            self.fields["necessary_student"].widget = self.fields[
+                "necessary_student"
+            ].hidden_widget()
+
+        self.fields["student"].choices = choices
+        self.fields["student"].widget.active_choices = active_choices
+        self.fields["necessary_student"].choices = necessary_choices
+        self.fields["necessary_student"].widget.active_choices = active_choices
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Manually include initial values if they are not provided by the user
+        student = cleaned_data["student"]
+        necessary_student = cleaned_data["necessary_student"]
+
+        all_students: list = student + necessary_student
+
+        if self.inquiry:
+            all_students += [str(student.id) for student in self.inquiry.students.all()]
+        elif self.instance.lead_status == 2 and len(necessary_student) == 0:
+            self.add_error(
+                "necessary_student", "One of these students must be selected!"
+            )
+        if len(all_students) == 0:
+            raise ValidationError("At least one student must be selected.")
+        cleaned_data["all_students"] = all_students
+        return cleaned_data
+
+    necessary_student = forms.MultipleChoiceField(
+        choices=[],
+        widget=StudentSelector(),
+        label="",
+        required=False,
+    )
+
+    student = forms.MultipleChoiceField(
+        choices=[],
+        widget=StudentSelector(),
+        label="",
+        required=False,
+    )
+
+
+class EditEventForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(EditEventForm, self).__init__(*args, **kwargs)
+
+        #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
+        choices = []
+        for student in self.request.user.students.all():
+            choices.append([student.id, student.first_name + " " + student.last_name])
+        print(self.instance)
+        active_choices = []
+        if self.instance.lead_status == 2:  # lead not started yet
+            # Es sollen nur Schüler:innen auswählbar sein, bei denen eine Anfrage vorliegt
+            inquiries = Inquiry.objects.filter(
+                Q(type=0),
+                Q(requester=self.instance.teacher),
+                Q(respondent=self.request.user),
+            )
 
             active_choices = [
                 student for student in inquiries.values_list("students", flat=True)
             ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
-            if len(inqury_student) == 1:
-                active_choices.remove(inqury_student[0])
         else:
             # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
-            students_with_event = Event.objects.filter(
-                Q(teacher=teacher), Q(occupied=True), Q(parent=self.request.user)
-            ).values_list("student", flat=True)
+            students_with_event = (
+                Event.objects.filter(
+                    Q(teacher=self.instance.teacher),
+                    Q(occupied=True),
+                    Q(parent=self.request.user),
+                )
+                .exclude(id=self.instance.id)
+                .values_list("student", flat=True)
+            )
             for student in choices:
                 if student[0] not in students_with_event:
                     active_choices.append(student[0])
-            if len(inqury_student) == 1:
-                active_choices.remove(inqury_student[0])
 
-        self.initial["student"] = initial.get("student", [])
         self.fields["student"].choices = choices
         self.fields["student"].widget.active_choices = active_choices
 
@@ -84,84 +172,6 @@ class BookForm(forms.ModelForm):  # * Hier wurde einiges verändert
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(), widget=StudentSelector(), label=""
     )
-
-
-class EditEventForm(forms.Form):
-    edit_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
-        self.teacher = kwargs.pop("teacher")
-        self.event = kwargs.pop("event")
-        super(EditEventForm, self).__init__(*args, **kwargs)
-
-        #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
-        choices = []
-        for student in self.request.user.students.all():
-            choices.append([student.id, student.first_name + " " + student.last_name])
-
-        active_choices = []
-        if (
-            SiteSettings.objects.all().first().lead_start > timezone.now().date()
-        ):  # lead not started yet
-            # Es sollen nur Schüler:innen auswählbar sein, bei denen eine Anfrage vorliegt
-            inquiries = Inquiry.objects.filter(
-                Q(type=0), Q(requester=self.teacher), Q(respondent=self.request.user)
-            )
-
-            active_choices = [
-                student for student in inquiries.values_list("students", flat=True)
-            ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
-        else:
-            # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
-            students_with_event = (
-                Event.objects.filter(
-                    Q(teacher=self.teacher),
-                    Q(occupied=True),
-                    Q(parent=self.request.user),
-                )
-                .exclude(id=self.event.id)
-                .values_list("student", flat=True)
-            )
-            for student in choices:
-                if student[0] not in students_with_event:
-                    active_choices.append(student[0])
-
-        self.fields["student"].choices = choices
-        self.fields["student"].widget.active_choices = active_choices
-
-    student = forms.MultipleChoiceField(
-        choices=[], widget=StudentSelector(), label="", required=True
-    )
-
-
-# class InquiryForm(forms.Form): #? Irrelevant, da es ein überarbeitetes Interface zum beantworten von Anfragen gibt?
-#     def __init__(self, *args, **kwargs):
-#         self.request = kwargs.pop('request')
-#         self.selected_student = kwargs.pop('selected_student')
-#         self.teacher = kwargs.pop('teacher')
-#         self.parent = kwargs.pop('parent')
-#         super(InquiryForm, self).__init__(*args, **kwargs)
-
-#         self.fields['student'].queryset = self.request.user.students.all()
-#         self.fields['student'].initial = self.selected_student()
-#         self.fields['event'].queryset = Event.objects.filter(
-#             Q(teacher=self.teacher), Q(occupied=False))
-
-#     def clean(self):
-#         cleaned_data = super(InquiryForm, self).clean()
-#         students = cleaned_data.get('student')
-#         if not self.selected_student() in students:
-#             self.add_error(
-#                 'student', "The default selected student needs to stay selected")
-
-#         return cleaned_data
-
-#     event = forms.ModelChoiceField(queryset=None)
-#     student = forms.ModelMultipleChoiceField(
-#         queryset=None, widget=forms.CheckboxSelectMultiple)
-
-# Admin Form
 
 
 class AdminEventForm(forms.Form):
@@ -191,7 +201,6 @@ class AdminEventCreationFormulaForm(forms.Form):
 
 
 class cancelEventForm(forms.Form):
-    cancel_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
     message = forms.CharField(
         widget=forms.Textarea,
         max_length=4000,

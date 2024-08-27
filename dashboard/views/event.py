@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 
-from ..forms import BookForm, cancelEventForm, EditEventForm
+from ..forms import BookForm, cancelEventForm, EditEventForm, BookWithInquiryForm
 from ..decorators import lead_started, parent_required
 from django.contrib import messages
 from django.http import Http404
@@ -82,6 +82,7 @@ def bookEventTeacherList(request, teacher_id):
 class bookEventView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
+        inquiry = None
 
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
@@ -119,13 +120,7 @@ class bookEventView(View):
                 teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
                 back_url = reverse("event_teacher_list", args=[teacher_id])
             else:
-                form = BookForm(
-                    instance=event,
-                    request=request,
-                    initial={
-                        "student": [student.id for student in inquiry.students.all()]
-                    },
-                )
+                form = BookForm(instance=event, request=request, inquiry=inquiry)
                 back_url = reverse("inquiry_detail_view", args=[inquiry_id_get])
         else:
             # Das event wurde nicht über eine Anfrage aufgerufen
@@ -140,11 +135,13 @@ class bookEventView(View):
                 "event": event,
                 "book_form": form,
                 "back_url": back_url,
+                "inquiry": inquiry,
             },
         )
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
+        inquiry = None
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 
@@ -184,16 +181,15 @@ class bookEventView(View):
                     request.POST,
                     instance=event,
                     request=request,
-                    initial={
-                        "student": [student.id for student in inquiry.students.all()]
-                    },
+                    inquiry=inquiry,
                 )
         else:
             # Das event wurde nicht über eine Anfrage aufgerufen
             form = BookForm(request.POST, instance=event, request=request)
+
         if form.is_valid() and parent_can_book_event:
             students = []
-            for student in form.cleaned_data["student"]:
+            for student in form.cleaned_data["all_students"]:
                 students.append(student)
             # ? validation of students needed or given through the form
             inquiry = Inquiry.objects.create(
@@ -219,11 +215,7 @@ class bookEventView(View):
         return render(
             request,
             "dashboard/events/book.html",
-            {
-                "event": event,
-                "book_form": form,
-                "back_url": url,
-            },
+            {"event": event, "book_form": form, "back_url": url, "inquiry": inquiry},
         )
 
 
@@ -276,10 +268,10 @@ class EventView(View):
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
         edit_form = EditEventForm(
+            instance=event,
             request=request,
-            teacher=event.teacher,
-            event=event,
-            initial={"student": [student.id for student in event.student.all()]},
+            # teacher=event.teacher,
+            # initial={"student": [student.id for student in event.student.all()]},
         )
         return render(
             request,
@@ -299,87 +291,83 @@ class EventView(View):
             return render(request, "dashboard/events/occupied.html")
 
         edit_form = EditEventForm(
+            instance=event,
             request=request,
-            teacher=event.teacher,
-            event=event,
+            # teacher=event.teacher,
+            # event=event,
             initial={"student": [student.id for student in event.student.all()]},
         )
-        cancel_form = self.cancel_form()
 
-        # Es wurde die Cancel-Form zurück gegeben
-        if "cancel_event" in request.POST:
-            cancel_form = self.cancel_form(request.POST)
-            if cancel_form.is_valid():
-                message = cancel_form.cleaned_data["message"]
+        if edit_form.is_valid():
+            students = []
+            for student in edit_form.cleaned_data["student"]:
+                model_student = get_object_or_404(Student, id=student)
+                students.append(model_student)
+            # ? validation of students needed or given through the form
+            # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
+            check_inquiry_reopen(request.user, event.teacher)
+            event.parent = request.user
+            event.status = 2
+            event.student.set(students)
+            event.occupied = True
+            event.save()
+            messages.success(request, "Geändert")
 
-                Announcements.objects.create(
-                    announcement_type=1,
-                    user=event.teacher,
-                    message="%s %s hat einen Termin abgesagt und folgende Nachricht hinterlassen: \n %s"
-                    % (request.user.first_name, request.user.last_name, message),
-                )
-                # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
-                check_inquiry_reopen(request.user, event.teacher)
+        return render(
+            request,
+            "dashboard/events/view.html",
+            {
+                "event": event,
+                "cancel_form": self.cancel_form,
+                "teacher_id": urlsafe_base64_encode(force_bytes(event.teacher.id)),
+                "edit_form": edit_form,
+            },
+        )
 
-                # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
-                try:
-                    inquiry = Inquiry.objects.get(
-                        Q(type=1),
-                        Q(requester=request.user),
-                        Q(respondent=event.teacher),
-                        Q(event=event),
-                        Q(processed=False),
-                    )
-                except Inquiry.DoesNotExist:
-                    pass
-                except Inquiry.MultipleObjectsReturned:
-                    inquiries = inquiry = Inquiry.objects.filter(
-                        Q(type=1),
-                        Q(requester=request.user),
-                        Q(respondent=event.teacher),
-                        Q(event=event),
-                        Q(processed=False),
-                    )
-                    for inquiry in inquiries:
-                        inquiry.processed = True
-                        inquiry.save()
 
-                        logger = logging.getLogger(__name__)
-                        logger.warn(
-                            "Es waren mehrere unbeantwortete Inquiries verfügbar."
-                        )
-                else:
-                    inquiry.processed = True
-                    inquiry.save()
+class CancelEventView(View):
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id, parent=request.user)
 
-                event.parent = None
-                event.status = 0
-                event.occupied = False
-                event.student.clear()
-                event.save()
-                messages.success(request, "Der Termin wurde erfolgreich abgesagt")
-                return redirect("home")
+        if event.occupied and event.parent != request.user:
+            return render(request, "dashboard/events/occupied.html")
+        cancel_form = cancelEventForm(request.POST)
+        edit_form = EditEventForm(
+            instance=event,
+            request=request,
+            # teacher=event.teacher,
+            # event=event,
+            initial={"student": [student.id for student in event.student.all()]},
+        )
+        if cancel_form.is_valid():
+            message = cancel_form.cleaned_data["message"]
 
-        # Es wurde die Book-Form zurück gegeben
-        if "edit_event" in request.POST:
-            edit_form = EditEventForm(
-                request.POST, request=request, teacher=event.teacher, event=event
+            Announcements.objects.create(
+                announcement_type=1,
+                user=event.teacher,
+                message="%s %s hat einen Termin abgesagt und folgende Nachricht hinterlassen: \n %s"
+                % (request.user.first_name, request.user.last_name, message),
             )
+            # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
+            check_inquiry_reopen(request.user, event.teacher)
 
-            if edit_form.is_valid():
-                students = []
-                for student in edit_form.cleaned_data["student"]:
-                    model_student = get_object_or_404(Student, id=student)
-                    students.append(model_student)
-                # ? validation of students needed or given through the form
-                # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
-                check_inquiry_reopen(request.user, event.teacher)
-                event.parent = request.user
-                event.status = 2
-                event.student.set(students)
-                event.occupied = True
-                event.save()
-                messages.success(request, "Geändert")
+            # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+            inquiries = Inquiry.objects.filter(
+                Q(type=1),
+                Q(requester=request.user),
+                Q(respondent=event.teacher),
+                Q(event=event),
+                Q(processed=False),
+            )
+            inquiries.update(processed=True)
+
+            event.parent = None
+            event.status = 0
+            event.occupied = False
+            event.student.clear()
+            event.save()
+            messages.success(request, "Der Termin wurde erfolgreich abgesagt")
+            return redirect("home")
         return render(
             request,
             "dashboard/events/view.html",

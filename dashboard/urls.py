@@ -9,6 +9,11 @@ urlpatterns = [
     ),
     path("event/<event_id>/book", bookEventView.as_view(), name="book_event_per_id"),
     path("event/<event_id>/", EventView.as_view(), name="event_per_id"),
+    path(
+        "event/<event_id>/cancel/",
+        CancelEventView.as_view(),
+        name="event_per_id_cancel",
+    ),
     path("inquiry/<inquiry_id>", InquiryView.as_view(), name="inquiry_detail_view"),
     path("impressum/", impressum, name="impressum"),
     path("export/", create_event_PDF, name="parent_generate_pdf"),
