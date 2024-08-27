@@ -70,6 +70,7 @@ class BookForm(forms.Form):
                 Q(type=0),
                 Q(requester=teacher),
                 Q(respondent=self.request.user),
+                Q(base_event=self.instance.get_base_event()),
             )
             for inquiry in inquiries:
                 for student in inquiry.students.all():
@@ -130,56 +131,6 @@ class EditEventForm(forms.Form):
         self.instance: Event = kwargs.pop("instance")
         super(EditEventForm, self).__init__(*args, **kwargs)
 
-        # #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
-        # choices = []
-        # for student in self.request.user.students.all():
-        #     choices.append([student.id, student.first_name + " " + student.last_name])
-        # active_choices = []
-        # if self.instance.lead_status == 2:  # lead not started yet
-        #     # Es sollen nur Schüler:innen auswählbar sein, bei denen eine Anfrage vorliegt
-        #     inquiries = Inquiry.objects.filter(
-        #         Q(type=0),
-        #         Q(requester=self.instance.teacher),
-        #         Q(respondent=self.request.user),
-        #     )
-
-        #     active_choices = [
-        #         student for student in inquiries.values_list("students", flat=True)
-        #     ]  # Alle Schüler, die in einer Anfrage stehen werden auf aktiv gesetzt
-
-        #     students_with_event = (
-        #         Event.objects.filter(
-        #             Q(teacher=self.instance.teacher),
-        #             Q(occupied=True),
-        #             Q(parent=self.request.user),
-        #         )
-        #         .exclude(id=self.instance.id)
-        #         .values_list("student", flat=True)
-        #     )
-
-        #     for student in students_with_event:
-        #         try:
-        #             active_choices.remove(student[0])
-        #         except:
-        #             pass
-        # else:
-        #     # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
-        #     students_with_event = (
-        #         Event.objects.filter(
-        #             Q(teacher=self.instance.teacher),
-        #             Q(occupied=True),
-        #             Q(parent=self.request.user),
-        #         )
-        #         .exclude(id=self.instance.id)
-        #         .values_list("student", flat=True)
-        #     )
-        #     for student in choices:
-        #         if student[0] not in students_with_event:
-        #             active_choices.append(student[0])
-
-        # self.fields["student"].choices = choices
-        # self.fields["student"].widget.active_choices = active_choices
-
         teacher = self.instance.teacher
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
         choices = []
@@ -207,6 +158,7 @@ class EditEventForm(forms.Form):
                 Q(type=0),
                 Q(requester=teacher),
                 Q(respondent=self.request.user),
+                Q(base_event=self.instance.get_base_event()),
             )
             for inquiry in inquiries:
                 for student in inquiry.students.all():

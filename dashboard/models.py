@@ -247,6 +247,9 @@ class Event(models.Model):  # Termin
             return True
         return False
 
+    def get_base_event(self):
+        return self.teacher_event_group.day_group.base_event
+
     def __str__(self):
         return f"Termin von {self.teacher} am {self.start.date()} von {self.start.time()} bis {self.end.time()}"
 

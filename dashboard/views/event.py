@@ -109,6 +109,7 @@ class bookEventView(View):
                     Q(respondent=request.user),
                     Q(id=force_str(urlsafe_base64_decode(inquiry_id_get))),
                     Q(type=0),
+                    Q(base_event=event.get_base_event()),
                 )
             except Inquiry.DoesNotExist:
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
@@ -172,6 +173,7 @@ class bookEventView(View):
                     Q(respondent=request.user),
                     Q(id=force_str(urlsafe_base64_decode(inquiry_id_get))),
                     Q(type=0),
+                    Q(base_event=event.get_base_event()),
                 )
             except Inquiry.DoesNotExist:
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
@@ -202,6 +204,7 @@ class bookEventView(View):
                 requester=request.user,
                 respondent=event.teacher,
                 reason="",
+                base_event=event.get_base_event(),
             )
             inquiry.students.set(students)
             inquiry.save()
