@@ -57,7 +57,9 @@ class AdministrativeFormulaApprovalView(View):
         formulars_table = EventFormularActionTable(formulars)
 
         approved_formulars_table = EventFormularOldTable(
-            EventChangeFormula.objects.filter(Q(status=2) | Q(status=3))
+            EventChangeFormula.objects.filter(Q(date__gte=timezone.now())).filter(
+                Q(status=2) | Q(status=3)
+            )
         )
 
         upcomming_formulars_table = EventFormularUpcommingTable(
@@ -81,8 +83,15 @@ class AdministrativeFormulaApprovalView(View):
             "administrative/time_slots/overview.html",
             {
                 "action_table": formulars_table,
+                "action_table_entries": formulars.count(),
                 "upcomming_table": upcomming_formulars_table,
+                "upcomming_table_entries": EventChangeFormula.objects.filter(
+                    Q(status=0), Q(date__gte=timezone.now())
+                ).count(),
                 "approved_formulars_table": approved_formulars_table,
+                "closed_table_entries": EventChangeFormula.objects.filter(
+                    Q(status=2) | Q(status=3)
+                ).count(),
                 "change_formular": formular_form,
                 "change_formular_new": EventAddNewDateForm(),
                 "dates": date_context,
@@ -91,6 +100,7 @@ class AdministrativeFormulaApprovalView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.approve_disapprove"), name="dispatch")
 class EditTimeSlotView(View):
     def get(self, request, pk):
         try:

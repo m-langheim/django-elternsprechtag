@@ -58,6 +58,14 @@
                 </li>
                 <li>
                     <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">Events</a>
+                    <ul style="list-style-type: none;">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">Events</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">Change formulars</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a class="dropdown-item" href="{% url 'administrative_settings' %}">Settings</a>
@@ -89,6 +97,16 @@
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if event_view in request.get_full_path %} border-danger text-danger {% endif %}"
                     style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">Events</a>
+                    {% if event_view in request.get_full_path %}
+                    <ul style="list-style-type: none;">
+                        <li>
+                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">Events</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">Change formulars</a>
+                        </li>
+                    </ul>
+                    {% endif %}
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if settings_view in request.get_full_path %} border-danger text-danger {% endif %}"

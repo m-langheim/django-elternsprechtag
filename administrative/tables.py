@@ -197,23 +197,38 @@ class EventExtraInformationColumn(tables.Column):
         return format_html(column_text)
 
 
+class FormularActionsColumn(tables.Column):
+    def render(self, value):
+        # formular = EventChangeFormula.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/event_list_actions_column.html",
+                {"event_id": value},
+            )
+        )
+
+
 class Eventstable(tables.Table):
     class Meta:
         model = Event
-        fields = ("teacher.teacherextradata.acronym", "start", "status")
+        fields = ("teacher", "start", "day_group.base_event")
 
-    block = tables.LinkColumn(
-        "administrative_event_block_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Block",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
-    )
-    view = tables.LinkColumn(
-        "administrative_event_detail_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="View",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # block = tables.LinkColumn(
+    #     "administrative_event_block_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="Block",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+    # view = tables.LinkColumn(
+    #     "administrative_event_detail_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="View",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+    actions = FormularActionsColumn(
+        accessor="id", orderable=False, verbose_name="Actions"
     )
     info = EventExtraInformationColumn(accessor="pk", orderable=False)

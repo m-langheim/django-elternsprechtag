@@ -11,30 +11,7 @@
       </div>
       <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal" data-bs-target="#formularModal">Hinzufügen</a></div>
   </div> 
-  {% block time_slot_content %} 
-        <ul class="nav nav-pills">
-    <li class="nav-item">
-      <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
-    </li>
-  </ul>
-    
-    <div class="container">
-
-      {% if filter %}
-    <form action="" method="get" class="form form-inline">
-        {{filter.form.teacher | as_crispy_field}}
-        {{filter.form.start | as_crispy_field}}
-        {{filter.form.status | as_crispy_field}}
-        <input type="submit" class="btn btn-outline-danger" value="Filter" />
-    </form>
-{% endif %}
-{% render_table table %}
-
-</div>
-</div>
+  {% block time_slot_content %}
 {% endblock time_slot_content %}
 
 <div class="modal fade" id="formularModal" tabindex="-1" aria-labelledby="formularModalLabel" aria-hidden="true">

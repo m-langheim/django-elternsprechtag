@@ -4,32 +4,81 @@
 
 {% block time_slot_content %}
 <div class="h-auto d-grid gap-3">  
-  <ul class="nav nav-pills">
+  {% comment %} <ul class="nav nav-pills">
   <li class="nav-item">
     <a class="nav-link" href="{% url 'administrative_event_list_view' %}">Events</a>
   </li>
   <li class="nav-item">
     <a class="nav-link active" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
   </li>
-</ul>
-  <div class="container">
-
-    <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-action-tab" data-bs-toggle="tab" data-bs-target="#nav-action" type="button" role="tab" aria-controls="nav-action" aria-selected="true">Waiting for Action</button>
-        <button class="nav-link" id="nav-edited-tab" data-bs-toggle="tab" data-bs-target="#nav-edited" type="button" role="tab" aria-controls="nav-edited" aria-selected="false">Approved</button>
-        <button class="nav-link" id="nav-upcomming-tab" data-bs-toggle="tab" data-bs-target="#nav-upcomming" type="button" role="tab" aria-controls="nav-upcomming" aria-selected="false">Upcomming</button>
-      </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="nav-action" role="tabpanel" aria-labelledby="nav-action-tab">
-          {% render_table action_table %}
-      </div>
-      <div class="tab-pane fade" id="nav-edited" role="tabpanel" aria-labelledby="nav-edited-tab">{% render_table approved_formulars_table %}</div>
-      <div class="tab-pane fade" id="nav-upcomming" role="tabpanel" aria-labelledby="nav-upcomming-tab">{% render_table upcomming_table %}</div>
-    </div>
-
+</ul> {% endcomment %}
 </div>
-</div>
+<div class="row gx-3 gy-3">
+	<div class="col-12">
+		<div class="card card-body p-0">
+			<div class="p-4">
+				<p class="h1">Eingereichte Anträge</p>
+				<p class="text-secondary">
+					Die Untenstehenden Anträge warten auf Ihre Bestätigung.
+				</p>
 
+				{% if action_table_entries > 0 %}
+        {% render_table action_table %}
+				{% else %} Aktuell gibt es keine offenen Anträge {% endif %}
+			</div>
+
+			<div class="border-top"></div>
+
+			<div class="p-4">
+				<p class="h1">Unbearbeitete Anträge</p>
+				<p class="text-secondary">
+					Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status
+					"Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.
+				</p>
+
+				{% if upcomming_table_entries > 0 %}
+				{% render_table upcomming_table %}
+				{% else %} Bisher wurden keine Elternsprechtagszeiten angefragt {% endif %}
+			</div>
+
+			<div class="border-top"></div>
+
+			<div class="pt-4 ps-4 pe-4">
+				<p class="h1">Bearbeitete Anträge</p>
+				{% if closed_table_entries > 0 %}
+				{% render_table approved_formulars_table %}
+				{% else %}
+
+				<!-- Für den Lehrer wurden noch keine Events gebucht -->
+					<p class="text-muted">
+						Es wurde noch kein aktueller Antrag bearbeitet.
+					</p>
+				{% endif %}
+			</div>
+
+			<div class="ps-4 pe-4 pb-4 pt-4">
+				<div class="d-flex d-md-none row">
+					<div class="d-flex d-md-none">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+				<div class="d-none d-md-flex row">
+					<div class="d-none d-md-flex col-6">
+						<a
+							type="button"
+							class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2"
+							href="{% url 'home' %}"
+							>Zurück</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

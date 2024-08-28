@@ -4,7 +4,7 @@
 
 {% block time_slot_content %}
 <div class="h-auto d-grid gap-3">
-    <div class="container row"> 
+    {% comment %} <div class="container row"> 
         <ul class="nav nav-pills">
     <li class="nav-item">
       <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
@@ -12,15 +12,15 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
     </li>
-  </ul>
+  </ul> {% endcomment %}
     
     <div class="container">
 
       {% if filter %}
     <form action="" method="get" class="form form-inline">
         {{filter.form.teacher | as_crispy_field}}
-        {{filter.form.start | as_crispy_field}}
         {{filter.form.status | as_crispy_field}}
+        {{filter.form.lead_status | as_crispy_field}}
         <input type="submit" class="btn btn-outline-danger" value="Filter" />
     </form>
 {% endif %}
