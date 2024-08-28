@@ -31,6 +31,29 @@ class BaseEventGroup(models.Model):
 
     valid_until = models.DateField(default=get_default_valid_until)
 
+    LEAD_STATUS_CHOICES = (
+        (0, "No one is allowed to book this event"),
+        (
+            1,
+            "Only parents with special treatment are currently allowed to book this event.",
+        ),
+        (
+            2,
+            "All parents who received an inquiry from this teacher are allowed to book this event.",
+        ),
+        (3, "All parents are allowed to book this event."),
+    )
+
+    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+
+    lead_status_last_change = models.DateTimeField(default=timezone.now)
+
+    force = models.BooleanField(default=False)
+
+    manual_apply = models.BooleanField(default=False)
+
+    disable_automatic_changes = models.BooleanField(default=False)
+
     created = models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
@@ -61,6 +84,31 @@ class DayEventGroup(models.Model):
             "Specify when parents with inquiries can start booking for corresponding events"
         ),
     )
+
+    LEAD_STATUS_CHOICES = (
+        (0, "No one is allowed to book this event"),
+        (
+            1,
+            "Only parents with special treatment are currently allowed to book this event.",
+        ),
+        (
+            2,
+            "All parents who received an inquiry from this teacher are allowed to book this event.",
+        ),
+        (3, "All parents are allowed to book this event."),
+    )
+
+    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+
+    lead_status_last_change = models.DateTimeField(default=timezone.now)
+
+    force = models.BooleanField(default=False)
+
+    manual_apply = models.BooleanField(default=False)
+
+    lead_manual_override = models.BooleanField(default=False)
+
+    disable_automatic_changes = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -102,7 +150,17 @@ class TeacherEventGroup(models.Model):
         (3, "All parents are allowed to book this event."),
     )
 
+    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+
+    lead_status_last_change = models.DateTimeField(default=timezone.now)
+
+    force = models.BooleanField(default=False)
+
+    manual_apply = models.BooleanField(default=False)
+
     lead_manual_override = models.BooleanField(default=False)
+
+    disable_automatic_changes = models.BooleanField(default=False)
 
     room = models.CharField(max_length=5, null=True, blank=True)
 
@@ -154,6 +212,8 @@ class Event(models.Model):  # Termin
 
     lead_manual_override = models.BooleanField(default=False)
 
+    disable_automatic_changes = models.BooleanField(default=False)
+
     STATUS_CHOICES = (
         (0, _("Unoccupied")),
         (1, _("Occupied")),
@@ -164,7 +224,7 @@ class Event(models.Model):  # Termin
     occupied = models.BooleanField(default=False)
 
     def get_event_lead_data(self):
-        return self.events_group
+        return self.teacher_event_group
 
     def check_time_lead_active(self):
         event_group = self.get_event_lead_data()

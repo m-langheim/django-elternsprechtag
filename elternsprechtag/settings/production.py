@@ -92,6 +92,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.dayly_cleanup_task",
         "schedule": crontab(minute=0, hour=2),
     },
+    "update_lead_task": {
+        "task": "general_tasks.tasks.update_event_lead_status",
+        "schedule": crontab(minute=30, hour=1),
+    },
 }
 
 # RUN_CELERY_THREAD = False

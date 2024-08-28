@@ -21,6 +21,8 @@ from .utils import EventPDFExport
 
 from django.utils import timezone
 
+from dashboard.utils import check_parent_book_event_allowed
+
 logger = logging.getLogger(__name__)
 
 
@@ -189,3 +191,15 @@ def dayly_cleanup_task():
             - SiteSettings.objects.first().keep_event_change_formulas
         )
         past_event_change_formulas.delete()
+
+
+@shared_task(bind=True)
+def update_event_lead_status(self, *args, **kwargs):
+    events = Event.objects.filter(
+        Q(disable_automatic_changes=False),
+        Q(start__lte=timezone.now()),
+        Q(lead_manual_override=False),
+    )
+
+    for event in events:
+        event.update_event_lead_status()

@@ -93,4 +93,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.dayly_cleanup_task",
         "schedule": crontab(minute="*/1"),
     },
+    "update_lead_task": {
+        "task": "general_tasks.tasks.update_event_lead_status",
+        "schedule": crontab(minute="*/1"),
+    },
 }

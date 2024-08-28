@@ -5,6 +5,7 @@ from celery_progress.backend import ProgressRecorder
 from django.utils import timezone
 from django.db.models import Q
 from authentication.utils import register_new_teacher
+from dashboard.models import Event, BaseEventGroup, TeacherEventGroup, DayEventGroup
 
 
 @shared_task(bind=True)

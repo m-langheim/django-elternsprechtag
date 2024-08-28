@@ -7,6 +7,7 @@ from .models import (
     EventChangeFormula,
     DayEventGroup,
     TeacherEventGroup,
+    BaseEventGroup,
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -181,17 +182,20 @@ def addAnnouncements(sender, instance: Inquiry, **kwargs):
 @receiver(post_delete, sender=Inquiry)
 def freeEvents(sender, instance, **kwarg):
     inquiriy = instance
-    event = inquiriy.event
+    try:
+        event = inquiriy.event
+    except:
+        pass
+    else:
+        if inquiriy.type == 1 and not inquiriy.processed and event:
+            check_inquiry_reopen(event.parent, event.teacher)
+            event.parent = None
+            event.student.clear()
+            event.status = 0
+            event.occupied = False
+            event.save()
 
-    if inquiriy.type == 1 and not inquiriy.processed and event:
-        check_inquiry_reopen(event.parent, event.teacher)
-        event.parent = None
-        event.student.clear()
-        event.status = 0
-        event.occupied = False
-        event.save()
-
-        print(event)
+            print(event)
 
 
 @receiver(pre_save, sender=EventChangeFormula)
@@ -204,12 +208,15 @@ def openNewEventChangeFormulaOnDisapprove(sender, instance, *args, **kwargs):
 
         if previouse.status == 1 and current.status == 3 and current.type == 0:
             EventChangeFormula.objects.create(
-                teacher=instance.teacher, date=instance.date
+                teacher=instance.teacher,
+                date=instance.date,
+                teacher_event_group=instance.teacher_event_group,
+                day_group=instance.day_group,
             )
 
 
 @receiver(pre_save, sender=Event)
-def checkManualChangeEventAllowedParents(sender, instance, *args, **kwargs):
+def checkLeadStatusChange(sender, instance, *args, **kwargs):
     current = instance
     try:
         previouse = Event.objects.get(id=instance.id)
@@ -220,21 +227,111 @@ def checkManualChangeEventAllowedParents(sender, instance, *args, **kwargs):
             instance.lead_status_last_change = timezone.now()
 
 
+@receiver(post_save, sender=DayEventGroup)
+def updateBaseEventValidUntil(
+    sender, instance: DayEventGroup, created, *args, **kwargs
+):
+    if created:
+        instance.base_event.valid_until = instance.date + timezone.timedelta(days=7)
+        instance.base_event.save()
+
+
+@receiver(pre_save, sender=BaseEventGroup)
+def updateLeadDatesBaseEvent(sender, instance, *args, **kwargs):
+    current: BaseEventGroup = instance
+    try:
+        previouse = BaseEventGroup.objects.get(id=current.id)
+    except BaseEventGroup.DoesNotExist:
+        pass
+    else:
+        day_event_groups = DayEventGroup.objects.filter(Q(base_event=previouse))
+
+        if not current.force:
+            day_event_groups = day_event_groups.exclude(Q(lead_manual_override=True))
+        else:
+            current.force = False
+            current.save()
+
+        if (
+            previouse.lead_start != current.lead_start
+            or previouse.lead_inquiry_start != current.lead_inquiry_start
+        ):
+            for day_event_group in day_event_groups:
+                day_event_group.lead_start = instance.lead_start
+                day_event_group.lead_inquiry_start = instance.lead_inquiry_start
+                day_event_group.save()
+
+        if current.manual_apply:
+            for day_event_group in day_event_groups:
+                day_event_group.lead_status = current.lead_status
+                day_event_group.manual_apply = True
+                day_event_group.save()
+
+            current.manual_apply = False
+            current.save()
+
+
 @receiver(pre_save, sender=DayEventGroup)
-def updateLeadDates(sender, instance, *args, **kwargs):
-    current = instance
+def updateLeadDatesDayEventGroups(sender, instance, *args, **kwargs):
+    current: DayEventGroup = instance
     try:
         previouse = DayEventGroup.objects.get(id=current.id)
     except DayEventGroup.DoesNotExist:
         pass
     else:
+        teacher_event_groups = TeacherEventGroup.objects.filter(Q(day_group=previouse))
+        if not current.force:
+            teacher_event_groups = teacher_event_groups.exclude(
+                Q(lead_manual_override=True)
+            )
+        else:
+            current.force = False
+            current.save()
+
         if (
             previouse.lead_start != current.lead_start
             or previouse.lead_inquiry_start != current.lead_inquiry_start
         ):
-            for teacher_event_group in TeacherEventGroup.objects.filter(
-                Q(day_group=previouse), Q(lead_manual_override=False)
-            ):
+            for teacher_event_group in teacher_event_groups:
                 teacher_event_group.lead_start = instance.lead_start
                 teacher_event_group.lead_inquiry_start = instance.lead_inquiry_start
                 teacher_event_group.save()
+
+        if current.manual_apply:
+            for teacher_event_group in teacher_event_groups:
+                teacher_event_group.lead_status = current.lead_status
+                teacher_event_group.manual_apply = True
+                teacher_event_group.disable_automatic_changes = (
+                    current.disable_automatic_changes
+                )
+                teacher_event_group.lead_manual_override = False
+                teacher_event_group.save()
+
+                current.manual_apply = False
+                current.save()
+
+
+@receiver(pre_save, sender=TeacherEventGroup)
+def updateLeadStatusPerEvent(sender, instance, *args, **kwargs):
+    current: TeacherEventGroup = instance
+    try:
+        previouse = TeacherEventGroup.objects.get(id=current.id)
+    except TeacherEventGroup.DoesNotExist:
+        pass
+    else:
+        events = Event.objects.filter(Q(teacher_event_group=previouse))
+        if not current.force:
+            events = events.exclude(Q(lead_manual_override=True))
+        else:
+            current.force = False
+            current.save()
+
+        if current.manual_apply:
+            events.update(
+                lead_status=current.lead_status,
+                disable_automatic_changes=current.disable_automatic_changes,
+                lead_manual_override=False,
+            )
+
+            current.manual_apply = False
+            current.save()

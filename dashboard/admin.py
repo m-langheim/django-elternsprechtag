@@ -55,7 +55,7 @@ class EventAdmin(admin.ModelAdmin):
     )
     search_fields = ("teacher__first_name", "teacher__last_name", "teacher__email")
     change_list_template = "dashboard/admin/events.html"
-    list_filter = ("occupied", "status", "lead_status")
+    list_filter = ("occupied", "status", "lead_status", "day_group")
 
     #! Hier muss noch die Möglichkeit hinzugefügt werden über das Admin Portal ein Event zu erstellen. Dies ist derzeit nur in mehreren Schritten möglich.
     # def add_view(
