@@ -319,7 +319,13 @@ class CreateInquiryView(View):
 
             parent = CustomUser.objects.filter(Q(role=0), Q(students=student)).first()
 
-            initial = {"student": student, "parent": parent}
+            initial = {
+                "student": student,
+                "parent": parent,
+                "base_event": BaseEventGroup.objects.filter(
+                    valid_until__gte=timezone.now()
+                ).first(),
+            }
             form = createInquiryForm(initial=initial)
 
             if (

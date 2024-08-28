@@ -1,16 +1,20 @@
 from dataclasses import field
 from django import forms
 from django.db.models import Q
-from dashboard.models import Student, Event, EventChangeFormula
+from dashboard.models import Student, Event, EventChangeFormula, BaseEventGroup
 from authentication.models import CustomUser, Tag, TeacherExtraData
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import PasswordChangeForm
-
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 
 class createInquiryForm(forms.Form):
+    base_event = forms.ModelChoiceField(
+        queryset=BaseEventGroup.objects.filter(valid_until__gte=timezone.now()),
+        label="",
+    )
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
     parent = forms.ModelChoiceField(
         queryset=CustomUser.objects.filter(role=0), disabled=True

@@ -13,6 +13,7 @@ from dashboard.models import (
     SiteSettings,
     Announcements,
     EventChangeFormula,
+    BaseEventGroup,
 )
 from authentication.models import StudentChange
 from django.db.models import Q
@@ -111,9 +112,25 @@ def look_for_open_inquiries():
         except CustomUser.DoesNotExist:
             print("Error")
         else:
-            res_inquiries = Inquiry.objects.filter(
-                Q(processed=False), Q(type=0), Q(respondent=respondent)
+            res_inquiries_queryset = Inquiry.objects.filter(
+                Q(processed=False),
+                Q(type=0),
+                Q(respondent=respondent),
+                Q(
+                    base_event__in=BaseEventGroup.objects.filter(
+                        valid_until__gte=timezone.now()
+                    )
+                ),
             )
+
+            res_inquiries = [
+                inquiry
+                for inquiry in res_inquiries_queryset
+                if check_parent_book_event_allowed(
+                    parent=inquiry.respondent, teacher=inquiry.requester
+                )
+            ]
+
             async_send_mail.delay(
                 "Offene Anfragen",
                 render_to_string(
