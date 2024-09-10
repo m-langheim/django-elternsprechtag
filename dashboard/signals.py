@@ -238,7 +238,7 @@ def updateBaseEventValidUntil(
             )
             .exclude(pk=instance.pk)
             .exists()
-            and instance.base_event.valid_until < instance.date
+            and instance.base_event.valid_until.date() < instance.date
         ):
             instance.base_event.valid_until = instance.date + timezone.timedelta(days=7)
             instance.base_event.save()
