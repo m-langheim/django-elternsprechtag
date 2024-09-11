@@ -102,4 +102,24 @@
 </nav>
 {% endif %}
 
+<!-- Change the color of the paginator -->
+<style>
+  .pagination .page-link {
+    background-color: #f8f9fa; /* Hintergrundfarbe der Links */
+    color: #dc3545; /* Textfarbe der Links */
+    border: 1px solid #dee2e6; /* Rahmenfarbe der Links */
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #dc3545; /* Hintergrundfarbe des aktiven Elements */
+    color: #ffffff; /* Textfarbe des aktiven Elements */
+    border: 1px solid #dc3545; /* Rahmenfarbe des aktiven Elements */
+  }
+
+  .pagination .page-link:hover {
+    background-color: #e9ecef; /* Hintergrundfarbe bei Hover */
+    color: #dc3545; /* Textfarbe bei Hover */
+  }
+</style>
+
 {% endblock content %}

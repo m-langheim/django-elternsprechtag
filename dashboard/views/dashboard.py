@@ -84,7 +84,7 @@ def search(request):
     page_number = request.GET.get("page")
 
     if request_search is None:
-        print("Keine Frage")
+        # print("Keine Frage")
         result = teachers
     # elif request_search.startswith("#"):
     #     request_search = request_search[1:]
