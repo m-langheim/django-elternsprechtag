@@ -46,13 +46,13 @@ def bookEventTeacherList(request, teacher_id):
         CustomUser.objects.filter(role=1),
         id__exact=force_str(urlsafe_base64_decode(teacher_id)),
     )
-    events = Event.objects.filter(Q(teacher=teacher))
+    events = Event.objects.filter(Q(teacher=teacher)).order_by("start")
 
     events_dt_dict = event_date_dict_add_book_information(
         request.user, create_event_date_dict(events)
     )
 
-    personal_booked_events = events.filter(Q(occupied=True), Q(parent=request.user))
+    personal_booked_events = events.filter(Q(occupied=True), Q(parent=request.user)).order_by("start")
 
     tags = TeacherExtraData.objects.get(teacher=teacher).tags.all().order_by("name")
 
