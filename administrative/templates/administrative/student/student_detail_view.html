@@ -122,7 +122,8 @@
         </div>
         <div class="row">
             <div class="col d-flex justify-content-end">
-                <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_student_send_registration_mail' pk=student.pk %}">
+                <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#formularModal">Manually register parent</a>
+                <a class="btn btn-outline-danger" href="{% url 'administrative_student_send_registration_mail' pk=student.pk %}">
                     {% if one_time_login.email_send %}
                     Resend Registration Email
                     {% else %}
@@ -139,5 +140,26 @@
         <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Zurück</a>
     </div>
 </div>
+</div>
+
+<div class="modal fade" id="formularModal" tabindex="-1" aria-labelledby="formularModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formularModalLabel">Register Parent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Please choose "Add to parent" if the parent already has an account and you want to add the student to the account. To create a new parent account, please choose "Register new parent".</p>
+            <a href="{% url 'administrative_student_parent_add_student' pk=student.pk %}" class="btn btn-outline-danger">Add to parent</a>
+            <a href="{% url 'administrative_student_register_parent' pk=student.pk %}" class="btn btn-outline-danger">Register new parent</a>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

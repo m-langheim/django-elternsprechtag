@@ -398,3 +398,104 @@ class ResetStudentParentRelationshipView(View):
         else:
             reset_student_parent_relationship(student)
             return redirect("..")
+
+
+class ManualParentRegistration(View):
+    def get(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+        except:
+            messages.error(request, "Der Schüler konnte nicht gefunden werden.")
+        else:
+            form = ControlParentCreationForm(initial={"student": student})
+            return render(
+                request,
+                "administrative/student/manual_parent_registration.html",
+                {"form": form, "student": student},
+            )
+
+    def post(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+        except:
+            messages.error(request, "Der Schüler konnte nicht gefunden werden.")
+        else:
+            form = ControlParentCreationForm(request.POST, initial={"student": student})
+            if form.is_valid():
+                parent = CustomUser.objects.create(
+                    email=form.cleaned_data["email"],
+                    first_name=form.cleaned_data["first_name"],
+                    last_name=form.cleaned_data["last_name"],
+                    role=0,
+                )
+                parent.set_password(form.cleaned_data["password"])
+                parent.students.add(student)
+                parent.save()
+
+                try:
+                    up_user = Upcomming_User.objects.filter(student=student)
+                except Upcomming_User.DoesNotExist:
+                    pass
+                else:
+                    up_user.delete()
+
+                messages.success(
+                    request,
+                    "The parent was successfully created and the student added.",
+                )
+
+                return redirect("student_details_view", student.pk)
+
+            return render(
+                request,
+                "administrative/student/manual_parent_registration.html",
+                {"form": form, "student": student},
+            )
+
+
+class ManualParentAddStudent(View):
+    def get(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+        except:
+            messages.error(request, "Der Schüler konnte nicht gefunden werden.")
+        else:
+            form = ControlParentAddStudent(initial={"student": student})
+            return render(
+                request,
+                "administrative/student/manual_parent_registration.html",
+                {"form": form, "student": student},
+            )
+
+    def post(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+        except:
+            messages.error(request, "Der Schüler konnte nicht gefunden werden.")
+        else:
+            form = ControlParentAddStudent(request.POST, initial={"student": student})
+            if form.is_valid():
+                parent: CustomUser = form.cleaned_data["parent"]
+
+                parent.students.add(student)
+                parent.save()
+
+                try:
+                    up_user = Upcomming_User.objects.filter(student=student)
+                except Upcomming_User.DoesNotExist:
+                    pass
+                else:
+                    up_user.delete()
+
+                messages.success(
+                    request,
+                    "The student was successfully added to the parent.",
+                )
+
+                return redirect("student_details_view", student.pk)
+
+            return render(
+                request,
+                "administrative/student/manual_parent_registration.html",
+                {"form": form, "student": student},
+            )

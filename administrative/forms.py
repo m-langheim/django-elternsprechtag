@@ -22,6 +22,10 @@ from django.db.models import Q
 
 from crispy_forms.helper import FormHelper
 
+from django.contrib.auth.password_validation import validate_password
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
@@ -123,3 +127,60 @@ class EventEditForm(forms.ModelForm):
     )
     start = forms.DateTimeField()
     end = forms.DateTimeField()
+
+
+class ControlParentCreationForm(forms.Form):
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=48)
+    last_name = forms.CharField(max_length=48)
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Password",
+                "autocomplete": "off",
+            }
+        ),
+        validators=[validate_password],
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Confirrm password",
+                "autocomplete": "off",
+            }
+        ),
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+
+        if CustomUser.objects.filter(email=email).exists():
+            raise ValidationError(
+                "This email is already taken. Please provide a different one."
+            )
+
+        return email
+
+    def clean(self):
+        password = self.cleaned_data["password"]
+        confirm_password = self.cleaned_data["confirm_password"]
+
+        if password != confirm_password:
+            self.add_error(
+                "password", "The password and the confirm password must be equal."
+            )
+            self.add_error(
+                "confirm_password",
+                "The password and the confirm password must be equal.",
+            )
+
+
+class ControlParentAddStudent(forms.Form):
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
+    parent = forms.ModelChoiceField(
+        queryset=CustomUser.objects.filter(Q(role=0)), widget=ParentWidget
+    )
