@@ -2,6 +2,9 @@
 
 {% block title %} Dashboard {% endblock title %}
 
+{% block help_url_smallscreen %} {% url 'wiki_public_dashboard' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_public_dashboard' %} {% endblock %}
+
 {% block content %}
 <div class="row gx-4 gy-4">
     <div class="col-12 col-md-8">
@@ -62,7 +65,7 @@
                                     </span>
                                     <span class="right">
                                         {% if event.status == 2 %}
-                                        <i class="fa-regular fa-clock fs-5"></i>
+                                        <i class="fa-regular fa-clock fs-5" title="Eine Bestätigung des Termins durch die Lehrkraft steht noch aus."></i>
                                         {% endif %}
                                     </span>
 
@@ -145,7 +148,7 @@
                             </span>
                             <span class="right">
                                 {% if not inquiry.inquiry.processed %}
-                                <i class="fa-regular fa-clock fs-5"></i>
+                                <i class="fa-regular fa-clock fs-5" title="Sie müssen die Anfrage noch beantworten."></i>
                                 {% endif %}
                             </span>
 

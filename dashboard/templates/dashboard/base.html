@@ -49,6 +49,11 @@
                         </form>
                         <div class="d-block col-10 d-lg-none mt-2 mb-2 border-top border-gray" style="width: 100%;">
                             <ul class="nav navbar-nav">
+                                <li class="nav-item"></li>
+                                <a class="nav-link ms-2 me-2 align-items-center text-dark d-flex" href="{% block help_url_smallscreen %}{% endblock %}">
+                                    <i class="fa-regular fa-circle-question text-danger" style="font-size: 2.5em"></i>
+                                </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link dropdown ms-2 me-2 align-items-center text-dark d-flex"
                                         data-bs-toggle="dropdown">
@@ -64,7 +69,7 @@
                                                     class="fa-solid fa-calendar-days"></i> Meine Termine</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
-                                                    class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                                    class="fa-solid fa-inbox"></i> Mitteilungen</a></li>
                                         {% if user.is_superuser %}
                                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">
                                                 <i class="fa-solid fa-microchip"></i> Django-Verwaltung
@@ -109,10 +114,15 @@
 
                     <div class="d-none d-lg-flex col-3 col-sm-2 justify-content-end">
                         <ul class="navbar-nav d-flex flex-row ms-auto">
+                            <li class="nav-item me-1 me-lg-0"></li>
+                            <a class="nav-link" href="{% block help_url_bigscreen %}{% endblock %}">
+                                <i class="fa-regular fa-circle-question text-danger" style="font-size: 2.5em" title="Klicken Sie für Informationen zu dieser Seite."></i>
+                            </a>
+                            </li>
                             <li class="nav-item me-3 me-lg-0 dropdown">
                                 <a class="nav-link dropdown" href="#" id="navbarDropdown1" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em"></i>
+                                    <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em" title="Klicken Sie für Informationen zu Ihrem Konto."></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
                                     <!-- {% if user.role == 0 %}
@@ -124,7 +134,7 @@
                                                 class="fa-solid fa-calendar-days"></i> Meine Termine</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
-                                                class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
+                                                class="fa-solid fa-inbox"></i> Mitteilungen</a></li>
                                     {% if user.is_superuser %}
                                     <li><a class="dropdown-item" href="{% url 'admin:index' %}">
                                             <i class="fa-solid fa-microchip"></i> Django-Verwaltung
@@ -149,7 +159,6 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -212,5 +221,3 @@
 </body>
 
 </html>
-
-<!-- <i class="fa-regular fa-circle-question"></i> -->
