@@ -15,7 +15,7 @@
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                 data-bs-target="#announcement-accordion-collapse-{{ announcement.id }}"
                 aria-expanded="false" aria-controls="announcement-accordion-collapse-{{ announcement.id }}">
-                {{ announcement.get_announcement_type_display }}
+                {{ announcement.created.day }}.{{ announcement.created.month }}.{{ announcement.created.year }} | {{ announcement.get_announcement_type_display }} 
             </button>
         </h2>
         <div id="announcement-accordion-collapse-{{ announcement.id }}" class="accordion-collapse collapse"
@@ -53,7 +53,7 @@
     <div class="card-body">
         <p class="h5 card-title">Keine Mitteilungen</p>
         <p class="card-text">
-            Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.
+            Sie haben keine neuen Mitteilungen.
         </p>
     </div>
 </div>
