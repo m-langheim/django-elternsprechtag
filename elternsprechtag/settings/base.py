@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "general_tasks",
     "colorfield",
     "administrative",
+    "custom_backup",
 ]
 
 MIDDLEWARE = [
@@ -192,3 +193,7 @@ CELERY_TASK_SERIALIZER = "json"
 
 # TABLES2 Configuration
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
+
+
+BACKUP_ROOT = os.path.join(BASE_DIR, "backup")
+BACKUP_DIRS = [MEDIA_ROOT]

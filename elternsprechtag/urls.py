@@ -28,6 +28,7 @@ urlpatterns = [
     path("profile/", include("profile_settings.urls")),
     path("control/", include("administrative.urls")),
     path("celery-progress/", include("celery_progress.urls")),
+    path("backup/", include("custom_backup.urls")),
     # path('register/', include("login.urls"))
 ]
 
