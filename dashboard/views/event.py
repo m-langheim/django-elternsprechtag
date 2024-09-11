@@ -131,7 +131,7 @@ class bookEventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                "Dieser Termin ist derzeit in der Verfügbarkeit eingeschränkt. Aus diesem Grund müssen Sie mindestens einen der markierten Lernenden zur Buchung des Termins anwählen.",
+                "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
             )
         return render(
             request,
@@ -285,7 +285,7 @@ class EventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                "Dieser Termin ist derzeit in der Verfügbarkeit eingeschränkt. Aus diesem Grund müssen Sie mindestens einen der markierten Lernenden zur Buchung des Termins anwählen.",
+                "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
             )
         return render(
             request,

@@ -34,7 +34,7 @@
                                     </span>
                                     {% endfor %}
                                     {% else %}
-                                    <p>This teacher does not have any tags</p>
+                                    <p>Diese Lehrkraft hat keine festgelegten Tags.</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -97,11 +97,20 @@
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">Elternsprechtag-Termine</p>
-            {% if not parent_can_book_event %}
-            Sie sind aktuell nicht berechtigt einen Termin bei diesem Lehrer zu buchen.
-            {% endif %}
+            
             {% if events|length > 0 %}
+
+            <div class="row">
+                <div class="col d-flex">
+                    <p class="h1">Elternsprechtag-Termine</p>
+                </div>
+                <div class="col d-flex justify-content-end" title="Sie sind aktuell nicht berechtigt einen Termin bei diesem Lehrer zu buchen.">
+                    {% if not parent_can_book_event %}
+                    <i class='fs-1 fa-solid fa-triangle-exclamation text-warning'></i>
+                    {% endif %}
+                </div>
+            </div>
+
             <!-- Liste an möglichen Tabs -->
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <style>
@@ -236,11 +245,11 @@
             </div>
             {% else %}
 
-            <!-- Für den Lehrer wurden noch keine Events gebucht -->
-            <div class="container">
-                <p class="h1">Events</p>
-                <p class="text-muted">Es gibt bei dieser Lehrkraft bisher keine offenen Termine</p>
-            </div>
+            <p class="h1">Elternsprechtag-Termine</p>
+
+            <!-- Für den Lehrer wurden noch keine Events erstellt -->
+            Bei dieser Lehrkraft gibt es bisher keine Termine.
+
             {% endif %}
         </div>
     </div>

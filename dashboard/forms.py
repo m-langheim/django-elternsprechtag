@@ -29,13 +29,16 @@ class StudentSelector(forms.CheckboxSelectMultiple):
 
 
 class BookForm(forms.Form):
-    book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput)
+    # book_event = forms.BooleanField(initial=True, widget=forms.HiddenInput) Sieht irrelevant und nicht mehr genutzt aus -> wird deshalb vorerst rausgenommen
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         self.inquiry: Inquiry = kwargs.pop("inquiry", None)
         self.instance = kwargs.pop("instance")
         super(BookForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_show_errors = False
 
         teacher = self.instance.teacher
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
@@ -102,10 +105,10 @@ class BookForm(forms.Form):
             all_students += [str(student.id) for student in self.inquiry.students.all()]
         elif self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", "One of these students must be selected!"
+                "necessary_student", "Eine der markierten Schüler*innen muss ausgewählt sein."
             )
         if len(all_students) == 0:
-            raise ValidationError("At least one student must be selected.")
+            raise ValidationError("Mindestens eine Schüler*in muss ausgewählt sein.")
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -114,7 +117,6 @@ class BookForm(forms.Form):
         widget=StudentSelector(),
         label="",
         required=False,
-        help_text="One of these students must be selected.",
     )
 
     student = forms.MultipleChoiceField(
@@ -130,6 +132,9 @@ class EditEventForm(forms.Form):
         self.request = kwargs.pop("request")
         self.instance: Event = kwargs.pop("instance")
         super(EditEventForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_show_errors = False
 
         teacher = self.instance.teacher
         #  Es werden immer alle Schüler:innen, die zu dem Elternteil gehören angezeigt
@@ -200,10 +205,10 @@ class EditEventForm(forms.Form):
 
         if self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", "One of these students must be selected!"
+                "necessary_student", "Eine der markierten Schüler*innen muss ausgewählt sein."
             )
         if len(all_students) == 0:
-            raise ValidationError("At least one student must be selected.")
+            raise ValidationError("Mindestens eine Schüler*in muss ausgewählt sein.")
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -212,7 +217,6 @@ class EditEventForm(forms.Form):
         widget=StudentSelector(),
         label="",
         required=False,
-        help_text="One of these students must be selected.",
     )
 
     student = forms.MultipleChoiceField(
