@@ -11,8 +11,11 @@ from pathlib import Path
 from django.conf import settings
 
 import os
+import json
 
 from .apps import CustomBackupConfig
+from .models import Backup, BackupLog
+from .utils import open_tar, check_member, flush_db, delete_dir
 
 
 class CustomRestore:
@@ -105,6 +108,7 @@ class CustomRestore:
             tag.color = data["color"]
 
     def restore_settings(self, data, version=1):
+        print("restore_settings", data)
         try:
             settings = SiteSettings.objects.get(pk=1)
         except SiteSettings.DoesNotExist:
@@ -124,7 +128,7 @@ class CustomRestore:
                 ),
                 delete_announcements=data["delete_announcements"],
                 keep_event_change_formulas=timezone.timedelta(
-                    float(seconds=data["keep_formulars_for"])
+                    seconds=float(data["keep_formulars_for"])
                 ),
                 delete_event_change_formulas=data["delete_formulars"],
                 iquiry_bahvior=data["inquiry_behaviour"],
@@ -222,14 +226,10 @@ class CustomRestore:
         for custom_user in custom_user_data["data"]:
             self.restore_individual_custom_user(custom_user)
 
-    def create_tar_file(self):
-        pass
-
-    @shared_task(bind=True)
-    def restore_async(self, data, flush=False, soft=False):
-        restorer = CustomRestore
-
-        progress_recorder = ProgressRecorder(self)
+    def restore_async(
+        self, data, task, flush=False, soft=False
+    ):  # This is the same funtion as restore() but hast the function to pass in a task for progress recording
+        progress_recorder = ProgressRecorder(task)
 
         settings_data = data["settings"]
         students_data = data["students"]
@@ -239,34 +239,144 @@ class CustomRestore:
         custom_user_data = data["custom_user"]
 
         progress_recorder.set_progress(0, 1, "Restoring settings")
-        restorer.restore_settings(settings_data["data"], settings_data["version"])
+        self.restore_settings(settings_data["data"], settings_data["version"])
         progress_recorder.set_progress(1, 1, "Restoring settings")
         for index, student in enumerate(students_data["data"]):
-            restorer.restore_individual_student(
+            self.restore_individual_student(
                 student, version=students_data["version"], soft=soft
             )
             progress_recorder.set_progress(
                 index, len(students_data["data"]), "Restoring students"
             )
         for index, tag in tags_data["data"]:
-            restorer.restore_individual_tags(tag, tags_data["version"], soft=soft)
+            self.restore_individual_tags(tag, tags_data["version"], soft=soft)
             progress_recorder.set_progress(
                 index, len(tags_data["data"]), "Restoring tags"
             )
         for index, group in enumerate(groups_data["data"]):
-            restorer.restore_individual_groups(group, groups_data["version"])
+            self.restore_individual_groups(group, groups_data["version"])
             progress_recorder.set_progress(
                 index, len(groups_data["data"]), "Restoring groups"
             )
         for index, up_user in enumerate(upcomming_user_data["data"]):
-            restorer.restore_individual_upcomming_user(
+            self.restore_individual_upcomming_user(
                 up_user, upcomming_user_data["version"], soft
             )
             progress_recorder.set_progress(
                 index, len(upcomming_user_data["data"]), "Restoring upcomming users"
             )
         for index, custom_user in enumerate(custom_user_data["data"]):
-            restorer.restore_individual_custom_user(custom_user)
+            self.restore_individual_custom_user(custom_user)
             progress_recorder.set_progress(
                 index, len(custom_user_data["data"]), "Restoring users"
             )
+
+    def extract_tar(
+        self, input_filename, member_path="", dir="", strip=0, checkonly=False
+    ):
+        tar = open_tar(input_filename)
+        if member_path:
+            for member in tar.getmembers():
+                if member_path:
+                    if member_path in member.name:
+                        if not strip <= 0:
+                            p = Path(member.path)
+                            member.path = p.relative_to(*p.parts[:strip])
+                        if not checkonly:
+                            self.logger.debug(f"extract file ->./{member_path}")
+                            tar.extract(member, settings.BASE_DIR)
+                            self.logger.debug(
+                                f"extracted {member.name} to {settings.BASE_DIR}"
+                            )
+        elif dir:
+            absolute = False
+            if Path(dir).is_absolute():
+                absolute = True
+            for member in tar.getmembers():
+                dir_member = []
+                if member.name in dir:
+                    self.logger.debug(f"found BACKUP_DIR in backup {dir}")
+                    if not checkonly:
+                        dir_member.append(member)
+                        submembers = tar.getmembers()
+                        for submember in submembers:
+                            if str(submember.name).startswith(member.name):
+                                dir_member.append(submember)
+                        if not absolute:
+                            self.logger.debug(f"relative extract ->: {Path(dir)}")
+                            tar.extractall(members=dir_member, path=settings.BASE_DIR)
+                        else:
+                            # todo future feature
+                            outpath = Path(dir)
+                            self.logger.debug(f"absolute extract ->: {outpath}")
+                            tar.extractall(members=dir_member, path=Path("/").root)
+
+        tar.close()
+
+    def restore_form_file(
+        self,
+        tarpath,
+        silent=False,
+        flush=False,
+        soft=False,
+        delete_dirs=False,
+        task: any = None,
+    ):
+        if not tarpath:
+            # sorted_backups = get_backup_list_by_time(settings.BACKUP_ROOT)
+            # if not sorted_backups:
+            #     print("nothing to load")
+            #     return
+            # tar = sorted_backups[-1].get('path')
+            # if tar:
+            #     tarpath = Path(tar)
+            #     if not silent:
+            #         print(f"loading latest backup: \t\t {tarpath}")
+            # else:
+            #     if not silent:
+            #         print("nothing to load")
+            #     return
+            pass
+        else:
+            tarpath = Path(tarpath)
+            if not silent:
+                print(f"loading given backup: \t\t {tarpath}")
+
+        if not tarpath.is_file():
+            raise Exception(f"file {tarpath} does not exist")
+
+        self.extract_tar(tarpath, member_path=CustomBackupConfig.JSON_FILENAME)
+
+        if flush:
+            flush_db()
+
+        with open(self.json_path, "r") as f:
+            data = json.load(f)
+
+            if data and not task:
+                self.restore(data, flush, soft)
+            elif data and task:
+                self.restore_async(data, task, flush, soft)
+
+        if delete_dirs:
+            self.logger.debug(f"trying to delete {CustomBackupConfig.BACKUP_DIRS}...")
+            for dir in CustomBackupConfig.BACKUP_DIRS:
+                delete_dir(dir, **self.context)
+
+        for each in CustomBackupConfig.BACKUP_DIRS:
+            self.extract_tar(tarpath, dir=each)
+
+        self.logger.debug(f"removing {self.json_path}")
+        os.remove(self.json_path)
+
+        # if not self.json_path.exists():
+        #     BackupLog.objects.create(
+        #         message="loaded backup",
+        #         success=True,
+        #     )
+
+
+@shared_task(bind=True)
+def async_restore(self, tar_path):
+    restore = CustomRestore()
+    restore.restore_form_file(Path(tar_path), task=self)

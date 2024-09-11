@@ -5,11 +5,13 @@ from dashboard.models import *
 from authentication.models import *
 from django.contrib.auth.models import Group
 from .utils_backup import CustomBackup
-from .utils_restore import CustomRestore
-from .utils import restore_async
+from .utils_restore import CustomRestore, async_restore
+from .utils_restore_async import restore_async
 from django.views import View
 from .forms import *
 from django.urls import reverse
+from pathlib import Path
+from django.conf import settings
 
 
 # Create your views here.
@@ -43,18 +45,29 @@ class RestoreView(View):
         return render(request, "custom_backup/restore_backup.html", {"form": form})
 
     def post(self, request):
-        form = BackupRestoreForm(request.POST)
+        form = BackupRestoreForm(request.POST, request.FILES)
         if form.is_valid():
-            restorerer = CustomRestore()
-            print(form.cleaned_data)
-            restorerer.restore(data=form.cleaned_data["backup_data"])
+            file = form.cleaned_data["backup_file"]
+
+            with open(Path(settings.BACKUP_ROOT).joinpath(str(file)), "wb+") as f:
+                for chunk in file:
+                    f.write(chunk)
+
+            # restorerer = CustomRestore()
+            # restorerer.restore_form_file(Path(settings.BACKUP_ROOT).joinpath(str(file)))
+            process_task = async_restore.delay(
+                tar_path=str(Path(settings.BACKUP_ROOT).joinpath(str(file)))
+            )
+
+            # print(form.cleaned_data)
+            # restorerer.restore(data=form.cleaned_data["backup_data"])
             # process_task = restore_async.delay(data=form.cleaned_data["backup_data"])
-            # return render(
-            #     request,
-            #     "custom_backup/progress.html",
-            #     {
-            #         "task_id": process_task.task_id,
-            #         "success_url": reverse("student_import_listchanges"),
-            #     },
-            # )
+            return render(
+                request,
+                "custom_backup/progress.html",
+                {
+                    "task_id": process_task.task_id,
+                    "success_url": reverse("student_import_listchanges"),
+                },
+            )
         return render(request, "custom_backup/restore_backup.html", {"form": form})

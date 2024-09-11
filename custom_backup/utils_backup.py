@@ -10,6 +10,7 @@ import json
 import tarfile
 from .exceptions import MigrationNotFound, CreateException
 import socket
+from .models import Backup
 
 
 class CustomBackup:
@@ -268,6 +269,9 @@ class CustomBackup:
             #         self.dump_migration_files += 1
         if not Path(output_path).is_file():
             raise Exception("tarfile has not been created")
+
+        Backup.objects.create(backup_file=Path(output_path))
+
         return output_path
 
     def create_backup_file(self, compress=False, silent=False, *args, **options):
