@@ -66,13 +66,18 @@
                                         <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
                                                     class="fa-solid fa-envelope"></i> Mitteilungen</a></li>
                                         {% if user.is_superuser %}
-                                        <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i
-                                                    class="fa-solid fa-gear"></i>Admin-Interface</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}"><i
-                                                    class="fa-solid fa-gear"></i>Control</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                                                <i class="fa-solid fa-microchip"></i> Django-Verwaltung
+                                        <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
+                                                <i class="fa-solid fa-sliders"></i> Verwaltung</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
                                                     class="fa-solid fa-gear"></i> Mein Profil</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li><a class="dropdown-item" href="{% url 'wiki_mainpage' %}"><i
+                                                    class="fa-solid fa-book"></i> Anleitung</a></li>
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>
