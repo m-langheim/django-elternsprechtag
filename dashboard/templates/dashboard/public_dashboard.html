@@ -11,7 +11,7 @@
             <div class="row p-1">
                 <div class="col col-8">
                     <p class="h1">Termine</p>
-                    <p class="text-muted">Hier werden alle gebuchten Termine aufgeführt</p>
+                    <p class="text-muted">Hier werden alle gebuchten Termine aufgeführt.</p>
                 </div>
                 <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
                     <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center"
@@ -52,32 +52,19 @@
                         {% for event in events %}
                         <div class="accordion-item" id="event-accordion-item-{{ event.id }}">
                             <h2 class="accordion-header" id="event-accordion-heading-{{ event.id }}">
-                                <button class="acc-btn accordion-button collapsed d-grid" type="button"
+                                <button class="acc-btn accordion-button collapsed" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#event-accordion-collapse-{{ event.id }}"
                                     aria-expanded="false" aria-controls="event-accordion-collapse-{{ event.id }}">
 
                                     <span class="left">
-                                        {{ event.start|time }} - {{event.end|time}} | {{event.teacher.first_name}} {{event.teacher.last_name}}
+                                        {{ event.start|time }} - {{event.end|time}} | {{event.teacher.first_name}}
+                                        {{event.teacher.last_name}}
                                     </span>
                                     <span class="right">
                                         {% if event.status == 2 %}
-                                        <i class="fa-solid fa-clock fs-4"></i>
-                                        {% else %}
-                                        <i class="fa-solid fa-circle-check fs-4"></i>
+                                        <i class="fa-regular fa-clock fs-5"></i>
                                         {% endif %}
                                     </span>
-
-                                    <!-- Aus dem Internet -> funktioniert, geht aber bestimmt noch besser -->
-                                    <style>
-                                        button.acc-btn {
-                                            /* create a grid */
-                                            display: grid;
-                                            /* create colums. 1fr means use available space */
-                                            grid-template-columns: 1fr max-content max-content;
-                                            align-items: center;
-                                            grid-gap: 10px;
-                                        }
-                                    </style>
 
                                     <!-- {{ event.start|time }} - {{event.end|time}} | {{event.teacher.first_name}}
                                     {{event.teacher.last_name}}
@@ -129,7 +116,7 @@
 
             <!-- Das Elternteil hat noch keine Events gebucht -->
             <div class="container">
-                <p class="h1">Events</p>
+                <p class="h1">Termine</p>
                 <p class="text-muted">Sie haben bisher noch keinen Termin gebucht.</p>
             </div>
             {% endif %}
@@ -141,7 +128,7 @@
         <div class="h-auto d-grid gap-3">
             <div class="container">
                 <p class="h1">Anfragen</p>
-                <p class="text-muted">Folgende Lehrer haben um einen Termin gebeten.</p>
+                <p class="text-muted">Folgende Lehrkräfte haben einen Termin mit Ihnen angefragt.</p>
             </div>
 
             {% if inquiries|length > 0 %}
@@ -149,23 +136,34 @@
                 {% for inquiry in inquiries %}
                 <div class="accordion-item" id="inquiry-accordion-item-{{ inquiry.inquiry.id }}">
                     <h2 class="accordion-header" id="inquiry-accordion-heading-{{ inquiry.inquiry.id }}">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        <button class="acc-btn accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#inquiry-accordion-collapse-{{ inquiry.inquiry.id }}" aria-expanded="false"
                             aria-controls="inquiry-accordion-collapse-{{ inquiry.inquiry.id }}">
-                            {{ inquiry.inquiry.requester.first_name }} {{ inquiry.inquiry.requester.last_name }}
+
+                            <span class="left">
+                                {{ inquiry.inquiry.requester.first_name }} {{ inquiry.inquiry.requester.last_name }}
+                            </span>
+                            <span class="right">
+                                {% if not inquiry.inquiry.processed %}
+                                <i class="fa-regular fa-clock fs-5"></i>
+                                {% endif %}
+                            </span>
+
+                            <!-- {{ inquiry.inquiry.requester.first_name }} {{ inquiry.inquiry.requester.last_name }}
                             {% if not inquiry.inquiry.processed %}
                             <span
                                 class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-danger d-none d-sm-block"
                                 style="height: 15px; width: 15px;">
                             </span>
-                            {% endif %}
+                            {% endif %} -->
+
                         </button>
                     </h2>
                     <div id="inquiry-accordion-collapse-{{ inquiry.inquiry.id }}" class="accordion-collapse collapse"
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
-                            <strong>Schüler:in: </strong>{{ inquiry.inquiry.students.first }} <br />
+                            <strong>Schüler*in: </strong>{{ inquiry.inquiry.students.first }} <br />
                             <strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
                             <strong>Termin: </strong>
                             {% if inquiry.inquiry.event != null %}
@@ -187,7 +185,7 @@
             <div class="card m-1">
                 <div class="card-body">
                     <p class="h5 card-title">Keine Anfragen</p>
-                    <p class="card-text">Bisher hat Ihnen noch kein Lehrer eine Anfrage gestellt.</p>
+                    <p class="card-text">Bisher hat keine Lehrkraft bei Ihnen einen Termin angefragt.</p>
                 </div>
             </div>
             {% endif %}
@@ -195,6 +193,7 @@
             <!-- Ab hier geht es um Mitteilungen -->
             <div class="container">
                 <p class="h1">Mitteilungen</p>
+                <p class="text-muted">Hier finden Sie Ihre letzten Mitteilungen.</p>
             </div>
             {% if announcements|length > 0 %}
             <div class="accordion" id="announcement-accordion">
@@ -249,11 +248,24 @@
             <div class="card m-1">
                 <div class="card-body">
                     <p class="h5 card-title">Keine Mitteilungen</p>
-                    <p class="card-text">Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.</p>
+                    <p class="card-text">Sie haben keine neuen Mitteilungen.</p>
                 </div>
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<!-- Aus dem Internet -> funktioniert, geht aber bestimmt noch besser -->
+<style>
+    button.acc-btn {
+        /* create a grid */
+        display: grid;
+        /* create colums. 1fr means use available space */
+        grid-template-columns: 1fr max-content max-content;
+        align-items: center;
+        grid-gap: 10px;
+    }
+</style>
+
 {% endblock content %}
