@@ -45,7 +45,7 @@
                                                 {% if inquiry %}
                                                 {% for student in inquiry.students.all %}
                                                     <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" checked="True" disabled="True">
+                                                        <input type="checkbox" class="form-check-input is-invalid" checked="True" disabled="True">
                                                         <label class="form-check-label">{{student.first_name}} {{ student.last_name }}</label>
                                                     </div>
                                                 {% endfor %}
