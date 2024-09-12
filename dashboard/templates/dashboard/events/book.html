@@ -1,6 +1,9 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_book' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_book' %} {% endblock %}
 
 {% block content %}
 
@@ -16,14 +19,14 @@
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            Lehrkraft: {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            {% translate 'Lehrkraft:' %} {{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            Uhrzeit: {{ event.start|time }} Uhr
+                                            {% translate 'Uhrzeit:' %} {{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            Raum: {{ event.room }}
+                                            {% translate 'Raum:' %} {{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -39,7 +42,7 @@
                                             <div class="col text-start">
                                                 
                                                 <div class="mb-2">
-                                                    Schüler*innen für das Gespräch auswählen:
+                                                    {% translate 'Schüler*innen für das Gespräch auswählen:' %}
                                                 </div>
 
                                                 {% if inquiry %}
@@ -71,7 +74,7 @@
 
                                                     {% if book_form.errors %}
                                                     <div class="mt-2 mb-2 text-danger">
-                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} Wählen Sie mindestens eine der markierten Schüler*innen aus. {% else %} Wählen Sie mindestens eine Schüler*in aus. {% endif %}</div>
+                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Wählen Sie mindestens eine der markierten Schüler*innen aus.' %} {% else %} {% translate 'Wählen Sie mindestens eine Schüler*in aus.' %} {% endif %}</div>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -83,11 +86,11 @@
                                         <div class="row gy-1">
                                             <div class="col-12 col-md-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{{ back_url }}">Zurück</a>
+                                                    href="{{ back_url }}">{% translate 'Zurück' %}</a>
                                             </div>
                                             <div class="col-12 col-md-6 d-flex justify-content-end">
                                                     <button type="submit"
-                                                            class="btn btn-outline-danger col-12 col-lg-3">Buchen</button>
+                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Buchen' %}</button>
                                             </div>
                                         </div>
                                     </div>

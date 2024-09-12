@@ -72,6 +72,8 @@ def public_dashboard(request):
         },
     )
 
+# put language of events_dict announcements...
+
 
 @login_required
 @parent_required

@@ -1,6 +1,9 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Lehrprofil' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_parent_view_teacher' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_parent_view_teacher' %} {% endblock %}
 
 {% block content %}
 
@@ -34,7 +37,7 @@
                                     </span>
                                     {% endfor %}
                                     {% else %}
-                                    <p>Diese Lehrkraft hat keine festgelegten Tags.</p>
+                                    <p>{% translate 'Diese Lehrkraft hat keine festgelegten Tags.' %}</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -50,7 +53,7 @@
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">Gebuchte Termine</p>
+            <p class="h1">{% translate 'Gebuchte Termine' %}</p>
             <ul class="list-group list-group-flush">
                 {% for event in personal_booked_events %}
                 <li class="list-group-item">
@@ -75,12 +78,12 @@
                                 </style>
                                 <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                     href="{% url 'event_per_id' event.id %}">
-                                    Angefragt
+                                    {% translate 'Angefragt' %}
                                 </a>
                                 {% else %}
                                 <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                     href="{% url 'event_per_id' event.id %}">
-                                    Gebucht
+                                    {% translate 'Gebucht' %}
                                 </a>
                                 {% endif %}
                             </div>
@@ -102,9 +105,9 @@
 
             <div class="row">
                 <div class="col d-flex">
-                    <p class="h1">Elternsprechtag-Termine</p>
+                    <p class="h1">{% translate 'Elternsprechtag-Termine' %}</p>
                 </div>
-                <div class="col d-flex justify-content-end" title="Sie sind aktuell nicht berechtigt einen Termin bei diesem Lehrer zu buchen.">
+                <div class="col d-flex justify-content-end" title="{% translate 'Sie sind aktuell nicht berechtigt einen Termin bei diesem Lehrer zu buchen.' %}">
                     {% if not parent_can_book_event %}
                     <i class='fs-1 fa-solid fa-triangle-exclamation text-warning'></i>
                     {% endif %}
@@ -150,7 +153,7 @@
                                             {% if event.booked %}
                                                 <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                                     href="{% url 'event_per_id' event.id %}">
-                                                    Gebucht
+                                                    {% translate 'Gebucht' %}
                                                 </a>
                                             {% elif event.inquiry_pending %}
                                                 <style>
@@ -167,26 +170,26 @@
                                                 <a type="button"
                                                     class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                                     href="{% url 'event_per_id' event.id %}">
-                                                    Angefragt
+                                                    {% translate 'Angefragt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                                     href="{% url 'book_event_per_id' event.id %}">
-                                                    Anfragen
+                                                    {% translate 'Anfragen' %}
                                                 </a>
                                             {% endif %}
                                         {% else %}
                                             {% if event.occupied %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Belegt
+                                                    {% translate 'Belegt' %}
                                                 </a>
                                             {% elif event.time_conflict %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Zeitkonflikt
+                                                    {% translate 'Zeitkonflikt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Blockiert
+                                                    {% translate 'Blockiert' %}
                                                 </a>
                                             {% endif %}
                                         {% endif %}
@@ -207,28 +210,28 @@
                                                     <a type="button"
                                                         class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                                         href="{% url 'event_per_id' event.id %}">
-                                                        Angefragt
+                                                        {% translate 'Angefragt' %}
                                                     </a>
                                                 {% else %}
                                                     <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                                         href="{% url 'event_per_id' event.id %}">
-                                                        Gebucht
+                                                        {% translate 'Gebucht' %}
                                                     </a>
                                                 {% endif %}
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Belegt
+                                                    {% translate 'Belegt' %}
                                                 </a>
                                             {% endif %}
                                         {% else %}
                                             {% if event.time_conflict %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Zeitkonflikt
+                                                    {% translate 'Zeitkonflikt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                                     href="{% url 'book_event_per_id' event.id %}">
-                                                    Anfragen
+                                                    {% translate 'Anfragen' %}
                                                 </a>
                                             {% endif %}
                                         {% endif %} {% endcomment %}
@@ -245,11 +248,10 @@
             </div>
             {% else %}
 
-            <p class="h1">Elternsprechtag-Termine</p>
+            <p class="h1">{% translate 'Elternsprechtag-Termine' %}</p>
 
             <!-- Für den Lehrer wurden noch keine Events erstellt -->
-            Bei dieser Lehrkraft gibt es bisher keine Termine.
-
+            {% translate 'Bei dieser Lehrkraft gibt es bisher keine Termine.' %}
             {% endif %}
         </div>
     </div>

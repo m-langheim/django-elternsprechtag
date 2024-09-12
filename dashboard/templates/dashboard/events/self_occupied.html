@@ -1,7 +1,10 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Fehler' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_error_event_occupied' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_error_event_occupied' %} {% endblock %}
 
 {% block content %}
-<h1>This event is already occupied</h1>
+<h1>{% translate 'Dieser Termin ist bereits belegt.' %}</h1>
 {% endblock content %}
