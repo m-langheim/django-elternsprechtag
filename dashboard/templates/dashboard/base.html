@@ -67,16 +67,14 @@
                                         {% endif %} -->
                                         {% if user.role == 1 %}
                                         <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
-                                                    class="fa-solid fa-calendar-days"></i> {% translate 'Meine Termine'
-                                                %}</a></li>
+                                                    class="fa-solid fa-calendar-days"></i> {% translate 'Meine Termine'%}</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
                                                     class="fa-solid fa-inbox"></i> {% translate 'Mitteilungen' %}</a>
                                         </li>
                                         {% if user.is_superuser %}
                                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">
-                                                <i class="fa-solid fa-microchip"></i> {% translate 'Django-Verwaltung'
-                                                %}
+                                                <i class="fa-solid fa-microchip"></i> {% translate 'Django-Verwaltung'%}
                                         <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
                                                 <i class="fa-solid fa-sliders"></i> {% translate 'Verwaltung' %}</a>
                                         </li>
@@ -93,8 +91,7 @@
                                         </li>
                                         <li>
                                             <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
-                                                    class="fa-solid fa-right-from-bracket"></i> {% translate 'Abmelden'
-                                                %}</a>
+                                                    class="fa-solid fa-right-from-bracket"></i> {% translate 'Abmelden'%}</a>
                                         </li>
                                     </ul>
                                 </li>

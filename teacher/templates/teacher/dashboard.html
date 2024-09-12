@@ -1,5 +1,10 @@
 {% extends "dashboard/base.html" %}
-{% block title %} Dashboard - Lehrer {% endblock title %}
+{% load i18n %}
+{% block title %} {% translate 'Dashboard' %} {% endblock title %}
+
+{% block help_url_smallscreen %} {% url 'wiki_teacher_dashboard' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_teacher_dashboard' %} {% endblock %}
+
 {% block head %}{% endblock head %}
 {% load crispy_forms_tags %}
 
@@ -8,12 +13,12 @@
 <div class="card border-danger mb-3">
 	<div class="card-body row">
 		<div class="col col-12 col-md-8">
-			<h5 class="card-title">Offene Terminerstellung</h5>
-			<div class="card-text">Sie haben eine oder mehr bisher nicht ausgefüllte Terminerstellungsaufträge. Bitte
-				folgen Sie diesem Link und bearbeiten die Aufträge. Ihre Angaben werden im Anschluss verifiziert. </div>
+			<h5 class="card-title">{% translate 'Offene Terminerstellung' %}</h5>
+			<div class="card-text">{% translate 'Sie haben eine oder mehr bisher nicht ausgefüllte Terminerstellungsaufträge. Bitte
+				folgen Sie diesem Link und bearbeiten die Aufträge. Ihre Angaben werden im Anschluss verifiziert.' %}</div>
 		</div>
 		<div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
-			<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_personal_events' %}">Jetzt ansehen</a>
+			<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_personal_events' %}">{% translate 'Jetzt ansehen' %}</a>
 		</div>
 	</div>
 </div>
@@ -25,9 +30,9 @@
 			<!-- Events-Titel -->
 			<div class="row p-1">
 				<div class="col col-8">
-					<p class="h1">Events</p>
+					<p class="h1">{% translate 'Termine' %}</p>
 					<p class="text-muted">
-						Hier werden alle gebuchten Termine aufgeführt
+						{% translate 'Hier werden alle gebuchten Termine aufgeführt' %}
 					</p>
 				</div>
 				<div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
@@ -85,7 +90,7 @@
 										{% if event.status == 2 %}
 										<span
 											class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
-											Nicht bestätigt
+											{% translate 'Nicht bestätigt' %}
 										</span>
 										{% endif %}
 									</div>
