@@ -1,11 +1,15 @@
 {% extends "profile_settings/profile_layout.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-{% block title %} Dashboard - Profile {% endblock title %}
+{% block profile_title %} {% translate 'Mein Profil' %} {% endblock profile_title %}
+
+{% block profile_help_url_smallscreen %} {% url 'wiki_my_profile' %} {% endblock profile_help_url_smallscreen %}
+{% block profile_help_url_bigscreen %} {% url 'wiki_my_profile' %} {% endblock profile_help_url_bigscreen %}
 
 {% block profile_content %}
-<p class="h1">Mein Profil</p>
-<p class="text-secondary">Personalisieren Sie Ihr Profil.</p>
+<p class="h1">{% translate 'Mein Profil' %}</p>
+<p class="text-secondary">{% translate 'Personalisieren Sie Ihr Profil.' %}</p>
 {% if user.role == 1 %}
 <div class="row p-3">
     {% if user.teacherextradata.image %}
@@ -14,12 +18,12 @@
             style="border-radius: 10px;">
     </div>
     <div class="col col-7 col-sm-7 col-lg-9">
-        <p class="secondary-text">Dieses Profilbild ist nur für Eltern sichtbar.</p>
+        <p class="secondary-text">{% translate 'Dieses Profilbild ist nur für Eltern sichtbar.' %}</p>
     </div>
     {% else %}
     <div class="col col-12">
-        <p class="heading">Sie haben kein Bild hochgeladen.</p>
-        <p class="secondary-text">Dieses Profilbild ist nur für Eltern sichtbar.</p>
+        <p class="heading">{% translate 'Sie haben kein Bild hochgeladen.' %}</p>
+        <p class="secondary-text">{% translate 'Dieses Profilbild ist nur für Eltern sichtbar.' %}</p>
     </div>
     {% endif %}
 </div>
@@ -32,7 +36,7 @@
         {{ profile_form|crispy }}
         <div class="row">
             <div class="col d-flex">
-                <div class="btn btn-outline-secondary mt-2" id="cancel_button">Abbrechen</div>
+                <div class="btn btn-outline-secondary mt-2" id="cancel_button">{% translate 'Abbrechen' %}</div>
             </div>
             <div class="col d-flex justify-content-end">
                 <button type="submit" class="btn btn-outline-danger mt-2" id="submit_button">

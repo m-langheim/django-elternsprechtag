@@ -14,4 +14,8 @@ urlpatterns = [
     path('redirect/wiki/error_inquiry_occupied', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_error_inquiry_occupied'),
     path('redirect/wiki/error_lead_not_started', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_error_lead_not_started'),
     path('redirect/wiki/announcements', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_announcements'),
+    path('redirect/wiki/my_profile', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_my_profile'),
+    path('redirect/wiki/change_password', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_change_password'),
+    path('redirect/wiki/student_list', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_student_list'),
+    path('redirect/wiki/change_tags', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_change_tags'),
 ]

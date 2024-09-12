@@ -14,6 +14,8 @@ from authentication.models import Tag
 import json
 from django.http import HttpResponseBadRequest, JsonResponse
 
+from django.utils.translation import gettext as _
+
 parent_decorators = [login_required, parent_required]
 teacher_decorators = [login_required, teacher_required]
 
@@ -44,14 +46,14 @@ class MyProfileView(View):
                 request.POST, request.FILES, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, "Änderungen erfolgreich vorgenommen")
+                messages.success(request, _("Änderungen erfolgreich vorgenommen"))
 
         else:
             profile_form = changeProfileFormForUsers(
                 request.POST, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, "Änderungen erfolgreich vorgenommen")
+                messages.success(request, _("Änderungen erfolgreich vorgenommen"))
 
         return render(request, "profile_settings/my_profile.html", context={"profile_form": profile_form})
 
@@ -68,7 +70,7 @@ class ChangePasswordView(View):
             user = change_password_form.save()
             update_session_auth_hash(request, user)
             messages.success(
-                request, "Das Passwort wurde erfolgreich geändert.")
+                request, _("Das Passwort wurde erfolgreich geändert."))
             # return redirect("profile_my_profile")
         return render(request, "profile_settings/change_password.html", context={'change_password': change_password_form})
 

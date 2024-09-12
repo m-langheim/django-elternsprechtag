@@ -1,11 +1,15 @@
 {% extends "profile_settings/profile_layout.html" %}
+{% load i18n %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block profile_title %} {% translate 'Schüler*innen' %} {% endblock profile_title %}
+
+{% block profile_help_url_smallscreen %} {% url 'wiki_student_list' %} {% endblock profile_help_url_smallscreen %}
+{% block profile_help_url_bigscreen %} {% url 'wiki_student_list' %} {% endblock profile_help_url_bigscreen %}
 
 {% block profile_content %}
 
-<p class="h1">Schüler*innen</p>
-<p class="text-muted">Hier werden alle Schüler*innen aufgelistet, die Ihnen zugeordnet sind.</p>
+<p class="h1">{% translate 'Schüler*innen' %}</p>
+<p class="text-muted">{% translate 'Hier werden alle Schüler*innen aufgelistet, die Ihnen zugeordnet sind.' %}</p>
 <ul class="list-group list-group-flush">
     <!-- Iterate over object_list -->
     {% for student in object_list %}
@@ -17,7 +21,7 @@
     </li>
     <!-- If object_list is empty  -->
     {% empty %}
-    <li class="list-group-item">Keine Schüler</li>
+    <li class="list-group-item">{% translate 'Keine Schüler*innen' %}</li>
     {% endfor %}
 </ul>
 {% endblock profile_content %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-12 20:11+0200\n"
+"POT-Creation-Date: 2024-09-12 20:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,15 +46,15 @@ msgstr "Berechtigungen"
 #, python-format
 msgid "%d registration email was successfully initiated."
 msgid_plural "%d registration emails were successfully initiated."
-msgstr[0] "Registrierungsmail wurde erfolgreich verschickt."
-msgstr[1] "Registrierungsmails wurden erfolgreich verschickt."
+msgstr[0] "%d Registrierungs-E-Mail wurde erfolgreich verschickt."
+msgstr[1] "%d Registrierungs-E-Mail wurden erfolgreich verschickt."
 
 #: authentication/admin.py:290
 #, python-format
 msgid "%d regestration link was successfully recreated and send."
 msgid_plural "%d registration links were successfully recreates and send."
-msgstr[0] "Registrierungslink wurde erfolgreich zurückgesetzt und versendet."
-msgstr[1] "Registrierungslinks wurden erfolreich zurückgesetzt und versendet."
+msgstr[0] "%d Registrierungslink wurde erfolgreich zurückgesetzt und versendet."
+msgstr[1] "%d Registrierungslinks wurden erfolreich zurückgesetzt und versendet."
 
 #: authentication/admin.py:309
 msgid "Access details"
@@ -64,8 +64,8 @@ msgstr "Details anzeigen"
 #, python-format
 msgid "%d student was newely created."
 msgid_plural "%d students were newely created."
-msgstr[0] "Schüler*in wurde erfolgreich erstellt."
-msgstr[1] "Schüler*innen wurden erfolgreich erstellt."
+msgstr[0] "%d Schüler*in wurde erfolgreich erstellt."
+msgstr[1] "%d Schüler*innen wurden erfolgreich erstellt."
 
 #: authentication/models.py:22
 msgid "Childs parents have registered"
@@ -129,6 +129,10 @@ msgid "Tag"
 msgstr "Tag"
 
 #: authentication/models.py:125 authentication/models.py:136
+#: profile_settings/templates/profile_settings/profile_layout.html:32
+#: profile_settings/templates/profile_settings/profile_layout.html:46
+#: profile_settings/templates/profile_settings/profile_layout.html:83
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:5
 msgid "Tags"
 msgstr "Tags"
 
@@ -273,6 +277,9 @@ msgstr ""
 
 #: dashboard/forms.py:241 dashboard/forms.py:254
 #: dashboard/templates/dashboard/events/view.html:106
+#: profile_settings/forms.py:38
+#: profile_settings/templates/profile_settings/change_password.html:23
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
 msgid "Speichern"
 msgstr ""
 
@@ -519,6 +526,10 @@ msgstr ""
 #: dashboard/templates/dashboard/events/book.html:89
 #: dashboard/templates/dashboard/events/view.html:93
 #: dashboard/templates/dashboard/events/view.html:111
+#: profile_settings/templates/profile_settings/profile_layout.html:52
+#: profile_settings/templates/profile_settings/profile_layout.html:63
+#: profile_settings/templates/profile_settings/profile_layout.html:90
+#: profile_settings/templates/profile_settings/profile_layout.html:103
 msgid "Zurück"
 msgstr ""
 
@@ -541,6 +552,11 @@ msgstr ""
 
 #: dashboard/templates/dashboard/base.html:85
 #: dashboard/templates/dashboard/base.html:154
+#: profile_settings/templates/profile_settings/my_profile.html:5
+#: profile_settings/templates/profile_settings/my_profile.html:11
+#: profile_settings/templates/profile_settings/profile_layout.html:28
+#: profile_settings/templates/profile_settings/profile_layout.html:37
+#: profile_settings/templates/profile_settings/profile_layout.html:74
 msgid "Mein Profil"
 msgstr ""
 
@@ -713,6 +729,9 @@ msgid "Termin absagen"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/view.html:143
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
 msgid "Abbrechen"
 msgstr ""
 
@@ -894,6 +913,101 @@ msgstr ""
 
 #: dashboard/views/event.py:387
 msgid "Der Termin wurde erfolgreich abgesagt"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/change_password.html:5
+#: profile_settings/templates/profile_settings/profile_layout.html:30
+#: profile_settings/templates/profile_settings/profile_layout.html:41
+msgid "Kennwort"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/change_password.html:11
+msgid "Kennwort ändern"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/change_password.html:12
+msgid ""
+"Bitte ändern Sie hier Ihr Kennwort regelmäßig, um die Sicherheit Ihres "
+"Kontos aufrecht zu erhalten."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/my_profile.html:12
+msgid "Personalisieren Sie Ihr Profil."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/my_profile.html:21
+#: profile_settings/templates/profile_settings/my_profile.html:26
+msgid "Dieses Profilbild ist nur für Eltern sichtbar."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/my_profile.html:25
+msgid "Sie haben kein Bild hochgeladen."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/profile_layout.html:57
+#: profile_settings/templates/profile_settings/profile_layout.html:96
+#: profile_settings/templates/profile_settings/student_list.html:4
+#: profile_settings/templates/profile_settings/student_list.html:11
+msgid "Schüler*innen"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/profile_layout.html:78
+msgid "Sicherheit"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/student_list.html:12
+msgid "Hier werden alle Schüler*innen aufgelistet, die Ihnen zugeordnet sind."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/student_list.html:24
+msgid "Keine Schüler*innen"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:12
+msgid "Tags bearbeiten"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:13
+msgid ""
+"Bitte wählen Sie hier Ihre Tags, damit Eltern Sie einfacher finden können."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:18
+msgid "Bitte erlauben Sie JavaScript, um Ihre Tags zu ändern."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:19
+msgid "Hier"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:19
+msgid "erfahren Sie, wie dies funktioniert. Vielen Dank!"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:26
+msgid "Aktive Tags"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:37
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:39
+msgid "Diese Lehrkraft hat keine zugewiesenen Tags."
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:48
+msgid "Inaktive Tags"
+msgstr ""
+
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:58
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:60
+msgid "Es gibt keine inaktiven Tags."
+msgstr ""
+
+#: profile_settings/views.py:49 profile_settings/views.py:56
+msgid "Änderungen erfolgreich vorgenommen"
+msgstr ""
+
+#: profile_settings/views.py:73
+msgid "Das Passwort wurde erfolgreich geändert."
 msgstr ""
 
 #: teacher/forms.py:57
