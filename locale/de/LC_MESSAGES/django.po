@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-12 16:24+0200\n"
+"POT-Creation-Date: 2024-09-12 20:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,7 +84,7 @@ msgstr "Schüler*innen"
 msgid "Parent"
 msgstr "Eltern"
 
-#: authentication/models.py:77 dashboard/models.py:357
+#: authentication/models.py:77 dashboard/models.py:358
 msgid "Teacher"
 msgstr "Lehrkraft"
 
@@ -263,19 +263,76 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#: dashboard/forms.py:109 dashboard/forms.py:209
+msgid "Eine der markierten Schüler*innen muss ausgewählt sein."
+msgstr ""
+
+#: dashboard/forms.py:112 dashboard/forms.py:212
+msgid "Mindestens eine Schüler*in muss ausgewählt sein."
+msgstr ""
+
+#: dashboard/forms.py:241 dashboard/forms.py:254
+#: dashboard/templates/dashboard/events/view.html:106
+msgid "Speichern"
+msgstr ""
+
+#: dashboard/forms.py:261
+msgid "Der Text darf nicht länger als 4000 Zeichen sein."
+msgstr ""
+
+#: dashboard/forms.py:286
+msgid "Der Endzeitpunkt muss später sein als der Startzeitpunkt."
+msgstr ""
+
+#: dashboard/forms.py:289
+msgid ""
+"Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen."
+msgstr ""
+
+#: dashboard/forms.py:294
+msgid ""
+"Der Startzeitpunkt für die Phase zum Beantworten von Anfragen muss vor dem "
+"Startzeitpunkt der Buchungsphase liegen."
+msgstr ""
+
 #: dashboard/models.py:22 dashboard/models.py:78 dashboard/models.py:127
-#: dashboard/models.py:472
-msgid "Specify when all parents can book events"
-msgstr "Legen Sie fest, wann alle Eltern Termine anfragen können."
+#: dashboard/models.py:473
+msgid "Setzen Sie fest, ab wann alle Eltern Termine anfragen können."
+msgstr ""
 
 #: dashboard/models.py:28 dashboard/models.py:84 dashboard/models.py:133
-#: dashboard/models.py:477
+#: dashboard/models.py:478
 msgid ""
-"Specify when parents with inquiries can start booking for corresponding "
-"events"
+"Setzen Sie fest, ab wann Anfragen der Lehrkräfte beantwortet werden können."
 msgstr ""
-"Legen Sie fest, wann Eltern, die eine Anfrage bekommen haben, Termine machen "
-"können."
+
+#: dashboard/models.py:35
+msgid "Niemand kann diesen Termin aktuell anfragen."
+msgstr ""
+
+#: dashboard/models.py:38
+msgid ""
+"Nur Eltern mit besonderen Berechtigungen können diesen Termin aktuell "
+"anfragen."
+msgstr ""
+
+#: dashboard/models.py:42
+msgid ""
+"Nur Eltern, die eine Anfrage der Lehrkraft bekommen haben, können diesen "
+"Termin akutell anfragen."
+msgstr ""
+
+#: dashboard/models.py:44
+msgid "Alle Eltern können diesen Termin akutell anfragen."
+msgstr ""
+
+#: dashboard/models.py:61
+msgid "Elternsprechtag am "
+msgstr ""
+
+#: dashboard/models.py:67
+msgid " und "
+msgstr ""
 
 #: dashboard/models.py:218
 msgid "Unoccupied"
@@ -289,95 +346,143 @@ msgstr "Belegt"
 msgid "Inquiry pending"
 msgstr "Anfrage ausstehend"
 
-#: dashboard/models.py:317
+#: dashboard/models.py:294
+msgid "Diser User ist kein Elternteil"
+msgstr ""
+
+#: dashboard/models.py:314
+msgid "Termin von "
+msgstr ""
+
+#: dashboard/models.py:314
+msgid " am "
+msgstr ""
+
+#: dashboard/models.py:314
+msgid " von "
+msgstr ""
+
+#: dashboard/models.py:314
+msgid " bis "
+msgstr ""
+
+#: dashboard/models.py:318
 msgid "Event"
 msgstr "Termin"
 
-#: dashboard/models.py:318
+#: dashboard/models.py:319
 msgid "Events"
 msgstr "Termine"
 
-#: dashboard/models.py:344
-msgid "Submit of personal timeslots"
-msgstr "Persönlichen Zeiträume eingerichtet"
+#: dashboard/models.py:345
+msgid "Eigene Zeiträume abschicken"
+msgstr ""
 
-#: dashboard/models.py:359
+#: dashboard/models.py:360
 msgid "Date"
 msgstr "Datum"
 
-#: dashboard/models.py:360
+#: dashboard/models.py:361
 msgid "Start time"
 msgstr "Startzeitpunkt"
 
-#: dashboard/models.py:361
+#: dashboard/models.py:362
 msgid "End time"
 msgstr "Endzeitpunkt"
 
-#: dashboard/models.py:362
+#: dashboard/models.py:363
 msgid "No events"
 msgstr "Keine Termine"
 
-#: dashboard/models.py:364
-msgid "Waiting to be filled"
-msgstr "Warte auf Bearbeitung"
-
 #: dashboard/models.py:365
-msgid "Waiting for approval"
-msgstr "Warte auf Bestätigung"
+msgid "Warte auf Bearbeitung"
+msgstr ""
 
 #: dashboard/models.py:366
-msgid "Approved"
-msgstr "Angenommen"
+msgid "Warte auf Bestätigung"
+msgstr ""
 
 #: dashboard/models.py:367
-msgid "Disapproved"
-msgstr "Abgelehnt"
+msgid "Angenommen"
+msgstr ""
 
-#: dashboard/models.py:372
+#: dashboard/models.py:368
+msgid "Abgelehnt"
+msgstr ""
+
+#: dashboard/models.py:373
 msgid "Event creation formula"
 msgstr "Terminerstellungsformular"
 
-#: dashboard/models.py:373
+#: dashboard/models.py:374
 msgid "Event creation formulas"
 msgstr "Terminerstellungsformulare"
 
-#: dashboard/models.py:410
-msgid "No response"
-msgstr "Keine Antwort"
+#: dashboard/models.py:378
+msgid "Kann eingereichte Zeiträume für andere User annehmen oder ablehnen."
+msgstr ""
+
+#: dashboard/models.py:386
+msgid "Anfrage zur Buchung eines Termins (Lehrer->Eltern)"
+msgstr ""
+
+#: dashboard/models.py:387
+msgid "Anfrage zur Bestätigung eines Termins (Eltern->Lehrer)"
+msgstr ""
 
 #: dashboard/models.py:411
-msgid "Inquiry accepted"
-msgstr "Anfrage angenommen"
+msgid "Keine Antwort"
+msgstr ""
 
 #: dashboard/models.py:412
-msgid "Inquiry dismissed"
-msgstr "Anfrage abgelehnt"
+msgid "Anfrage angenommen"
+msgstr ""
 
-#: dashboard/models.py:419
+#: dashboard/models.py:413
+msgid "Anfrage abgelehnt"
+msgstr ""
+
+#: dashboard/models.py:420
 msgid "Inquiry"
 msgstr "Anfrage"
 
-#: dashboard/models.py:420
+#: dashboard/models.py:421
 msgid "Inquries"
 msgstr "Anfragen"
 
-#: dashboard/models.py:443
+#: dashboard/models.py:426
+msgid "Neue Buchungsanfrage"
+msgstr ""
+
+#: dashboard/models.py:427
+msgid "Terminabsage"
+msgstr ""
+
+#: dashboard/models.py:428
+msgid "Systembenachrichtigung"
+msgstr ""
+
+#: dashboard/models.py:444
 msgid "Announcement"
 msgstr "Mitteilung"
 
-#: dashboard/models.py:444
+#: dashboard/models.py:445
 msgid "Announcements"
 msgstr "Mitteilungen"
 
-#: dashboard/models.py:483
+#: dashboard/models.py:484
 msgid ""
-"Here you can set the general length of an event. The lenth applies to all "
-"events created with the function."
-msgstr ""
 "Hier legen Sie die allgemeine Länge eines Termins fest. Sie bezieht sich auf "
 "alle mit dieser Funktion erstellten Termine."
+msgstr ""
 
-#: dashboard/models.py:511 dashboard/models.py:512
+#: dashboard/models.py:489
+msgid ""
+"Hier können Sie den Abstand zwischen zwei Terminen festlegen. Sie sollten "
+"etwas Zeit zum Wechseln der Räume usw. einplanen."
+msgstr ""
+
+#: dashboard/models.py:512 dashboard/models.py:513
 msgid "SiteSettings"
 msgstr "Seiteneinstellungen"
 
@@ -607,10 +712,6 @@ msgstr ""
 msgid "Termin absagen"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/view.html:106
-msgid "Speichern"
-msgstr ""
-
 #: dashboard/templates/dashboard/events/view.html:143
 msgid "Abbrechen"
 msgstr ""
@@ -751,6 +852,50 @@ msgstr ""
 msgid "Keine Suchergebnisse gefunden!"
 msgstr ""
 
+#: dashboard/utils.py:50
+msgid ""
+"Die Funktion erfordert ein Elternteil, der User ist allerdings kein "
+"Elternteil."
+msgstr ""
+
+#: dashboard/utils.py:92
+msgid "Entweder die Lehrkraft oder der Termin muss als Attribut gegeben sein."
+msgstr ""
+
+#: dashboard/views/announcements.py:59
+msgid "Alle Mitteilungen wurden als gelesen markiert."
+msgstr ""
+
+#: dashboard/views/dashboard.py:218
+msgid "Es wurden keine Einstellungen für diese Seite gefunden."
+msgstr ""
+
+#: dashboard/views/event.py:98 dashboard/views/event.py:160
+msgid ""
+"Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin "
+"aus."
+msgstr ""
+
+#: dashboard/views/event.py:119 dashboard/views/event.py:183
+msgid "Die angegebene Anfrage konnte leider nicht gefunden werden."
+msgstr ""
+
+#: dashboard/views/event.py:135 dashboard/views/event.py:289
+msgid ""
+"Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie "
+"daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
+msgstr ""
+
+#: dashboard/views/event.py:247
+msgid ""
+"Sie haben die Anfrage schon beantwortet und müssen nichts weiteres mehr "
+"machen."
+msgstr ""
+
+#: dashboard/views/event.py:387
+msgid "Der Termin wurde erfolgreich abgesagt"
+msgstr ""
+
 #: teacher/forms.py:57
 msgid "Explanation why you dismiss the event."
 msgstr "Grund für die Absage des Termins."
@@ -758,3 +903,44 @@ msgstr "Grund für die Absage des Termins."
 #: teacher/forms.py:61
 msgid "Parent should book a different event."
 msgstr "Eltern sollen einen neuen Termin anfragen."
+
+#~ msgid "Specify when all parents can book events"
+#~ msgstr "Legen Sie fest, wann alle Eltern Termine anfragen können."
+
+#~ msgid ""
+#~ "Specify when parents with inquiries can start booking for corresponding "
+#~ "events"
+#~ msgstr ""
+#~ "Legen Sie fest, wann Eltern, die eine Anfrage bekommen haben, Termine "
+#~ "machen können."
+
+#~ msgid "Submit of personal timeslots"
+#~ msgstr "Persönlichen Zeiträume eingerichtet"
+
+#~ msgid "Waiting to be filled"
+#~ msgstr "Warte auf Bearbeitung"
+
+#~ msgid "Waiting for approval"
+#~ msgstr "Warte auf Bestätigung"
+
+#~ msgid "Approved"
+#~ msgstr "Angenommen"
+
+#~ msgid "Disapproved"
+#~ msgstr "Abgelehnt"
+
+#~ msgid "No response"
+#~ msgstr "Keine Antwort"
+
+#~ msgid "Inquiry accepted"
+#~ msgstr "Anfrage angenommen"
+
+#~ msgid "Inquiry dismissed"
+#~ msgstr "Anfrage abgelehnt"
+
+#~ msgid ""
+#~ "Here you can set the general length of an event. The lenth applies to all "
+#~ "events created with the function."
+#~ msgstr ""
+#~ "Hier legen Sie die allgemeine Länge eines Termins fest. Sie bezieht sich "
+#~ "auf alle mit dieser Funktion erstellten Termine."

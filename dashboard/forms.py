@@ -11,6 +11,7 @@ from .models import (
 from authentication.models import CustomUser
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
@@ -105,10 +106,10 @@ class BookForm(forms.Form):
             all_students += [str(student.id) for student in self.inquiry.students.all()]
         elif self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", "Eine der markierten Schüler*innen muss ausgewählt sein."
+                "necessary_student", _("Eine der markierten Schüler*innen muss ausgewählt sein.")
             )
         if len(all_students) == 0:
-            raise ValidationError("Mindestens eine Schüler*in muss ausgewählt sein.")
+            raise ValidationError(_("Mindestens eine Schüler*in muss ausgewählt sein."))
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -205,10 +206,10 @@ class EditEventForm(forms.Form):
 
         if self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", "Eine der markierten Schüler*innen muss ausgewählt sein."
+                "necessary_student", _("Eine der markierten Schüler*innen muss ausgewählt sein.")
             )
         if len(all_students) == 0:
-            raise ValidationError("Mindestens eine Schüler*in muss ausgewählt sein.")
+            raise ValidationError(_("Mindestens eine Schüler*in muss ausgewählt sein."))
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -237,7 +238,7 @@ class AdminEventForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit("submit", "Speichern"))
+        self.helper.add_input(Submit("submit", _("Speichern")))
 
 
 class AdminEventCreationFormulaForm(forms.Form):
@@ -250,14 +251,14 @@ class AdminEventCreationFormulaForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit("submit", "Speichern"))
+        self.helper.add_input(Submit("submit", _("Speichern")))
 
 
 class cancelEventForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea,
         max_length=4000,
-        help_text="Der Text darf nicht länger als 4000 Zeichen sein.",
+        help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."),
     )
 
 
@@ -282,16 +283,15 @@ class EventCreationForm(forms.BaseInlineFormSet):
         lead_inquiry_start = cleaned_data.get("lead_inquiry_start")
         if start > end:
             self.add_error(
-                "end", "The events end time must be later than the event start time."
-            )
+                "end", _("Der Endzeitpunkt muss später sein als der Startzeitpunkt."))
         if lead_start > start:
             self.add_error(
-                "lead_start", "The lead start must be set before the event start."
+                "lead_start", _("Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen.")
             )
         if lead_start > lead_inquiry_start:
             self.add_error(
                 "lead_inquiry_start",
-                "The lead inquiry field is designed to be set before the lead start value.",
+                _("Der Startzeitpunkt für die Phase zum Beantworten von Anfragen muss vor dem Startzeitpunkt der Buchungsphase liegen.")
             )
         return cleaned_data
 

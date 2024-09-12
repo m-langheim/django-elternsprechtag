@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -94,7 +95,7 @@ class bookEventView(View):
         if not parent_can_book_event:
             messages.error(
                 request,
-                "You are not allowed to book this event. Please choose a different event if possible.",
+                _("Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin aus."),
             )
             return redirect(
                 "event_teacher_list",
@@ -115,7 +116,7 @@ class bookEventView(View):
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
                 messages.error(
                     request,
-                    "Die angegebene Anfrage konnte leider nicht gefunden werden.",
+                    _("Die angegebene Anfrage konnte leider nicht gefunden werden."),
                 )
                 form = BookForm(instance=event, request=request)
                 teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
@@ -131,7 +132,7 @@ class bookEventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
+                _("Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus.")
             )
         return render(
             request,
@@ -156,7 +157,7 @@ class bookEventView(View):
         if not parent_can_book_event:
             messages.error(
                 request,
-                "You are not allowed to book this event. Please choose a different event if possible.",
+                _("Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin aus."),
             )
             return redirect(
                 "event_teacher_list",
@@ -179,7 +180,7 @@ class bookEventView(View):
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
                 messages.error(
                     request,
-                    "Die angegebene Anfrage konnte leider nicht gefunden werden.",
+                    _("Die angegebene Anfrage konnte leider nicht gefunden werden."),
                 )
                 form = BookForm(request.POST, instance=event, request=request)
             else:
@@ -243,7 +244,7 @@ class InquiryView(View):
         if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
             messages.info(
                 request,
-                "You have already fullfilled the inquiry. No further action is needed.",
+                _("Sie haben die Anfrage schon beantwortet und müssen nichts weiteres mehr machen."),
             )
             return redirect("home")
 
@@ -285,7 +286,7 @@ class EventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
+                _("Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus.")
             )
         return render(
             request,
@@ -383,7 +384,7 @@ class CancelEventView(View):
             event.occupied = False
             event.student.clear()
             event.save()
-            messages.success(request, "Der Termin wurde erfolgreich abgesagt")
+            messages.success(request, _("Der Termin wurde erfolgreich abgesagt"))
             return redirect("home")
         return render(
             request,

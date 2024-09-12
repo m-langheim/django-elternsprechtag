@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -55,7 +56,7 @@ def markAllAnnouncementsRead(request):
     for announcement in announcements:
         announcement.read = True
         announcement.save()
-    messages.success(request, "Alle Mitteilungen wurden als gelesen markiert.")
+    messages.success(request, _("Alle Mitteilungen wurden als gelesen markiert."))
     return redirect("..")
 
 

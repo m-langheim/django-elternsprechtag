@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -214,6 +215,6 @@ def impressum(request):
     try:
         settings = SiteSettings.objects.first()
     except SiteSettings.DoesNotExist:
-        raise Http404("Es wurden keine Einstellungen für diese Seite gefunden.")
+        raise Http404(_("Es wurden keine Einstellungen für diese Seite gefunden."))
     else:
         return redirect(settings.impressum)
