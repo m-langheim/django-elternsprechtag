@@ -657,3 +657,7 @@ class TeacherRegistrationView(View):
         else:
             messages.error(request, "Dieser Link ist ungültig.")
             return redirect("login")
+        
+def logout_view(request):
+    logout(request)
+    return redirect("login")
