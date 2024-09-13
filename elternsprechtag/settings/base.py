@@ -197,3 +197,5 @@ DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
 
 BACKUP_ROOT = os.path.join(BASE_DIR, "backup")
 BACKUP_DIRS = [MEDIA_ROOT]
+BACKUP_ASYNC = True
+BACKUP_ROTATION = 14

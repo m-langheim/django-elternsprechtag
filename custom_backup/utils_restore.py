@@ -377,6 +377,6 @@ class CustomRestore:
 
 
 @shared_task(bind=True)
-def async_restore(self, tar_path):
+def async_restore(self, tar_path, *args, **kwargs):
     restore = CustomRestore()
-    restore.restore_form_file(Path(tar_path), task=self)
+    restore.restore_form_file(Path(tar_path), task=self, *args, **kwargs)

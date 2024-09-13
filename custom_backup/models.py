@@ -15,15 +15,30 @@ class MainAttributes(models.Model):
 
 
 class Backup(models.Model):
+    class BackupTypeChoices(models.TextChoices):
+        AUTOMATIC = "A", "Automatically created backup"
+        MANUAL = "M", "Manually created backup"
+        UPLOAD = "U", "User-uploaded backup"
+
+    backup_type = models.CharField(
+        max_length=1, choices=BackupTypeChoices, default=BackupTypeChoices.AUTOMATIC
+    )
     backup_file = models.FilePathField(path=settings.BACKUP_ROOT)
-    # inconsistent migrations occur if your migration recorder does not match your local migration files
+    backup_directories = models.TextField(null=True, blank=True)
+    size_bytes = models.BigIntegerField(null=True, blank=True)
+    keep_backup = models.BooleanField(default=True)
+    validation_hash = models.CharField(max_length=40, unique=True, null=True)
+    external = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Backup {self.pk}"
 
     class Meta:
-        permissions = (("can_restore_backup", "Can restore backup"),)
+        permissions = (
+            ("can_restore_backup", "Can restore backup"),
+            ("can_add_backup", "Can create a backup"),
+        )
 
 
 class BackupLog(MainAttributes):

@@ -7,16 +7,25 @@ from django.conf import settings
 import os
 from .apps import CustomBackupConfig
 import json
+from json import JSONEncoder
 import tarfile
 from .exceptions import MigrationNotFound, CreateException
 import socket
 from .models import Backup
+import hashlib
+
+
+class DateTimeEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 class CustomBackup:
-    def __init__(self) -> None:
+    def __init__(self, manual=False) -> None:
         self.logger = logging.getLogger(__name__)
-
+        self.manual = manual
         self.json_path = Path(
             os.path.join(settings.BACKUP_ROOT, CustomBackupConfig.JSON_FILENAME)
         )
@@ -218,14 +227,25 @@ class CustomBackup:
 
         return backup
 
+    def get_validation_hash(self):
+        return hashlib.sha1(
+            str(
+                self.json_data + self.created_at.isoformat() + settings.SECRET_KEY
+            ).encode("utf-8")
+        ).hexdigest()
+
     def create_backup_json_file(self):
         self.logger.debug(f"creating database dump: {self.json_path}")
-        with open(self.dumpinfo_path, "w") as f:
-            f.write(f"created_at;{timezone.now()}\n")
-            f.write(f"backup_directories;{CustomBackupConfig.BACKUP_DIRS}\n")
+
+        self.json_data = json.dumps(self.get_backup_data(), cls=DateTimeEncoder)
 
         with open(self.json_path, "w") as f:
-            f.write(json.dumps(self.get_backup_data()))
+            f.write(self.json_data)
+
+        with open(self.dumpinfo_path, "w") as f:
+            f.write(f"created_at;{self.created_at}\n")
+            f.write(f"backup_directories;{CustomBackupConfig.BACKUP_DIRS}\n")
+            f.write(f"backup_validation_hash:{self.get_validation_hash}")
 
         if Path(self.json_path).is_file() and Path(self.dumpinfo_path).is_file():
             return Path(self.json_path), Path(self.dumpinfo_path)
@@ -270,8 +290,6 @@ class CustomBackup:
         if not Path(output_path).is_file():
             raise Exception("tarfile has not been created")
 
-        Backup.objects.create(backup_file=Path(output_path))
-
         return output_path
 
     def create_backup_file(self, compress=False, silent=False, *args, **options):
@@ -314,6 +332,19 @@ class CustomBackup:
             source_dirs=CustomBackupConfig.BACKUP_DIRS,
             source_files=[JSON_FILE, DUMPINFO_FILE],
             compress=compress,
+        )
+
+        Backup.objects.create(
+            backup_file=Path(OUTPUT_TAR),
+            backup_type=(
+                Backup.BackupTypeChoices.MANUAL
+                if self.manual
+                else Backup.BackupTypeChoices.AUTOMATIC
+            ),
+            size_bytes=Path(OUTPUT_TAR).stat().st_size,
+            backup_directories=CustomBackupConfig.BACKUP_DIRS,
+            keep_backup=self.manual,
+            validation_hash=self.get_validation_hash(),
         )
 
         os.remove(Path(JSON_FILE).absolute())

@@ -18,6 +18,8 @@ class CustomBackupConfig(AppConfig):
     JSON_FILENAME = "django-backup-utils-fullbackup.json"
     DUMPINFO = "django-backup-utils-backup-info.txt"
 
+    CUSTOM_BACKUP_VERSION = 1.0
+
     try:
         BACKUP_DIRS = settings.BACKUP_DIRS
     except AttributeError:
