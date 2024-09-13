@@ -45,7 +45,7 @@ urlpatterns = [
     ),
     path(
         "logout/",
-        auth_views.LogoutView.as_view(template_name="authentication/logout.html"),
+        logout_view,
         name="logout",
     ),
     path("password-reset/", password_reset_request, name="password_reset"),

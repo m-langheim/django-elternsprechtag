@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -72,6 +73,8 @@ def public_dashboard(request):
         },
     )
 
+# put language of events_dict announcements...
+
 
 @login_required
 @parent_required
@@ -84,7 +87,7 @@ def search(request):
     page_number = request.GET.get("page")
 
     if request_search is None:
-        print("Keine Frage")
+        # print("Keine Frage")
         result = teachers
     # elif request_search.startswith("#"):
     #     request_search = request_search[1:]
@@ -212,6 +215,6 @@ def impressum(request):
     try:
         settings = SiteSettings.objects.first()
     except SiteSettings.DoesNotExist:
-        raise Http404("Es wurden keine Einstellungen für diese Seite gefunden.")
+        raise Http404(_("Es wurden keine Einstellungen für diese Seite gefunden."))
     else:
         return redirect(settings.impressum)

@@ -1,15 +1,18 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Anfrage' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_parent_got_inquiry' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_parent_got_inquiry' %} {% endblock %}
 
 {% block content %}
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">Anfrage</p>
+            <p class="h1">{% translate 'Anfrage' %}</p>
             <div class="row">
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                    <strong>Anfragesteller*in:</strong>
+                    <strong>{% translate 'Anfragesteller*in:' %}</strong>
                 </div>
                 <div class="col-6 col-sm-8 col-md-9 col-lg-10">
                     <a href="{% url 'event_teacher_list' teacher_id %}" class="pb-1"
@@ -18,13 +21,13 @@
                     </a>
                 </div>
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                    <strong>Schüler*in:</strong>
+                    <strong>{% translate 'Schüler*in:' %}</strong>
                 </div>
                 <div class="col-6 col-sm-8 col-md-9 col-lg-10">
                     {{ inquiry.students.first }}
                 </div>
                 <div class="col-12 col-md-3 col-lg-2">
-                    <strong>Grund:</strong>
+                    <strong>{% translate 'Grund:' %}</strong>
                 </div>
                 <div class="col-12 col-md-9 col-lg-10">
                     {{ inquiry.reason|linebreaks }}
@@ -43,8 +46,8 @@
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">Elternsprechtag-Termine</p>
-            <p class="text-muted">Bitte wählen Sie einen der verfügbaren Termine</p>
+            <p class="h1">{% translate 'Elternsprechtag-Termine' %}</p>
+            <p class="text-muted">{% translate 'Bitte wählen Sie einen der verfügbaren Termine.' %}</p>
             {% if events|length > 0 %}
             <!-- Liste an möglichen Tabs -->
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -98,28 +101,28 @@
                                         <a type="button"
                                             class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                             href="{% url 'event_per_id' event.id %}">
-                                            Angefragt
+                                            {% translate 'Angefragt' %}
                                         </a>
                                         {% else %}
                                         <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                             href="{% url 'event_per_id' event.id %}">
-                                            Gebucht
+                                            {% translate 'Gebucht' %}
                                         </a>
                                         {% endif %}
                                         {% else %}
                                         <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                            Belegt
+                                            {% translate 'Belegt' %}
                                         </a>
                                         {% endif %}
                                         {% else %}
                                             {% if event.start in booked_times %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Zeitkonflikt
+                                                    {% translate 'Zeitkonflikt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                                     href="{% url 'book_event_per_id' event.id %}?inquiry={{ inquiry_id }}">
-                                                    Anfragen
+                                                    {% translate 'Anfragen' %}
                                                 </a>
                                             {% endif %}
                                         {% endif %} {% endcomment %}
@@ -127,7 +130,7 @@
                                             {% if event.booked %}
                                                 <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                                     href="{% url 'event_per_id' event.id %}">
-                                                    Gebucht
+                                                    {% translate 'Gebucht' %}
                                                 </a>
                                             {% elif event.inquiry_pending %}
                                                 <style>
@@ -144,26 +147,26 @@
                                                 <a type="button"
                                                     class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                                     href="{% url 'event_per_id' event.id %}">
-                                                    Angefragt
+                                                    {% translate 'Angefragt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                                     href="{% url 'book_event_per_id' event.id %}?inquiry={{ inquiry_id }}">
-                                                    Anfragen
+                                                    {% translate 'Anfragen' %}
                                                 </a>
                                             {% endif %}
                                         {% else %}
                                             {% if event.occupied %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Belegt
+                                                    {% translate 'Belegt' %}
                                                 </a>
                                             {% elif event.time_conflict %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Zeitkonflikt
+                                                    {% translate 'Zeitkonflikt' %}
                                                 </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-md-6 disabled">
-                                                    Blockiert
+                                                    {% translate 'Blockiert' %}
                                                 </a>
                                             {% endif %}
                                         {% endif %}
@@ -182,8 +185,8 @@
 
             <!-- Für den Lehrer wurden noch keine Events gebucht -->
             <div class="container">
-                <p class="h1">Events</p>
-                <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+                <p class="h1">{% translate 'Termine' %}</p>
+                <p class="text-muted">{% translate 'Es gibt bei Ihnen bisher keine offenen Termine.' %}</p>
             </div>
             {% endif %}
         </div>

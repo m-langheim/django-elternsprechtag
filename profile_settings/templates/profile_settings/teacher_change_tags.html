@@ -1,25 +1,29 @@
 {% extends "profile_settings/profile_layout.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-{% block title %} Dashboard - Profile {% endblock title %}
+{% block profile_title %} {% translate 'Tags' %} {% endblock profile_title %}
+
+{% block profile_help_url_smallscreen %} {% url 'wiki_change_tags' %} {% endblock profile_help_url_smallscreen %}
+{% block profile_help_url_bigscreen %} {% url 'wiki_change_tags' %} {% endblock profile_help_url_bigscreen %}
 
 {% block profile_content %}
 
-<p class="h1">Tags bearbeiten</p>
-<p class="text-secondary">Bitte wählen Sie hier Ihre Tags, damit Eltern Sie einfacher finden können.</p>
+<p class="h1">{% translate 'Tags bearbeiten' %}</p>
+<p class="text-secondary">{% translate 'Bitte wählen Sie hier Ihre Tags, damit Eltern Sie einfacher finden können.' %}</p>
 
 <noscript>
 
     <!-- No JavaScript-Disabled version at the moment -->
-    Bitte erlauben Sie JavaScript, um Ihre Tags zu ändern. </br>
-    <a href="https://www.enable-javascript.com/de/">Hier</a> erfahren Sie, wie dies funktioniert. Vielen Dank!
+    {% translate 'Bitte erlauben Sie JavaScript, um Ihre Tags zu ändern.' %}</br>
+    <a href="https://www.enable-javascript.com/de/">{% translate 'Hier' %}</a> {% translate 'erfahren Sie, wie dies funktioniert. Vielen Dank!' %}
 
 </noscript>
 
 <div id="js-content" style="display: none;">
     <div class="d-flex justify-content-start rounded-3 p-2 pt-1 flex-grow-1 border">
         <div>
-            <p class="small text-success mb-1">Aktive Tags</p>
+            <p class="small text-success mb-1">{% translate 'Aktive Tags' %}</p>
             <div class="d-flex align-content-start flex-wrap" id="store_active">
 
                 {% for tag in tags %}
@@ -30,9 +34,9 @@
                 {% endfor %}
 
                 {% if tags|length > 0 %}
-                <p style="display: none; margin-bottom: 0;">Diese Lehrkraft hat keine zugewiesenen Tags</p>
+                <p style="display: none; margin-bottom: 0;">{% translate 'Diese Lehrkraft hat keine zugewiesenen Tags.' %}</p>
                 {% else %}
-                <p style="margin-bottom: 0">Diese Lehrkraft hat keine zugewiesenen Tags</p>
+                <p style="margin-bottom: 0">{% translate 'Diese Lehrkraft hat keine zugewiesenen Tags.' %}</p>
                 {% endif %}
 
             </div>
@@ -41,7 +45,7 @@
 
     <div class="d-flex justify-content-start rounded-3 p-2 pt-1 mt-2 flex-grow-1 border">
         <div>
-            <p class="small text-danger mb-1">Inaktive Tags</p>
+            <p class="small text-danger mb-1">{% translate 'Inaktive Tags' %}</p>
             <div class="d-flex align-content-start flex-wrap" id="store_inactive">
                 {% for tag in all_tags %}
                 <span class="badge bg-light rounded-pill me-1 mt-1" onclick="remove(this)" id="tag-id-{{ tag.id }}"
@@ -51,21 +55,21 @@
                 {% endfor %}
 
                 {% if all_tags|length > 0 %}
-                <p style="display: none; margin-bottom: 0;">Es gibt keine inaktiven Tags</p>
+                <p style="display: none; margin-bottom: 0;">{% translate 'Es gibt keine inaktiven Tags.' %}</p>
                 {% else %}
-                <p style="margin-bottom: 0">Es gibt keine inaktiven Tags</p>
+                <p style="margin-bottom: 0">{% translate 'Es gibt keine inaktiven Tags.' %}</p>
                 {% endif %}
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col d-flex">
-            <div class="btn btn-outline-secondary mt-2" id="cancel_button">Abbrechen</div>
+            <div class="btn btn-outline-secondary mt-2" id="cancel_button">{% translate 'Abbrechen' %}</div>
         </div>
         <div class="col d-flex justify-content-end">
             <form method="POST" action="{% url 'profile_edit_tag_view' %}" id="submit_form">
                 {% csrf_token %}
-                <button class="btn btn-outline-danger mt-2" id="submit_button" style="width: 120px;">Speichern</button>
+                <button class="btn btn-outline-danger mt-2" id="submit_button" style="width: 120px;">{% translate 'Speichern' %}</button>
             </form>
         </div>
     </div>
