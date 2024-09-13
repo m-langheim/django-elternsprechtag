@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Backup Create{% endblock %}
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('whatever site administration') }}</a>
+    </h1>
+{% endblock %}
+{% block content %}
+    <h1>Create a new Backup</h1>
+    <br/>
+    <form method="POST">{% csrf_token %}
+        {{ form.as_p }}
+        <br/>
+        <button class="button" type="submit" style="background-color: green">Create</button>
+        <a style="padding-left: 20px" href="{% url 'admin:custom_backup_backup_changelist' %}" type="button">Cancel</a>
+    </form>
+    <script></script>
+{% endblock %}
