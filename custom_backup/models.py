@@ -6,7 +6,6 @@ from django.conf import settings
 
 
 class MainAttributes(models.Model):
-    backup = models.TextField()
     params = models.TextField(null=True, blank=True)
     size_bytes = models.BigIntegerField(null=True, blank=True)
 
@@ -28,7 +27,10 @@ class Backup(models.Model):
     size_bytes = models.BigIntegerField(null=True, blank=True)
     keep_backup = models.BooleanField(default=True)
     validation_hash = models.CharField(max_length=40, unique=True, null=True)
-    external = models.BooleanField(default=False)
+    external = models.BooleanField(
+        default=False,
+        help_text="Dies ist eine Angabe darüber, ob das Backup von einem Externen Server stammt oder extern modifiziert wurde.",
+    )
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -43,6 +45,7 @@ class Backup(models.Model):
 
 class BackupLog(MainAttributes):
     message = models.CharField(max_length=200)
+    module = models.TextField(null=True)
     output = models.TextField(null=True, blank=True)
     success = models.BooleanField(default=False)
     executed_at = models.DateTimeField(auto_now_add=True)

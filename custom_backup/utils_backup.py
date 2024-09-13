@@ -12,7 +12,7 @@ import tarfile
 from .exceptions import MigrationNotFound, CreateException
 import socket
 from .models import Backup
-import hashlib
+from .helpers import *
 
 
 class DateTimeEncoder(JSONEncoder):
@@ -227,13 +227,6 @@ class CustomBackup:
 
         return backup
 
-    def get_validation_hash(self):
-        return hashlib.sha1(
-            str(
-                self.json_data + self.created_at.isoformat() + settings.SECRET_KEY
-            ).encode("utf-8")
-        ).hexdigest()
-
     def create_backup_json_file(self):
         self.logger.debug(f"creating database dump: {self.json_path}")
 
@@ -245,7 +238,9 @@ class CustomBackup:
         with open(self.dumpinfo_path, "w") as f:
             f.write(f"created_at;{self.created_at}\n")
             f.write(f"backup_directories;{CustomBackupConfig.BACKUP_DIRS}\n")
-            f.write(f"backup_validation_hash:{self.get_validation_hash}")
+            f.write(
+                f"backup_validation_hash;{get_validation_hash(json_data=self.json_data, created_at=self.created_at)}"
+            )
 
         if Path(self.json_path).is_file() and Path(self.dumpinfo_path).is_file():
             return Path(self.json_path), Path(self.dumpinfo_path)
@@ -344,7 +339,10 @@ class CustomBackup:
             size_bytes=Path(OUTPUT_TAR).stat().st_size,
             backup_directories=CustomBackupConfig.BACKUP_DIRS,
             keep_backup=self.manual,
-            validation_hash=self.get_validation_hash(),
+            validation_hash=get_validation_hash(
+                json_data=self.json_data, created_at=self.created_at
+            ),
+            external=False,
         )
 
         os.remove(Path(JSON_FILE).absolute())

@@ -6,13 +6,10 @@ class UtilsBaseException(Exception):
         backup = kwargs.get("backup")
         params = kwargs.get("params")
         size_bytes = kwargs.get("size_bytes")
-        module = kwargs.get("module")
         BackupLog.objects.create(
             message=message,
             output=str(output),
             success=False,
-            backup=backup,
-            module=module,
             params=params,
             size_bytes=size_bytes,
         )
@@ -20,6 +17,10 @@ class UtilsBaseException(Exception):
 
 
 class CreateException(UtilsBaseException):
+    pass
+
+
+class BackupAlreadyPresent(UtilsBaseException):
     pass
 
 

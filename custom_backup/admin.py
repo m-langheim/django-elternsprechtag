@@ -28,6 +28,7 @@ class BackupAdmin(admin.ModelAdmin):
         # "dump_version",
         # "consistent_migrations",
         "backup_type",
+        "external",
         "restore_link",
         # "system_migrations_migrated",
         # "dump_migration_files",
@@ -40,6 +41,7 @@ class BackupAdmin(admin.ModelAdmin):
         "backup_type",
         "created_at",
         "backup_directories",
+        "external",
         # "dump_version",
         # "consistent_migrations",
         # "system_migrations_migrated",
@@ -79,28 +81,27 @@ class BackupAdmin(admin.ModelAdmin):
 
     def delete_queryset(self, request, queryset):
         for obj in queryset:
-            backup = Path(obj.backup)
+            backup = Path(obj.backup_file)
             if backup.is_file():
                 os.remove(backup)
                 logger.info(f"-> deleted file {backup}")
-                models.BackupLog.objects.create(
+                BackupLog.objects.create(
                     message="deleted backup",
                     module="admin:backup_delete",
                     output=f"deleted {backup}",
-                    backup=obj.backup,
                     size_bytes=obj.size_bytes,
                     success=True,
                 )
-                messages.success(request, f"deleted {obj.backup}")
+                messages.success(request, f"deleted {obj.backup_file}")
             else:
-                models.BackupLog.objects.create(
+                BackupLog.objects.create(
                     message="deleted backup object",
                     module="admin:backup_delete",
                     output=f"backup file was not found",
-                    backup=obj.backup,
                 )
                 messages.info(
-                    request, f"deleted only object {obj}; ({obj.backup} was not found)"
+                    request,
+                    f"deleted only object {obj}; ({obj.backup_file} was not found)",
                 )
             obj.delete()
 
