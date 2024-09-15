@@ -49,6 +49,9 @@ class changeProfileFormForUsers(forms.ModelForm):  # Für alle außer Lehrer
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "email")
+        first_name = forms.CharField(required=True, max_length=40)
+        # first name muss required sein. wie keine ahnung
+
 
 
 class configureTagsFormForTeacher(forms.Form):

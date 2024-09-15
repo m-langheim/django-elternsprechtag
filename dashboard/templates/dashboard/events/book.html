@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% block title %} {% translate 'Terminansicht' %} {% endblock title %}
 
@@ -13,20 +14,24 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h2>Termin</h2>
+                        <h1>{% translate 'Termin' %}</h1>
+                        <p class="text-secondary">{% translate 'Detailansicht des Termins' %}</p>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            {% translate 'Lehrkraft:' %} {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            <strong>{% translate 'Lehrkraft:' %} </strong>{{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            {% translate 'Uhrzeit:' %} {{ event.start|time }} Uhr
+                                            <strong>{% translate 'Datum:' %} </strong>{{ event.start|date }}
+                                        </div>
+                                        <div>
+                                            <strong>{% translate 'Uhrzeit:' %} </strong>{{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            {% translate 'Raum:' %} {{ event.room }}
+                                            <strong>{% translate 'Raum:' %} </strong>{{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -42,7 +47,7 @@
                                             <div class="col text-start">
                                                 
                                                 <div class="mb-2">
-                                                    {% translate 'Schüler*innen für das Gespräch auswählen:' %}
+                                                    <strong>{% translate 'Schüler*innen für das Gespräch auswählen:' %}</strong>
                                                 </div>
 
                                                 {% if inquiry %}
@@ -55,7 +60,8 @@
                                                 {% endif %}
                                                 
                                                 <div>
-                                                    {% load crispy_forms_tags %}
+
+                                                    {% csrf_token %}
 
                                                     {{ book_form.necessary_student|as_crispy_field }}
                                                     {{ book_form.student|as_crispy_field }}

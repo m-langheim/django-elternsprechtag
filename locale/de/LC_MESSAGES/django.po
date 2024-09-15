@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-12 20:41+0200\n"
+"POT-Creation-Date: 2024-09-15 20:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,8 +53,10 @@ msgstr[1] "%d Registrierungs-E-Mail wurden erfolgreich verschickt."
 #, python-format
 msgid "%d regestration link was successfully recreated and send."
 msgid_plural "%d registration links were successfully recreates and send."
-msgstr[0] "%d Registrierungslink wurde erfolgreich zurückgesetzt und versendet."
-msgstr[1] "%d Registrierungslinks wurden erfolreich zurückgesetzt und versendet."
+msgstr[0] ""
+"%d Registrierungslink wurde erfolgreich zurückgesetzt und versendet."
+msgstr[1] ""
+"%d Registrierungslinks wurden erfolreich zurückgesetzt und versendet."
 
 #: authentication/admin.py:309
 msgid "Access details"
@@ -200,18 +202,6 @@ msgstr "Zukünftige User"
 msgid "Login"
 msgstr "Login"
 
-#: authentication/templates/authentication/logout.html:4
-msgid "Logout"
-msgstr "Abmelden"
-
-#: authentication/templates/authentication/logout.html:7
-msgid "You are logged out now."
-msgstr "Sie sind nun abgemeldet."
-
-#: authentication/templates/authentication/logout.html:7
-msgid "Login again!"
-msgstr "Erneut anmelden."
-
 #: authentication/templates/authentication/register_parent/register_parent_email_specified.html:3
 #: authentication/templates/authentication/register_parent/register_parent_otp.html:3
 msgid "Register"
@@ -276,27 +266,32 @@ msgid "Mindestens eine Schüler*in muss ausgewählt sein."
 msgstr ""
 
 #: dashboard/forms.py:241 dashboard/forms.py:254
-#: dashboard/templates/dashboard/events/view.html:106
+#: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
 #: profile_settings/templates/profile_settings/change_password.html:23
 #: profile_settings/templates/profile_settings/teacher_change_tags.html:72
+#: teacher/templates/teacher/inquiry/viewInquiry.html:72
 msgid "Speichern"
 msgstr ""
 
-#: dashboard/forms.py:261
+#: dashboard/forms.py:261 teacher/forms.py:23 teacher/forms.py:40
 msgid "Der Text darf nicht länger als 4000 Zeichen sein."
 msgstr ""
 
-#: dashboard/forms.py:286
+#: dashboard/forms.py:262
+msgid "Grund für die Absage:"
+msgstr ""
+
+#: dashboard/forms.py:287
 msgid "Der Endzeitpunkt muss später sein als der Startzeitpunkt."
 msgstr ""
 
-#: dashboard/forms.py:289
+#: dashboard/forms.py:290
 msgid ""
 "Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen."
 msgstr ""
 
-#: dashboard/forms.py:294
+#: dashboard/forms.py:295
 msgid ""
 "Der Startzeitpunkt für die Phase zum Beantworten von Anfragen muss vor dem "
 "Startzeitpunkt der Buchungsphase liegen."
@@ -495,9 +490,10 @@ msgstr "Seiteneinstellungen"
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
-#: dashboard/templates/dashboard/base.html:74
-#: dashboard/templates/dashboard/base.html:146
-#: dashboard/templates/dashboard/public_dashboard.html:198
+#: dashboard/templates/dashboard/base.html:73
+#: dashboard/templates/dashboard/base.html:143
+#: dashboard/templates/dashboard/public_dashboard.html:196
+#: teacher/templates/teacher/dashboard.html:215
 msgid "Mitteilungen"
 msgstr ""
 
@@ -507,29 +503,40 @@ msgid ""
 msgstr ""
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:42
-#: dashboard/templates/dashboard/public_dashboard.html:230
+#: dashboard/templates/dashboard/public_dashboard.html:228
+#: teacher/templates/teacher/dashboard.html:246
 msgid "Gelesen"
 msgstr ""
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:57
-#: dashboard/templates/dashboard/public_dashboard.html:253
+#: dashboard/templates/dashboard/public_dashboard.html:251
+#: teacher/templates/teacher/dashboard.html:268
 msgid "Keine Mitteilungen"
 msgstr ""
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:59
-#: dashboard/templates/dashboard/public_dashboard.html:254
+#: dashboard/templates/dashboard/public_dashboard.html:252
+#: teacher/templates/teacher/dashboard.html:270
 msgid "Sie haben keine neuen Mitteilungen."
 msgstr ""
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
-#: dashboard/templates/dashboard/events/book.html:89
-#: dashboard/templates/dashboard/events/view.html:93
-#: dashboard/templates/dashboard/events/view.html:111
+#: dashboard/templates/dashboard/events/book.html:95
+#: dashboard/templates/dashboard/events/view.html:101
+#: dashboard/templates/dashboard/events/view.html:119
 #: profile_settings/templates/profile_settings/profile_layout.html:52
 #: profile_settings/templates/profile_settings/profile_layout.html:63
 #: profile_settings/templates/profile_settings/profile_layout.html:90
 #: profile_settings/templates/profile_settings/profile_layout.html:103
+#: teacher/templates/teacher/event/detailEvent.html:102
+#: teacher/templates/teacher/inquiry/createInquiry.html:33
+#: teacher/templates/teacher/inquiry/createInquiry.html:40
+#: teacher/templates/teacher/inquiry/createInquiry.html:105
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:34
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:40
+#: teacher/templates/teacher/inquiry/viewInquiry.html:60
+#: teacher/templates/teacher/inquiry/viewInquiry.html:77
 msgid "Zurück"
 msgstr ""
 
@@ -545,13 +552,23 @@ msgstr ""
 msgid "Profil"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:81
-#: dashboard/templates/dashboard/base.html:151
+#: dashboard/templates/dashboard/base.html:70
+#: dashboard/templates/dashboard/base.html:140
+msgid "Meine Termine"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:77
+#: dashboard/templates/dashboard/base.html:146
+msgid "Django-Verwaltung"
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:79
+#: dashboard/templates/dashboard/base.html:148
 msgid "Verwaltung"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:85
-#: dashboard/templates/dashboard/base.html:154
+#: dashboard/templates/dashboard/base.html:83
+#: dashboard/templates/dashboard/base.html:151
 #: profile_settings/templates/profile_settings/my_profile.html:5
 #: profile_settings/templates/profile_settings/my_profile.html:11
 #: profile_settings/templates/profile_settings/profile_layout.html:28
@@ -560,36 +577,29 @@ msgstr ""
 msgid "Mein Profil"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:90
-#: dashboard/templates/dashboard/base.html:159
+#: dashboard/templates/dashboard/base.html:88
+#: dashboard/templates/dashboard/base.html:156
 msgid "Anleitung"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:127
-msgid "Klicken Sie für Informationen zu dieser Seite."
-msgstr ""
-
-#: dashboard/templates/dashboard/base.html:134
-msgid "Klicken Sie für Informationen zu Ihrem Konto."
-msgstr ""
-
-#: dashboard/templates/dashboard/base.html:143
-msgid "Meine Termine"
-msgstr ""
-
-#: dashboard/templates/dashboard/base.html:149
-msgid "Django-Verwaltung"
-msgstr ""
-
-#: dashboard/templates/dashboard/base.html:165
+#: dashboard/templates/dashboard/base.html:94
+#: dashboard/templates/dashboard/base.html:162
 msgid "Abmelden"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:184
+#: dashboard/templates/dashboard/base.html:124
+msgid "Klicken Sie für Informationen zu dieser Seite."
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:131
+msgid "Klicken Sie für Informationen zu Ihrem Konto."
+msgstr ""
+
+#: dashboard/templates/dashboard/base.html:181
 msgid "Schließen"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:212
+#: dashboard/templates/dashboard/base.html:209
 msgid "Impressum"
 msgstr ""
 
@@ -607,43 +617,61 @@ msgstr ""
 msgid "Sie dürfen diesen Termin noch nicht anfragen."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:3
+#: dashboard/templates/dashboard/events/book.html:4
 #: dashboard/templates/dashboard/events/view.html:4
+#: teacher/templates/teacher/event/detailEvent.html:4
 msgid "Terminansicht"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:22
-#: dashboard/templates/dashboard/events/view.html:23
-#: dashboard/templates/dashboard/public_dashboard.html:89
+#: dashboard/templates/dashboard/events/book.html:17
+#: dashboard/templates/dashboard/events/view.html:17
+#: teacher/templates/teacher/event/detailEvent.html:16
+msgid "Termin"
+msgstr ""
+
+#: dashboard/templates/dashboard/events/book.html:18
+#: dashboard/templates/dashboard/events/view.html:18
+#: teacher/templates/teacher/event/detailEvent.html:17
+msgid "Detailansicht des Termins"
+msgstr ""
+
+#: dashboard/templates/dashboard/events/book.html:24
+#: dashboard/templates/dashboard/events/view.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:87
 msgid "Lehrkraft:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:25
-#: dashboard/templates/dashboard/events/view.html:29
+#: dashboard/templates/dashboard/events/book.html:27
+#: dashboard/templates/dashboard/events/view.html:28
+msgid "Datum:"
+msgstr ""
+
+#: dashboard/templates/dashboard/events/book.html:30
+#: dashboard/templates/dashboard/events/view.html:31
 msgid "Uhrzeit:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:29
-#: dashboard/templates/dashboard/events/view.html:33
+#: dashboard/templates/dashboard/events/book.html:34
+#: dashboard/templates/dashboard/events/view.html:35
 msgid "Raum:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:45
+#: dashboard/templates/dashboard/events/book.html:50
 #: dashboard/templates/dashboard/events/view.html:49
 msgid "Schüler*innen für das Gespräch auswählen:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:77
-#: dashboard/templates/dashboard/events/view.html:82
+#: dashboard/templates/dashboard/events/book.html:83
+#: dashboard/templates/dashboard/events/view.html:86
 msgid "Wählen Sie mindestens eine der markierten Schüler*innen aus."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:77
-#: dashboard/templates/dashboard/events/view.html:82
+#: dashboard/templates/dashboard/events/book.html:83
+#: dashboard/templates/dashboard/events/view.html:88
 msgid "Wählen Sie mindestens eine Schüler*in aus."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:93
+#: dashboard/templates/dashboard/events/book.html:99
 msgid "Buchen"
 msgstr ""
 
@@ -691,7 +719,8 @@ msgstr ""
 
 #: dashboard/templates/dashboard/events/teacher.html:178
 #: dashboard/templates/dashboard/inquiry.html:156
-#: dashboard/templates/dashboard/public_dashboard.html:133
+#: dashboard/templates/dashboard/public_dashboard.html:131
+#: teacher/templates/teacher/dashboard.html:169
 msgid "Anfragen"
 msgstr ""
 
@@ -714,24 +743,26 @@ msgstr ""
 msgid "Bei dieser Lehrkraft gibt es bisher keine Termine."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/view.html:17
-msgid "Termin"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/view.html:26
-msgid "Datum:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/view.html:101
-#: dashboard/templates/dashboard/events/view.html:130
-#: dashboard/templates/dashboard/events/view.html:146
+#: dashboard/templates/dashboard/events/view.html:109
+#: dashboard/templates/dashboard/events/view.html:138
+#: dashboard/templates/dashboard/events/view.html:154
+#: teacher/templates/teacher/dashboard.html:134
+#: teacher/templates/teacher/dashboard.html:286
+#: teacher/templates/teacher/dashboard.html:299
+#: teacher/templates/teacher/event/detailEvent.html:79
+#: teacher/templates/teacher/event/detailEvent.html:113
+#: teacher/templates/teacher/event/detailEvent.html:132
+#: teacher/templates/teacher/event/detailEvent.html:149
 msgid "Termin absagen"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/view.html:143
+#: dashboard/templates/dashboard/events/view.html:151
 #: profile_settings/templates/profile_settings/change_password.html:19
 #: profile_settings/templates/profile_settings/my_profile.html:39
 #: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
 msgid "Abbrechen"
 msgstr ""
 
@@ -739,6 +770,10 @@ msgstr ""
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
+#: teacher/templates/teacher/inquiry/createInquiry.html:4
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:4
+#: teacher/templates/teacher/inquiry/viewInquiry.html:4
+#: teacher/templates/teacher/inquiry/viewInquiry.html:16
 msgid "Anfrage"
 msgstr ""
 
@@ -749,13 +784,17 @@ msgstr ""
 
 #: dashboard/templates/dashboard/inquiry.html:24
 #: dashboard/templates/dashboard/inquiry_answered.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:169
+#: dashboard/templates/dashboard/public_dashboard.html:167
+#: teacher/templates/teacher/dashboard.html:190
+#: teacher/templates/teacher/inquiry/createInquiry.html:55
+#: teacher/templates/teacher/inquiry/viewInquiry.html:24
 msgid "Schüler*in:"
 msgstr ""
 
 #: dashboard/templates/dashboard/inquiry.html:30
 #: dashboard/templates/dashboard/inquiry_answered.html:30
-#: dashboard/templates/dashboard/public_dashboard.html:170
+#: dashboard/templates/dashboard/public_dashboard.html:168
+#: teacher/templates/teacher/dashboard.html:192
 msgid "Grund:"
 msgstr ""
 
@@ -766,16 +805,20 @@ msgstr ""
 #: dashboard/templates/dashboard/inquiry.html:189
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
-#: dashboard/templates/dashboard/public_dashboard.html:122
+#: dashboard/templates/dashboard/public_dashboard.html:120
+#: teacher/templates/teacher/dashboard.html:32
+#: teacher/templates/teacher/dashboard.html:160
 msgid "Termine"
 msgstr ""
 
 #: dashboard/templates/dashboard/inquiry.html:190
 #: dashboard/templates/dashboard/inquiry_answered.html:93
+#: teacher/templates/teacher/dashboard.html:161
 msgid "Es gibt bei Ihnen bisher keine offenen Termine."
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:3
+#: teacher/templates/teacher/dashboard.html:3
 msgid "Dashboard"
 msgstr ""
 
@@ -784,75 +827,90 @@ msgid "Hier werden alle gebuchten Termine aufgeführt."
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:22
+#: teacher/templates/teacher/dashboard.html:40
 msgid "Download"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:68
+#: dashboard/templates/dashboard/public_dashboard.html:66
 msgid "Eine Bestätigung des Termins durch die Lehrkraft steht noch aus."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:86
+#: dashboard/templates/dashboard/public_dashboard.html:84
+#: teacher/templates/teacher/dashboard.html:114
+#: teacher/templates/teacher/event/detailEvent.html:24
 msgid "Startzeit:"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:91
+#: dashboard/templates/dashboard/public_dashboard.html:89
+#: teacher/templates/teacher/dashboard.html:117
+#: teacher/templates/teacher/event/detailEvent.html:45
 msgid "Schüler*innen:"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:97
+#: dashboard/templates/dashboard/public_dashboard.html:95
+#: teacher/templates/teacher/dashboard.html:122
+#: teacher/templates/teacher/event/detailEvent.html:55
 msgid "Bestätigung:"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:99
+#: dashboard/templates/dashboard/public_dashboard.html:97
+#: teacher/templates/teacher/dashboard.html:124
+#: teacher/templates/teacher/event/detailEvent.html:57
 msgid "ausstehend"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:101
+#: dashboard/templates/dashboard/public_dashboard.html:99
+#: teacher/templates/teacher/dashboard.html:126
+#: teacher/templates/teacher/event/detailEvent.html:59
 msgid "bestätigt"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:107
+#: dashboard/templates/dashboard/public_dashboard.html:105
+#: teacher/templates/teacher/dashboard.html:139
 msgid "Details"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:123
+#: dashboard/templates/dashboard/public_dashboard.html:121
 msgid "Sie haben bisher noch keinen Termin gebucht."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:134
+#: dashboard/templates/dashboard/public_dashboard.html:132
 msgid "Folgende Lehrkräfte haben einen Termin mit Ihnen angefragt."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:151
+#: dashboard/templates/dashboard/public_dashboard.html:149
 msgid "Sie müssen die Anfrage noch beantworten."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:171
+#: dashboard/templates/dashboard/public_dashboard.html:169
 msgid "Termin:"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:180
+#: dashboard/templates/dashboard/public_dashboard.html:178
 msgid "Ansehen"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:190
+#: dashboard/templates/dashboard/public_dashboard.html:188
+#: teacher/templates/teacher/dashboard.html:204
 msgid "Keine Anfragen"
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:191
+#: dashboard/templates/dashboard/public_dashboard.html:189
 msgid "Bisher hat keine Lehrkraft bei Ihnen einen Termin angefragt."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:199
+#: dashboard/templates/dashboard/public_dashboard.html:197
 msgid "Hier finden Sie Ihre letzten Mitteilungen."
 msgstr ""
 
-#: dashboard/templates/dashboard/public_dashboard.html:246
+#: dashboard/templates/dashboard/public_dashboard.html:244
+#: teacher/templates/teacher/dashboard.html:261
 msgid "Weitere Mitteilungen"
 msgstr ""
 
 #: dashboard/templates/dashboard/search.html:3
-msgid "Search"
+#: teacher/templates/teacher/studentList.html:3
+msgid "Suche"
 msgstr ""
 
 #: dashboard/templates/dashboard/search.html:16
@@ -868,6 +926,7 @@ msgid "Termin buchen"
 msgstr ""
 
 #: dashboard/templates/dashboard/search.html:45
+#: teacher/templates/teacher/studentList.html:75
 msgid "Keine Suchergebnisse gefunden!"
 msgstr ""
 
@@ -1010,13 +1069,216 @@ msgstr ""
 msgid "Das Passwort wurde erfolgreich geändert."
 msgstr ""
 
-#: teacher/forms.py:57
-msgid "Explanation why you dismiss the event."
-msgstr "Grund für die Absage des Termins."
+#: teacher/forms.py:60
+msgid "Explanation why you dismiss the event:"
+msgstr "Grund für die Absage des Termins:"
 
-#: teacher/forms.py:61
+#: teacher/forms.py:64
 msgid "Parent should book a different event."
 msgstr "Eltern sollen einen neuen Termin anfragen."
+
+#: teacher/templates/teacher/dashboard.html:16
+msgid "Offene Terminerstellung"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:17
+msgid ""
+"Sie haben eine oder mehr bisher nicht ausgefüllte Terminerstellungsaufträge. "
+"Bitte folgen Sie diesem Link und bearbeiten die Aufträge. Ihre Angaben "
+"werden im Anschluss verifiziert."
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:20
+msgid "Jetzt ansehen"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:34
+msgid "Hier werden alle gebuchten Termine aufgeführt"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:87
+msgid "Sie müssen den Termin noch bestätigen."
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:104
+msgid "Nicht bestätigt"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:132
+#: teacher/templates/teacher/event/detailEvent.html:72
+#: teacher/templates/teacher/event/detailEvent.html:108
+msgid "Termin ablehnen"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:144
+#: teacher/templates/teacher/event/detailEvent.html:88
+#: teacher/templates/teacher/event/detailEvent.html:120
+#: teacher/templates/teacher/event/detailEvent.html:163
+msgid "Termin bestätigen"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:170
+msgid "Ihre unbeantworteten Anfragen an einzelne Schüler*innen."
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:188
+#: teacher/templates/teacher/event/detailEvent.html:52
+#: teacher/templates/teacher/inquiry/createInquiry.html:59
+#: teacher/templates/teacher/inquiry/viewInquiry.html:28
+msgid "Elternteil:"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:194
+msgid "Bearbeiten"
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:205
+msgid "Sie haben keine unbestätigten Anfragen an Schüler*innen."
+msgstr ""
+
+#: teacher/templates/teacher/dashboard.html:210
+#: teacher/templates/teacher/inquiry/createInquiry.html:109
+msgid "Anfrage stellen"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:27
+#, fuzzy
+#| msgid "Register"
+msgid "Zeitfenster:"
+msgstr "Registrierung"
+
+#: teacher/templates/teacher/event/detailEvent.html:30
+msgid "Terminwunsch:"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:32
+msgid "Lehrkraft"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:34
+msgid "Eltern"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:40
+msgid "Begründung:"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:169
+msgid "Ihnen wurde eine Anfrage von"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:171
+msgid "für den"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:172
+msgid "um"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:173
+msgid "Uhr gestellt. Möchten Sie diesen Termin bestätigen?"
+msgstr ""
+
+#: teacher/templates/teacher/event/detailEvent.html:181
+msgid "Termin annehmen"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:23
+msgid "Kein Elternteil definiert!"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:24
+msgid "Für"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:25
+msgid ""
+" hat sich bisher kein Elternteil registriert. Treffen Sie daher bitte mit "
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:27
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:26
+msgid "persönliche eine Absprache über einen möglichen Termin."
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:47
+msgid "Anfrage erstellen"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:48
+msgid "Stellen Sie hier eine Anfrage für eine Schüler*in."
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:76
+msgid "Elternsprechtag*:"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/createInquiry.html:90
+#: teacher/templates/teacher/inquiry/viewInquiry.html:45
+msgid "Grund für die Anfrage:"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:20
+msgid "Kein Elternteil verfügbar"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:22
+msgid "Für "
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:24
+msgid ""
+"hat sich bisher kein Elternteil registriert. Treffen Sie daher bitte mit "
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/viewInquiry.html:17
+msgid "Bearbeiten Sie Ihre erstellte Anfrage."
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/viewInquiry.html:67
+msgid "Anfrage zurückziehen"
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/viewInquiry.html:101
+msgid "Möchten Sie die Anfrage für ein Gespräch mit den Eltern von "
+msgstr ""
+
+#: teacher/templates/teacher/inquiry/viewInquiry.html:103
+msgid " zurückziehen?"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:21
+msgid "Suchergebnisse für"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:23
+msgid "Alle Schüler*innen"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:39
+msgid "Das Kind hat bisher kein registriertes Elternteil!"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:47
+msgid "Sie haben bereits eine Anfrage gestellt!"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:54
+msgid "Sie haben bereits eine Anfrage bekommen!"
+msgstr ""
+
+#: teacher/templates/teacher/studentList.html:61
+msgid "Sie haben bereits ein Termin mit diesem Kind!"
+msgstr ""
+
+#~ msgid "Logout"
+#~ msgstr "Abmelden"
+
+#~ msgid "You are logged out now."
+#~ msgstr "Sie sind nun abgemeldet."
+
+#~ msgid "Login again!"
+#~ msgstr "Erneut anmelden."
 
 #~ msgid "Specify when all parents can book events"
 #~ msgstr "Legen Sie fest, wann alle Eltern Termine anfragen können."

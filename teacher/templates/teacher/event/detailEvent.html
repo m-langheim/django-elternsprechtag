@@ -1,189 +1,190 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
 
-{% block title %} Dashboard - Lehrer {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_teacher_view_event' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_teacher_view_event' %} {% endblock %}
 
 {% block content %}
+<div class="container p-2 pt-4">
+    <div class="row">
+        <div class="column">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush">
+                        <p class="h1">{% translate 'Termin' %}</p>
+                        <p class="text-secondary">{% translate 'Detailansicht des Termins' %}</p>
 
+                        <li class="list-group-item">
+                            <div class="container mb-4">
+                                <div class="row align-items-center">
+                                    <div class="col text-start">
+                                        <!-- <div class="mb-4"> -->
+                                        <strong>{% translate 'Startzeit:' %} </strong>{{event.start|time}}
+                                        ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})<br />
 
+                                        <strong>{% translate 'Zeitfenster:' %} </strong>{{event.start|time}} Uhr -
+                                        {{event.end|time}} Uhr<br />
 
+                                        <strong>{% translate 'Terminwunsch:' %} </strong>
+                                        {% if inquiry|length > 0 %}
+                                        {% translate 'Lehrkraft' %}
+                                        {% else %}
+                                        {% translate 'Eltern' %}
+                                        {% endif %}
+                                        <br />
 
-<div class="row gx-3 gy-3">
-    <div class="col-12">
-        <div class="card card-body p-4">
+                                        {% if inquiry|length > 0 %}
+                                        {% if inquiry.first.reason %}
+                                        <strong>{% translate 'Begründung:' %} </strong>{{ inquiry.first.reason }}
+                                        <br />
+                                        {% endif %}
+                                        {% endif %}
 
-            <p class="h1">Termin</p>
-            <p class="text-secondary">Detailansicht des Termins</p>
+                                        <strong>{% translate 'Schüler*innen:' %} </strong>
+                                        {% for stu in event.student.all %}
+                                        {{ stu.first_name }} {{ stu.last_name }}
+                                        {% if stu != event.student.all.last %}, {% endif %}
+                                        {% endfor %}
+                                        <br />
 
-            <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Datum:
-                </p>
-                <p class="col">
-                    {{ event.start|date}}
-                </p>
-            </div>
-            <div class="row">
-                <p class="col-3 col-xs-5 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Zeitfenster:
-                </p>
-                <p class="col">
-                    {{event.start|time}} Uhr - {{event.end|time}} Uhr
-                </p>
-            </div>
-            
-            <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Terminwunsch:
-                </p>
-                <p class="col">
-                    {% if inquiry|length > 0 %}
-                    Lehrkraft
-                    {% else %}
-                    Eltern
-                    {% endif %}
-                </p>
-            </div>
-            {% if inquiry|length > 0 %}
-            {% if inquiry.first.reason %}
-            <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Begründung:
-                </p>
-                <p class="col">
-                    {{ inquiry.first.reason }}
-                </p>
-            </div>
-            {% endif %}
-            {% endif %}
-            <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Schüler:innen:
-                </p>
-                <p class="col">
-                    {% for stu in event.student.all %}
-                    {{ stu.first_name }} {{ stu.last_name }}
-                    {% if stu != event.student.all.last %}, {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
-            <div class="row">
-                <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
-                    Elternteil:
-                </p>
-                <p class="col">
-                    {{ event.parent.first_name }} {{ event.parent.last_name }}
-                </p>
-            </div>
-            <div class="d-flex d-md-none row">
+                                        <strong>{% translate 'Elternteil:' %} </strong>
+                                        {{ event.parent.first_name }} {{event.parent.last_name }}<br />
 
-                <div class="d-flex d-md-none col-12">
-                    {% if event.status == 2 %}
-                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
-                        <button type="button" class="btn btn-outline-danger mb-2 me-2" data-bs-toggle="modal"
-                            data-bs-target="#eventCancelModal">
-                            Termin ablehnen
-                        </button>
-                    </div>
-                    {% else %}
-                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
-                        <button type="button" class="btn btn-outline-danger mb-2 me-2" data-bs-toggle="modal"
-                            data-bs-target="#eventCancelModal">
-                            Termin absagen
-                        </button>
-                    </div>
-                    {% endif %}
-
-                    {% if event.status == 2 %}
-                    <div class="d-grid col-6">
-                        <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal"
-                            data-bs-target="#eventModal{{event.id}}">
-                            Termin bestätigen
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="d-flex d-md-none col-12">
-                    <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                        href="{% url 'home' %}">Zurück</a>
-                </div>
-            </div>
-
-            <div class="d-none d-md-flex row">
-                <div class="d-none d-md-flex col">
-                    <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2"
-                        href="{% url 'home' %}">Zurück</a>
-                </div>
-                <div class="d-none d-md-flex col justify-content-end">
-                    {% if event.status == 2 %}
-                    <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
-                        data-bs-target="#eventCancelModal">
-                        Termin ablehnen
-                    </button>
-                    {% else %}
-                    <button type="button" class="btn btn-outline-danger mt-2 me-2" data-bs-toggle="modal"
-                        data-bs-target="#eventCancelModal">
-                        Termin absagen
-                    </button>
-                    {% endif %}
-
-                    {% if event.status == 2 %}
-                    <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
-                        data-bs-target="#eventModal{{event.id}}">
-                        Termin bestätigen
-                    </button>
-                    {% endif %}
-                </div>
-            </div>
-            <!-- Event Cancel Modal -->
-            <div class="modal fade" id="eventCancelModal" tabindex="-1" aria-labelledby="eventCancelModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="eventCancelModalLabel">Termin absagen</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form method="post">
-                            {% csrf_token %}
-                            {{cancel_event.cancel_event}}
-                            <div class="modal-body">
-                                {{ cancel_event.message|as_crispy_field }}
-                                {{cancel_event.book_other_event|as_crispy_field}}
+                                        <strong>{% translate 'Bestätigung:' %} </strong>
+                                        {% if event.status == 2 %}
+                                        {% translate 'ausstehend' %}
+                                        {% else %}
+                                        {% translate 'bestätigt' %}
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Abbrechen</button>
-                                <input type="submit" class="btn btn-outline-danger" value="Termin absagen" />
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex d-md-none row">
+                                <div class="d-flex d-md-none col-12">
+                                    {% if event.status == 2 %}
+                                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
+                                        <button type="button" class="btn btn-outline-danger mb-2 me-2"
+                                            data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                            {% translate 'Termin ablehnen' %}
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
+                                        <button type="button" class="btn btn-outline-danger mb-2 me-2"
+                                            data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                            {% translate 'Termin absagen' %}
+                                        </button>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if event.status == 2 %}
+                                    <div class="d-grid col-6">
+                                        <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal"
+                                            data-bs-target="#eventModal{{event.id}}">
+                                            {% translate 'Termin bestätigen' %}
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex d-md-none col-12">
+                                    <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                                        href="{% url 'home' %}">{%
+                                        translate 'Zurück' %}</a>
+                                </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {% if event.status == 2 %}
-            <!-- Event Confirmation Modal -->
-            <div class="modal fade" id="eventModal{{event.id}}" tabindex="-1"
-                aria-labelledby="eventModal{{event.id}}Label" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Termin bestätigen</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Ihnen wurde eine Anfrage von
-                            {{ event.parent.first_name }} {{ event.parent.last_name }} für den
-                            {{event.start | date}} um {{event.start|time}} Uhr gestellt. Möchten Sie diesen
-                            Termin bestätigen?
-                        </div>
-                        <div class="modal-footer d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Abbrechen</button>
-                            <a type="button" class="btn btn-outline-danger"
-                                href="{% url 'teacher_confirm_event' event.id %}">Termin
-                                annehmen</a>
-                        </div>
-                    </div>
+                            <div class="d-none d-md-flex row">
+                                <div class="d-none d-md-flex col">
+                                    <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2"
+                                        href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                </div>
+                                <div class="d-none d-md-flex col justify-content-end">
+                                    {% if event.status == 2 %}
+                                    <button type="button" class="btn btn-outline-danger mt-2 me-2"
+                                        data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                        {% translate 'Termin ablehnen' %}
+                                    </button>
+                                    {% else %}
+                                    <button type="button" class="btn btn-outline-danger mt-2 me-2"
+                                        data-bs-toggle="modal" data-bs-target="#eventCancelModal">
+                                        {% translate 'Termin absagen' %}
+                                    </button>
+                                    {% endif %}
+
+                                    {% if event.status == 2 %}
+                                    <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
+                                        data-bs-target="#eventModal{{event.id}}">
+                                        {% translate 'Termin bestätigen' %}
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Event Cancel Modal -->
+                            <div class="modal fade" id="eventCancelModal" tabindex="-1"
+                                aria-labelledby="eventCancelModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="eventCancelModalLabel">
+                                                {% translate 'Termin absagen' %}
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            {{cancel_event.cancel_event}}
+                                            <div class="modal-body">
+                                                {{ cancel_event.message|as_crispy_field }}
+                                                {{cancel_event.book_other_event|as_crispy_field}}
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-between">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    {% translate 'Abbrechen' %}</button>
+                                                <input type="submit" class="btn btn-outline-danger"
+                                                    value="{% translate 'Termin absagen' %}" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if event.status == 2 %}
+                            <!-- Event Confirmation Modal -->
+                            <div class="modal fade" id="eventModal{{event.id}}" tabindex="-1"
+                                aria-labelledby="eventModal{{event.id}}Label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                {% translate 'Termin bestätigen' %}
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% translate 'Ihnen wurde eine Anfrage von' %}
+                                            {{ event.parent.first_name }} {{ event.parent.last_name }} 
+                                            {% translate 'für den' %}
+                                            {{event.start | date}} {% translate 'um' %} {{event.start|time}} 
+                                            {% translate 'Uhr gestellt. Möchten Sie diesen Termin bestätigen?' %}
+                                        </div>
+                                        <div class="modal-footer d-flex justify-content-between">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-dismiss="modal">
+                                                {% translate 'Abbrechen' %}</button>
+                                            <a type="button" class="btn btn-outline-danger"
+                                                href="{% url 'teacher_confirm_event' event.id %}">
+                                                {% translate 'Termin annehmen' %}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
             {% endif %}

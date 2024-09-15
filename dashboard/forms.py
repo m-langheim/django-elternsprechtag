@@ -259,6 +259,7 @@ class cancelEventForm(forms.Form):
         widget=forms.Textarea,
         max_length=4000,
         help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."),
+        label=_("Grund für die Absage:")
     )
 
 

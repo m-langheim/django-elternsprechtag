@@ -19,11 +19,13 @@ class createInquiryForm(forms.Form):
     parent = forms.ModelChoiceField(
         queryset=CustomUser.objects.filter(role=0), disabled=True
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
+                             help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."))
 
     def __init__(self, *args, **kwargs):
         super(createInquiryForm, self).__init__(*args, **kwargs)
         self.fields["reason"].label = False
+        self.initial["base_event"] = BaseEventGroup.objects.filter(lead_start__gte=timezone.now()).order_by('lead_start').first()
 
 
 class editInquiryForm(forms.Form):
@@ -34,7 +36,8 @@ class editInquiryForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
+                             help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."))
 
     def __init__(self, *args, **kwargs):
         super(editInquiryForm, self).__init__(*args, **kwargs)
@@ -54,7 +57,7 @@ class changePasswordForm(PasswordChangeForm):
 class cancelEventForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea,
-        label=_("Explanation why you dismiss the event."),
+        label=_("Explanation why you dismiss the event:"),
         max_length=4000,
     )
     book_other_event = forms.BooleanField(
