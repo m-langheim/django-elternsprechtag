@@ -36,6 +36,8 @@ class changeProfileFormForTeacher(forms.ModelForm):  # Nur für lehrer
         self.helper = FormHelper()
 
         self.helper.add_input(Submit('submit', _('Speichern')))
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
 
     def save(self, commit=True):
         if self.cleaned_data['image']:
@@ -49,8 +51,13 @@ class changeProfileFormForUsers(forms.ModelForm):  # Für alle außer Lehrer
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "email")
-        first_name = forms.CharField(required=True, max_length=40)
-        # first name muss required sein. wie keine ahnung
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
 
 
 
