@@ -13,11 +13,12 @@
 <div class="card border-danger mb-3">
 	<div class="card-body row">
 		<div class="col col-12 col-md-8">
-			<h5 class="card-title">{% translate 'Open appointment scheduling' %}</h5>
-			<div class="card-text">{% translate 'You have one or more appointment creation requests that have not been completed yet. Please follow this link and process the request. Your input will then be verified.' %}</div>
+			<h5 class="card-title">{% translate 'Offene Terminerstellung' %}</h5>
+			<div class="card-text">{% translate 'Sie haben eine oder mehr bisher nicht ausgefüllte Terminerstellungsaufträge. Bitte
+				folgen Sie diesem Link und bearbeiten die Aufträge. Ihre Angaben werden im Anschluss verifiziert.' %}</div>
 		</div>
 		<div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
-			<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_personal_events' %}">{% translate 'View now' %}</a>
+			<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_personal_events' %}">{% translate 'Jetzt ansehen' %}</a>
 		</div>
 	</div>
 </div>
@@ -29,15 +30,15 @@
 			<!-- Events-Titel -->
 			<div class="row p-1">
 				<div class="col col-8">
-					<p class="h1">{% translate 'Appointments' %}</p>
+					<p class="h1">{% translate 'Termine' %}</p>
 					<p class="text-muted">
-						{% translate 'All booked appointments are listed here.' %}
+						{% translate 'Hier werden alle gebuchten Termine aufgeführt' %}
 					</p>
 				</div>
 				<div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
 					<a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center"
 						type="button" href="{% url 'create_events_pdf' %}">
-						<div>{% translate 'Download' %}</div>
+						<div>Download</div>
 					</a>
 				</div>
 			</div>
@@ -46,8 +47,10 @@
 			<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 				<style>
 					.active {
-						border-color: #dc3545!important;
+						border-color: red !important;
 					}
+
+					/* change this color */
 				</style>
 				{%for key, events in events_dict.items %}
 				<li class="nav-item" role="presentation">
@@ -71,24 +74,10 @@
 						{% for event in events %}
 						<div class="accordion-item" id="event-accordion-item-{{ event.id }}">
 							<h2 class="accordion-header" id="event-accordion-heading-{{ event.id }}">
-								<button class="acc-btn accordion-button collapsed" type="button" data-bs-toggle="collapse"
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
 									data-bs-target="#event-accordion-collapse-{{ event.id }}" aria-expanded="false"
 									aria-controls="event-accordion-collapse-{{ event.id }}">
-
-									<span class="left">
-                                        {{ event.start|time }} - {{event.end|time}} | {{event.teacher.first_name}}
-                                        {% for student in event.student.all %}
-										{{student.first_name}} {{student.last_name}}
-										{% if student != event.student.last %}, {% endif %}
-										{% endfor %}
-                                    </span>
-                                    <span class="right">
-                                        {% if event.status == 2 %}
-                                        <i class="fa-regular fa-clock fs-5" title="{% translate 'You still need to confirm the appointment.' %}"></i>
-                                        {% endif %}
-                                    </span>
-
-									<!-- <div class="col">
+									<div class="col">
 										{{ event.start|time }} - {{event.end|time}} |
 										{% for student in event.student.all %}
 										{{student.first_name}} {{student.last_name}}
@@ -101,47 +90,41 @@
 										{% if event.status == 2 %}
 										<span
 											class="position-absolute top-50 start-50 translate-middle-y badge rounded-pill bg-secondary d-none d-sm-block">
-											{% translate 'Not confirmed' %}
+											{% translate 'Nicht bestätigt' %}
 										</span>
 										{% endif %}
-									</div> -->
+									</div>
 								</button>
 							</h2>
 							<div id="event-accordion-collapse-{{ event.id }}" class="accordion-collapse collapse"
 								aria-labelledby="event-accordion-heading-{{ event.id }}"
 								data-bs-parent="#event-accordion">
 								<div class="accordion-body">
-									<strong>{% translate 'Starting time:' %} </strong>{{event.start | time}}
+									<strong>Startzeit: </strong>{{event.start | time}}
 									({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})
 									<br />
-									<strong>{% translate 'Students:' %} </strong>
+									<strong>Schüler:innen: </strong>
 									{% for student in event.student.all %}
 									{{student.first_name}} {{student.last_name}}
 									{% if student != event.student.last %}, {% endif %}
 									{% endfor %}<br />
-									<strong>{% translate 'Confirmation:' %} </strong>
-                                    {% if event.status == 2 %}
-                                    {% translate 'pending' %}
-                                    {% else %}
-                                    {% translate 'confirmed' %}
-                                    {% endif %}
 									<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 										<button type="button" class="btn btn-outline-secondary mt-2" data-bs-toggle="modal"
 											data-bs-target="#eventCancelModal{{event.id}}">
 											{% if event.status == 2 %}
-											{% translate 'Decline appointment' %}
+											Termin ablehnen
 											{% else %}
-											{% translate 'Cancel appointment' %}
+											Termin absagen
 											{% endif %}
 										</button>
 										<a type="button" class="btn btn-outline-danger mt-2"
 											href="{% url 'teacher_event_view' event.id %}">
-											{% translate 'Details' %}
+											Details
 										</a>
 										{% if event.status == 2 %}
 										<button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
 											data-bs-target="#eventModal{{event.id}}">
-											{% translate 'Confirm appointment' %}
+											Termin bestätigen
 										</button>
 										{% endif %}
 									</div>
@@ -157,8 +140,8 @@
 
 			<!-- Für den Lehrer wurden noch keine Events gebucht -->
 			<div class="container">
-				<p class="h1">{% translate 'Appointments' %}</p>
-				<p class="text-muted">{% translate 'You do not have any open appointments yet.' %}</p>
+				<p class="h1">Events</p>
+				<p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
 			</div>
 			{% endif %}
 		</div>
@@ -166,8 +149,8 @@
 	<div class="container col-md-4">
 		<div class="h-auto d-grid gap-3">
 			<div class="container">
-				<p class="h1">{% translate 'Inquiries' %}</p>
-				<p class="text-muted">{% translate 'Your unanswered requests to particular students.' %}</p>
+				<p class="h1">Anfragen</p>
+				<p class="text-muted">Ihre Anfragen an einzelne Schüler:innen</p>
 			</div>
 
 			{% if inquiries|length > 0 %}
@@ -185,13 +168,13 @@
 						aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
 						data-bs-parent="#inquiry-accordion">
 						<div class="accordion-body">
-							<strong>{% translate 'Parent:' %} </strong>
+							<strong>Elternteil: </strong>
 							{{ inquiry.inquiry.respondent.first_name }} {{ inquiry.inquiry.respondent.last_name }}<br />
-							<strong>{% translate 'Student:' %} </strong>
+							<strong>Schüler:in: </strong>
 							{{ inquiry.inquiry.students.first }}<br />
-							<strong>{% translate 'Reason:' %} </strong> {{ inquiry.inquiry.reason }}<br />
+							<strong>Grund: </strong> {{ inquiry.inquiry.reason }}<br />
 							<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-								<a class="btn btn-outline-danger" role="button" href="{{ inquiry.url }}">{% translate 'Edit' %}</a>
+								<a class="btn btn-outline-danger" role="button" href="{{ inquiry.url }}">Bearbeiten</a>
 							</div>
 						</div>
 					</div>
@@ -201,18 +184,19 @@
 			{% else %}
 			<div class="card m-1">
 				<div class="card-body">
-					<p class="h5 card-title">{% translate 'No inquiries' %}</p>
-					<p class="card-text">{% translate 'You have no unconfirmed requests for students.' %}</p>
+					<p class="h5 card-title">Keine Anfragen</p>
+					<p class="card-text">Sie haben keine unbestätigten Anfragen an Schüler:innen</p>
 				</div>
 			</div>
 			{% endif %}
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-				<a class="btn btn-outline-danger" role="button" href="{% url 'teacher_students_list' %}">{% translate 'Submit inquiry' %}</a>
+				<a class="btn btn-outline-danger" role="button" href="{% url 'teacher_students_list' %}">Anfrage
+					stellen</a>
 			</div>
 
 			<!-- Ab hier geht es um Mitteilungen -->
 			<div class="container">
-				<p class="h1">{% translate 'Notifications' %}</p>
+				<p class="h1">Mitteilungen</p>
 			</div>
 			{% if announcements|length > 0 %}
 			<div class="accordion" id="announcement-accordion">
@@ -243,7 +227,7 @@
                             {{announcement.encodedID}} -->
 							<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 								<a class="btn btn-outline-secondary" role="button"
-									href="{% url 'teacher_mark_announcement_read' announcement.encodedID %}">{% translate 'Read' %}</a>
+									href="{% url 'teacher_mark_announcement_read' announcement.encodedID %}">Gelesen</a>
 								{% if announcement.action_link %}
 
 								<a class="btn btn-outline-danger" role="button"
@@ -258,16 +242,16 @@
 			{% if announcements.all|length > 5 %}
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<a class="btn btn-outline-danger" role="button" href="{% url "announcements" %}">
-					{% translate 'Further notifications' %}
+					Weitere Mitteilungen
 				</a>
 			</div>
 			{% endif %}
 			{% else %}
 			<div class="card m-1">
 				<div class="card-body">
-					<p class="h5 card-title">{% translate 'No notifications' %}</p>
+					<p class="h5 card-title">Keine Mitteilungen</p>
 					<p class="card-text">
-						{% translate "You don't have any new notifications." %}
+						Sie haben keine neuen Mitteilungen, um die Sie sich kümmern müssen.
 					</p>
 				</div>
 			</div>
@@ -283,7 +267,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="eventCancelModal{{event.id}}Label">{% translate 'Cancel appointment' %}</h1>
+				<h1 class="modal-title fs-5" id="eventCancelModal{{event.id}}Label">Termin absagen</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form action="{% url 'teacher_event_view' event.id  %}" method="post">
@@ -293,10 +277,10 @@
 					{{ cancel_event_form.message|as_crispy_field }}
 					{{cancel_event_form.book_other_event|as_crispy_field}}
 				</div>
-				<div class="modal-footer d-flex justify-content-between">
+				<div class="modal-footer">
 					<button type="button" class="btn btn-outline-secondary"
-						data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-					<input type="submit" class="btn btn-outline-danger" value="{% translate 'Cancel appointment' %}" />
+						data-bs-dismiss="modal">Abbrechen</button>
+					<input type="submit" class="btn btn-outline-danger" value="Termin absagen" />
 				</div>
 			</form>
 		</div>
@@ -310,42 +294,23 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h1 class="modal-title fs-5" id="exampleModalLabel">
-					{% translate 'Confirm appointment' %}
+					Termin bestätigen
 				</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				{% translate 'You have received an inquiry from ' %} 
-				{{ event.parent.first_name }} {{ event.parent.last_name }}
-				{% translate ' for the ' %}
-				{{event.start | date}}
-				{% translate ' at ' %}
-				{{event.start|time}}
-				{% translate '. Would you like to confirm this appointment?' %}'
+				Ihnen wurde eine Anfrage von {{ event.parent.first_name }} 
+				{{ event.parent.last_name }} für den {{event.start | date}} um
+				{{event.start|time}} Uhr gestellt. Möchten Sie diesen Termin bestätigen?
 			</div>
 			<div class="modal-footer d-flex justify-content-between">
 				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-					{% translate 'Cancel' %}
+					Abbrechen
 				</button>
-				<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_confirm_event' event.id %}">
-					{% translate 'Accept appointment' %}</a>
+				<a type="button" class="btn btn-outline-danger" href="{% url 'teacher_confirm_event' event.id %}">Termin
+					annehmen</a>
 			</div>
 		</div>
 	</div>
 </div>
-{% endif %}
-{% endfor %}
-
-<!-- Aus dem Internet -> funktioniert, geht aber bestimmt noch besser -->
-<style>
-    button.acc-btn {
-        /* create a grid */
-        display: grid;
-        /* create colums. 1fr means use available space */
-        grid-template-columns: 1fr max-content max-content;
-        align-items: center;
-        grid-gap: 10px;
-    }
-</style>
-
- {% endblock content %}
+{% endif %} {% endfor %} {% endblock content %}

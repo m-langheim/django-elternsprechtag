@@ -47,7 +47,7 @@ def check_parent_book_event_allowed(
 ):
     if parent.role != 0:
         raise ValueError(
-            _("The function requires a parent, but the user is not a parent.") #The provided user is not a parent. This function requires a parent user!
+            _("Die Funktion erfordert ein Elternteil, der User ist allerdings kein Elternteil.") #The provided user is not a parent. This function requires a parent user!
         )
 
     if event:
@@ -89,7 +89,7 @@ def check_parent_book_event_allowed(
         )
         return events.exists()
     else:
-        raise ValueError(_("Either the teacher or the date must be given as an attribute.")) #One of the attributes teacher or event must be set.
+        raise ValueError(_("Entweder die Lehrkraft oder der Termin muss als Attribut gegeben sein.")) #One of the attributes teacher or event must be set.
 
 
 def check_event_bookable(parent: CustomUser, event: Event):

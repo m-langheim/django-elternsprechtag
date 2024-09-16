@@ -95,7 +95,7 @@ class bookEventView(View):
         if not parent_can_book_event:
             messages.error(
                 request,
-                _("You may not book this appointment. Please select another date."),
+                _("Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin aus."),
             )
             return redirect(
                 "event_teacher_list",
@@ -116,7 +116,7 @@ class bookEventView(View):
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
                 messages.error(
                     request,
-                    _("The specified request could not be found."),
+                    _("Die angegebene Anfrage konnte leider nicht gefunden werden."),
                 )
                 form = BookForm(instance=event, request=request)
                 teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
@@ -132,7 +132,7 @@ class bookEventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                _("This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking.")
+                _("Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus.")
             )
         return render(
             request,
@@ -157,7 +157,7 @@ class bookEventView(View):
         if not parent_can_book_event:
             messages.error(
                 request,
-                _("You may not book this appointment. Please select another date."),
+                _("Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin aus."),
             )
             return redirect(
                 "event_teacher_list",
@@ -180,7 +180,7 @@ class bookEventView(View):
                 # Es ist ein Fehler passiert, deswegen wird die "standard" Variante ausgeführt
                 messages.error(
                     request,
-                    _("The specified request could not be found."),
+                    _("Die angegebene Anfrage konnte leider nicht gefunden werden."),
                 )
                 form = BookForm(request.POST, instance=event, request=request)
             else:
@@ -244,7 +244,7 @@ class InquiryView(View):
         if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
             messages.info(
                 request,
-                _("You have already answered the request and do not need to do anything else."),
+                _("Sie haben die Anfrage schon beantwortet und müssen nichts weiteres mehr machen."),
             )
             return redirect("home")
 
@@ -286,7 +286,7 @@ class EventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                _("This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking.")
+                _("Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus.")
             )
         return render(
             request,
@@ -384,7 +384,7 @@ class CancelEventView(View):
             event.occupied = False
             event.student.clear()
             event.save()
-            messages.success(request, _("The appointment was successfully canceled."))
+            messages.success(request, _("Der Termin wurde erfolgreich abgesagt"))
             return redirect("home")
         return render(
             request,

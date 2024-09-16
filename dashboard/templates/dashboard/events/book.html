@@ -1,7 +1,6 @@
 {% extends "dashboard/base.html" %}
-{% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Appointment view' %} {% endblock title %}
+{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_book' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_book' %} {% endblock %}
@@ -14,24 +13,20 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h1>{% translate 'Appointment' %}</h1>
-                        <p class="text-secondary">{% translate 'Detailed view of the appointment' %}</p>
+                        <h2>Termin</h2>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            {% translate 'Lehrkraft:' %} {{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
-                                        </div>
-                                        <div>
-                                            <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
+                                            {% translate 'Uhrzeit:' %} {{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            <strong>{% translate 'Room:' %} </strong>{{ event.room }}
+                                            {% translate 'Raum:' %} {{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -47,7 +42,7 @@
                                             <div class="col text-start">
                                                 
                                                 <div class="mb-2">
-                                                    <strong>{% translate 'Select students for the appointment:' %}</strong>
+                                                    {% translate 'Schüler*innen für das Gespräch auswählen:' %}
                                                 </div>
 
                                                 {% if inquiry %}
@@ -60,8 +55,7 @@
                                                 {% endif %}
                                                 
                                                 <div>
-
-                                                    {% csrf_token %}
+                                                    {% load crispy_forms_tags %}
 
                                                     {{ book_form.necessary_student|as_crispy_field }}
                                                     {{ book_form.student|as_crispy_field }}
@@ -80,7 +74,7 @@
 
                                                     {% if book_form.errors %}
                                                     <div class="mt-2 mb-2 text-danger">
-                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Select at least one of the marked students.' %} {% else %} {% translate 'Select at least one student.' %} {% endif %}</div>
+                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Wählen Sie mindestens eine der markierten Schüler*innen aus.' %} {% else %} {% translate 'Wählen Sie mindestens eine Schüler*in aus.' %} {% endif %}</div>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -92,11 +86,11 @@
                                         <div class="row gy-1">
                                             <div class="col-12 col-md-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{{ back_url }}">{% translate 'Back' %}</a>
+                                                    href="{{ back_url }}">{% translate 'Zurück' %}</a>
                                             </div>
                                             <div class="col-12 col-md-6 d-flex justify-content-end">
                                                     <button type="submit"
-                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Request' %}</button>
+                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Buchen' %}</button>
                                             </div>
                                         </div>
                                     </div>

@@ -25,20 +25,20 @@
             <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 data-bs-auto-close="true" aria-expanded="false" onclick="blur(this);">
                 {% if request.get_full_path == my_profile_url %}
-                {% translate 'My profile' %}
+                {% translate 'Mein Profil' %}
                 {% elif request.get_full_path == change_password_url %}
-                {% translate 'Password' %}
+                {% translate 'Kennwort' %}
                 {% elif request.get_full_path == edit_tags_url %}
                 {% translate 'Tags' %}
                 {% endif %}
             </button>
             <ul class="dropdown-menu col-12">
                 <li>
-                    <a class="dropdown-item" href="{% url 'profile_my_profile' %}">{% translate 'My profile' %}</a>
+                    <a class="dropdown-item" href="{% url 'profile_my_profile' %}">{% translate 'Mein Profil' %}</a>
                 </li>
                 <li>
                     <a class="dropdown-item" href="{% url 'profile_change_password' %}">
-                        {% translate 'Password' %}
+                        {% translate 'Kennwort' %}
                     </a>
                 </li>
                 {% if user.role == 1 %}
@@ -49,18 +49,18 @@
                     <div class="dropdown-divider"></div>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'teacher_dashboard' %}">{% translate 'Back' %}</a>
+                    <a class="dropdown-item" href="{% url 'teacher_dashboard' %}">{% translate 'Zurück' %}</a>
                 </li>
                 {% endif %}
                 {% if user.role == 0 %}
                 <li>
-                    <a class="dropdown-item" href="{% url 'profile_student_list' %}">{% translate 'Students' %}</a>
+                    <a class="dropdown-item" href="{% url 'profile_student_list' %}">{% translate 'Schüler*innen' %}</a>
                 </li>
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'home' %}">{% translate 'Back' %}</a>
+                    <a class="dropdown-item" href="{% url 'home' %}">{% translate 'Zurück' %}</a>
                 </li>
                 {% endif %}
             </ul>
@@ -71,11 +71,11 @@
             role="tablist" aria-orientation="vertical" id="profilePageTabs">
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if request.get_full_path == my_profile_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_my_profile' %}">{% translate 'My profile' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_my_profile' %}">{% translate 'Mein Profil' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if request.get_full_path == change_password_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_change_password' %}">{% translate 'Safety' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_change_password' %}">{% translate 'Sicherheit' %}</a>
             </li>
             {% if user.role == 1 %}
             <li class="nav-item mb-1" role="presentation">
@@ -87,20 +87,20 @@
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'teacher_dashboard' %}">{% translate 'Back' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'teacher_dashboard' %}">{% translate 'Zurück' %}</a>
             </li>
             {% endif %}
             {% if user.role == 0 %}
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if request.get_full_path == student_list %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_student_list' %}">{% translate 'Students' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'profile_student_list' %}">{% translate 'Schüler*innen' %}</a>
             </li>
             <li>
                 <div class="dropdown-divider"></div>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'home' %}">{% translate 'Back' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'home' %}">{% translate 'Zurück' %}</a>
             </li>
             {% endif %}
         </ul>
