@@ -13,9 +13,9 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     {% if request_search %}
-                    <h2>{% translate 'Suchergebnisse für:' %} "{{ request_search }}"</h2>
+                    <h2>{% translate 'Search results for:' %} "{{ request_search }}"</h2>
                     {% else %}
-                    <h2>{% translate 'Alle Lehrkräfte' %}</h2>
+                    <h2>{% translate 'All teachers' %}</h2>
                     {% endif %}
 
                     {% if teachers %}
@@ -29,7 +29,7 @@
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                         <a type="button" class="btn btn-outline-danger" href="{{ teacher.url }}">
-                                            {% translate 'Termin buchen' %}
+                                            {% translate 'Book an appointment' %}
                                         </a>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
                         <li class="list-group-item">
                             <div class="row align-items-center">
                                 <div class="col-12 col-sm-6 col-md-8 text-start">
-                                    {% translate 'Keine Suchergebnisse gefunden!' %}
+                                    {% translate 'No results found!' %}
                                 </div>
                             </div>
                         </li>

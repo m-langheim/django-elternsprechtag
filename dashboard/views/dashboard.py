@@ -215,6 +215,6 @@ def impressum(request):
     try:
         settings = SiteSettings.objects.first()
     except SiteSettings.DoesNotExist:
-        raise Http404(_("Es wurden keine Einstellungen für diese Seite gefunden."))
+        raise Http404(_("No settings were found for this page."))
     else:
         return redirect(settings.impressum)
