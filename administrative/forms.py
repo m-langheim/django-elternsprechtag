@@ -181,6 +181,4 @@ class ControlParentCreationForm(forms.Form):
 
 class ControlParentAddStudent(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
-    parent = forms.ModelChoiceField(
-        queryset=CustomUser.objects.filter(Q(role=0)), widget=ParentWidget
-    )
+    parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)))
