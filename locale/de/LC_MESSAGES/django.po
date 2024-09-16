@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-16 04:33+0200\n"
+"POT-Creation-Date: 2024-09-16 04:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -542,8 +542,8 @@ msgstr "Keine Benachrichtigungen"
 #: dashboard/templates/dashboard/announcements/announcements_list.html:59
 #: dashboard/templates/dashboard/public_dashboard.html:252
 #: teacher/templates/teacher/dashboard.html:270
-msgid "You don"
-msgstr ""
+msgid "You don't have any new notifications."
+msgstr "Es gibt bei Ihnen bisher keine offenen Termine."
 
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
