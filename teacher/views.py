@@ -9,7 +9,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 from django.http import Http404
 from django.utils.decorators import method_decorator
-from .decorators import teacher_required
+from .decorators import teacher_required, upcomming_base_event_required
 from .forms import *
 
 from general_tasks.utils import EventPDFExport
@@ -33,6 +33,11 @@ import operator
 
 
 teacher_decorators = [login_required, teacher_required]
+teacher_baseevent_decorators = [
+    login_required,
+    teacher_required,
+    upcomming_base_event_required,
+]
 
 
 @login_required
@@ -269,7 +274,7 @@ class InquiryView(View):
             )
 
 
-@method_decorator(teacher_decorators, name="dispatch")
+@method_decorator(teacher_baseevent_decorators, name="dispatch")
 class DeleteInquiryView(View):
     def get(self, request, inquiryID):
         try:
@@ -285,7 +290,7 @@ class DeleteInquiryView(View):
             return redirect("teacher_dashboard")
 
 
-@method_decorator(teacher_decorators, name="dispatch")
+@method_decorator(teacher_baseevent_decorators, name="dispatch")
 class CreateInquiryView(View):
     def get(self, request, studentID):
         try:
@@ -341,7 +346,7 @@ class CreateInquiryView(View):
             "teacher/inquiry/createInquiry.html",
             {
                 "form": form,
-                'choices_count': form.fields['base_event'].queryset.count(),
+                "choices_count": form.fields["base_event"].queryset.count(),
                 "student": student,
             },
         )
@@ -445,6 +450,7 @@ def markAnnouncementRead(request, announcement_id):
 
 @login_required
 @teacher_required
+@upcomming_base_event_required
 def create_event_PDF(request):
     pdf_generator = EventPDFExport(request.user.id)
     return FileResponse(

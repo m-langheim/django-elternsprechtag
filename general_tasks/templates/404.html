@@ -1,1 +1,17 @@
-{% include "error_file_template.html" with page_title="404 Not Found" page_sub_title="We couldn't find what you're looking for" page_icon="face-dizzy" page_icon_color="text-danger" page_cta_text="Go to Homepage" page_error_summary="A 404 error status implies that the page that you're looking for could not be found." page_link="/" %}  
+page_link="/" %}  
+
+{% load i18n %}
+
+{% translate "404" as short_msg %}
+{% translate "404 Not Found" as page_title %}
+{% translate "We couldn't find what you're looking for" as page_sub_title %}
+{% translate "Go to Homepage" as page_cta_text %}
+{% translate "A 404 error status implies that the page that you're looking for could not be found." as page_error_summary %}
+
+{% url "home" as page_link %}
+
+{% with "face-dizzy" as page_icon %}
+
+{% include "error_file_template.html" with short_msg=short_msg page_title=page_title page_sub_title=page_sub_title page_icon=page_icon page_icon_color="text-danger" page_cta_text=page_cta_text page_error_summary=page_error_summary page_link=page_link %}  
+
+{% endwith %}

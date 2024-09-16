@@ -1,6 +1,7 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
-{% block title %} {{ page.error }} - Elternsprechtagsportal{% endblock title %}
+{% block title %} {{ short_msg }} - Elternsprechtagsportal{% endblock title %}
 
 {% block content %}
 <!-- Error Page Content -->
@@ -19,12 +20,12 @@
         <div class="row  justify-content-center py-3">
             <div class="col-md-6">
                 <div class="my-5 p-5 card">
-                    <h3>What happened?</h3>
+                    <h3>{% translate "What happened?" %}</h3>
                     <p class="fs-5">{{ page_error_summary }}</p>
                 </div>
                 {% if page_action_site_visitor %}
                 <div class="my-5 p-5 card">
-                    <h3>What can I do?</h3>
+                    <h3>{% translate "What can I do?" %}</h3>
                     <!--<p class="fs-4">If you're a site visitor</p>-->
                     <p>{{ page_action_site_visitor }}</p>
                     <!--<p class="fs-4">If you're the site owner</p>

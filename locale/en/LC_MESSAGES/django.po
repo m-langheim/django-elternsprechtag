@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-16 23:18+0200\n"
+"POT-Creation-Date: 2024-09-17 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -975,6 +975,37 @@ msgstr ""
 msgid "The appointment was successfully canceled."
 msgstr ""
 
+#: general_tasks/templates/404.html:5
+msgid "404"
+msgstr ""
+
+#: general_tasks/templates/404.html:6
+msgid "404 Not Found"
+msgstr ""
+
+#: general_tasks/templates/404.html:7
+msgid "We couldn't find what you're looking for"
+msgstr ""
+
+#: general_tasks/templates/404.html:8
+#: teacher/templates/teacher/error/base_event_needed.html:6
+msgid "Go to Homepage"
+msgstr ""
+
+#: general_tasks/templates/404.html:9
+msgid ""
+"A 404 error status implies that the page that you're looking for could not "
+"be found."
+msgstr ""
+
+#: general_tasks/templates/error_file_template.html:23
+msgid "What happened?"
+msgstr ""
+
+#: general_tasks/templates/error_file_template.html:28
+msgid "What can I do?"
+msgstr ""
+
 #: profile_settings/templates/profile_settings/change_password.html:5
 #: profile_settings/templates/profile_settings/profile_layout.html:30
 #: profile_settings/templates/profile_settings/profile_layout.html:41
@@ -1151,6 +1182,21 @@ msgstr ""
 #: teacher/templates/teacher/dashboard.html:331
 #: teacher/templates/teacher/event/detailEvent.html:181
 msgid "Accept appointment"
+msgstr ""
+
+#: teacher/templates/teacher/error/base_event_needed.html:3
+#: teacher/templates/teacher/error/base_event_needed.html:4
+msgid "No base event"
+msgstr ""
+
+#: teacher/templates/teacher/error/base_event_needed.html:5
+msgid "There have to be upcomming events but there arent"
+msgstr ""
+
+#: teacher/templates/teacher/error/base_event_needed.html:7
+msgid ""
+"The next parents´ consultion day was not yet created. There for you are "
+"currently unable to create an inquiry for it."
 msgstr ""
 
 #: teacher/templates/teacher/event/detailEvent.html:27

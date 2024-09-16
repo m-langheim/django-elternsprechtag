@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% translate "No base event" as short_msg %}
+{% translate "No base event" as page_title %}
+{% translate "There have to be upcomming events but there arent" as page_sub_title %}
+{% translate "Go to Homepage" as page_cta_text %}
+{% translate "The next parents´ consultion day was not yet created. There for you are currently unable to create an inquiry for it." as page_error_summary %}
+
+{% url "home" as page_link %}
+
+{% with page_icon="calendar-xmark" page_icon_color="text-danger" %}
+
+{% include "error_file_template.html" with short_msg=short_msg page_title=page_title page_sub_title=page_sub_title page_icon=page_icon page_icon_color=page_icon_color page_cta_text=page_cta_text page_error_summary=page_error_summary page_link=page_link %}  
+
+{% endwith %}
