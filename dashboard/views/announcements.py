@@ -56,7 +56,7 @@ def markAllAnnouncementsRead(request):
     for announcement in announcements:
         announcement.read = True
         announcement.save()
-    messages.success(request, _("Alle Mitteilungen wurden als gelesen markiert."))
+    messages.success(request, _("All notifications have been marked as read."))
     return redirect("..")
 
 

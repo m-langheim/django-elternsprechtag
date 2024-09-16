@@ -1,6 +1,6 @@
 {% extends "dashboard/base.html" %}
 {% load i18n %}
-{% block title %} {% translate 'Anfrage' %} {% endblock title %}
+{% block title %} {% translate 'Inquiry' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_parent_answered_inquiry' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_parent_answered_inquiry' %} {% endblock %}
@@ -9,10 +9,10 @@
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">{% translate 'Anfrage' %}</p>
+            <p class="h1">{% translate 'Inquiry' %}</p>
             <div class="row">
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                    <strong>{% translate 'Anfragesteller*in:' %}</strong>
+                    <strong>{% translate 'Requestor:' %}</strong>
                 </div>
                 <div class="col-6 col-sm-8 col-md-9 col-lg-10">
                     <a href="{% url 'event_teacher_list' teacher_id %}" class="pb-1"
@@ -21,13 +21,13 @@
                     </a>
                 </div>
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                    <strong>{% translate 'Schüler*in:' %}</strong>
+                    <strong>{% translate 'Student:' %}</strong>
                 </div>
                 <div class="col-6 col-sm-8 col-md-9 col-lg-10">
                     {{ inquiry.students.first }}
                 </div>
                 <div class="col-12 col-md-3 col-lg-2">
-                    <strong>{% translate 'Grund:' %}</strong>
+                    <strong>{% translate 'Reason:' %}</strong>
                 </div>
                 <div class="col-12 col-md-9 col-lg-10">
                     {{ inquiry.reason|linebreaks }}
@@ -46,7 +46,7 @@
 <div class="container p-2">
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
-            <p class="h1">{% translate 'Elternsprechtag-Termine' %}</p>
+            <p class="h1">{% translate "Parents' consultation dates" %}</p>
             {% if inquiry.event %}
 
             <ul class="list-group list-group-flush">
@@ -72,12 +72,12 @@
                                 </style>
                                 <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
                                     href="{% url 'event_per_id' inquiry.event.id %}">
-                                    {% translate 'Angefragt' %}
+                                    {% translate 'Requested' %}
                                 </a>
                                 {% else %}
                                 <a type="button" class="btn btn-outline-success col-12 col-md-6"
                                     href="{% url 'event_per_id' inquiry.event.id %}">
-                                    {% translate 'Gebucht' %}
+                                    {% translate 'Booked' %}
                                 </a>
                                 {% endif %}
                             </div>
@@ -89,8 +89,8 @@
 
             <!-- Für den Lehrer wurden noch keine Events gebucht -->
             <div class="container">
-                <p class="h1">{% translate 'Termine' %}</p>
-                <p class="text-muted">{% translate 'Es gibt bei Ihnen bisher keine offenen Termine.' %}</p>
+                <p class="h1">{% translate 'Appointments' %}</p>
+                <p class="text-muted">{% translate 'You do not have any open appointments yet.' %}</p>
             </div>
             {% endif %}
         </div>

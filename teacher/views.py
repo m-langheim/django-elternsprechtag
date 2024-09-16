@@ -341,6 +341,7 @@ class CreateInquiryView(View):
             "teacher/inquiry/createInquiry.html",
             {
                 "form": form,
+                'choices_count': form.fields['base_event'].queryset.count(),
                 "student": student,
             },
         )
