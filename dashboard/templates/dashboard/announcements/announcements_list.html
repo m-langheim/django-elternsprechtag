@@ -1,14 +1,14 @@
 {% extends "dashboard/base.html" %}
 {% load i18n %}
-{% block title %} {% translate 'Notifications' %} {% endblock title %}
+{% block title %} {% translate 'Mitteilungen' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_announcements' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_announcements' %} {% endblock %}
 
 {% block content %}
 <div class="container">
-    <p class="h1">{% translate 'Notifications' %}</p>
-    <p class="text-muted">{% translate 'Your personal, unread notifications are displayed here.' %}</p>
+    <p class="h1">{% translate 'Mitteilungen' %}</p>
+    <p class="text-muted">{% translate 'Hier werden Ihnen ihre persönlichen, ungelesenen Mitteilungen angezeigt.' %}</p>
 </div>
 {% if object_list|length > 0 %}
 <div class="accordion" id="announcement-accordion">
@@ -39,7 +39,7 @@
                 {{announcement.encodedID}} -->
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <a class="btn btn-outline-secondary" role="button"
-                        href="{% url 'mark_annuncement_read' announcement.encodedID %}">{% translate 'Read' %}</a>
+                        href="{% url 'mark_annuncement_read' announcement.encodedID %}">{% translate 'Gelesen' %}</a>
                     {% if announcement.action_link %}
 
                     <a class="btn btn-outline-danger" role="button"
@@ -54,9 +54,9 @@
 {% else %}
 <div class="card m-1">
     <div class="card-body">
-        <p class="h5 card-title">{% translate 'No notifications' %}</p>
+        <p class="h5 card-title">{% translate 'Keine Mitteilungen' %}</p>
         <p class="card-text">
-            {% translate "You don't have any new notifications." %}
+            {% translate 'Sie haben keine neuen Mitteilungen.' %}
         </p>
     </div>
 </div>
@@ -64,17 +64,17 @@
 <div class="row gy-1 mt-1">
     <div class="d-none d-lg-block col-lg-8">
         <a type="button" class="btn btn-outline-secondary col-12 col-lg-3 col-xl-2"
-            href="{% url 'home' %}">{% translate 'Back' %}</a>
+            href="{% url 'home' %}">{% translate 'Zurück' %}</a>
     </div>
     <!-- Hier wird nur spacing benötigt -->
     <div class="col-12 col-lg-4 col-xl-4 d-flex justify-content-end">
         <div class="col-12 col-xl-8 row gx-1 gy-1">
             <a href="{% url 'mark_all_announcements_read' %}" class="btn btn-outline-danger col-12">
-                {% translate 'Mark all as read' %}
+                {% translate 'Alle als gelesen markieren' %}
             </a>
             <div class="d-block d-lg-none col-12">
                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                    href="{% url 'home' %}">{% translate 'Back' %}</a>
+                    href="{% url 'home' %}">{% translate 'Zurück' %}</a>
             </div>
         </div>
     </div>

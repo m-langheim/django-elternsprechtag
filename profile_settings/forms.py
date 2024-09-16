@@ -35,9 +35,7 @@ class changeProfileFormForTeacher(forms.ModelForm):  # Nur für lehrer
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit('submit', _('Save')))
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
+        self.helper.add_input(Submit('submit', _('Speichern')))
 
     def save(self, commit=True):
         if self.cleaned_data['image']:
@@ -51,14 +49,6 @@ class changeProfileFormForUsers(forms.ModelForm):  # Für alle außer Lehrer
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "email")
-
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-
 
 
 class configureTagsFormForTeacher(forms.Form):

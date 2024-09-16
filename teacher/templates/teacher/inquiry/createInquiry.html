@@ -1,121 +1,100 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
-{% load i18n %}
-{% block title %} {% translate 'Inquiry' %} {% endblock title %}
 
-{% block help_url_smallscreen %} {% url 'wiki_create_inquiry' %} {% endblock %}
-{% block help_url_bigscreen %} {% url 'wiki_create_inquiry' %} {% endblock %}
+{% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
-<div class="container p-2 pt-4">
-    <div class="row">
-        <div class="column">
-            <div class="card" style="border-radius: 10px;">
-                <div class="card-body p-4">
 
-                    {% if not student.customuser_set.exists %}
+<div class="row gx-3 gy-3">
+    <div class="col-12">
+        <div class="card card-body p-4">
 
-                    <div class="alert alert-warning d-flex align-items-center" role="alert">
-                        <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
-                            <use xlink:href="#exclamation-triangle-fill" />
-                        </svg>
-                        <div>
-                            <h4>{% translate 'No parent defined!' %}</h4><br />
-                            {% translate 'No parent has registered for' %} {{ student.first_name }} {{student.last_name}}
-                            {% translate ' yet. Therefore, please arrange a possible appointment with ' %}
-                            {{ student.first_name }}
-                            {% translate ' personally.' %}
-                        </div>
-                    </div>
-                    <div class="d-flex d-md-none row">
-                        <div class="d-flex d-md-none col-12">
-                            <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                href="{% url 'home' %}">{% translate 'Back' %}</a>
-                        </div>
-                    </div>
-
-                    <div class="d-none d-md-flex row">
-                        <div class="d-none d-md-flex col">
-                            <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
-                                href="{% url 'home' %}">{% translate 'Back' %}</a>
-                        </div>
-                    </div>
-
-                    {% else %}
-
-                    <ul class="list-group list-group-flush">
-                        <h1>{% translate 'Create inquiry' %}</h1>
-                        <p class="text-secondary">{% translate 'Submit an inquiry for a student here.' %}
-                        </p>
-                        <li class="list-group-item">
-                            <div class="container">
-                                <div class="row align-items-center">
-                                    <div class="col text-start">
-                                        <div>
-                                            <strong>{% translate 'Student:' %} </strong>{{ student }}<br />
-                                        </div>
-
-                                        <div>
-                                            <strong>{% translate 'Parent:' %} </strong>
-                                            {{ student.customuser_set.first.first_name }}
-                                            {{ student.customuser_set.first.last_name }}<br />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <form method="post">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <div class="container">
-                                        <div class="row align-items-center">
-                                            <div class="col text-start">
-                                                {% csrf_token %}
-
-                                                <div id="base_event">
-                                                    <strong>{% translate "Parents' consultation day*:" %} </strong>
-                                                    {{ form.base_event|as_crispy_field }}<br />
-                                                </div>
-
-                                                <!-- Muss über JS gemacht werden, da das Feld grundsätzlich existent sein muss. -->
-                                                <script>
-                                                    var el = document.getElementById("base_event");
-
-                                                    if ("{{ choices_count }}" <= 1) {
-                                                        el.classList += "d-none"
-                                                    }
-                                                </script>
-
-                                                <div class="mb-2">
-                                                    <strong>{% translate 'Reason for the inquiry:' %} </strong>
-                                                </div>
-
-                                                <div>
-                                                    {{ form.reason|as_crispy_field }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item mt-2">
-                                    <div class="container">
-                                        <div class="row gy-1">
-                                            <div class="col-12 col-md-6">
-                                                <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{% url 'home' %}">{% translate 'Back' %}</a>
-                                            </div>
-                                            <div class="col-12 col-md-6 d-flex justify-content-end">
-                                                <input type="submit" class="btn btn-outline-danger col-12 col-lg-3"
-                                                    value="{% translate 'Submit inquiry' %}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </form>
-                        {% endif %}
-                    </ul>
+            {% if not student.customuser_set.exists %}
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
+                    <use xlink:href="#exclamation-triangle-fill" />
+                </svg>
+                <div>
+                    <h4>Kein Elternteil definiert!</h4><br />
+                    Für {{ student.first_name }} {{student.last_name}} hat sich bisher kein Elternteil registriert.
+                    Treffen Sie
+                    daher bitte mit {{student.first_name}} persönliche eine Absprache über einen möglichen Termin.
                 </div>
             </div>
+            <div class="d-flex d-md-none row">
+                <div class="d-flex d-md-none col-12">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+            </div>
+
+            <div class="d-none d-md-flex row">
+                <div class="d-none d-md-flex col">
+                    <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
+                        href="{% url 'home' %}">Zurück</a>
+                </div>
+            </div>
+            {% else %}
+            <p class="h1">Anfrage erstellen</p>
+            <p class="text-secondary">Stellen Sie hier eine Anfrage für eine:n Schüler:in</p>
+
+            <form method="post">
+                <div class="row">
+                    <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                        Schüler:in:
+                    </p>
+                    <p class="col">
+                        {{ student }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                        Elternteil:
+                    </p>
+                    <p class="col">
+                        {{ student.customuser_set.first.first_name }} {{ student.customuser_set.first.last_name }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                        Elternsprechtag:
+                    </p>
+                    <div class="col-9 col-sm-8 col-xl-10 col-lg-9">
+                        {{ form.base_event|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <p class="col-3 col-sm-4 col-xl-2 col-lg-3" style="font-weight: bold;">
+                        Grund:
+                    </p>
+                    <p class="col">
+                        {% csrf_token %}
+                        {{ form.reason|as_crispy_field }}
+                    </p>
+                </div>
+                <div class="d-flex d-md-none row">
+                    <div class="d-flex d-md-none col-12">
+                        <input type="submit" class="btn btn-outline-danger mb-2 mt-2 me-2" value="Anfrage stellen" />
+                    </div>
+                    <div class="d-flex d-md-none col-12">
+                        <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
+                            href="{% url 'home' %}">Zurück</a>
+                    </div>
+                </div>
+
+                <div class="d-none d-md-flex row">
+                    <div class="d-none d-md-flex col">
+                        <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
+                            href="{% url 'home' %}">Zurück</a>
+                    </div>
+                    <div class="d-none d-md-flex col justify-content-end">
+                        <input type="submit" class="btn btn-outline-danger mb-2 mt-2 me-2" value="Anfrage stellen" />
+                    </div>
+                </div>
+            </form>
+            {% endif %}
         </div>
-        {% endblock content %}
+    </div>
+</div>
+{% endblock content %}

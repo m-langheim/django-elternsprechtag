@@ -40,7 +40,7 @@
                             <div class="form-white input-group bg-white align-items-center align-self-center">
                                 <input type="text"
                                     class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
-                                    placeholder="{% translate 'Search...' %}" aria-label="Search" style="box-shadow: none; outline: none;"
+                                    placeholder="Suchen..." aria-label="Search" style="box-shadow: none; outline: none;"
                                     name="q" autocomplete="off">
                                 <button type="submit"
                                     class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i
@@ -52,13 +52,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link ms-2 me-2 align-items-center text-dark d-flex"
                                         href="{% block help_url_smallscreen %}{% endblock %}">
-                                        {% translate 'Help' %}
+                                        {% translate 'Hilfe' %}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link dropdown ms-2 me-2 align-items-center text-dark d-flex"
                                         data-bs-toggle="dropdown">
-                                        {% translate 'Profile' %} <i class="fa-solid fa-lg fa-caret-down ms-auto"></i>
+                                        {% translate 'Profil' %} <i class="fa-solid fa-lg fa-caret-down ms-auto"></i>
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdown">
                                         <!-- {% if user.role == 0 %}
@@ -67,31 +67,31 @@
                                         {% endif %} -->
                                         {% if user.role == 1 %}
                                         <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
-                                                    class="fa-solid fa-calendar-days"></i> {% translate 'My appointments'%}</a></li>
+                                                    class="fa-solid fa-calendar-days"></i> {% translate 'Meine Termine'%}</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
-                                                    class="fa-solid fa-inbox"></i> {% translate 'Notifications' %}</a>
+                                                    class="fa-solid fa-inbox"></i> {% translate 'Mitteilungen' %}</a>
                                         </li>
                                         {% if user.is_superuser %}
                                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">
-                                                <i class="fa-solid fa-microchip"></i> {% translate 'Django administration'%}
+                                                <i class="fa-solid fa-microchip"></i> {% translate 'Django-Verwaltung'%}
                                         <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
-                                                <i class="fa-solid fa-sliders"></i> {% translate 'Administration' %}</a>
+                                                <i class="fa-solid fa-sliders"></i> {% translate 'Verwaltung' %}</a>
                                         </li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
-                                                    class="fa-solid fa-gear"></i> {% translate 'My profile' %}</a></li>
+                                                    class="fa-solid fa-gear"></i> {% translate 'Mein Profil' %}</a></li>
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>
                                         <li><a class="dropdown-item" href="{% url 'wiki_mainpage' %}"><i
-                                                    class="fa-solid fa-book"></i> {% translate 'Instructions' %}</a></li>
+                                                    class="fa-solid fa-book"></i> {% translate 'Anleitung' %}</a></li>
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>
                                         <li>
                                             <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
-                                                    class="fa-solid fa-right-from-bracket"></i> {% translate 'Logout'%}</a>
+                                                    class="fa-solid fa-right-from-bracket"></i> {% translate 'Abmelden'%}</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -106,7 +106,7 @@
                         <div class="form-white input-group bg-white align-items-center align-self-center">
                             <input type="text"
                                 class="form-control rounded-1 border-2 bg-white align-text-bottom p-1 ps-2 me-2 shadow-sm"
-                                placeholder="{% translate 'Search...' %}" aria-label="Search" style="box-shadow: none; outline: none;"
+                                placeholder="Suchen..." aria-label="Search" style="box-shadow: none; outline: none;"
                                 name="q" autocomplete="off">
                             <button type="submit"
                                 class="btn btn-outline-danger border-2 p-1 ps-2 pe-2 align-items-center rounded-1 shadow-sm"><i
@@ -120,14 +120,14 @@
                             <li class="nav-item me-1 me-lg-0"></li>
                             <a class="nav-link" href="{% block help_url_bigscreen %}{% endblock %}">
                                 <i class="fa-regular fa-circle-question text-danger" style="font-size: 2.5em"
-                                    title="{% translate 'Click for information about this page.' %}"></i>
+                                    title="{% translate 'Klicken Sie für Informationen zu dieser Seite.' %}"></i>
                             </a>
                             </li>
                             <li class="nav-item me-3 me-lg-0 dropdown">
                                 <a class="nav-link dropdown" href="#" id="navbarDropdown1" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-regular fa-circle-user text-danger" style="font-size: 2.5em"
-                                        title="{% translate 'Click for information about your account.' %}"></i>
+                                        title="{% translate 'Klicken Sie für Informationen zu Ihrem Konto.' %}"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
                                     <!-- {% if user.role == 0 %}
@@ -136,29 +136,29 @@
                                     {% endif %} -->
                                     {% if user.role == 1 %}
                                     <li><a class="dropdown-item" href="{% url 'teacher_personal_events' %}"><i
-                                                class="fa-solid fa-calendar-days"></i> {% translate 'My appointments' %}</a></li>
+                                                class="fa-solid fa-calendar-days"></i> {% translate 'Meine Termine' %}</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'announcements' %}"><i
-                                                class="fa-solid fa-inbox"></i> {% translate 'Notifications' %}</a></li>
+                                                class="fa-solid fa-inbox"></i> {% translate 'Mitteilungen' %}</a></li>
                                     {% if user.is_superuser %}
                                     <li><a class="dropdown-item" href="{% url 'admin:index' %}">
-                                            <i class="fa-solid fa-microchip"></i> {% translate 'Django administration' %}
+                                            <i class="fa-solid fa-microchip"></i> {% translate 'Django-Verwaltung' %}
                                     <li><a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
-                                            <i class="fa-solid fa-sliders"></i> {% translate 'Administration' %}</a></li>
+                                            <i class="fa-solid fa-sliders"></i> {% translate 'Verwaltung' %}</a></li>
                                     {% endif %}
                                     <li><a class="dropdown-item" href="{% url 'profile_my_profile' %}"><i
-                                                class="fa-solid fa-gear"></i> {% translate 'My profile' %}</a></li>
+                                                class="fa-solid fa-gear"></i> {% translate 'Mein Profil' %}</a></li>
                                     <li>
                                         <hr class="dropdown-divider" />
                                     </li>
                                     <li><a class="dropdown-item" href="{% url 'wiki_mainpage' %}"><i
-                                                class="fa-solid fa-book"></i> {% translate 'Instructions' %}</a></li>
+                                                class="fa-solid fa-book"></i> {% translate 'Anleitung' %}</a></li>
                                     <li>
                                         <hr class="dropdown-divider" />
                                     </li>
                                     <li>
                                         <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i
-                                                class="fa-solid fa-right-from-bracket"></i> {% translate 'Logout' %}</a>
+                                                class="fa-solid fa-right-from-bracket"></i> {% translate 'Abmelden' %}</a>
                                     </li>
                                 </ul>
                             </li>
@@ -177,7 +177,7 @@
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"
-                        aria-label="{% translate 'Close' %}"></button>
+                        aria-label="{% translate 'Schließen' %}"></button>
                 </div>
                 {% endfor %}
             </div>
@@ -205,7 +205,7 @@
 
                     <ul class="nav col-md-4 justify-content-end">
                         <li class="nav-item"><a href="{% url 'impressum' %}"
-                                class="nav-link px-2 text-muted">{% translate 'Legal notice' %}</a></li>
+                                class="nav-link px-2 text-muted">{% translate 'Impressum' %}</a></li>
                         <!-- <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
                         <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
                         <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>

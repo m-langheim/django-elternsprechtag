@@ -19,9 +19,4 @@ urlpatterns = [
     path('redirect/wiki/student_list', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_student_list'),
     path('redirect/wiki/change_tags', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_change_tags'),
     path('redirect/wiki/teacher_dashboard', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_teacher_dashboard'),
-    path('redirect/wiki/teacher_search', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_teacher_search'),
-    path('redirect/wiki/teacher_view_event', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_teacher_view_event'),
-    path('redirect/wiki/teacher_create_inquiry', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_create_inquiry'),
-    path('redirect/wiki/teacher_view_inquiry', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_view_inquiry'),
-    path('redirect/wiki/teacher_no_parent', RedirectView.as_view(url='https://wiki.jhg-elternsprechtag.de/'), name='wiki_no_parent'),
 ]

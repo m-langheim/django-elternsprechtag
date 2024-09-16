@@ -1,9 +1,6 @@
 {% extends "dashboard/base.html" %}
-{% load i18n %}
-{% block title %} {% translate 'Search' %} {% endblock title %}
 
-{% block help_url_smallscreen %} {% url 'wiki_teacher_search' %} {% endblock %}
-{% block help_url_bigscreen %} {% url 'wiki_teacher_search' %} {% endblock %}
+{% block title %} Dashboard - Lehrer {% endblock title %}
 
 {% block content %}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -18,9 +15,9 @@
     <div class="card" style="border-radius: 10px;">
         <div class="card-body p-4">
             {% if search %}
-            <p class="h1">{% translate 'Search results for:' %} "{{ search }}"</p>
+            <p class="h1">Suchergebnisse für "{{ search }}"</p>
             {% else %}
-            <p class="h1">{% translate 'All students' %}</p>
+            <p class="h1">Alle Schüler:innen</p>
             {% endif %}
 
             {% if page_obj %}
@@ -36,7 +33,7 @@
                         <div class="col col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
                                 <i class="fa-solid fa-triangle-exclamation fa-xl text-warning ms-auto"
-                                    data-bs-toggle="tooltip" title="{% translate 'The child does not have a registered parent yet!' %}"></i>
+                                    data-bs-toggle="tooltip" title="Das Kind hat bisher kein registriertes Elternteil!"></i>
                             </div>
                         </div>
                         {% else %}
@@ -44,21 +41,21 @@
                         <div class="col col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
                                 <i class="fa-solid fa-right-from-bracket fa-xl text-secondary ms-auto"
-                                    data-bs-toggle="tooltip" title="{% translate 'You have already submitted an inquiry!' %}"></i>
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage gestellt!"></i>
                             </div>
                         </div>
                         {% elif student_list.1 == 2 %}
                         <div class="col col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
                                 <i class="fa-solid fa-right-to-bracket fa-xl text-secondary ms-auto"
-                                    data-bs-toggle="tooltip" title="{% translate 'You have already received an inquiry!' %}"></i>
+                                    data-bs-toggle="tooltip" title="Sie haben bereits eine Anfrage bekommen!"></i>
                             </div>
                         </div>
                         {% elif student_list.1 == 3 %}
                         <div class="col col-md-5 col-xl-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
                                 <i class="fa-solid fa-circle-check fa-xl text-success ms-auto"
-                                    data-bs-toggle="tooltip" title="{% translate 'You already have an appointment with the parents of this child!' %}"></i>
+                                    data-bs-toggle="tooltip" title="Sie haben bereits ein Termin mit diesem Kind!"></i>
                             </div>
                         </div>
                         {% endif %}
@@ -72,7 +69,7 @@
                 <li class="list-group-item">
                     <div class="row align-items-center">
                         <div class="col-12 col-sm-6 col-md-8 text-start">
-                            {% translate 'No results found!' %}
+                            Keine Suchergebnisse gefunden!
                         </div>
                     </div>
                 </li>
