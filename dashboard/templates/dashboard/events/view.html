@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
+{% block title %} {% translate 'Appointment view' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_parent_view_event' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_parent_view_event' %} {% endblock %}
@@ -14,23 +14,25 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h2>{% translate 'Termin' %}</h2>
+                        <h1>{% translate 'Appointment' %}</h1>
+                        <p class="text-secondary">{% translate 'Detailed view of the appointment' %}</p>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            {% translate 'Lehrkraft:' %} {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} 
+                                            {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            {% translate 'Datum:' %} {{ event.start|date }}
+                                            <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
                                         </div>
                                         <div>
-                                            {% translate 'Uhrzeit:' %} {{ event.start|time }} Uhr
+                                            <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            {% translate 'Raum:' %} {{ event.room }}
+                                            <strong>{% translate 'Room:' %} </strong>{{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -38,29 +40,29 @@
                             </div>
                         </li>
                         <form method="post">
-                            {% csrf_token %}
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <div class="container">
                                         <div class="row align-items-center">
                                             <div class="col text-start">
-
                                                 <div class="mb-2">
-                                                    {% translate 'Schüler*innen für das Gespräch auswählen:' %}
+                                                    <strong>{% translate 'Select students for the appointment:' %}</strong>
                                                 </div>
 
                                                 {% if inquiry %}
                                                 {% for student in inquiry.students.all %}
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" checked="True" disabled="True">
-                                                        <label class="form-check-label">{{student.first_name}} {{ student.last_name }}</label>
-                                                    </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" checked="True"
+                                                        disabled="True">
+                                                    <label class="form-check-label">
+                                                        {{student.first_name}} {{ student.last_name }}</label>
+                                                </div>
                                                 {% endfor %}
                                                 {% endif %}
-                                                
-                                                <div>
-                                                    {% load crispy_forms_tags %}
 
+                                                <div>
+
+                                                    {% csrf_token %}
                                                     {{ edit_form.necessary_student|as_crispy_field }}
                                                     {{ edit_form.student|as_crispy_field }}
 
@@ -79,18 +81,24 @@
 
                                                     {% if edit_form.errors %}
                                                     <div class="mt-2 mb-2 text-danger">
-                                                        <i class="fa-solid fa-caret-right"></i> {% if edit_form.necessary_student.errors %} {% translate 'Wählen Sie mindestens eine der markierten Schüler*innen aus.' %} {% else %} {% translate 'Wählen Sie mindestens eine Schüler*in aus.' %} {% endif %}</div>
-                                                    {% endif %} 
+                                                        <i class="fa-solid fa-caret-right"></i>
+                                                        {% if edit_form.necessary_student.errors %}
+                                                        {% translate 'Select at least one of the marked students.' %}
+                                                        {% else %}
+                                                        {% translate 'Select at least one student.' %}
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                                 <li class="list-group-item">
-                                    <div class="row gy-1">
+                                    <div class="row gy-1 mt-1">
                                         <div class="d-none d-lg-block col-lg-5 col-xl-6">
                                             <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                                href="{% url 'home' %}">{% translate 'Back' %}</a>
                                         </div>
                                         <!-- Hier wird nur spacing benötigt -->
                                         <div class="col-12 col-lg-7 col-xl-6 d-flex justify-content-end">
@@ -98,17 +106,17 @@
                                                 <div class="col-6">
                                                     <button type="button" class="btn btn-outline-secondary col-12"
                                                         data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                                        {% translate 'Termin absagen' %}
+                                                        {% translate 'Cancel appointment' %}
                                                     </button>
                                                 </div>
                                                 <div class="col-6">
                                                     <button type="submit" class="btn btn-outline-danger col-12">
-                                                        {% translate 'Speichern' %}
+                                                        {% translate 'Save' %}
                                                     </button>
                                                 </div>
                                                 <div class="d-block d-lg-none col-12">
                                                     <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                        href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                                        href="{% url 'home' %}">{% translate 'Back' %}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,7 +135,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="eventCancelModalLabel">{% translate 'Termin absagen' %}</h1>
+                <h1 class="modal-title fs-5" id="eventCancelModalLabel">{% translate 'Cancel appointment' %}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" action="{% url 'event_per_id_cancel' event_id=event.id %}">
@@ -140,10 +148,10 @@
                     <div class="row justify-content-sm-end gx-2" style="width: 100%;">
                         <div class="col-6 col-sm-4">
                             <button type="button" class="btn btn-outline-secondary" style="width: 100%;"
-                                data-bs-dismiss="modal">{% translate 'Abbrechen' %}</button>
+                                data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
                         </div>
                         <div class="col-6 col-sm-4">
-                            <input type="submit" class="btn btn-outline-danger" value="{% translate 'Termin absagen' %}"
+                            <input type="submit" class="btn btn-outline-danger" value="{% translate 'Cancel appointment' %}"
                                 style="width: 100%;" />
                         </div>
                     </div>

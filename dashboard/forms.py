@@ -106,10 +106,10 @@ class BookForm(forms.Form):
             all_students += [str(student.id) for student in self.inquiry.students.all()]
         elif self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", _("Eine der markierten Schüler*innen muss ausgewählt sein.")
+                "necessary_student", _("One of the marked students must be selected.")
             )
         if len(all_students) == 0:
-            raise ValidationError(_("Mindestens eine Schüler*in muss ausgewählt sein."))
+            raise ValidationError(_("At least one student must be selected."))
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -206,10 +206,10 @@ class EditEventForm(forms.Form):
 
         if self.instance.lead_status == 2 and len(necessary_student) == 0:
             self.add_error(
-                "necessary_student", _("Eine der markierten Schüler*innen muss ausgewählt sein.")
+                "necessary_student", _("One of the marked students must be selected.")
             )
         if len(all_students) == 0:
-            raise ValidationError(_("Mindestens eine Schüler*in muss ausgewählt sein."))
+            raise ValidationError(_("At least one student must be selected."))
         cleaned_data["all_students"] = all_students
         return cleaned_data
 
@@ -238,7 +238,7 @@ class AdminEventForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit("submit", _("Speichern")))
+        self.helper.add_input(Submit("submit", _("Save")))
 
 
 class AdminEventCreationFormulaForm(forms.Form):
@@ -251,14 +251,15 @@ class AdminEventCreationFormulaForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
 
-        self.helper.add_input(Submit("submit", _("Speichern")))
+        self.helper.add_input(Submit("submit", _("Save")))
 
 
 class cancelEventForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea,
         max_length=4000,
-        help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."),
+        help_text=_("The text must not be longer than 4000 characters."),
+        label=_("Reason for cancellation:")
     )
 
 
@@ -283,15 +284,15 @@ class EventCreationForm(forms.BaseInlineFormSet):
         lead_inquiry_start = cleaned_data.get("lead_inquiry_start")
         if start > end:
             self.add_error(
-                "end", _("Der Endzeitpunkt muss später sein als der Startzeitpunkt."))
+                "end", _("The end time must be later than the start time."))
         if lead_start > start:
             self.add_error(
-                "lead_start", _("Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen.")
+                "lead_start", _("The start time of the booking phase must be before the start of the appointments.")
             )
         if lead_start > lead_inquiry_start:
             self.add_error(
                 "lead_inquiry_start",
-                _("Der Startzeitpunkt für die Phase zum Beantworten von Anfragen muss vor dem Startzeitpunkt der Buchungsphase liegen.")
+                _("The starting time of answering enquiries must be before the start time of the booking phase.")
             )
         return cleaned_data
 
