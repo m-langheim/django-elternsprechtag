@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail, BadHeaderError
 from django.template.loader import render_to_string
@@ -657,3 +658,8 @@ class TeacherRegistrationView(View):
         else:
             messages.error(request, "Dieser Link ist ungültig.")
             return redirect("login")
+    
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect("login")

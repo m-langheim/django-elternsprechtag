@@ -1,8 +1,0 @@
-{% extends "authentication/base.html" %}
-{% load i18n %}
-
-{% block title %} {% translate 'Logout' %} {% endblock title %}
-
-{% block content %}
-<p>{% translate 'You are logged out now.' %} </p><a href="{% url 'login' %}">{% translate 'Login again!' %}</a>
-{% endblock content %}

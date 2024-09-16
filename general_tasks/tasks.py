@@ -13,6 +13,7 @@ from dashboard.models import (
     SiteSettings,
     Announcements,
     EventChangeFormula,
+    BaseEventGroup,
 )
 from authentication.models import StudentChange
 from django.db.models import Q
@@ -20,6 +21,8 @@ from django.db.models import Q
 from .utils import EventPDFExport
 
 from django.utils import timezone
+
+from dashboard.utils import check_parent_book_event_allowed
 
 logger = logging.getLogger(__name__)
 
@@ -109,9 +112,25 @@ def look_for_open_inquiries():
         except CustomUser.DoesNotExist:
             print("Error")
         else:
-            res_inquiries = Inquiry.objects.filter(
-                Q(processed=False), Q(type=0), Q(respondent=respondent)
+            res_inquiries_queryset = Inquiry.objects.filter(
+                Q(processed=False),
+                Q(type=0),
+                Q(respondent=respondent),
+                Q(
+                    base_event__in=BaseEventGroup.objects.filter(
+                        valid_until__gte=timezone.now()
+                    )
+                ),
             )
+
+            res_inquiries = [
+                inquiry
+                for inquiry in res_inquiries_queryset
+                if check_parent_book_event_allowed(
+                    parent=inquiry.respondent, teacher=inquiry.requester
+                )
+            ]
+
             async_send_mail.delay(
                 "Offene Anfragen",
                 render_to_string(
@@ -189,3 +208,15 @@ def dayly_cleanup_task():
             - SiteSettings.objects.first().keep_event_change_formulas
         )
         past_event_change_formulas.delete()
+
+
+@shared_task(bind=True)
+def update_event_lead_status(self, *args, **kwargs):
+    events = Event.objects.filter(
+        Q(disable_automatic_changes=False),
+        Q(start__lte=timezone.now()),
+        Q(lead_manual_override=False),
+    )
+
+    for event in events:
+        event.update_event_lead_status()

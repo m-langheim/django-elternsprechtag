@@ -3,6 +3,7 @@ from django_tables2.utils import Accessor
 from authentication.models import Student, StudentChange, CustomUser
 from dashboard.models import Event, EventChangeFormula
 from django.utils.html import format_html
+from django.template.loader import render_to_string
 
 
 class StudentExtrainformaionColumn(tables.Column):
@@ -66,6 +67,18 @@ class StudentChangeTable(tables.Table):
     )
 
 
+class FormularActionsColumn(tables.Column):
+    def render(self, value):
+        # formular = EventChangeFormula.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/formular_actions_column.html",
+                {"formular_id": value},
+            )
+        )
+
+
 class EventFormularActionTable(tables.Table):
     class Meta:
         model = EventChangeFormula
@@ -77,20 +90,22 @@ class EventFormularActionTable(tables.Table):
             "end_time",
         )
 
-    approve = tables.LinkColumn(
-        "administrative_event_formular_approve_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Approve",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
-    )
-    disapprove = tables.LinkColumn(
-        "administrative_event_formular_disapprove_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Disapprove",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
-    )
+    # approve = tables.LinkColumn(
+    #     "administrative_event_formular_approve_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="Approve",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+    # disapprove = tables.LinkColumn(
+    #     "administrative_event_formular_disapprove_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="Disapprove",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+
+    actions = FormularActionsColumn(accessor="pk", orderable=False)
 
 
 class EventFormularUpcommingTable(tables.Table):
@@ -160,15 +175,60 @@ class TeachersTable(tables.Table):
     )
 
 
+class EventExtraInformationColumn(tables.Column):
+    def render(self, value):
+        event = Event.objects.get(pk=value)
+
+        column_text = ""
+
+        if not event.lead_status == 0:
+            match event.status:
+                case 1:
+                    column_text += "<i class='fa-solid fa-circle-xmark'></i>"
+                case 2:
+                    column_text += "<i class='fa-solid fa-file-contract'></i>"
+            match event.lead_status:
+                case 1:
+                    column_text += "<i class='fa-solid fa-notes-medical'></i>"
+                case 2:
+                    column_text += "<i class='fa-solid fa-code-pull-request'></i>"
+        else:
+            column_text += "<i class='fa-solid fa-lock text-danger'></i>"
+        return format_html(column_text)
+
+
+class FormularActionsColumn(tables.Column):
+    def render(self, value):
+        # formular = EventChangeFormula.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/event_list_actions_column.html",
+                {"event_id": value},
+            )
+        )
+
+
 class Eventstable(tables.Table):
     class Meta:
         model = Event
-        fields = ("teacher.teacherextradata.acronym", "start", "status")
+        fields = ("teacher", "start", "day_group.base_event")
 
-    block = tables.LinkColumn(
-        "administrative_event_block_view",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Block",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # block = tables.LinkColumn(
+    #     "administrative_event_block_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="Block",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+    # view = tables.LinkColumn(
+    #     "administrative_event_detail_view",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="View",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+    actions = FormularActionsColumn(
+        accessor="id", orderable=False, verbose_name="Actions"
     )
+    info = EventExtraInformationColumn(accessor="pk", orderable=False)

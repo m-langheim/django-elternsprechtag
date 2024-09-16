@@ -1,25 +1,31 @@
 from dataclasses import field
 from django import forms
 from django.db.models import Q
-from dashboard.models import Student, Event, EventChangeFormula
+from dashboard.models import Student, Event, EventChangeFormula, BaseEventGroup
 from authentication.models import CustomUser, Tag, TeacherExtraData
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import PasswordChangeForm
-
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 
 class createInquiryForm(forms.Form):
+    base_event = forms.ModelChoiceField(
+        queryset=BaseEventGroup.objects.filter(valid_until__gte=timezone.now()),
+        label="",
+    )
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
     parent = forms.ModelChoiceField(
         queryset=CustomUser.objects.filter(role=0), disabled=True
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
+                             help_text=_("The text must not be longer than 4000 characters."))
 
     def __init__(self, *args, **kwargs):
         super(createInquiryForm, self).__init__(*args, **kwargs)
         self.fields["reason"].label = False
+        self.initial["base_event"] = BaseEventGroup.objects.filter(lead_start__gte=timezone.now()).order_by('lead_start').first()
 
 
 class editInquiryForm(forms.Form):
@@ -30,7 +36,8 @@ class editInquiryForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False
     )
-    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000)
+    reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
+                             help_text=_("The text must not be longer than 4000 characters."))
 
     def __init__(self, *args, **kwargs):
         super(editInquiryForm, self).__init__(*args, **kwargs)
@@ -50,7 +57,7 @@ class changePasswordForm(PasswordChangeForm):
 class cancelEventForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea,
-        label=_("Explanation why you dismiss the event."),
+        label=_("Explanation why you dismiss the event:"),
         max_length=4000,
     )
     book_other_event = forms.BooleanField(
