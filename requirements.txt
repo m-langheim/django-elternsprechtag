@@ -15,12 +15,14 @@ click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
+coverage==7.6.1
 crispy-bootstrap5==2024.2
 cron-descriptor==1.4.3
 cryptography==42.0.8
 cssselect2==0.7.0
 Deprecated==1.2.14
 Django==5.0.6
+django-appconf==1.0.6
 django-backup-utils==0.2.7
 django-celery-beat==2.6.0
 django-colorfield==0.11.0
@@ -28,9 +30,12 @@ django-cors-headers==4.4.0
 django-crispy-forms==2.2
 django-dbbackup==4.1.0
 django-filter==24.2
+django-redis==5.4.0
 django-storages==1.14.3
 django-tables2==2.7.0
 django-timezone-field==6.1.0
+factory_boy==3.3.1
+Faker==28.0.0
 gunicorn==22.0.0
 html5lib==1.1
 idna==3.7
@@ -77,4 +82,3 @@ wcwidth==0.2.13
 webencodings==0.5.1
 wrapt==1.16.0
 xhtml2pdf==0.2.16
-mysqlclient
