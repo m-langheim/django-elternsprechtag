@@ -13,8 +13,8 @@
             <!-- Events-Titel -->
             <div class="row p-1">
                 <div class="col col-8">
-                    <p class="h1">{% translate 'Termine' %}</p>
-                    <p class="text-muted">{% translate 'Hier werden alle gebuchten Termine aufgeführt.' %}</p>
+                    <p class="h1">{% translate 'Appointments' %}</p>
+                    <p class="text-muted">{% translate 'All booked appointments are listed here.' %}</p>
                 </div>
                 <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
                     <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center"
@@ -63,7 +63,7 @@
                                     </span>
                                     <span class="right">
                                         {% if event.status == 2 %}
-                                        <i class="fa-regular fa-clock fs-5" title="{% translate 'Eine Bestätigung des Termins durch die Lehrkraft steht noch aus.' %}"></i>
+                                        <i class="fa-regular fa-clock fs-5" title="{% translate 'A confirmation of the appointment by the teacher is still pending.' %}"></i>
                                         {% endif %}
                                     </span>
 
@@ -81,22 +81,22 @@
                                 aria-labelledby="event-accordion-heading-{{ event.id }}"
                                 data-bs-parent="#event-accordion">
                                 <div class="accordion-body">
-                                    <strong>{% translate 'Startzeit:' %} </strong>{{event.start|time}}
+                                    <strong>{% translate 'Starting time:' %} </strong>{{event.start|time}}
                                     ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})
                                     <br />
-                                    <strong>{% translate 'Lehrkraft:' %} </strong>
+                                    <strong>{% translate 'Teacher:' %} </strong>
                                     {{ event.teacher.first_name }} {{ event.teacher.last_name }}<br />
-                                    <strong>{% translate 'Schüler*innen:' %} </strong>
+                                    <strong>{% translate 'Students:' %} </strong>
                                     {% for student in event.student.all %}
                                     {{student.first_name}} {{student.last_name}}
                                     {% if student != event.student.last %}, {% endif %}
                                     {% endfor %}
                                     <br />
-                                    <strong>{% translate 'Bestätigung:' %} </strong>
+                                    <strong>{% translate 'Confirmation:' %} </strong>
                                     {% if event.status == 2 %}
-                                    {% translate 'ausstehend' %}
+                                    {% translate 'pending' %}
                                     {% else %}
-                                    {% translate 'bestätigt' %}
+                                    {% translate 'confirmed' %}
                                     {% endif %}
 
                                     <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
@@ -117,8 +117,8 @@
 
             <!-- Das Elternteil hat noch keine Events gebucht -->
             <div class="container">
-                <p class="h1">{% translate 'Termine' %}</p>
-                <p class="text-muted">{% translate 'Sie haben bisher noch keinen Termin gebucht.' %}</p>
+                <p class="h1">{% translate 'Appointments' %}</p>
+                <p class="text-muted">{% translate 'You have not booked an appointment yet.' %}</p>
             </div>
             {% endif %}
         </div>
@@ -128,8 +128,8 @@
     <div class="col-12 col-md-4">
         <div class="h-auto d-grid gap-3">
             <div class="container">
-                <p class="h1">{% translate 'Anfragen' %}</p>
-                <p class="text-muted">{% translate 'Folgende Lehrkräfte haben einen Termin mit Ihnen angefragt.' %}</p>
+                <p class="h1">{% translate 'Inquiries' %}</p>
+                <p class="text-muted">{% translate 'The following teachers have requested an appointment with you.' %}</p>
             </div>
 
             {% if inquiries|length > 0 %}
@@ -146,7 +146,7 @@
                             </span>
                             <span class="right">
                                 {% if not inquiry.inquiry.processed %}
-                                <i class="fa-regular fa-clock fs-5" title="{% translate 'Sie müssen die Anfrage noch beantworten.' %}"></i>
+                                <i class="fa-regular fa-clock fs-5" title="{% translate 'You still need to answer the request.' %}"></i>
                                 {% endif %}
                             </span>
 
@@ -164,9 +164,9 @@
                         aria-labelledby="inquiry-accordion-heading-{{ inquiry.inquiry.id }}"
                         data-bs-parent="#inquiry-accordion">
                         <div class="accordion-body">
-                            <strong>{% translate 'Schüler*in:' %} </strong>{{ inquiry.inquiry.students.first }} <br />
-                            <strong>{% translate 'Grund:' %} </strong> {{ inquiry.inquiry.reason }}<br />
-                            <strong>{% translate 'Termin:' %} </strong>
+                            <strong>{% translate 'Student:' %} </strong>{{ inquiry.inquiry.students.first }} <br />
+                            <strong>{% translate 'Reason:' %} </strong> {{ inquiry.inquiry.reason }}<br />
+                            <strong>{% translate 'Date:' %} </strong>
                             {% if inquiry.inquiry.event != null %}
                             {{inquiry.inquiry.event.start | time}}
                             ({{inquiry.inquiry.event.start.date.day}}.{{inquiry.inquiry.event.start.date.month}}.{{inquiry.inquiry.event.start.date.year}})
@@ -175,7 +175,7 @@
                             {% endif %}
                             <div class="d-grid gap-2 d-md-flex justify-content-sm-end">
                                 <a class="btn btn-outline-danger col-12 col-xxl-3 col-lg-4 col-md-5 mt-2" role="button"
-                                    href="{{ inquiry.url }}">{% translate 'Ansehen' %}</a>
+                                    href="{{ inquiry.url }}">{% translate 'View' %}</a>
                             </div>
                         </div>
                     </div>
@@ -185,16 +185,16 @@
             {% else %}
             <div class="card m-1">
                 <div class="card-body">
-                    <p class="h5 card-title">{% translate 'Keine Anfragen' %}</p>
-                    <p class="card-text">{% translate 'Bisher hat keine Lehrkraft bei Ihnen einen Termin angefragt.' %}</p>
+                    <p class="h5 card-title">{% translate 'No inquiries' %}</p>
+                    <p class="card-text">{% translate 'No teacher has made an appointment with you yet.' %}</p>
                 </div>
             </div>
             {% endif %}
 
             <!-- Ab hier geht es um Mitteilungen -->
             <div class="container">
-                <p class="h1">{% translate 'Mitteilungen' %}</p>
-                <p class="text-muted">{% translate 'Hier finden Sie Ihre letzten Mitteilungen.' %}</p>
+                <p class="h1">{% translate 'Notifications' %}</p>
+                <p class="text-muted">{% translate 'Here you will find your latest notifications.' %}</p>
             </div>
             {% if announcements|length > 0 %}
             <div class="accordion" id="announcement-accordion">
@@ -225,7 +225,7 @@
                             {{announcement.encodedID}} -->
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a class="btn btn-outline-secondary col-3" role="button"
-                                    href="{% url 'mark_annuncement_read' announcement.encodedID %}">{% translate 'Gelesen' %}</a>
+                                    href="{% url 'mark_annuncement_read' announcement.encodedID %}">{% translate 'Read' %}</a>
                                 <!-- Link mus noch angepasst werden! -->
                                 {% if announcement.action_link %}
 
@@ -241,15 +241,15 @@
             {% if announcements.all|length > 5 %}
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <a class="btn btn-outline-danger" role="button" href="{% url ' announcements' %}">
-                    {% translate 'Weitere Mitteilungen' %}
+                    {% translate 'Further notifications' %}
                 </a>
             </div>
             {% endif %}
             {% else %}
             <div class="card m-1">
                 <div class="card-body">
-                    <p class="h5 card-title">{% translate 'Keine Mitteilungen' %}</p>
-                    <p class="card-text">{% translate 'Sie haben keine neuen Mitteilungen.' %}</p>
+                    <p class="h5 card-title">{% translate 'No notifications' %}</p>
+                    <p class="card-text">{% translate 'You don't have any new notifications.' %}</p>
                 </div>
             </div>
             {% endif %}

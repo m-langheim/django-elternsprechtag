@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
+{% block title %} {% translate 'Appointment view' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_teacher_view_event' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_teacher_view_event' %} {% endblock %}
@@ -13,50 +13,50 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <p class="h1">{% translate 'Termin' %}</p>
-                        <p class="text-secondary">{% translate 'Detailansicht des Termins' %}</p>
+                        <p class="h1">{% translate 'Appointment' %}</p>
+                        <p class="text-secondary">{% translate 'Detailed view of the appointment' %}</p>
 
                         <li class="list-group-item">
                             <div class="container mb-4">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <!-- <div class="mb-4"> -->
-                                        <strong>{% translate 'Startzeit:' %} </strong>{{event.start|time}}
+                                        <strong>{% translate 'Starting time:' %} </strong>{{event.start|time}}
                                         ({{event.start.date.day}}.{{event.start.date.month}}.{{event.start.date.year}})<br />
 
-                                        <strong>{% translate 'Zeitfenster:' %} </strong>{{event.start|time}} Uhr -
+                                        <strong>{% translate 'Time slot:' %} </strong>{{event.start|time}} Uhr -
                                         {{event.end|time}} Uhr<br />
 
-                                        <strong>{% translate 'Terminwunsch:' %} </strong>
+                                        <strong>{% translate 'Appointment request:' %} </strong>
                                         {% if inquiry|length > 0 %}
-                                        {% translate 'Lehrkraft' %}
+                                        {% translate 'Teacher' %}
                                         {% else %}
-                                        {% translate 'Eltern' %}
+                                        {% translate 'Parent' %}
                                         {% endif %}
                                         <br />
 
                                         {% if inquiry|length > 0 %}
                                         {% if inquiry.first.reason %}
-                                        <strong>{% translate 'Begründung:' %} </strong>{{ inquiry.first.reason }}
+                                        <strong>{% translate 'Reason:' %} </strong>{{ inquiry.first.reason }}
                                         <br />
                                         {% endif %}
                                         {% endif %}
 
-                                        <strong>{% translate 'Schüler*innen:' %} </strong>
+                                        <strong>{% translate 'Students:' %} </strong>
                                         {% for stu in event.student.all %}
                                         {{ stu.first_name }} {{ stu.last_name }}
                                         {% if stu != event.student.all.last %}, {% endif %}
                                         {% endfor %}
                                         <br />
 
-                                        <strong>{% translate 'Elternteil:' %} </strong>
+                                        <strong>{% translate 'Parent:' %} </strong>
                                         {{ event.parent.first_name }} {{event.parent.last_name }}<br />
 
-                                        <strong>{% translate 'Bestätigung:' %} </strong>
+                                        <strong>{% translate 'Confirmation:' %} </strong>
                                         {% if event.status == 2 %}
-                                        {% translate 'ausstehend' %}
+                                        {% translate 'pending' %}
                                         {% else %}
-                                        {% translate 'bestätigt' %}
+                                        {% translate 'confirmed' %}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -69,14 +69,14 @@
                                     <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
                                         <button type="button" class="btn btn-outline-danger mb-2 me-2"
                                             data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                            {% translate 'Termin ablehnen' %}
+                                            {% translate 'Decline appointment' %}
                                         </button>
                                     </div>
                                     {% else %}
                                     <div class="d-grid col-6 {% if event.status != 2 %} col-sm-12 {% endif %}">
                                         <button type="button" class="btn btn-outline-danger mb-2 me-2"
                                             data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                            {% translate 'Termin absagen' %}
+                                            {% translate 'Cancel appointment' %}
                                         </button>
                                     </div>
                                     {% endif %}
@@ -85,39 +85,39 @@
                                     <div class="d-grid col-6">
                                         <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal"
                                             data-bs-target="#eventModal{{event.id}}">
-                                            {% translate 'Termin bestätigen' %}
+                                            {% translate 'Confirm appointment' %}
                                         </button>
                                     </div>
                                     {% endif %}
                                 </div>
                                 <div class="d-flex d-md-none col-12">
                                     <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                        href="{% url 'home' %}">{%
-                                        translate 'Zurück' %}</a>
+                                        href="{% url 'home' %}">
+                                        {% translate 'Back' %}</a>
                                 </div>
                             </div>
                             <div class="d-none d-md-flex row">
                                 <div class="d-none d-md-flex col">
                                     <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2"
-                                        href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                        href="{% url 'home' %}">{% translate 'Back' %}</a>
                                 </div>
                                 <div class="d-none d-md-flex col justify-content-end">
                                     {% if event.status == 2 %}
                                     <button type="button" class="btn btn-outline-danger mt-2 me-2"
                                         data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                        {% translate 'Termin ablehnen' %}
+                                        {% translate 'Decline appointment' %}
                                     </button>
                                     {% else %}
                                     <button type="button" class="btn btn-outline-danger mt-2 me-2"
                                         data-bs-toggle="modal" data-bs-target="#eventCancelModal">
-                                        {% translate 'Termin absagen' %}
+                                        {% translate 'Cancel appointment' %}
                                     </button>
                                     {% endif %}
 
                                     {% if event.status == 2 %}
                                     <button type="button" class="btn btn-outline-danger mt-2" data-bs-toggle="modal"
                                         data-bs-target="#eventModal{{event.id}}">
-                                        {% translate 'Termin bestätigen' %}
+                                        {% translate 'Confirm appointment' %}
                                     </button>
                                     {% endif %}
                                 </div>
@@ -129,7 +129,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="eventCancelModalLabel">
-                                                {% translate 'Termin absagen' %}
+                                                {% translate 'Cancel appointment' %}
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -144,9 +144,9 @@
                                             <div class="modal-footer d-flex justify-content-between">
                                                 <button type="button" class="btn btn-outline-secondary"
                                                     data-bs-dismiss="modal">
-                                                    {% translate 'Abbrechen' %}</button>
+                                                    {% translate 'Cancel' %}</button>
                                                 <input type="submit" class="btn btn-outline-danger"
-                                                    value="{% translate 'Termin absagen' %}" />
+                                                    value="{% translate 'Cancel appointment' %}" />
                                             </div>
                                         </form>
                                     </div>
@@ -160,25 +160,25 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                {% translate 'Termin bestätigen' %}
+                                                {% translate 'Confirm appointment' %}
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            {% translate 'Ihnen wurde eine Anfrage von' %}
+                                            {% translate 'You have received a inquiry from' %}
                                             {{ event.parent.first_name }} {{ event.parent.last_name }} 
-                                            {% translate 'für den' %}
-                                            {{event.start | date}} {% translate 'um' %} {{event.start|time}} 
-                                            {% translate 'Uhr gestellt. Möchten Sie diesen Termin bestätigen?' %}
+                                            {% translate 'on' %}
+                                            {{event.start | date}} {% translate 'at' %} {{event.start|time}} 
+                                            {% translate '. Would you like to confirm this appointment?' %}
                                         </div>
                                         <div class="modal-footer d-flex justify-content-between">
                                             <button type="button" class="btn btn-outline-secondary"
                                                 data-bs-dismiss="modal">
-                                                {% translate 'Abbrechen' %}</button>
+                                                {% translate 'Cancel' %}</button>
                                             <a type="button" class="btn btn-outline-danger"
                                                 href="{% url 'teacher_confirm_event' event.id %}">
-                                                {% translate 'Termin annehmen' %}</a>
+                                                {% translate 'Accept appointment' %}</a>
                                         </div>
                                     </div>
                                 </div>

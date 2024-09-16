@@ -20,7 +20,7 @@ class createInquiryForm(forms.Form):
         queryset=CustomUser.objects.filter(role=0), disabled=True
     )
     reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
-                             help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."))
+                             help_text=_("The text must not be longer than 4000 characters."))
 
     def __init__(self, *args, **kwargs):
         super(createInquiryForm, self).__init__(*args, **kwargs)
@@ -37,7 +37,7 @@ class editInquiryForm(forms.Form):
         queryset=Event.objects.filter(Q(occupied=True)), disabled=True, required=False
     )
     reason = forms.CharField(widget=forms.Textarea, required=False, max_length=4000,
-                             help_text=_("Der Text darf nicht länger als 4000 Zeichen sein."))
+                             help_text=_("The text must not be longer than 4000 characters."))
 
     def __init__(self, *args, **kwargs):
         super(editInquiryForm, self).__init__(*args, **kwargs)

@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Anfrage' %} {% endblock title %}
+{% block title %} {% translate 'Inquiry' %} {% endblock title %}
 
 {% comment %} Dies wird zurzeit nur für eine Anzeige verwendet, in Zukunft soll hier auch die Terminbuchung bei nicht
 registrierten Schüler:innen möglich sein {% endcomment %}
@@ -16,13 +16,12 @@ registrierten Schüler:innen möglich sein {% endcomment %}
 			<div class="card" style="border-radius: 10px;">
 				<div class="card-body p-4">
 					<ul class="list-group list-group-flush">
-						<h1>{% translate 'Kein Elternteil verfügbar' %}</h1>
+						<h1>{% translate 'No parent defined!' %}</h1>
 						<p class="text-secondary">
-							{% translate 'Für ' %}
-							{{ student.first_name }} {{student.last_name}}
-							{% translate 'hat sich bisher kein Elternteil registriert. Treffen Sie daher bitte mit ' %}
-							{{student.first_name}}
-							{% translate 'persönliche eine Absprache über einen möglichen Termin.' %}
+							{% translate 'No parent has registered for' %} {{ student.first_name }} {{student.last_name}}
+                            {% translate ' yet. Therefore, please arrange a possible appointment with ' %}
+                            {{ student.first_name }}
+                            {% translate ' personally.' %}
 						</p>
 						<ul class="list-group list-group-flush">
 							<li class="list-group-item">
@@ -30,13 +29,13 @@ registrierten Schüler:innen möglich sein {% endcomment %}
 									<div class="row gy-1">
 										<div class="d-none d-lg-block col-lg-5 col-xl-6">
 											<a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-												href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+												href="{% url 'home' %}">{% translate 'Back' %}</a>
 										</div>
 										<div class="col-12 col-lg-7 col-xl-6 d-flex justify-content-end">
 											<div class="col-12 col-xl-8 row gx-1 gy-1">
 												<div class="d-block d-lg-none col-12">
 													<a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-														href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+														href="{% url 'home' %}">{% translate 'Back' %}</a>
 												</div>
 											</div>
 										</div>

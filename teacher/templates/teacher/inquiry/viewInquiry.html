@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Anfrage' %} {% endblock title %}
+{% block title %} {% translate 'Inquiry' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_view_inquiry' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_view_inquiry' %} {% endblock %}
@@ -13,19 +13,19 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h1>{% translate 'Anfrage' %}</h1>
-                        <p class="text-secondary">{% translate 'Bearbeiten Sie Ihre erstellte Anfrage.' %}
+                        <h1>{% translate 'Inquiry' %}</h1>
+                        <p class="text-secondary">{% translate 'Edit your created inquiry.' %}
                         </p>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            <strong>{% translate 'Schüler*in:' %} </strong>{{ student }}<br />
+                                            <strong>{% translate 'Student:' %} </strong>{{ student }}<br />
                                         </div>
 
                                         <div>
-                                            <strong>{% translate 'Elternteil:' %} </strong>
+                                            <strong>{% translate 'Parent:' %} </strong>
                                             {{ parent_first_name }}
                                             {{ parent_last_name }}<br />
                                         </div>
@@ -42,7 +42,7 @@
                                                 {% csrf_token %}
 
                                                 <div class="mb-2">
-                                                    <strong>{% translate 'Grund für die Anfrage:' %} </strong>
+                                                    <strong>{% translate 'Reason for the inquiry:' %} </strong>
                                                 </div>
 
                                                 <div>
@@ -57,24 +57,24 @@
                                         <div class="row gy-1">
                                             <div class="d-none d-lg-block col-lg-5 col-xl-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                                    href="{% url 'home' %}">{% translate 'Back' %}</a>
                                             </div>
                                             <div class="col-12 col-lg-7 col-xl-6 d-flex justify-content-end">
                                                 <div class="col-12 col-xl-8 row gx-1 gy-1">
                                                     <div class="col-6">
                                                         <button type="button" class="btn btn-outline-secondary col-12"
                                                             data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            {% translate 'Anfrage zurückziehen' %}
+                                                            {% translate 'Withdraw request' %}
                                                         </button>
                                                     </div>
                                                     <div class="col-6">
                                                         <input type="submit" class="btn btn-outline-danger col-12"
-                                                            value="{% translate 'Speichern' %}" />
+                                                            value="{% translate 'Save' %}" />
                                                     </div>
                                                     <div class="d-block d-lg-none col-12">
                                                         <a type="button"
                                                             class="btn btn-outline-secondary col-12 col-lg-3"
-                                                            href="{% url 'home' %}">{% translate 'Zurück' %}</a>
+                                                            href="{% url 'home' %}">{% translate 'Back' %}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -98,16 +98,16 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                {% translate 'Möchten Sie die Anfrage für ein Gespräch mit den Eltern von ' %}
+                                {% translate 'Would you like to withdraw the request for an appointment with the parents from ' %}
                                 {{student.first_name}} {{student.last_name}}
-                                {% translate ' zurückziehen?' %}
+                                {% translate '?' %}
                             </div>
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{%
-                                    translate 'Abbrechen' %}</button>
+                                    translate 'Cancel' %}</button>
                                 <a type="button" class="btn btn-outline-danger"
-                                    href="{% url 'teaher_delete_inquiry' f_inquiry_id %}">{% translate 'Anfrage
-                                    zurückziehen' %}</a>
+                                    href="{% url 'teaher_delete_inquiry' f_inquiry_id %}">
+                                    {% translate 'Withdraw request' %}</a>
                             </div>
                         </div>
                     </div>

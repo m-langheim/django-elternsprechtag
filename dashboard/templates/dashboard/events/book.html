@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block title %} {% translate 'Terminansicht' %} {% endblock title %}
+{% block title %} {% translate 'Appointment view' %} {% endblock title %}
 
 {% block help_url_smallscreen %} {% url 'wiki_book' %} {% endblock %}
 {% block help_url_bigscreen %} {% url 'wiki_book' %} {% endblock %}
@@ -14,24 +14,24 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h1>{% translate 'Termin' %}</h1>
-                        <p class="text-secondary">{% translate 'Detailansicht des Termins' %}</p>
+                        <h1>{% translate 'Appointment' %}</h1>
+                        <p class="text-secondary">{% translate 'Detailed view of the appointment' %}</p>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            <strong>{% translate 'Lehrkraft:' %} </strong>{{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            <strong>{% translate 'Datum:' %} </strong>{{ event.start|date }}
+                                            <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
                                         </div>
                                         <div>
-                                            <strong>{% translate 'Uhrzeit:' %} </strong>{{ event.start|time }} Uhr
+                                            <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            <strong>{% translate 'Raum:' %} </strong>{{ event.room }}
+                                            <strong>{% translate 'Room:' %} </strong>{{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -47,7 +47,7 @@
                                             <div class="col text-start">
                                                 
                                                 <div class="mb-2">
-                                                    <strong>{% translate 'Schüler*innen für das Gespräch auswählen:' %}</strong>
+                                                    <strong>{% translate 'Select students for the appointment:' %}</strong>
                                                 </div>
 
                                                 {% if inquiry %}
@@ -80,7 +80,7 @@
 
                                                     {% if book_form.errors %}
                                                     <div class="mt-2 mb-2 text-danger">
-                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Wählen Sie mindestens eine der markierten Schüler*innen aus.' %} {% else %} {% translate 'Wählen Sie mindestens eine Schüler*in aus.' %} {% endif %}</div>
+                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Select at least one of the marked students.' %} {% else %} {% translate 'Select at least one student.' %} {% endif %}</div>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -92,11 +92,11 @@
                                         <div class="row gy-1">
                                             <div class="col-12 col-md-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{{ back_url }}">{% translate 'Zurück' %}</a>
+                                                    href="{{ back_url }}">{% translate 'Back' %}</a>
                                             </div>
                                             <div class="col-12 col-md-6 d-flex justify-content-end">
                                                     <button type="submit"
-                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Buchen' %}</button>
+                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Request' %}</button>
                                             </div>
                                         </div>
                                     </div>
