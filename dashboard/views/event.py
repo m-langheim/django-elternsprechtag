@@ -249,10 +249,10 @@ class InquiryView(View):
             messages.info(
                 request,
                 _(
-                    "You have already answered the request and do not need to do anything else."
+                    "You have already answered the request and here is the event you chose."
                 ),
             )
-            return redirect("home")
+            return redirect("event_per_id", event_id=inquiry.event.id)
 
         print(
             DayEventGroup.objects.filter(base_event=inquiry.base_event),

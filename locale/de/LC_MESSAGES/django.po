@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-17 01:00+0200\n"
+"POT-Creation-Date: 2024-09-17 02:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -271,15 +271,15 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: dashboard/forms.py:109 dashboard/forms.py:209
+#: dashboard/forms.py:118 dashboard/forms.py:225
 msgid "One of the marked students must be selected."
 msgstr "Eine der markierten Schüler*innen muss ausgewählt sein."
 
-#: dashboard/forms.py:112 dashboard/forms.py:212
+#: dashboard/forms.py:121 dashboard/forms.py:228
 msgid "At least one student must be selected."
 msgstr "Mindestens eine Schüler*in muss ausgewählt sein."
 
-#: dashboard/forms.py:241 dashboard/forms.py:254
+#: dashboard/forms.py:257 dashboard/forms.py:270
 #: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
 #: profile_settings/templates/profile_settings/change_password.html:23
@@ -288,26 +288,26 @@ msgstr "Mindestens eine Schüler*in muss ausgewählt sein."
 msgid "Save"
 msgstr "Speichern"
 
-#: dashboard/forms.py:261 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:277 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr "Der Text darf nicht länger als 4000 Zeichen sein."
 
-#: dashboard/forms.py:262
+#: dashboard/forms.py:278
 msgid "Reason for cancellation:"
 msgstr "Grund für die Absage:"
 
-#: dashboard/forms.py:287
+#: dashboard/forms.py:302
 msgid "The end time must be later than the start time."
 msgstr "Der Endzeitpunkt muss später sein als der Startzeitpunkt."
 
-#: dashboard/forms.py:290
+#: dashboard/forms.py:307
 msgid ""
 "The start time of the booking phase must be before the start of the "
 "appointments."
 msgstr ""
 "Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen."
 
-#: dashboard/forms.py:295
+#: dashboard/forms.py:314
 msgid ""
 "The starting time of answering enquiries must be before the start time of "
 "the booking phase."
@@ -955,12 +955,12 @@ msgstr "Termin buchen"
 msgid "No results found!"
 msgstr "Keine Suchergebnisse gefunden!"
 
-#: dashboard/utils.py:50
+#: dashboard/utils.py:51
 msgid "The function requires a parent, but the user is not a parent."
 msgstr ""
 "Die Funktion erfordert ein Elternteil, aber der User ist kein Elternteil."
 
-#: dashboard/utils.py:92
+#: dashboard/utils.py:95
 msgid "Either the teacher or the date must be given as an attribute."
 msgstr "Entweder die Lehrkraft oder der Termin muss als Attribut gegeben sein."
 
@@ -972,17 +972,17 @@ msgstr "Alle Benachrichtigungen wurden als gelesen markiert."
 msgid "No settings were found for this page."
 msgstr "Es wurden keine Einstellungen für diese Seite gefunden."
 
-#: dashboard/views/event.py:98 dashboard/views/event.py:160
+#: dashboard/views/event.py:100 dashboard/views/event.py:164
 msgid "You may not book this appointment. Please select another date."
 msgstr ""
 "Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin "
 "aus."
 
-#: dashboard/views/event.py:119 dashboard/views/event.py:183
+#: dashboard/views/event.py:121 dashboard/views/event.py:187
 msgid "The specified request could not be found."
 msgstr "Die angegebene Anfrage konnte leider nicht gefunden werden."
 
-#: dashboard/views/event.py:135 dashboard/views/event.py:289
+#: dashboard/views/event.py:138 dashboard/views/event.py:308
 msgid ""
 "This date is currently limited in its availability. Therefore, please select "
 "at least one of the marked students for booking."
@@ -990,14 +990,12 @@ msgstr ""
 "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie "
 "daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
 
-#: dashboard/views/event.py:247
-msgid ""
-"You have already answered the request and do not need to do anything else."
+#: dashboard/views/event.py:252
+msgid "You have already answered the request and here is the event you chose."
 msgstr ""
-"Sie haben die Anfrage schon beantwortet und müssen nichts weiteres mehr "
-"machen."
+"Sie haben die Anfrage schon beantwortet. Dies ist der Termin, den Sie gewählt haben."
 
-#: dashboard/views/event.py:387
+#: dashboard/views/event.py:408
 msgid "The appointment was successfully canceled."
 msgstr "Der Termin wurde erfolgreich abgesagt."
 
@@ -1223,13 +1221,17 @@ msgstr "Kein zukünftiger Elternsprechtag"
 
 #: teacher/templates/teacher/error/base_event_needed.html:5
 msgid "There have to be upcomming events but there arent"
-msgstr "Es muss ein Elternsprechtag in der Zukunft erstellt sein, dies ist jedoch nicht der Fall."
+msgstr ""
+"Es muss ein Elternsprechtag in der Zukunft erstellt sein, dies ist jedoch "
+"nicht der Fall."
 
 #: teacher/templates/teacher/error/base_event_needed.html:7
 msgid ""
 "The next parents´ consultion day was not yet created. There for you are "
 "currently unable to create an inquiry for it."
-msgstr "Der nächste Elternsprechtag wurde noch nicht erstellt. Aus diesem Grund ist diese Funktion zur Zeit nicht verfügbar."
+msgstr ""
+"Der nächste Elternsprechtag wurde noch nicht erstellt. Aus diesem Grund ist "
+"diese Funktion zur Zeit nicht verfügbar."
 
 #: teacher/templates/teacher/event/detailEvent.html:27
 msgid "Time slot:"

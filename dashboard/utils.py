@@ -8,6 +8,7 @@ from .models import (
 )
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 PERSONAL_EVENT_STATUS = (
     (0, "Event bookable"),
@@ -46,7 +47,9 @@ def check_parent_book_event_allowed(
 ):
     if parent.role != 0:
         raise ValueError(
-            _("The function requires a parent, but the user is not a parent.") #The provided user is not a parent. This function requires a parent user!
+            _(
+                "The function requires a parent, but the user is not a parent."
+            )  # The provided user is not a parent. This function requires a parent user!
         )
 
     if event:
@@ -88,7 +91,9 @@ def check_parent_book_event_allowed(
         )
         return events.exists()
     else:
-        raise ValueError(_("Either the teacher or the date must be given as an attribute.")) #One of the attributes teacher or event must be set.
+        raise ValueError(
+            _("Either the teacher or the date must be given as an attribute.")
+        )  # One of the attributes teacher or event must be set.
 
 
 def check_event_bookable(parent: CustomUser, event: Event):

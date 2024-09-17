@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-17 01:00+0200\n"
+"POT-Creation-Date: 2024-09-17 02:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -267,15 +267,15 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: dashboard/forms.py:109 dashboard/forms.py:209
+#: dashboard/forms.py:118 dashboard/forms.py:225
 msgid "One of the marked students must be selected."
 msgstr ""
 
-#: dashboard/forms.py:112 dashboard/forms.py:212
+#: dashboard/forms.py:121 dashboard/forms.py:228
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:241 dashboard/forms.py:254
+#: dashboard/forms.py:257 dashboard/forms.py:270
 #: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
 #: profile_settings/templates/profile_settings/change_password.html:23
@@ -284,25 +284,25 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: dashboard/forms.py:261 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:277 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
 
-#: dashboard/forms.py:262
+#: dashboard/forms.py:278
 msgid "Reason for cancellation:"
 msgstr ""
 
-#: dashboard/forms.py:287
+#: dashboard/forms.py:302
 msgid "The end time must be later than the start time."
 msgstr ""
 
-#: dashboard/forms.py:290
+#: dashboard/forms.py:307
 msgid ""
 "The start time of the booking phase must be before the start of the "
 "appointments."
 msgstr ""
 
-#: dashboard/forms.py:295
+#: dashboard/forms.py:314
 msgid ""
 "The starting time of answering enquiries must be before the start time of "
 "the booking phase."
@@ -936,11 +936,11 @@ msgstr ""
 msgid "No results found!"
 msgstr ""
 
-#: dashboard/utils.py:50
+#: dashboard/utils.py:51
 msgid "The function requires a parent, but the user is not a parent."
 msgstr ""
 
-#: dashboard/utils.py:92
+#: dashboard/utils.py:95
 msgid "Either the teacher or the date must be given as an attribute."
 msgstr ""
 
@@ -952,26 +952,25 @@ msgstr ""
 msgid "No settings were found for this page."
 msgstr ""
 
-#: dashboard/views/event.py:98 dashboard/views/event.py:160
+#: dashboard/views/event.py:100 dashboard/views/event.py:164
 msgid "You may not book this appointment. Please select another date."
 msgstr ""
 
-#: dashboard/views/event.py:119 dashboard/views/event.py:183
+#: dashboard/views/event.py:121 dashboard/views/event.py:187
 msgid "The specified request could not be found."
 msgstr ""
 
-#: dashboard/views/event.py:135 dashboard/views/event.py:289
+#: dashboard/views/event.py:138 dashboard/views/event.py:308
 msgid ""
 "This date is currently limited in its availability. Therefore, please select "
 "at least one of the marked students for booking."
 msgstr ""
 
-#: dashboard/views/event.py:247
-msgid ""
-"You have already answered the request and do not need to do anything else."
+#: dashboard/views/event.py:252
+msgid "You have already answered the request and here is the event you chose."
 msgstr ""
 
-#: dashboard/views/event.py:387
+#: dashboard/views/event.py:408
 msgid "The appointment was successfully canceled."
 msgstr ""
 
