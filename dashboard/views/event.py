@@ -53,7 +53,9 @@ def bookEventTeacherList(request, teacher_id):
         request.user, create_event_date_dict(events)
     )
 
-    personal_booked_events = events.filter(Q(occupied=True), Q(parent=request.user)).order_by("start")
+    personal_booked_events = events.filter(
+        Q(occupied=True), Q(parent=request.user)
+    ).order_by("start")
 
     tags = TeacherExtraData.objects.get(teacher=teacher).tags.all().order_by("name")
 
@@ -132,7 +134,9 @@ class bookEventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                _("This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking.")
+                _(
+                    "This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking."
+                ),
             )
         return render(
             request,
@@ -244,7 +248,9 @@ class InquiryView(View):
         if inquiry.processed:  # Die Anfrage wurde bereits bearbeitet
             messages.info(
                 request,
-                _("You have already answered the request and do not need to do anything else."),
+                _(
+                    "You have already answered the request and do not need to do anything else."
+                ),
             )
             return redirect("home")
 
@@ -286,7 +292,9 @@ class EventView(View):
         if event.lead_status == 2:
             messages.info(
                 request,
-                _("This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking.")
+                _(
+                    "This date is currently limited in its availability. Therefore, please select at least one of the marked students for booking."
+                ),
             )
         return render(
             request,
@@ -300,7 +308,9 @@ class EventView(View):
         )
 
     def post(self, request, event_id):
-        event = get_object_or_404(Event, id=event_id, parent=request.user)
+        event = get_object_or_404(
+            Event, id=event_id, parent=request.user, occupied=True
+        )
 
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
@@ -320,11 +330,10 @@ class EventView(View):
                 students.append(model_student)
             # ? validation of students needed or given through the form
             # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
-            check_inquiry_reopen(request.user, event.teacher)
-            event.parent = request.user
-            event.status = 2
+            if event.student.all != students:
+                event.status = 2
+                check_inquiry_reopen(parent=request.user, teacher=event.teacher)
             event.student.set(students)
-            event.occupied = True
             event.save()
             messages.success(request, "Geändert")
 

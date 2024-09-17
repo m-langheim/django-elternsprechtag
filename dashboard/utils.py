@@ -26,7 +26,6 @@ def check_inquiry_reopen(parent: CustomUser, teacher: CustomUser):
         if inquiry.students not in Event.objects.filter(
             Q(teacher=teacher), Q(parent=parent), Q(occupied=True)
         ).values_list("student", flat=True):
-            print("Inquiry wieder geöffnet")
             inquiry.processed = False
             inquiry.event = None
             inquiry.save()
