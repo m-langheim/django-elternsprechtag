@@ -11,18 +11,24 @@
         </div>
       </div>
     {% endif %}
+    <form method="POST" action="{% url 'administrative_reset_password_witk_link' pk=parent.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-danger mt-2" type="submit">
+            Reset password
+        </button>
+    </form>
     <form method="POST">
         {{ form | crispy }}
         {% csrf_token %}
 
         <div class="row">
             <div class="col d-flex">
-                <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Abbrechen</a>
+                <a class="btn btn-outline-secondary mt-2" href="{% url 'parents_table' %}">Abbrechen</a>
             </div>
             <div class="col d-flex justify-content-end">
                 <button class="btn btn-outline-danger mt-2" type="submit">
                     Save
-                </a>
+                </button>
             </div>
         </div>
     </form>

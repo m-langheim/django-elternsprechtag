@@ -3,6 +3,12 @@
 {% block control_content %}
 
 <div class="card card-body p-4">
+    <form method="POST" action="{% url 'administrative_reset_password_witk_link' pk=teacher.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-danger mt-2" type="submit">
+            Reset password
+        </button>
+    </form>
     <form method="POST">
         {{ form | crispy }}
         {% csrf_token %}

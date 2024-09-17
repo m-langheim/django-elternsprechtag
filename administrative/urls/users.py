@@ -35,4 +35,9 @@ urlpatterns = [
         TeacherEditView.as_view(),
         name="teachers_edit_view",
     ),
+    path(
+        "<pk>/reset_password/",
+        ResetPasswordWithLink.as_view(),
+        name="administrative_reset_password_witk_link",
+    ),
 ]

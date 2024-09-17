@@ -125,7 +125,7 @@ class TeacherEditView(View):
             return render(
                 request,
                 "administrative/users/teachers/teacher_edit.html",
-                {"form": teacher_form},
+                {"form": teacher_form, "teacher": teacher},
             )
 
     def post(self, request, pk):
@@ -162,7 +162,7 @@ class TeacherEditView(View):
             return render(
                 request,
                 "administrative/users/teachers/teacher_edit.html",
-                {"form": teacher_form},
+                {"form": teacher_form, "teacher": teacher},
             )
 
 
@@ -212,3 +212,66 @@ class TeacherImportView(View):
             "administrative/users/teachers/teacher_import.html",
             {"form": form},
         )
+
+
+class ResetPasswordWithLink(View):
+    def post(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk)
+        print(user, request.user)
+        if user == request.user or user.is_superuser:
+            messages.error(
+                request,
+                "You can not use this button on your account or any administrative account.",
+            )  # ? Sollte ein Administratort die Möglichkeit haben, sein Passwort per Mail zurück zu setzen?
+            match user.role:
+                case 0:
+                    return redirect("parent_edit_view", user.pk)
+                case 1:
+                    return redirect("teachers_edit_view", user.pk)
+        user.set_unusable_password()
+        email_subject = "Reset password"
+        email_str_body = render_to_string(
+            "authentication/email/password_reset/password_reset_email.txt",
+            {
+                "user": user,
+                "url": str(os.environ.get("PUBLIC_URL"))
+                + reverse(
+                    "password_reset_confirm",
+                    kwargs={
+                        "uidb64": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "token": default_token_generator.make_token(user),
+                    },
+                ),
+            },
+        )
+        email_html_body = render_to_string(
+            "authentication/email/password_reset/password_reset_email.html",
+            {
+                "user": user,
+                "current_site": os.environ.get("PUBLIC_URL"),
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": default_token_generator.make_token(user),
+                "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+            },
+        )  #! Dies wird derzeit nicht benutzt
+
+        # async_send_mail.delay(
+        #     email_subject,
+        #     email_str_body,
+        #     user.email,
+        #     email_html_body=email_html_body,
+        # )
+
+        async_send_mail.delay(
+            email_subject,
+            email_str_body,
+            user.email,
+        )  #! Hier wird keine HTML versendet!
+        messages.success(
+            request, "The password reset mail was successfully send to the user."
+        )
+        match user.role:
+            case 0:
+                return redirect("parent_edit_view", user.pk)
+            case 1:
+                return redirect("teachers_edit_view", user.pk)
