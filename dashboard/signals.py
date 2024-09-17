@@ -260,19 +260,15 @@ def updateLeadDatesBaseEvent(sender, instance, *args, **kwargs):
             current.force = False
             current.save()
 
-        if (
-            previouse.lead_start != current.lead_start
-            or previouse.lead_inquiry_start != current.lead_inquiry_start
-        ):
+        if current.manual_apply:
             for day_event_group in day_event_groups:
                 day_event_group.lead_start = instance.lead_start
                 day_event_group.lead_inquiry_start = instance.lead_inquiry_start
-                day_event_group.save()
-
-        if current.manual_apply:
-            for day_event_group in day_event_groups:
                 day_event_group.lead_status = current.lead_status
                 day_event_group.manual_apply = True
+                day_event_group.disable_automatic_changes = (
+                    current.disable_automatic_changes
+                )
                 day_event_group.save()
 
             current.manual_apply = False
@@ -296,17 +292,10 @@ def updateLeadDatesDayEventGroups(sender, instance, *args, **kwargs):
             current.force = False
             current.save()
 
-        if (
-            previouse.lead_start != current.lead_start
-            or previouse.lead_inquiry_start != current.lead_inquiry_start
-        ):
+        if current.manual_apply:
             for teacher_event_group in teacher_event_groups:
                 teacher_event_group.lead_start = instance.lead_start
                 teacher_event_group.lead_inquiry_start = instance.lead_inquiry_start
-                teacher_event_group.save()
-
-        if current.manual_apply:
-            for teacher_event_group in teacher_event_groups:
                 teacher_event_group.lead_status = current.lead_status
                 teacher_event_group.manual_apply = True
                 teacher_event_group.disable_automatic_changes = (
@@ -315,8 +304,8 @@ def updateLeadDatesDayEventGroups(sender, instance, *args, **kwargs):
                 teacher_event_group.lead_manual_override = False
                 teacher_event_group.save()
 
-                current.manual_apply = False
-                current.save()
+            current.manual_apply = False
+            current.save()
 
 
 @receiver(pre_save, sender=TeacherEventGroup)
