@@ -389,6 +389,7 @@ class CreateInquiryView(View):
                     respondent=form.cleaned_data["parent"],
                     reason=form.cleaned_data["reason"],
                     type=0,
+                    base_event=form.cleaned_data["base_event"],
                 )
                 inquiry.students.set([form.cleaned_data["student"]])
                 inquiry.save()

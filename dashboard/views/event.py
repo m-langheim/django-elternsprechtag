@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from authentication.models import CustomUser, TeacherExtraData, Student, Tag
-from ..models import Event, Inquiry, SiteSettings, Announcements
+from ..models import Event, Inquiry, SiteSettings, Announcements, DayEventGroup
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
@@ -254,7 +254,19 @@ class InquiryView(View):
             )
             return redirect("home")
 
-        events = Event.objects.filter(Q(teacher=inquiry.requester))
+        print(
+            DayEventGroup.objects.filter(base_event=inquiry.base_event),
+            inquiry.base_event,
+        )
+
+        events = Event.objects.filter(
+            Q(teacher=inquiry.requester),
+            Q(
+                day_group__in=DayEventGroup.objects.filter(
+                    base_event=inquiry.base_event
+                )
+            ),
+        )
 
         events_dt_dict = event_date_dict_add_book_information(
             request.user, create_event_date_dict(events)

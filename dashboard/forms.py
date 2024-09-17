@@ -17,6 +17,8 @@ from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
+from .models import *
+
 
 class StudentSelector(forms.CheckboxSelectMultiple):
     def __init__(self, *args, **kwargs):
@@ -35,7 +37,7 @@ class BookForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         self.inquiry: Inquiry = kwargs.pop("inquiry", None)
-        self.instance = kwargs.pop("instance")
+        self.instance: Event = kwargs.pop("instance")
         super(BookForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper(self)
@@ -49,7 +51,14 @@ class BookForm(forms.Form):
 
         # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
         students_with_event = Event.objects.filter(
-            Q(teacher=teacher), Q(occupied=True), Q(parent=self.request.user)
+            Q(teacher=teacher),
+            Q(occupied=True),
+            Q(parent=self.request.user),
+            Q(
+                day_group__in=DayEventGroup.objects.filter(
+                    base_event=self.instance.get_base_event()
+                )
+            ),
         ).values_list("student", flat=True)
 
         active_choices = [
@@ -146,7 +155,14 @@ class EditEventForm(forms.Form):
         # Hier wird jetzt gefiltert, ob noch ein Schüler:in offen ist, bei der noch kein Termin für diesen Lehrer eingetragen ist
         students_with_event = (
             Event.objects.filter(
-                Q(teacher=teacher), Q(occupied=True), Q(parent=self.request.user)
+                Q(teacher=teacher),
+                Q(occupied=True),
+                Q(parent=self.request.user),
+                Q(
+                    day_group__in=DayEventGroup.objects.filter(
+                        base_event=self.instance.get_base_event()
+                    )
+                ),
             )
             .exclude(id=self.instance.id)
             .values_list("student", flat=True)
@@ -259,7 +275,7 @@ class cancelEventForm(forms.Form):
         widget=forms.Textarea,
         max_length=4000,
         help_text=_("The text must not be longer than 4000 characters."),
-        label=_("Reason for cancellation:")
+        label=_("Reason for cancellation:"),
     )
 
 
@@ -283,16 +299,20 @@ class EventCreationForm(forms.BaseInlineFormSet):
         lead_start = cleaned_data.get("lead_start")
         lead_inquiry_start = cleaned_data.get("lead_inquiry_start")
         if start > end:
-            self.add_error(
-                "end", _("The end time must be later than the start time."))
+            self.add_error("end", _("The end time must be later than the start time."))
         if lead_start > start:
             self.add_error(
-                "lead_start", _("The start time of the booking phase must be before the start of the appointments.")
+                "lead_start",
+                _(
+                    "The start time of the booking phase must be before the start of the appointments."
+                ),
             )
         if lead_start > lead_inquiry_start:
             self.add_error(
                 "lead_inquiry_start",
-                _("The starting time of answering enquiries must be before the start time of the booking phase.")
+                _(
+                    "The starting time of answering enquiries must be before the start time of the booking phase."
+                ),
             )
         return cleaned_data
 
