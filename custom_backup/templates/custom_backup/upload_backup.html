@@ -7,7 +7,8 @@
 {% block content %}
     <h1>Upload a Backup file</h1>
     <br/>
-    <form action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <form action="." method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         {{ form.as_p }}
         <br/>
         <button class="button" type="submit" style="background-color: green">Upload</button>

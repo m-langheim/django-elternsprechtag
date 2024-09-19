@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-19 02:28+0200\n"
+"POT-Creation-Date: 2024-09-19 04:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,84 @@ msgstr ""
 #: administrative/forms.py:43 authentication/models.py:21
 #: authentication/models.py:63
 msgid "Name of class"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:39
+#: administrative/templates/administrative/administrative_base.html:55
+#: dashboard/templates/dashboard/public_dashboard.html:3
+#: teacher/templates/teacher/dashboard.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:41
+#: administrative/templates/administrative/administrative_base.html:59
+#: administrative/templates/administrative/administrative_base.html:99
+#: authentication/models.py:103
+msgid "Users"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:43
+#: administrative/templates/administrative/administrative_base.html:62
+#: administrative/templates/administrative/administrative_base.html:103
+#: authentication/models.py:37 authentication/models.py:91
+#: profile_settings/templates/profile_settings/profile_layout.html:57
+#: profile_settings/templates/profile_settings/profile_layout.html:96
+#: profile_settings/templates/profile_settings/student_list.html:4
+#: profile_settings/templates/profile_settings/student_list.html:11
+msgid "Students"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:45
+#: administrative/templates/administrative/administrative_base.html:65
+#: administrative/templates/administrative/administrative_base.html:68
+#: administrative/templates/administrative/administrative_base.html:107
+#: administrative/templates/administrative/administrative_base.html:111
+#: dashboard/models.py:433
+msgid "Events"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:47
+#: administrative/templates/administrative/administrative_base.html:76
+#: administrative/templates/administrative/administrative_base.html:121
+msgid "Settings"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:49
+#: administrative/templates/administrative/administrative_base.html:79
+#: administrative/templates/administrative/administrative_base.html:125
+msgid "Backup"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:71
+#: administrative/templates/administrative/administrative_base.html:114
+msgid "Change formulars"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:85
+#: administrative/templates/administrative/administrative_base.html:132
+#: dashboard/templates/dashboard/announcements/announcements_list.html:67
+#: dashboard/templates/dashboard/announcements/announcements_list.html:77
+#: dashboard/templates/dashboard/events/book.html:105
+#: dashboard/templates/dashboard/events/view.html:101
+#: dashboard/templates/dashboard/events/view.html:119
+#: profile_settings/templates/profile_settings/profile_layout.html:52
+#: profile_settings/templates/profile_settings/profile_layout.html:63
+#: profile_settings/templates/profile_settings/profile_layout.html:90
+#: profile_settings/templates/profile_settings/profile_layout.html:103
+#: teacher/templates/teacher/event/detailEvent.html:96
+#: teacher/templates/teacher/event/detailEvent.html:102
+#: teacher/templates/teacher/inquiry/createInquiry.html:33
+#: teacher/templates/teacher/inquiry/createInquiry.html:40
+#: teacher/templates/teacher/inquiry/createInquiry.html:105
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:33
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:39
+#: teacher/templates/teacher/inquiry/viewInquiry.html:60
+#: teacher/templates/teacher/inquiry/viewInquiry.html:77
+msgid "Back"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:95
+msgid "Dashbaord"
 msgstr ""
 
 #: authentication/admin.py:67
@@ -76,14 +154,6 @@ msgstr ""
 msgid "Student"
 msgstr ""
 
-#: authentication/models.py:37 authentication/models.py:91
-#: profile_settings/templates/profile_settings/profile_layout.html:57
-#: profile_settings/templates/profile_settings/profile_layout.html:96
-#: profile_settings/templates/profile_settings/student_list.html:4
-#: profile_settings/templates/profile_settings/student_list.html:11
-msgid "Students"
-msgstr ""
-
 #: authentication/models.py:77
 #: teacher/templates/teacher/event/detailEvent.html:34
 msgid "Parent"
@@ -112,10 +182,6 @@ msgstr ""
 
 #: authentication/models.py:102
 msgid "User"
-msgstr ""
-
-#: authentication/models.py:103
-msgid "Users"
 msgstr ""
 
 #: authentication/models.py:116
@@ -267,15 +333,15 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: dashboard/forms.py:118 dashboard/forms.py:225
+#: dashboard/forms.py:121 dashboard/forms.py:228
 msgid "One of the marked students must be selected."
 msgstr ""
 
-#: dashboard/forms.py:121 dashboard/forms.py:228
+#: dashboard/forms.py:124 dashboard/forms.py:231
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:257 dashboard/forms.py:270
+#: dashboard/forms.py:260 dashboard/forms.py:273
 #: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
 #: profile_settings/templates/profile_settings/change_password.html:23
@@ -284,25 +350,25 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: dashboard/forms.py:277 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
 
-#: dashboard/forms.py:278
+#: dashboard/forms.py:281
 msgid "Reason for cancellation:"
 msgstr ""
 
-#: dashboard/forms.py:302
+#: dashboard/forms.py:305
 msgid "The end time must be later than the start time."
 msgstr ""
 
-#: dashboard/forms.py:307
+#: dashboard/forms.py:310
 msgid ""
 "The start time of the booking phase must be before the start of the "
 "appointments."
 msgstr ""
 
-#: dashboard/forms.py:314
+#: dashboard/forms.py:317
 msgid ""
 "The starting time of answering enquiries must be before the start time of "
 "the booking phase."
@@ -356,7 +422,7 @@ msgstr ""
 
 #: dashboard/models.py:244 dashboard/models.py:249
 #: dashboard/templates/dashboard/events/teacher.html:189
-#: dashboard/templates/dashboard/inquiry.html:162
+#: dashboard/templates/dashboard/inquiry.html:167
 msgid "Occupied"
 msgstr ""
 
@@ -386,10 +452,6 @@ msgstr ""
 
 #: dashboard/models.py:432
 msgid "Event"
-msgstr ""
-
-#: dashboard/models.py:433
-msgid "Events"
 msgstr ""
 
 #: dashboard/models.py:459
@@ -539,27 +601,6 @@ msgstr ""
 msgid "You don't have any new notifications."
 msgstr ""
 
-#: dashboard/templates/dashboard/announcements/announcements_list.html:67
-#: dashboard/templates/dashboard/announcements/announcements_list.html:77
-#: dashboard/templates/dashboard/events/book.html:103
-#: dashboard/templates/dashboard/events/view.html:101
-#: dashboard/templates/dashboard/events/view.html:119
-#: profile_settings/templates/profile_settings/profile_layout.html:52
-#: profile_settings/templates/profile_settings/profile_layout.html:63
-#: profile_settings/templates/profile_settings/profile_layout.html:90
-#: profile_settings/templates/profile_settings/profile_layout.html:103
-#: teacher/templates/teacher/event/detailEvent.html:96
-#: teacher/templates/teacher/event/detailEvent.html:102
-#: teacher/templates/teacher/inquiry/createInquiry.html:33
-#: teacher/templates/teacher/inquiry/createInquiry.html:40
-#: teacher/templates/teacher/inquiry/createInquiry.html:105
-#: teacher/templates/teacher/inquiry/noParentInquiry.html:33
-#: teacher/templates/teacher/inquiry/noParentInquiry.html:39
-#: teacher/templates/teacher/inquiry/viewInquiry.html:60
-#: teacher/templates/teacher/inquiry/viewInquiry.html:77
-msgid "Back"
-msgstr ""
-
 #: dashboard/templates/dashboard/announcements/announcements_list.html:73
 msgid "Mark all as read"
 msgstr ""
@@ -648,11 +689,11 @@ msgstr ""
 msgid "Appointment view"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:13
+#: dashboard/templates/dashboard/events/book.html:14
 msgid "Followup event"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:15
+#: dashboard/templates/dashboard/events/book.html:16
 #, python-format
 msgid ""
 "This event is a follow up event to another event you have booked. We "
@@ -660,58 +701,58 @@ msgid ""
 "between two events."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:25
+#: dashboard/templates/dashboard/events/book.html:27
 #: dashboard/templates/dashboard/events/view.html:17
 #: teacher/templates/teacher/event/detailEvent.html:16
 msgid "Appointment"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:26
+#: dashboard/templates/dashboard/events/book.html:28
 #: dashboard/templates/dashboard/events/view.html:18
 #: teacher/templates/teacher/event/detailEvent.html:17
 msgid "Detailed view of the appointment"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:32
+#: dashboard/templates/dashboard/events/book.html:34
 #: dashboard/templates/dashboard/events/view.html:24
 #: dashboard/templates/dashboard/public_dashboard.html:87
 msgid "Teacher:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:35
+#: dashboard/templates/dashboard/events/book.html:37
 #: dashboard/templates/dashboard/events/view.html:28
 #: dashboard/templates/dashboard/public_dashboard.html:169
 msgid "Date:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:38
+#: dashboard/templates/dashboard/events/book.html:40
 #: dashboard/templates/dashboard/events/view.html:31
 msgid "Time:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:42
+#: dashboard/templates/dashboard/events/book.html:44
 #: dashboard/templates/dashboard/events/view.html:35
 msgid "Room:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:58
+#: dashboard/templates/dashboard/events/book.html:60
 #: dashboard/templates/dashboard/events/view.html:49
 msgid "Select students for the appointment:"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:91
+#: dashboard/templates/dashboard/events/book.html:93
 #: dashboard/templates/dashboard/events/view.html:86
 msgid "Select at least one of the marked students."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:91
+#: dashboard/templates/dashboard/events/book.html:93
 #: dashboard/templates/dashboard/events/view.html:88
 msgid "Select at least one student."
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:107
+#: dashboard/templates/dashboard/events/book.html:109
 #: dashboard/templates/dashboard/events/teacher.html:183
-#: dashboard/templates/dashboard/inquiry.html:156
+#: dashboard/templates/dashboard/inquiry.html:161
 msgid "Request"
 msgstr ""
 
@@ -758,16 +799,17 @@ msgid ""
 msgstr ""
 
 #: dashboard/templates/dashboard/events/teacher.html:178
+#: dashboard/templates/dashboard/inquiry.html:156
 msgid "Followup"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/teacher.html:193
-#: dashboard/templates/dashboard/inquiry.html:166
+#: dashboard/templates/dashboard/inquiry.html:171
 msgid "Time conflict"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/teacher.html:197
-#: dashboard/templates/dashboard/inquiry.html:170
+#: dashboard/templates/dashboard/inquiry.html:175
 msgid "Blocked"
 msgstr ""
 
@@ -825,7 +867,7 @@ msgstr ""
 msgid "Please select one of the available appointments."
 msgstr ""
 
-#: dashboard/templates/dashboard/inquiry.html:189
+#: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
 #: dashboard/templates/dashboard/public_dashboard.html:120
@@ -834,15 +876,10 @@ msgstr ""
 msgid "Appointments"
 msgstr ""
 
-#: dashboard/templates/dashboard/inquiry.html:190
+#: dashboard/templates/dashboard/inquiry.html:195
 #: dashboard/templates/dashboard/inquiry_answered.html:93
 #: teacher/templates/teacher/dashboard.html:161
 msgid "You do not have any open appointments yet."
-msgstr ""
-
-#: dashboard/templates/dashboard/public_dashboard.html:3
-#: teacher/templates/teacher/dashboard.html:3
-msgid "Dashboard"
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:17
@@ -956,41 +993,37 @@ msgstr ""
 msgid "No results found!"
 msgstr ""
 
-#: dashboard/utils.py:72
+#: dashboard/utils.py:51
 msgid "The function requires a parent, but the user is not a parent."
 msgstr ""
 
-#: dashboard/utils.py:116
-msgid "Either the teacher or the date must be given as an attribute."
-msgstr ""
-
-#: dashboard/views/announcements.py:59
+#: dashboard/views/announcements.py:57
 msgid "All notifications have been marked as read."
 msgstr ""
 
-#: dashboard/views/dashboard.py:218
+#: dashboard/views/dashboard.py:216
 msgid "No settings were found for this page."
 msgstr ""
 
-#: dashboard/views/event.py:102 dashboard/views/event.py:173
+#: dashboard/views/event.py:98 dashboard/views/event.py:168
 msgid "You may not book this appointment. Please select another date."
 msgstr ""
 
-#: dashboard/views/event.py:128 dashboard/views/event.py:196
+#: dashboard/views/event.py:124 dashboard/views/event.py:196
 msgid "The specified request could not be found."
 msgstr ""
 
-#: dashboard/views/event.py:145 dashboard/views/event.py:317
+#: dashboard/views/event.py:141 dashboard/views/event.py:319
 msgid ""
 "This date is currently limited in its availability. Therefore, please select "
 "at least one of the marked students for booking."
 msgstr ""
 
-#: dashboard/views/event.py:261
+#: dashboard/views/event.py:268
 msgid "You have already answered the request and here is the event you chose."
 msgstr ""
 
-#: dashboard/views/event.py:417
+#: dashboard/views/event.py:421
 msgid "The appointment was successfully canceled."
 msgstr ""
 

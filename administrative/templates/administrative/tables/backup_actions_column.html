@@ -1,0 +1,12 @@
+<div class="row gx-1 gy-1" style="min-width=200px;">
+    <div class="col-6">
+        <a href={% url 'download_backup' pk=pk %} class="btn btn-outline-secondary col-12">
+            Download
+        </a>
+    </div>
+    <div class="col-6">
+        <a href={% url 'restore_backup' pk=pk %} class="btn btn-outline-danger col-12">
+            Restore
+        </a>
+    </div>
+</div>

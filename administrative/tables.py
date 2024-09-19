@@ -4,6 +4,7 @@ from authentication.models import Student, StudentChange, CustomUser
 from dashboard.models import Event, EventChangeFormula
 from django.utils.html import format_html
 from django.template.loader import render_to_string
+from custom_backup.models import *
 
 
 class StudentExtrainformaionColumn(tables.Column):
@@ -232,3 +233,30 @@ class Eventstable(tables.Table):
         accessor="id", orderable=False, verbose_name="Actions"
     )
     info = EventExtraInformationColumn(accessor="pk", orderable=False)
+
+
+class BackupActionsColumn(tables.Column):
+    def render(self, value):
+        # formular = EventChangeFormula.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/backup_actions_column.html",
+                {"pk": value},
+            )
+        )
+
+
+class BackupTable(tables.Table):
+    class Meta:
+        model = Backup
+        fields = (
+            "backup_type",
+            "backup_directories",
+            "size_bytes",
+            "created_at",
+        )
+
+    actions = BackupActionsColumn(
+        accessor="pk", orderable=False, verbose_name="Actions"
+    )

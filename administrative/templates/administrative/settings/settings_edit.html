@@ -7,7 +7,21 @@
 {% endif %}
 
 <div class="card card-body p-4">
-    {% crispy form %}
+    <form method="POST">
+        {{ form | crispy }}
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col d-flex">
+                <a class="btn btn-outline-secondary mt-2" href="{% url 'student_details_view' pk=student.pk %}">Abbrechen</a>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button class="btn btn-outline-danger mt-2" type="submit">
+                    Save
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 
 {% endblock %}

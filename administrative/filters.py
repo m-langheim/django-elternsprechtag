@@ -5,6 +5,7 @@ from crispy_forms.layout import Submit
 from dashboard.models import BaseEventGroup, Event
 from django.utils import timezone
 from django import forms
+from custom_backup.models import *
 
 
 class EventFilter(django_filters.FilterSet):
@@ -28,3 +29,9 @@ class EventFilter(django_filters.FilterSet):
 class EventFilterFormHelper(FormHelper):
     form_method = "GET"
     layout = ("teacher", "start", Submit("submit", "Filter"))
+
+
+class BackupFilter(django_filters.FilterSet):
+    class Meta:
+        model = Backup
+        fields = ["backup_type"]

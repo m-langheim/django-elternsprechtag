@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-19 02:28+0200\n"
+"POT-Creation-Date: 2024-09-19 04:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,86 @@ msgstr "Email des Kindes"
 #: authentication/models.py:63
 msgid "Name of class"
 msgstr "Klasse"
+
+#: administrative/templates/administrative/administrative_base.html:39
+#: administrative/templates/administrative/administrative_base.html:55
+#: dashboard/templates/dashboard/public_dashboard.html:3
+#: teacher/templates/teacher/dashboard.html:3
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: administrative/templates/administrative/administrative_base.html:41
+#: administrative/templates/administrative/administrative_base.html:59
+#: administrative/templates/administrative/administrative_base.html:99
+#: authentication/models.py:103
+msgid "Users"
+msgstr "Benutzer"
+
+#: administrative/templates/administrative/administrative_base.html:43
+#: administrative/templates/administrative/administrative_base.html:62
+#: administrative/templates/administrative/administrative_base.html:103
+#: authentication/models.py:37 authentication/models.py:91
+#: profile_settings/templates/profile_settings/profile_layout.html:57
+#: profile_settings/templates/profile_settings/profile_layout.html:96
+#: profile_settings/templates/profile_settings/student_list.html:4
+#: profile_settings/templates/profile_settings/student_list.html:11
+msgid "Students"
+msgstr "Schüler*innen"
+
+#: administrative/templates/administrative/administrative_base.html:45
+#: administrative/templates/administrative/administrative_base.html:65
+#: administrative/templates/administrative/administrative_base.html:68
+#: administrative/templates/administrative/administrative_base.html:107
+#: administrative/templates/administrative/administrative_base.html:111
+#: dashboard/models.py:433
+msgid "Events"
+msgstr "Termine"
+
+#: administrative/templates/administrative/administrative_base.html:47
+#: administrative/templates/administrative/administrative_base.html:76
+#: administrative/templates/administrative/administrative_base.html:121
+msgid "Settings"
+msgstr "Seiteneinstellungen"
+
+#: administrative/templates/administrative/administrative_base.html:49
+#: administrative/templates/administrative/administrative_base.html:79
+#: administrative/templates/administrative/administrative_base.html:125
+msgid "Backup"
+msgstr "Backup"
+
+#: administrative/templates/administrative/administrative_base.html:71
+#: administrative/templates/administrative/administrative_base.html:114
+msgid "Change formulars"
+msgstr "Änderungsanträge"
+
+#: administrative/templates/administrative/administrative_base.html:85
+#: administrative/templates/administrative/administrative_base.html:132
+#: dashboard/templates/dashboard/announcements/announcements_list.html:67
+#: dashboard/templates/dashboard/announcements/announcements_list.html:77
+#: dashboard/templates/dashboard/events/book.html:105
+#: dashboard/templates/dashboard/events/view.html:101
+#: dashboard/templates/dashboard/events/view.html:119
+#: profile_settings/templates/profile_settings/profile_layout.html:52
+#: profile_settings/templates/profile_settings/profile_layout.html:63
+#: profile_settings/templates/profile_settings/profile_layout.html:90
+#: profile_settings/templates/profile_settings/profile_layout.html:103
+#: teacher/templates/teacher/event/detailEvent.html:96
+#: teacher/templates/teacher/event/detailEvent.html:102
+#: teacher/templates/teacher/inquiry/createInquiry.html:33
+#: teacher/templates/teacher/inquiry/createInquiry.html:40
+#: teacher/templates/teacher/inquiry/createInquiry.html:105
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:33
+#: teacher/templates/teacher/inquiry/noParentInquiry.html:39
+#: teacher/templates/teacher/inquiry/viewInquiry.html:60
+#: teacher/templates/teacher/inquiry/viewInquiry.html:77
+msgid "Back"
+msgstr "Zurück"
+
+#: administrative/templates/administrative/administrative_base.html:95
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Dashbaord"
+msgstr "Dashboard"
 
 #: authentication/admin.py:67
 msgid "Permissions"
@@ -78,14 +158,6 @@ msgstr "Eltern des Kindes haben sich registriert."
 msgid "Student"
 msgstr "Schüler*in"
 
-#: authentication/models.py:37 authentication/models.py:91
-#: profile_settings/templates/profile_settings/profile_layout.html:57
-#: profile_settings/templates/profile_settings/profile_layout.html:96
-#: profile_settings/templates/profile_settings/student_list.html:4
-#: profile_settings/templates/profile_settings/student_list.html:11
-msgid "Students"
-msgstr "Schüler*innen"
-
 #: authentication/models.py:77
 #: teacher/templates/teacher/event/detailEvent.html:34
 msgid "Parent"
@@ -114,10 +186,6 @@ msgstr "Beitrittsdatum"
 
 #: authentication/models.py:102
 msgid "User"
-msgstr "User"
-
-#: authentication/models.py:103
-msgid "Users"
 msgstr "User"
 
 #: authentication/models.py:116
@@ -271,15 +339,15 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: dashboard/forms.py:118 dashboard/forms.py:225
+#: dashboard/forms.py:121 dashboard/forms.py:228
 msgid "One of the marked students must be selected."
 msgstr "Eine der markierten Schüler*innen muss ausgewählt sein."
 
-#: dashboard/forms.py:121 dashboard/forms.py:228
+#: dashboard/forms.py:124 dashboard/forms.py:231
 msgid "At least one student must be selected."
 msgstr "Mindestens eine Schüler*in muss ausgewählt sein."
 
-#: dashboard/forms.py:257 dashboard/forms.py:270
+#: dashboard/forms.py:260 dashboard/forms.py:273
 #: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
 #: profile_settings/templates/profile_settings/change_password.html:23
@@ -288,26 +356,26 @@ msgstr "Mindestens eine Schüler*in muss ausgewählt sein."
 msgid "Save"
 msgstr "Speichern"
 
-#: dashboard/forms.py:277 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr "Der Text darf nicht länger als 4000 Zeichen sein."
 
-#: dashboard/forms.py:278
+#: dashboard/forms.py:281
 msgid "Reason for cancellation:"
 msgstr "Grund für die Absage:"
 
-#: dashboard/forms.py:302
+#: dashboard/forms.py:305
 msgid "The end time must be later than the start time."
 msgstr "Der Endzeitpunkt muss später sein als der Startzeitpunkt."
 
-#: dashboard/forms.py:307
+#: dashboard/forms.py:310
 msgid ""
 "The start time of the booking phase must be before the start of the "
 "appointments."
 msgstr ""
 "Der Startzeitpunkt der Buchungsphase muss vor dem Start der Termine liegen."
 
-#: dashboard/forms.py:314
+#: dashboard/forms.py:317
 msgid ""
 "The starting time of answering enquiries must be before the start time of "
 "the booking phase."
@@ -370,7 +438,7 @@ msgstr "Frei"
 
 #: dashboard/models.py:244 dashboard/models.py:249
 #: dashboard/templates/dashboard/events/teacher.html:189
-#: dashboard/templates/dashboard/inquiry.html:162
+#: dashboard/templates/dashboard/inquiry.html:167
 msgid "Occupied"
 msgstr "Belegt"
 
@@ -401,10 +469,6 @@ msgstr " bis "
 #: dashboard/models.py:432
 msgid "Event"
 msgstr "Termin"
-
-#: dashboard/models.py:433
-msgid "Events"
-msgstr "Termine"
 
 #: dashboard/models.py:459
 msgid "Submit own time periods."
@@ -559,27 +623,6 @@ msgstr "Keine Benachrichtigungen"
 msgid "You don't have any new notifications."
 msgstr "Es gibt bei Ihnen bisher keine offenen Termine."
 
-#: dashboard/templates/dashboard/announcements/announcements_list.html:67
-#: dashboard/templates/dashboard/announcements/announcements_list.html:77
-#: dashboard/templates/dashboard/events/book.html:103
-#: dashboard/templates/dashboard/events/view.html:101
-#: dashboard/templates/dashboard/events/view.html:119
-#: profile_settings/templates/profile_settings/profile_layout.html:52
-#: profile_settings/templates/profile_settings/profile_layout.html:63
-#: profile_settings/templates/profile_settings/profile_layout.html:90
-#: profile_settings/templates/profile_settings/profile_layout.html:103
-#: teacher/templates/teacher/event/detailEvent.html:96
-#: teacher/templates/teacher/event/detailEvent.html:102
-#: teacher/templates/teacher/inquiry/createInquiry.html:33
-#: teacher/templates/teacher/inquiry/createInquiry.html:40
-#: teacher/templates/teacher/inquiry/createInquiry.html:105
-#: teacher/templates/teacher/inquiry/noParentInquiry.html:33
-#: teacher/templates/teacher/inquiry/noParentInquiry.html:39
-#: teacher/templates/teacher/inquiry/viewInquiry.html:60
-#: teacher/templates/teacher/inquiry/viewInquiry.html:77
-msgid "Back"
-msgstr "Zurück"
-
 #: dashboard/templates/dashboard/announcements/announcements_list.html:73
 msgid "Mark all as read"
 msgstr "Alle als gelesen markieren"
@@ -668,11 +711,12 @@ msgstr "Sie dürfen diesen Termin noch nicht anfragen."
 msgid "Appointment view"
 msgstr "Terminansicht"
 
-#: dashboard/templates/dashboard/events/book.html:13
+#: dashboard/templates/dashboard/events/book.html:14
 msgid "Followup event"
 msgstr "Folge Termin"
 
-#: dashboard/templates/dashboard/events/book.html:15
+#: dashboard/templates/dashboard/events/book.html:16
+#, python-format
 msgid ""
 "This event is a follow up event to another event you have booked. We "
 "recommend that you keep at least a seperation of %(seperation)s minutes "
@@ -682,58 +726,58 @@ msgstr ""
 "Gewährleistung eines reibungslosen Ablaufs empfehlen wir Ihnen einen "
 "Terminabstand von mindestens %(seperation)s Minuten."
 
-#: dashboard/templates/dashboard/events/book.html:25
+#: dashboard/templates/dashboard/events/book.html:27
 #: dashboard/templates/dashboard/events/view.html:17
 #: teacher/templates/teacher/event/detailEvent.html:16
 msgid "Appointment"
 msgstr "Termin"
 
-#: dashboard/templates/dashboard/events/book.html:26
+#: dashboard/templates/dashboard/events/book.html:28
 #: dashboard/templates/dashboard/events/view.html:18
 #: teacher/templates/teacher/event/detailEvent.html:17
 msgid "Detailed view of the appointment"
 msgstr "Detailansicht des Termins"
 
-#: dashboard/templates/dashboard/events/book.html:32
+#: dashboard/templates/dashboard/events/book.html:34
 #: dashboard/templates/dashboard/events/view.html:24
 #: dashboard/templates/dashboard/public_dashboard.html:87
 msgid "Teacher:"
 msgstr "Lehrkraft:"
 
-#: dashboard/templates/dashboard/events/book.html:35
+#: dashboard/templates/dashboard/events/book.html:37
 #: dashboard/templates/dashboard/events/view.html:28
 #: dashboard/templates/dashboard/public_dashboard.html:169
 msgid "Date:"
 msgstr "Datum:"
 
-#: dashboard/templates/dashboard/events/book.html:38
+#: dashboard/templates/dashboard/events/book.html:40
 #: dashboard/templates/dashboard/events/view.html:31
 msgid "Time:"
 msgstr "Uhrzeit:"
 
-#: dashboard/templates/dashboard/events/book.html:42
+#: dashboard/templates/dashboard/events/book.html:44
 #: dashboard/templates/dashboard/events/view.html:35
 msgid "Room:"
 msgstr "Raum:"
 
-#: dashboard/templates/dashboard/events/book.html:58
+#: dashboard/templates/dashboard/events/book.html:60
 #: dashboard/templates/dashboard/events/view.html:49
 msgid "Select students for the appointment:"
 msgstr "Schüler*innen für das Gespräch auswählen:"
 
-#: dashboard/templates/dashboard/events/book.html:91
+#: dashboard/templates/dashboard/events/book.html:93
 #: dashboard/templates/dashboard/events/view.html:86
 msgid "Select at least one of the marked students."
 msgstr "Wählen Sie mindestens eine der markierten Schüler*innen aus."
 
-#: dashboard/templates/dashboard/events/book.html:91
+#: dashboard/templates/dashboard/events/book.html:93
 #: dashboard/templates/dashboard/events/view.html:88
 msgid "Select at least one student."
 msgstr "Wählen Sie mindestens eine Schüler*in aus."
 
-#: dashboard/templates/dashboard/events/book.html:107
+#: dashboard/templates/dashboard/events/book.html:109
 #: dashboard/templates/dashboard/events/teacher.html:183
-#: dashboard/templates/dashboard/inquiry.html:156
+#: dashboard/templates/dashboard/inquiry.html:161
 msgid "Request"
 msgstr "Anfragen"
 
@@ -781,16 +825,17 @@ msgstr ""
 "Sie sind aktuell nicht berechtigt einen Termin bei diesem Lehrer zu buchen."
 
 #: dashboard/templates/dashboard/events/teacher.html:178
+#: dashboard/templates/dashboard/inquiry.html:156
 msgid "Followup"
 msgstr "Nachfolge"
 
 #: dashboard/templates/dashboard/events/teacher.html:193
-#: dashboard/templates/dashboard/inquiry.html:166
+#: dashboard/templates/dashboard/inquiry.html:171
 msgid "Time conflict"
 msgstr "Zeitkonflikt"
 
 #: dashboard/templates/dashboard/events/teacher.html:197
-#: dashboard/templates/dashboard/inquiry.html:170
+#: dashboard/templates/dashboard/inquiry.html:175
 msgid "Blocked"
 msgstr "Blockiert"
 
@@ -848,7 +893,7 @@ msgstr "Grund:"
 msgid "Please select one of the available appointments."
 msgstr "Bitte wählen Sie einen der verfügbaren Termine."
 
-#: dashboard/templates/dashboard/inquiry.html:189
+#: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
 #: dashboard/templates/dashboard/public_dashboard.html:120
@@ -857,16 +902,11 @@ msgstr "Bitte wählen Sie einen der verfügbaren Termine."
 msgid "Appointments"
 msgstr "Termine"
 
-#: dashboard/templates/dashboard/inquiry.html:190
+#: dashboard/templates/dashboard/inquiry.html:195
 #: dashboard/templates/dashboard/inquiry_answered.html:93
 #: teacher/templates/teacher/dashboard.html:161
 msgid "You do not have any open appointments yet."
 msgstr "Es gibt bei Ihnen bisher keine offenen Termine."
-
-#: dashboard/templates/dashboard/public_dashboard.html:3
-#: teacher/templates/teacher/dashboard.html:3
-msgid "Dashboard"
-msgstr "Dashboard"
 
 #: dashboard/templates/dashboard/public_dashboard.html:17
 #: teacher/templates/teacher/dashboard.html:34
@@ -979,34 +1019,30 @@ msgstr "Termin buchen"
 msgid "No results found!"
 msgstr "Keine Suchergebnisse gefunden!"
 
-#: dashboard/utils.py:72
+#: dashboard/utils.py:51
 msgid "The function requires a parent, but the user is not a parent."
 msgstr ""
 "Die Funktion erfordert ein Elternteil, aber der User ist kein Elternteil."
 
-#: dashboard/utils.py:116
-msgid "Either the teacher or the date must be given as an attribute."
-msgstr "Entweder die Lehrkraft oder der Termin muss als Attribut gegeben sein."
-
-#: dashboard/views/announcements.py:59
+#: dashboard/views/announcements.py:57
 msgid "All notifications have been marked as read."
 msgstr "Alle Benachrichtigungen wurden als gelesen markiert."
 
-#: dashboard/views/dashboard.py:218
+#: dashboard/views/dashboard.py:216
 msgid "No settings were found for this page."
 msgstr "Es wurden keine Einstellungen für diese Seite gefunden."
 
-#: dashboard/views/event.py:102 dashboard/views/event.py:173
+#: dashboard/views/event.py:98 dashboard/views/event.py:168
 msgid "You may not book this appointment. Please select another date."
 msgstr ""
 "Sie dürfen diesen Termin nicht buchen. Wählen Sie bitte einen anderen Termin "
 "aus."
 
-#: dashboard/views/event.py:128 dashboard/views/event.py:196
+#: dashboard/views/event.py:124 dashboard/views/event.py:196
 msgid "The specified request could not be found."
 msgstr "Die angegebene Anfrage konnte leider nicht gefunden werden."
 
-#: dashboard/views/event.py:145 dashboard/views/event.py:317
+#: dashboard/views/event.py:141 dashboard/views/event.py:319
 msgid ""
 "This date is currently limited in its availability. Therefore, please select "
 "at least one of the marked students for booking."
@@ -1014,13 +1050,13 @@ msgstr ""
 "Dieser Termin ist derzeit in seiner Verfügbarkeit eingeschränkt. Wählen Sie "
 "daher bitte mindestens eine der markierten Schüler*innen zur Buchung aus."
 
-#: dashboard/views/event.py:261
+#: dashboard/views/event.py:268
 msgid "You have already answered the request and here is the event you chose."
 msgstr ""
 "Sie haben die Anfrage schon beantwortet. Dies ist der Termin, den Sie "
 "gewählt haben."
 
-#: dashboard/views/event.py:417
+#: dashboard/views/event.py:421
 msgid "The appointment was successfully canceled."
 msgstr "Der Termin wurde erfolgreich abgesagt."
 
@@ -1354,3 +1390,7 @@ msgstr "Sie haben bereits eine Anfrage bekommen!"
 #: teacher/templates/teacher/studentList.html:61
 msgid "You already have an appointment with the parents of this child!"
 msgstr "Sie haben bereits ein Termin mit diesem Kind!"
+
+#~ msgid "Either the teacher or the date must be given as an attribute."
+#~ msgstr ""
+#~ "Entweder die Lehrkraft oder der Termin muss als Attribut gegeben sein."

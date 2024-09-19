@@ -1,5 +1,7 @@
 {% extends "dashboard/base.html" %}
 
+{% load i18n %}
+
 {% block title %} Administrative {% endblock title %}
 
 {% block content %}
@@ -10,6 +12,7 @@
 {% url 'administrative_users_view' as users_view %}
 {% url 'administrative_event_list_view' as event_view %}
 {% url 'administrative_settings' as settings_view %}
+{% url 'administrative_backup' as backup_view %}
 
 <script>
     function blur(event) {
@@ -33,48 +36,53 @@
             <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 data-bs-auto-close="true" aria-expanded="false" onclick="blur(this);">
                 {% if dashboard_url == request.get_full_path %}
-                Dashboard
+                {% translate 'Dashboard' %}
                 {% elif users_view in request.get_full_path %}
-                Users
+                {% translate 'Users' %}
                 {% elif student_list_view in request.get_full_path %}
-                Students
+                {% translate 'Students' %}
                 {% elif event_view in request.get_full_path %}
-                Events
+                {% translate 'Events' %}
                 {% elif settings_view in request.get_full_path %}
-                Settings
+                {% translate 'Settings' %}
+                {% elif backup_view in request.get_full_path %}
+                {% translate 'Backup' %}
                 {% endif %}
             </button>
             <ul class="dropdown-menu col-12">
                 <li>
                     <a class="dropdown-item" href="{% url 'administrative_dashboard' %}">
-                        Dashboard
+                        {% translate 'Dashboard' %}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'parents_table' %}">Users</a>
+                    <a class="dropdown-item" href="{% url 'parents_table' %}">{% translate 'Users' %}</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'student_list_view' %}">Students</a>
+                    <a class="dropdown-item" href="{% url 'student_list_view' %}">{% translate 'Students' %}</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">Events</a>
+                    <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                     <ul style="list-style-type: none;">
                         <li>
-                            <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">Events</a>
+                            <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">Change formulars</a>
+                            <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">{% translate 'Change formulars' %}</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'administrative_settings' %}">Settings</a>
+                    <a class="dropdown-item" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'administrative_backup' %}">{% translate 'Backup' %}</a>
                 </li>
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'home' %}">Zurück</a>
+                    <a class="dropdown-item" href="{% url 'home' %}">{% translate 'Back' %}</a>
                 </li>
             </ul>
         </div>
@@ -84,40 +92,44 @@
             role="tablist" aria-orientation="vertical" id="profilePageTabs">
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if request.get_full_path == dashboard_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_dashboard' %}">Dashbaord</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_dashboard' %}">{% translate 'Dashbaord' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if users_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'parents_table' %}">Users</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'parents_table' %}">{% translate 'Users' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if student_list_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'student_list_view' %}">Students</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'student_list_view' %}">{% translate 'Students' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if event_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">Events</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                     {% if event_view in request.get_full_path %}
                     <ul style="list-style-type: none;">
                         <li>
-                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">Events</a>
+                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                         </li>
                         <li>
-                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">Change formulars</a>
+                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">{% translate 'Change formulars' %}</a>
                         </li>
                     </ul>
                     {% endif %}
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if settings_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_settings' %}">Settings</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
+            </li>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if backup_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_backup' %}">{% translate 'Backup' %}</a>
             </li>
             <li>
                 <div class="dropdown-divider"></div>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'home' %}">Zurück</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'home' %}">{% translate 'Back' %}</a>
             </li>
         </ul>
     </div>

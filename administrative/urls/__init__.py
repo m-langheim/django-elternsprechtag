@@ -9,5 +9,6 @@ urlpatterns = [
     path("users/", include("administrative.urls.users")),
     path("students/", include("administrative.urls.students")),
     path("", include("administrative.urls.dashboard")),
+    path("backup/", include("administrative.urls.backup")),
     # path("", include("administrative.urls.urls")),
 ]
