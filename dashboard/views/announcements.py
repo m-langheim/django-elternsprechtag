@@ -24,8 +24,6 @@ from django.http import Http404
 from django.conf import settings
 import pytz
 
-from ..utils import check_inquiry_reopen, check_parent_book_event_allowed
-
 from general_tasks.utils import EventPDFExport
 import datetime
 from django.http import FileResponse

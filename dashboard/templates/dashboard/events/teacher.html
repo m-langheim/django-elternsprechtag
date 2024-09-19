@@ -172,6 +172,11 @@
                                                     href="{% url 'event_per_id' event.id %}">
                                                     {% translate 'Requested' %}
                                                 </a>
+                                            {% elif event.time_conflict_followup %}
+                                                <a type="button" class="btn btn-outline-danger col-12 col-md-6"
+                                                    href="{% url 'book_event_per_id' event.id %}">
+                                                    {% translate 'Followup' %}
+                                                </a>
                                             {% else %}
                                                 <a type="button" class="btn btn-outline-danger col-12 col-md-6"
                                                     href="{% url 'book_event_per_id' event.id %}">

@@ -104,8 +104,6 @@ def look_for_open_inquiries():
         if inquiry.respondent.id not in respondents_list:
             respondents_list.append(inquiry.respondent.id)
 
-    print(respondents_list)
-
     for respondent_id in respondents_list:
         try:
             respondent = CustomUser.objects.get(id=respondent_id)

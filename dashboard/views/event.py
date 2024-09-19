@@ -90,11 +90,9 @@ class bookEventView(View):
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 
-        parent_can_book_event = check_parent_book_event_allowed(
-            parent=request.user, event=event
-        )
+        bookable, reason = event.get_parent_event_individual_status(request.user)
 
-        if not parent_can_book_event:
+        if not bookable:
             messages.error(
                 request,
                 _("You may not book this appointment. Please select another date."),
@@ -103,6 +101,11 @@ class bookEventView(View):
                 "event_teacher_list",
                 urlsafe_base64_encode(force_bytes(event.teacher.id)),
             )
+
+        if reason == event.PersonalEventStatusChoices.TIME_CONFLICT_FOLLOWUP:
+            follow_up_event = True
+        else:
+            follow_up_event = False
 
         # Ab hier verändert, um Anfragen zu zu lassen
         inquiry_id_get = request.GET.get("inquiry")
@@ -146,6 +149,8 @@ class bookEventView(View):
                 "book_form": form,
                 "back_url": back_url,
                 "inquiry": inquiry,
+                "follow_up_event": follow_up_event,
+                "min_seperation": SiteSettings.objects.first().min_event_seperation,
             },
         )
 
@@ -155,10 +160,9 @@ class bookEventView(View):
         if event.occupied and event.parent != request.user:
             return render(request, "dashboard/events/occupied.html")
 
-        parent_can_book_event = check_parent_book_event_allowed(
-            parent=request.user, event=event
-        )
-        if not parent_can_book_event:
+        bookable, reason = event.get_parent_event_individual_status(request.user)
+
+        if not bookable:
             messages.error(
                 request,
                 _("You may not book this appointment. Please select another date."),
@@ -167,6 +171,11 @@ class bookEventView(View):
                 "event_teacher_list",
                 urlsafe_base64_encode(force_bytes(event.teacher.id)),
             )
+
+        if reason == event.PersonalEventStatusChoices.TIME_CONFLICT_FOLLOWUP:
+            follow_up_event = True
+        else:
+            follow_up_event = False
 
         # , initial={"choices": event.student}
         # form = BookForm(request.POST, instance=event, request=request)
@@ -198,7 +207,7 @@ class bookEventView(View):
             # Das event wurde nicht über eine Anfrage aufgerufen
             form = BookForm(request.POST, instance=event, request=request)
 
-        if form.is_valid() and parent_can_book_event:
+        if form.is_valid() and bookable:
             students = []
             for student in form.cleaned_data["all_students"]:
                 students.append(student)
@@ -227,7 +236,14 @@ class bookEventView(View):
         return render(
             request,
             "dashboard/events/book.html",
-            {"event": event, "book_form": form, "back_url": url, "inquiry": inquiry},
+            {
+                "event": event,
+                "book_form": form,
+                "back_url": url,
+                "inquiry": inquiry,
+                "follow_up_event": follow_up_event,
+                "min_seperation": SiteSettings.objects.first().min_event_seperation,
+            },
         )
 
 
@@ -253,11 +269,6 @@ class InquiryView(View):
                 ),
             )
             return redirect("event_per_id", event_id=inquiry.event.id)
-
-        print(
-            DayEventGroup.objects.filter(base_event=inquiry.base_event),
-            inquiry.base_event,
-        )
 
         events = Event.objects.filter(
             Q(teacher=inquiry.requester),
@@ -387,8 +398,6 @@ class CancelEventView(View):
                 message="%s %s hat einen Termin abgesagt und folgende Nachricht hinterlassen: \n %s"
                 % (request.user.first_name, request.user.last_name, message),
             )
-            # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
-            check_inquiry_reopen(request.user, event.teacher)
 
             # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
             inquiries = Inquiry.objects.filter(
@@ -405,6 +414,10 @@ class CancelEventView(View):
             event.occupied = False
             event.student.clear()
             event.save()
+
+            # Hier wird überprüft, ob es eine Anfrage gab, für die das bearbeitete Event zuständig war
+            check_inquiry_reopen(request.user, event.teacher)
+
             messages.success(request, _("The appointment was successfully canceled."))
             return redirect("home")
         return render(

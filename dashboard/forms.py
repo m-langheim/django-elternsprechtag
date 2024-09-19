@@ -74,7 +74,10 @@ class BookForm(forms.Form):
                 choices.remove(
                     [student.id, student.first_name + " " + student.last_name]
                 )
-                active_choices.remove(student.id)
+                try:
+                    active_choices.remove(student.id)
+                except:
+                    pass
                 self.fields["necessary_student"].widget = self.fields[
                     "necessary_student"
                 ].hidden_widget()

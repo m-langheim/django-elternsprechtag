@@ -19,29 +19,44 @@ class BaseEventGroup(models.Model):
         return timezone.now() + timezone.timedelta(days=7)
 
     lead_start = models.DateField(
-        default=timezone.now, help_text=_("Set a date from which all parents can request appointments.") #Specify when all parents can book events
+        default=timezone.now,
+        help_text=_(
+            "Set a date from which all parents can request appointments."
+        ),  # Specify when all parents can book events
     )
 
     lead_inquiry_start = models.DateField(
         default=timezone.now,
         help_text=_(
-            _("Determine when teachers' enquiries can be answered.") #Specify when parents with inquiries can start booking for corresponding events
+            _(
+                "Determine when teachers' enquiries can be answered."
+            )  # Specify when parents with inquiries can start booking for corresponding events
         ),
     )
 
     valid_until = models.DateField(default=get_default_valid_until)
 
     LEAD_STATUS_CHOICES = (
-        (0, _("Nobody can currently request this appointment..")), #No one is allowed to book this event
+        (
+            0,
+            _("Nobody can currently request this appointment.."),
+        ),  # No one is allowed to book this event
         (
             1,
-            _("Only parents with special authorisations can currently request this appointment."), #Only parents with special treatment are currently allowed to book this event.
+            _(
+                "Only parents with special authorisations can currently request this appointment."
+            ),  # Only parents with special treatment are currently allowed to book this event.
         ),
         (
             2,
-            _("Only parents who have received a request from the teacher can currently request this appointment."), #All parents who received an inquiry from this teacher are allowed to book this event.
+            _(
+                "Only parents who have received a request from the teacher can currently request this appointment."
+            ),  # All parents who received an inquiry from this teacher are allowed to book this event.
         ),
-        (3, _("All parents can request this appointment at the moment.")), #All parents are allowed to book this event.
+        (
+            3,
+            _("All parents can request this appointment at the moment."),
+        ),  # All parents are allowed to book this event.
     )
 
     lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
@@ -75,13 +90,14 @@ class DayEventGroup(models.Model):
     date = models.DateField(default=timezone.now)
 
     lead_start = models.DateField(
-        default=timezone.now, help_text=_("Set a date from which all parents can request appointments.")
+        default=timezone.now,
+        help_text=_("Set a date from which all parents can request appointments."),
     )
 
     lead_inquiry_start = models.DateField(
         default=timezone.now,
         help_text=_(
-            "Determine when teachers' enquiries can be answered." #Specify when parents with inquiries can start booking for corresponding events
+            "Determine when teachers' enquiries can be answered."  # Specify when parents with inquiries can start booking for corresponding events
         ),
     )
 
@@ -124,14 +140,13 @@ class TeacherEventGroup(models.Model):
     )
 
     lead_start = models.DateField(
-        default=timezone.now, help_text=_("Set a date from which all parents can request appointments.")
+        default=timezone.now,
+        help_text=_("Set a date from which all parents can request appointments."),
     )
 
     lead_inquiry_start = models.DateField(
         default=timezone.now,
-        help_text=_(
-            "Determine when teachers' enquiries can be answered."
-        ),
+        help_text=_("Determine when teachers' enquiries can be answered."),
     )
 
     lead_end_timedelta = models.DurationField(default=timezone.timedelta(hours=1))
@@ -193,6 +208,16 @@ class Event(models.Model):  # Termin
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
 
+    class LeadStatusChoices(models.IntegerChoices):
+        NOBODY = 0, _("Nobody can currently request this appointment.")
+        CONDITION = 1, _(
+            "Only parents with special authorisations can currently request this appointment."
+        )
+        INQUIRY = 2, _(
+            "Only parents who have received a request from the teacher can currently request this appointment."
+        )
+        ALL = 3, _("All parents can request this appointment at the moment.")
+
     LEAD_STATUS_CHOICES = (
         (0, "Nobody can currently request this appointment."),
         (
@@ -206,7 +231,7 @@ class Event(models.Model):  # Termin
         (3, "All parents can request this appointment at the moment."),
     )
 
-    lead_status = models.IntegerField(choices=LEAD_STATUS_CHOICES, default=1)
+    lead_status = models.IntegerField(choices=LeadStatusChoices, default=1)
 
     lead_status_last_change = models.DateTimeField(default=timezone.now)
 
@@ -214,14 +239,29 @@ class Event(models.Model):  # Termin
 
     disable_automatic_changes = models.BooleanField(default=False)
 
+    class StatusChoices(models.IntegerChoices):
+        UNOCCUPIED = 0, _("Unoccupied")
+        OCCUPIED = 1, _("Occupied")
+        INQUIRY = 2, _("Inquiry pending")
+
     STATUS_CHOICES = (
         (0, _("Unoccupied")),
         (1, _("Occupied")),
         (2, _("Inquiry pending")),
     )
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+
+    status = models.IntegerField(choices=StatusChoices, default=0)
 
     occupied = models.BooleanField(default=False)
+
+    class PersonalEventStatusChoices:
+        EVENT_BOOKABLE = 0, "Event bookable"
+        INQUIRY_PENDING = 1, "Inquiry pending"
+        BOOKED = 2, "Booked"
+        OCCUPIED = 3, "Occupied"
+        BLOCKED = 4, "Blocked"
+        TIME_CONFLICT = 5, "Time conflict"
+        TIME_CONFLICT_FOLLOWUP = 6, "Followup event"
 
     def get_event_lead_data(self):
         return self.teacher_event_group
@@ -291,7 +331,9 @@ class Event(models.Model):  # Termin
             bool: Describes wether or not the parent is able to book this specific event
         """
         if parent.role != 0:
-            raise ValueError(_("This user is not a parent.")) #The specified user is not a parent.
+            raise ValueError(
+                _("This user is not a parent.")
+            )  # The specified user is not a parent.
         if self.lead_status == 3:
             return True
         elif (
@@ -307,11 +349,83 @@ class Event(models.Model):  # Termin
             return True
         return False
 
+    def get_parent_event_individual_status(self, parent: CustomUser):
+        match self.status:
+            case self.StatusChoices.OCCUPIED:
+                if self.parent == parent:
+                    return True, self.PersonalEventStatusChoices.BOOKED
+                else:
+                    return False, self.PersonalEventStatusChoices.OCCUPIED
+            case self.StatusChoices.INQUIRY:
+                if self.parent == parent:
+                    return True, self.PersonalEventStatusChoices.INQUIRY_PENDING
+                else:
+                    return False, self.PersonalEventStatusChoices.OCCUPIED
+            case self.StatusChoices.UNOCCUPIED:
+                match self.lead_status:
+                    case self.LeadStatusChoices.NOBODY:
+                        return False, self.PersonalEventStatusChoices.BLOCKED
+                    case self.LeadStatusChoices.CONDITION:
+                        if parent.has_perm("dashboard.condition_prebook_event"):
+                            return True, self.PersonalEventStatusChoices.EVENT_BOOKABLE
+                        else:
+                            return False, self.PersonalEventStatusChoices.BLOCKED
+                    case self.LeadStatusChoices.INQUIRY:
+                        if Inquiry.objects.filter(
+                            Q(respondent=parent),
+                            Q(processed=False),
+                            Q(base_event=self.get_base_event()),
+                        ).exists():
+                            return True, self.PersonalEventStatusChoices.EVENT_BOOKABLE
+                        else:
+                            return False, self.PersonalEventStatusChoices.BLOCKED
+                    case self.LeadStatusChoices.ALL:
+                        min_event_seperation = (
+                            SiteSettings.objects.first().min_event_seperation
+                        )
+                        if (
+                            Event.objects.filter(Q(parent=parent))
+                            .exclude(end__lte=self.start)
+                            .exclude(start__gte=self.end)
+                            .exists()
+                        ):
+                            return False, self.PersonalEventStatusChoices.TIME_CONFLICT
+                        elif (
+                            Event.objects.filter(Q(parent=parent))
+                            .exclude(start__gt=self.end + min_event_seperation)
+                            .exclude(end__lt=self.start - min_event_seperation)
+                            .exists()
+                        ):
+                            follow_up_event_bookable = (
+                                SiteSettings.objects.first().event_in_seperation_bookable
+                            )
+                            if follow_up_event_bookable:
+                                return (
+                                    True,
+                                    self.PersonalEventStatusChoices.TIME_CONFLICT_FOLLOWUP,
+                                )
+                            else:
+                                return (
+                                    False,
+                                    self.PersonalEventStatusChoices.TIME_CONFLICT,
+                                )
+                        else:
+                            return True, self.PersonalEventStatusChoices.EVENT_BOOKABLE
+
     def get_base_event(self):
         return self.teacher_event_group.day_group.base_event
 
     def __str__(self):
-        return _("Appointment from ") + f"{self.teacher}" + _(" on ") + f"{self.start.date()}" + _(" from ") + f"{self.start.time()}" + _(" to ") + f"{self.end.time()}"
+        return (
+            _("Appointment from ")
+            + f"{self.teacher}"
+            + _(" on ")
+            + f"{self.start.date()}"
+            + _(" from ")
+            + f"{self.start.time()}"
+            + _(" to ")
+            + f"{self.end.time()}"
+        )
         # return f"Termin von {self.teacher} am {self.start.date()} von {self.start.time()} bis {self.end.time()}"
 
     class Meta:
@@ -320,19 +434,19 @@ class Event(models.Model):  # Termin
         permissions = [
             (
                 "book_event",
-                "Dieser User darf kein Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen.", # The user is allowed to book an event. Without this permission the user will be completely blocked from booking.
+                "Dieser User darf kein Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen.",  # The user is allowed to book an event. Without this permission the user will be completely blocked from booking.
             ),  #! Aktuell nicht in Benutzung
             (
                 "inquiry_prebook_event",
-                "Dieser User darf einen Termin anfragen, da er eine Anfrage einer Lehrkraft bekommen hat.", #The user is allowed to book an event because an inquiry was issued to him.
+                "Dieser User darf einen Termin anfragen, da er eine Anfrage einer Lehrkraft bekommen hat.",  # The user is allowed to book an event because an inquiry was issued to him.
             ),
             (
                 "condition_prebook_event",
-                "Dieser User darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen.", # The user is allowed to book an event before the official booking period because he has an e.g. medical condition.
+                "Dieser User darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen.",  # The user is allowed to book an event before the official booking period because he has an e.g. medical condition.
             ),
             (
                 "book_double_event",
-                "Dieser User darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen.", #The user is allowed to book a double event with all teachers because of an medical condition.
+                "Dieser User darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen.",  # The user is allowed to book a double event with all teachers because of an medical condition.
             ),  #! Aktuell nicht in Benutzung
         ]
 
@@ -342,7 +456,7 @@ class EventChangeFormula(models.Model):
     Dieses Model dient dazu, jedem Lehrer die Möglichkeit zu geben, seine Zeiten für den Elternsprtechtag selber einzurrichten. In Zukunft können hier auch Anträge auf die Blockierung einzelner Termine eingereicht werden.
     """
 
-    TYPE_CHOICES = ((0, _("Submit own time periods.")),) #Submit of personal timeslots
+    TYPE_CHOICES = ((0, _("Submit own time periods.")),)  # Submit of personal timeslots
     type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     day_group = models.ForeignKey(
         DayEventGroup, on_delete=models.CASCADE, null=True, blank=True
@@ -362,10 +476,10 @@ class EventChangeFormula(models.Model):
     end_time = models.TimeField(blank=True, null=True, verbose_name=_("End time"))
     no_events = models.BooleanField(default=False, verbose_name=_("No events"))
     CHOICES_STATUS = (
-        (0, _("Wait for processing")), #Waiting to be filled
-        (1, _("Wait for confirmation")), #Waiting for approval
-        (2, _("Approved")), #Approved
-        (3, _("Declined")), #Disapproved
+        (0, _("Wait for processing")),  # Waiting to be filled
+        (1, _("Wait for confirmation")),  # Waiting for approval
+        (2, _("Approved")),  # Approved
+        (3, _("Declined")),  # Disapproved
     )
     status = models.IntegerField(choices=CHOICES_STATUS, default=0)
 
@@ -375,7 +489,9 @@ class EventChangeFormula(models.Model):
         permissions = [
             (
                 "approve_disapprove",
-                _("Can accept or reject submitted time periods for other users."), #Can approve/disapprove the formulars for other users
+                _(
+                    "Can accept or reject submitted time periods for other users."
+                ),  # Can approve/disapprove the formulars for other users
             )
         ]
 
@@ -408,9 +524,9 @@ class Inquiry(models.Model):
     )
 
     REACTION_CHOICES = (
-        (0, _("No response")), #No response
-        (1, _("Inquiry accepted")), #Inquiry accepted
-        (3, _("Inquiry declined")), #Inquiry dismissed
+        (0, _("No response")),  # No response
+        (1, _("Inquiry accepted")),  # Inquiry accepted
+        (3, _("Inquiry declined")),  # Inquiry dismissed
     )
     respondent_reaction = models.IntegerField(choices=REACTION_CHOICES, default=0)
     notified = models.BooleanField(default=False)
@@ -470,24 +586,26 @@ class SingletonModel(models.Model):  # set all general setting for Singleton mod
 
 class SiteSettings(SingletonModel):
     lead_start = models.DateField(
-        default=timezone.now, help_text=_("Set a date from which all parents can request appointments.")
+        default=timezone.now,
+        help_text=_("Set a date from which all parents can request appointments."),
     )
     lead_inquiry_start = models.DateField(
         default=timezone.now,
-        help_text=_(
-            "Determine when teachers' enquiries can be answered."
-        ),
+        help_text=_("Determine when teachers' enquiries can be answered."),
     )
     event_duration = models.DurationField(
         default=datetime.timedelta(minutes=7, seconds=30),
         help_text=_(
             "Here you define the general length of an appointment. It applies to all appointments created with this function."
-        ), #Here you can set the general length of an event. The lenth applies to all events created with the function.
+        ),  # Here you can set the general length of an event. The lenth applies to all events created with the function.
     )
     min_event_seperation = models.DurationField(
         default=timezone.timedelta(minutes=5),
-        help_text=_("Here you can set the interval between two appointments. You should allow some time to change rooms etc."), #Here you can set the time between two events a parent can book. You should enter some time here to account for overtime and change of rooms.
+        help_text=_(
+            "Here you can set the interval between two appointments. You should allow some time to change rooms etc."
+        ),  # Here you can set the time between two events a parent can book. You should enter some time here to account for overtime and change of rooms.
     )
+    event_in_seperation_bookable = models.BooleanField(default=False)
     impressum = models.URLField(max_length=200, default="")
     keep_events = models.DurationField(default=timezone.timedelta(days=30))
     delete_events = models.BooleanField(default=True)

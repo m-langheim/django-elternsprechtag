@@ -39,21 +39,21 @@ def create_event_date_dict(events):
 def event_date_dict_add_book_information(parent: CustomUser, event_dict: dict):
     for date in event_dict.keys():
         for index, event in enumerate(event_dict[date]):
-            match check_event_bookable(parent, event):
-                case 0:
-                    event_dict[date][index].bookable = True
-                case 1:
-                    event_dict[date][index].bookable = True
+            bookable, reason = event.get_parent_event_individual_status(parent)
+
+            # print(event.get_parent_event_individual_status(parent))
+
+            event_dict[date][index].bookable = bookable
+
+            match reason:
+                case event.PersonalEventStatusChoices.INQUIRY_PENDING:
                     event_dict[date][index].inquiry_pending = True
-                case 2:
-                    event_dict[date][index].bookable = True
+                case event.PersonalEventStatusChoices.BOOKED:
                     event_dict[date][index].booked = True
-                case 3:
-                    event_dict[date][index].bookable = False
+                case event.PersonalEventStatusChoices.OCCUPIED:
                     event_dict[date][index].occupied = True
-                case 4:
-                    event_dict[date][index].bookable = False
-                case 5:
-                    event_dict[date][index].bookable = False
+                case event.PersonalEventStatusChoices.TIME_CONFLICT:
                     event_dict[date][index].time_conflict = True
+                case event.PersonalEventStatusChoices.TIME_CONFLICT_FOLLOWUP:
+                    event_dict[date][index].time_conflict_followup = True
     return event_dict
