@@ -31,10 +31,12 @@ urlpatterns = [
         name="teachers_import",
     ),
     path(
-        "teachers/<pk>/edit",
+        "teachers/<pk>/edit/",
         TeacherEditView.as_view(),
         name="teachers_edit_view",
     ),
+    path("others/", OthersTableView.as_view(), name="others_table"),
+    path("others/<pk>/edit/", OthersEditView.as_view(), name="others_edit_view"),
     path(
         "<pk>/reset_password/",
         ResetPasswordWithLink.as_view(),

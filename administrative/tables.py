@@ -176,6 +176,20 @@ class TeachersTable(tables.Table):
     )
 
 
+class OthersTable(tables.Table):
+    class Meta:
+        model = CustomUser
+        fields = ("first_name", "last_name")
+
+    edit = tables.LinkColumn(
+        "others_edit_view",
+        args=[Accessor("pk")],
+        orderable=False,
+        text="Edit",
+        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    )
+
+
 class EventExtraInformationColumn(tables.Column):
     def render(self, value):
         event = Event.objects.get(pk=value)

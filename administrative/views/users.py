@@ -73,6 +73,18 @@ class TeacherTableView(View):
         )
 
 
+class OthersTableView(View):
+    def get(self, request):
+        others = CustomUser.objects.filter(role=2)
+        others_table = OthersTable(others)
+
+        return render(
+            request,
+            "administrative/users/others/others_overview.html",
+            {"others_table": others_table},
+        )
+
+
 @method_decorator(login_staff, name="dispatch")
 class ParentEditView(View):
     def get(self, request, parent_id):
@@ -212,6 +224,30 @@ class TeacherImportView(View):
             "administrative/users/teachers/teacher_import.html",
             {"form": form},
         )
+
+
+class OthersEditView(View):
+    def get(self, request, pk):
+        try:
+            teacher = CustomUser.objects.get(Q(pk=pk), Q(role=1))
+        except:
+            messages.error(request, "Something went wrong")
+        else:
+            print(teacher.teacherextradata.tags.all())
+            teacher_form = TeacherEditForm(
+                initial={
+                    "first_name": teacher.first_name,
+                    "last_name": teacher.last_name,
+                    "email": teacher.email,
+                    "acronym": teacher.teacherextradata.acronym,
+                    "tags": teacher.teacherextradata.tags.all(),
+                }
+            )
+            return render(
+                request,
+                "administrative/users/teachers/teacher_edit.html",
+                {"form": teacher_form, "teacher": teacher},
+            )
 
 
 class ResetPasswordWithLink(View):

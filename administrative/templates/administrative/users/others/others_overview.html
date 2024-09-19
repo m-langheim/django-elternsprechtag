@@ -1,0 +1,24 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block control_content %}
+<div class="row">
+  <div class="col-8">
+      <p class="h1">Users</p>
+      <p class="text-muted">Hier werden alle anderweitigen Benutzer aufgeführt.</p>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" href="{% url 'teachers_import' %}">Lehrer hinzufügen</a></div> {% endcomment %}
+</div>  
+<nav class="nav nav-tabs">
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'parents_table' %}">Parents</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'teachers_table' %}">Teacher</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link active" href="{% url 'others_table' %}">Others</a>
+    </li>
+  </nav>
+{% render_table others_table %}
+{% endblock %}
