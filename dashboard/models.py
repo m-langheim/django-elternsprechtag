@@ -437,10 +437,6 @@ class Event(models.Model):  # Termin
                 "Dieser User darf kein Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen.",  # The user is allowed to book an event. Without this permission the user will be completely blocked from booking.
             ),  #! Aktuell nicht in Benutzung
             (
-                "inquiry_prebook_event",
-                "Dieser User darf einen Termin anfragen, da er eine Anfrage einer Lehrkraft bekommen hat.",  # The user is allowed to book an event because an inquiry was issued to him.
-            ),
-            (
                 "condition_prebook_event",
                 "Dieser User darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen.",  # The user is allowed to book an event before the official booking period because he has an e.g. medical condition.
             ),

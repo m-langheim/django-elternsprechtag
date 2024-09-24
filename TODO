@@ -77,11 +77,9 @@ authentication views.py 477
 
 <!-- Neue TODOS bis zur nächsten Version -->
 
-- Berechtigungen (geht in Admin)
 - alle Upcoming User auf einmal Mail schicken (geht in Admin)
 - Dropdown mit select
 - Base Events Listen bei Event Erstellung
-- Anmeldung für alle Events manuell bearbeiten (geht in Admin)
 
 <!-- Davon behoben -->
 
@@ -91,7 +89,9 @@ authentication views.py 477
 - Admin Event berlegen mit Schüler auswahl (geht manuell in Admin)
 - Elternteile bearbeiten (geht in Admin)
 - Beim Import auch Schüler aus der Liste löschen können;
-- Schüler Import: Vornamen taucht nicht auf:
+- Schüler Import: Vornamen taucht nicht auf
+- Anmeldung für alle Events manuell bearbeiten (geht in Admin) --> ich denke das damit gemeint ist, dass man einen Lernenden in ein Event eintragen kann oder auch ein Event komplett leeren kann
+- Berechtigungen (geht in Admin)
 
 <!-- Behoben -->
 

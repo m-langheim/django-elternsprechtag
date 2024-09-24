@@ -17,9 +17,10 @@ from dashboard.models import (
     TeacherEventGroup,
     BaseEventGroup,
 )
-from authentication.models import CustomUser, Tag, Student
+from authentication.models import CustomUser, Tag, Student, TeacherExtraData
 from django.utils import timezone
 from django.db.models import Q
+from django.contrib.auth.models import Permission
 
 from crispy_forms.helper import FormHelper
 
@@ -99,20 +100,225 @@ class ParentEditForm(forms.ModelForm):
             "students",
             "email",
             "is_active",
+            "user_permissions",
         )
 
     students = forms.ModelMultipleChoiceField(
         queryset=Student.objects, widget=forms.SelectMultiple
     )
+    custom_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ParentEditForm, self).__init__(*args, **kwargs)
+
+        user: CustomUser = self.instance
+
+        PARENT_PERMISSIONS = [
+            "condition_prebook_event",
+            "book_event",
+            "book_double_event",
+        ]
+
+        self.parent_permissions = Permission.objects.filter(
+            codename__in=PARENT_PERMISSIONS
+        )
+        user_permissions = user.user_permissions.all()
+
+        self.permission_choices = [
+            [permission.pk, permission.name] for permission in self.parent_permissions
+        ]
+
+        self.fields["custom_permissions"].choices = self.permission_choices
+        self.initial["custom_permissions"] = user_permissions
+
+    def save(self, commit=True):
+        instance: CustomUser = self.instance
+        custom_permissions = self.cleaned_data["custom_permissions"]
+        all_permissions = self.parent_permissions
+        initial_permissions = self.initial["custom_permissions"]
+        user_permissions = self.cleaned_data["user_permissions"]
+
+        print(custom_permissions, initial_permissions, all_permissions)
+
+        instance.user_permissions.set(user_permissions)
+
+        for permission in all_permissions:
+            if permission in custom_permissions:
+                instance.user_permissions.add(permission)
+            elif permission in initial_permissions:
+                instance.user_permissions.remove(permission)
+
+        if commit:
+            instance.save()
+
+        return instance
 
 
-class TeacherEditForm(forms.Form):
+class TeacherEditForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "user_permissions",
+            "is_active",
+            "is_staff",
+        )
+
     email = forms.EmailField()
     first_name = forms.CharField(max_length=48)
     last_name = forms.CharField(max_length=48)
     acronym = forms.CharField(max_length=3)
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
     image = forms.ImageField(required=False)
+
+    custom_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(TeacherEditForm, self).__init__(*args, **kwargs)
+
+        user: CustomUser = self.instance
+
+        OTHERS_PERMISSIONS = [
+            "apply_changes",
+            "approve_disapprove",
+            "can_restore_backup",
+            "can_add_backup",
+        ]
+
+        self.others_permissions = Permission.objects.filter(
+            codename__in=OTHERS_PERMISSIONS
+        )
+        user_permissions = user.user_permissions.all()
+
+        self.permission_choices = [
+            [permission.pk, permission.name] for permission in self.others_permissions
+        ]
+
+        self.fields["custom_permissions"].choices = self.permission_choices
+        self.initial["custom_permissions"] = user_permissions
+
+        self.teacher_extra_data: TeacherExtraData = self.instance.teacherextradata
+
+        self.initial["acronym"] = self.teacher_extra_data.acronym
+        self.initial["tags"] = self.teacher_extra_data.tags.all()
+        self.initial["image"] = self.teacher_extra_data.image
+
+    def clean_acronym(self):
+        instance = self.instance
+
+        data = self.cleaned_data["acronym"]
+
+        if (
+            TeacherExtraData.objects.filter(acronym=data)
+            .exclude(pk=instance.pk)
+            .exists()
+        ):
+            raise ValueError(
+                "Another teacher has the same acronym. Please choose a different one."
+            )
+        return data
+
+    def save(self, commit=True):
+        instance: CustomUser = self.instance
+        custom_permissions = self.cleaned_data["custom_permissions"]
+        all_permissions = self.others_permissions
+        initial_permissions = self.initial["custom_permissions"]
+        user_permissions = self.cleaned_data["user_permissions"]
+
+        instance.user_permissions.set(user_permissions)
+
+        for permission in all_permissions:
+            if permission in custom_permissions:
+                instance.user_permissions.add(permission)
+            elif permission in initial_permissions:
+                instance.user_permissions.remove(permission)
+
+        self.teacher_extra_data.acronym = self.cleaned_data["acronym"]
+        self.teacher_extra_data.save()
+
+        self.teacher_extra_data.tags.set(self.cleaned_data["tags"])
+
+        if commit:
+            instance.save()
+
+        return instance
+
+
+class OthersEditForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "user_permissions",
+            "is_active",
+            "is_staff",
+        )
+
+    email = forms.EmailField()
+    first_name = forms.CharField(max_length=48)
+    last_name = forms.CharField(max_length=48)
+
+    custom_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(OthersEditForm, self).__init__(*args, **kwargs)
+
+        user: CustomUser = self.instance
+
+        OTHERS_PERMISSIONS = [
+            "apply_changes",
+            "approve_disapprove",
+            "can_restore_backup",
+            "can_add_backup",
+        ]
+
+        self.others_permissions = Permission.objects.filter(
+            codename__in=OTHERS_PERMISSIONS
+        )
+        user_permissions = user.user_permissions.all()
+
+        self.permission_choices = [
+            [permission.pk, permission.name] for permission in self.others_permissions
+        ]
+
+        self.fields["custom_permissions"].choices = self.permission_choices
+        self.initial["custom_permissions"] = user_permissions
+
+    def save(self, commit=True):
+        instance: CustomUser = self.instance
+        custom_permissions = self.cleaned_data["custom_permissions"]
+        all_permissions = self.others_permissions
+        initial_permissions = self.initial["custom_permissions"]
+        user_permissions = self.cleaned_data["user_permissions"]
+
+        instance.user_permissions.set(user_permissions)
+
+        for permission in all_permissions:
+            if permission in custom_permissions:
+                instance.user_permissions.add(permission)
+            elif permission in initial_permissions:
+                instance.user_permissions.remove(permission)
+
+        if commit:
+            instance.save()
+
+        return instance
 
 
 class SettingsEditForm(forms.ModelForm):

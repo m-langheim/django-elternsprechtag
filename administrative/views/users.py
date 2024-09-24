@@ -109,6 +109,7 @@ class ParentEditView(View):
             form = ParentEditForm(request.POST, instance=parent)
             if form.is_valid():
                 form.save()
+                form = ParentEditForm(instance=parent)
             return render(
                 request,
                 "administrative/users/parents/parent_edit.html",
@@ -124,15 +125,8 @@ class TeacherEditView(View):
         except:
             messages.error(request, "Something went wrong")
         else:
-            print(teacher.teacherextradata.tags.all())
             teacher_form = TeacherEditForm(
-                initial={
-                    "first_name": teacher.first_name,
-                    "last_name": teacher.last_name,
-                    "email": teacher.email,
-                    "acronym": teacher.teacherextradata.acronym,
-                    "tags": teacher.teacherextradata.tags.all(),
-                }
+                instance=teacher,
             )
             return render(
                 request,
@@ -148,24 +142,28 @@ class TeacherEditView(View):
         else:
             teacher_form = TeacherEditForm(
                 request.POST,
-                initial={
-                    "first_name": teacher.first_name,
-                    "last_name": teacher.last_name,
-                    "email": teacher.email,
-                    "acronym": teacher.teacherextradata.acronym,
-                    "tags": teacher.teacherextradata.tags.all(),
-                },
+                # initial={
+                #     "first_name": teacher.first_name,
+                #     "last_name": teacher.last_name,
+                #     "email": teacher.email,
+                #     "acronym": teacher.teacherextradata.acronym,
+                #     "tags": teacher.teacherextradata.tags.all(),
+                # },
+                instance=teacher,
             )
 
             if teacher_form.is_valid():
-                teacher.first_name = teacher_form.cleaned_data["first_name"]
-                teacher.last_name = teacher_form.cleaned_data["last_name"]
-                teacher.email = teacher_form.cleaned_data["email"]
-                teacher.save()
-
-                extra_data = teacher.teacherextradata
-                extra_data.acronym = teacher_form.cleaned_data["acronym"]
-                extra_data.save()
+                # teacher.first_name = teacher_form.cleaned_data["first_name"]
+                # teacher.last_name = teacher_form.cleaned_data["last_name"]
+                # teacher.email = teacher_form.cleaned_data["email"]
+                # teacher.save()
+                teacher_form.save()
+                # extra_data = teacher.teacherextradata
+                # extra_data.acronym = teacher_form.cleaned_data["acronym"]
+                # extra_data.save()
+                teacher_form = TeacherEditForm(
+                    instance=teacher,
+                )
 
                 messages.success(
                     request, "Die Änderungen wurden erfolgreich übernommen."
@@ -228,26 +226,28 @@ class TeacherImportView(View):
 
 class OthersEditView(View):
     def get(self, request, pk):
-        try:
-            teacher = CustomUser.objects.get(Q(pk=pk), Q(role=1))
-        except:
-            messages.error(request, "Something went wrong")
-        else:
-            print(teacher.teacherextradata.tags.all())
-            teacher_form = TeacherEditForm(
-                initial={
-                    "first_name": teacher.first_name,
-                    "last_name": teacher.last_name,
-                    "email": teacher.email,
-                    "acronym": teacher.teacherextradata.acronym,
-                    "tags": teacher.teacherextradata.tags.all(),
-                }
-            )
-            return render(
-                request,
-                "administrative/users/teachers/teacher_edit.html",
-                {"form": teacher_form, "teacher": teacher},
-            )
+        user = get_object_or_404(CustomUser, pk=pk, role=2)
+        edit_form = OthersEditForm(instance=user)
+        return render(
+            request,
+            "administrative/users/others/others_edit.html",
+            {"form": edit_form, "user": user},
+        )
+
+    def post(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk, role=2)
+        edit_form = OthersEditForm(instance=user, data=request.POST)
+
+        if edit_form.is_valid():
+            edit_form.save()
+            messages.success(request, "Changes successfully made")
+            edit_form = OthersEditForm(instance=user)
+
+        return render(
+            request,
+            "administrative/users/others/others_edit.html",
+            {"form": edit_form, "user": user},
+        )
 
 
 class ResetPasswordWithLink(View):
