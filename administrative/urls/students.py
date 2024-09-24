@@ -34,24 +34,34 @@ urlpatterns = [
         name="student_import_filepload",
     ),
     path(
-        "import/cancel/",
-        StudentImportCancel.as_view(),
-        name="student_import_cancel",
-    ),
-    path(
         "import/view/",
         StudentImportListChanges.as_view(),
         name="student_import_listchanges",
     ),
     path(
-        "import/apply/all/",
+        "import/all/apply/",
         StudentImportApproveAndApplyAll.as_view(),
         name="student_import_apply_all_changes",
     ),
     path(
-        "import/apply/<pk>/",
+        "import/<pk>/apply/",
         StudentImportApproveAndApply.as_view(),
         name="student_import_apply_change",
+    ),
+    path(
+        "import/all/cancel/",
+        StudentImportCancel.as_view(),
+        name="student_import_cancel",
+    ),
+    path(
+        "import/<pk>/cancel/",
+        StudentImportRemoveEntry.as_view(),
+        name="student_import_remove_entry",
+    ),
+    path(
+        "import/<pk>/edit/",
+        StudentChangeEditView.as_view(),
+        name="student_import_edit",
     ),
     path(
         "import/apply/operation/<int:operation>/",

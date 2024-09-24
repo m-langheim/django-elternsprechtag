@@ -50,22 +50,51 @@ class StudentTable(tables.Table):
     )
 
 
+class StudentChangeActionsColumn(tables.Column):
+    def render(self, value):
+        # formular = EventChangeFormula.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/student_change_actions.html",
+                {"pk": value},
+            )
+        )
+
+
+class StudentNameColumn(tables.Column):
+    def render(self, value):
+        student_change = StudentChange.objects.get(pk=value)
+
+        match student_change.operation:
+            case 0:
+                name = f"{student_change.student.first_name} {student_change.student.last_name}"
+            case 1:
+                name = f"{student_change.first_name} {student_change.last_name}"
+            case 2:
+                name = f"{student_change.student.first_name if student_change.first_name==None else student_change.first_name} {student_change.student.last_name if student_change.last_name==None else student_change.last_name}"
+            case 3:
+                name = f"{student_change.student.first_name} {student_change.student.last_name}"
+        return name
+
+
 class StudentChangeTable(tables.Table):
     class Meta:
         model = StudentChange
         # template_name = "administrative/student_list_view.html"
-        fields = (
-            "pk",
-            "student.first_name",
-        )
+        fields = []
 
-    apply = tables.LinkColumn(
-        "student_import_apply_change",
-        args=[Accessor("pk")],
-        orderable=False,
-        text="Apply",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
-    )
+    # apply = tables.LinkColumn(
+    #     "student_import_apply_change",
+    #     args=[Accessor("pk")],
+    #     orderable=False,
+    #     text="Apply",
+    #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+    # )
+
+    name = StudentNameColumn(accessor="pk", orderable=False)
+
+    actions = StudentChangeActionsColumn(accessor="pk", orderable=False)
 
 
 class FormularActionsColumn(tables.Column):

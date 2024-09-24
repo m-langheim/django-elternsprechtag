@@ -1,0 +1,17 @@
+<div class="row gx-1 gy-1" style="min-width=200px;">
+    <div class="col-4">
+        <a href={% url 'student_import_remove_entry' pk=pk %} class="btn btn-outline-secondary col-12">
+            Remove
+        </a>
+    </div>
+    <div class="col-4">
+        <a href={% url 'student_import_edit' pk=pk %} class="btn btn-outline-danger col-12">
+            Edit
+        </a>
+    </div>
+    <div class="col-4">
+        <a href={% url 'student_import_apply_change' pk=pk %} class="btn btn-outline-danger col-12">
+            Apply
+        </a>
+    </div>
+</div>

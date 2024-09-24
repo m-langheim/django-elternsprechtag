@@ -71,18 +71,13 @@ rearrage the height of the divs in base depending on possible messages -> calcul
 
 error pages sind nirgendwo
 
-Eigene Administratorseite
-
 email, wenn registrierung abgeschlossen (email (txt) besteht, aber nicht verwendet)
-
-leads?!
 
 authentication views.py 477
 
 <!-- Neue TODOS bis zur nächsten Version -->
 
 - Berechtigungen (geht in Admin)
-- Schüler Import: Vornamen taucht nicht auf: Beim Import auch Schüler aus der Liste löschen können;
 - alle Upcoming User auf einmal Mail schicken (geht in Admin)
 - Dropdown mit select
 - Base Events Listen bei Event Erstellung
@@ -95,6 +90,8 @@ authentication views.py 477
 - Users: Anderer zu Ende implementieren:
 - Admin Event berlegen mit Schüler auswahl (geht manuell in Admin)
 - Elternteile bearbeiten (geht in Admin)
+- Beim Import auch Schüler aus der Liste löschen können;
+- Schüler Import: Vornamen taucht nicht auf:
 
 <!-- Behoben -->
 
@@ -126,3 +123,7 @@ Mitteilungen: alle gelesen
 Eltern timezone termine Uhrzeit 
 
 Email an die Eltern mit flaschem Addressaten
+
+Eigene Administratorseite
+
+leads?!

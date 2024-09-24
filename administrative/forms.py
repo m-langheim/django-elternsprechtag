@@ -9,6 +9,7 @@ from django.contrib.auth.forms import (
 from django.utils.translation import gettext as _
 from .models import *
 from dashboard.models import SiteSettings
+from authentication.models import Student, CustomUser, StudentChange
 from dashboard.models import (
     EventChangeFormula,
     Event,
@@ -27,6 +28,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 
 from .forms_helpers import get_students_choices_for_event
+from .tasks import *
 
 
 class CsvImportForm(forms.Form):
@@ -243,3 +245,31 @@ class ControlParentCreationForm(forms.Form):
 class ControlParentAddStudent(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
     parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)))
+
+
+class EditStudentChangesForm(forms.ModelForm):
+    class Meta:
+        model = StudentChange
+        exclude = ("applied", "approved", "applied_time")
+
+    shield_id = forms.CharField(required=False)
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    child_email = forms.EmailField(required=False)
+    created = forms.DateTimeField(disabled=True)
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all(), disabled=True, required=False
+    )
+
+    apply = forms.BooleanField(required=False)
+
+    def save(self, commit=True):
+        instance = self.instance
+        apply = self.cleaned_data["apply"]
+
+        if commit:
+            instance.save()
+
+        if apply:
+            apply_and_approve_student_changes.delay([instance.pk])
+        return instance

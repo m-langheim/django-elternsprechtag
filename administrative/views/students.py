@@ -55,30 +55,30 @@ class StudentListView(SingleTableView):
     template_name = "administrative/student/student_list_view.html"
 
 
-@method_decorator(login_staff, name="dispatch")
-class ParentTableView(View):
-    def get(self, request):
-        parents = CustomUser.objects.filter(role=0)
-        parents_table = ParentsTable(parents)
+# @method_decorator(login_staff, name="dispatch")
+# class ParentTableView(View):
+#     def get(self, request):
+#         parents = CustomUser.objects.filter(role=0)
+#         parents_table = ParentsTable(parents)
 
-        return render(
-            request,
-            "administrative/users/parents/parents_overview.html",
-            {"parents_table": parents_table},
-        )
+#         return render(
+#             request,
+#             "administrative/users/parents/parents_overview.html",
+#             {"parents_table": parents_table},
+#         )
 
 
-@method_decorator(login_staff, name="dispatch")
-class TeacherTableView(View):
-    def get(self, request):
-        teachers = CustomUser.objects.filter(role=1)
-        teachers_table = TeachersTable(teachers)
+# @method_decorator(login_staff, name="dispatch")
+# class TeacherTableView(View):
+#     def get(self, request):
+#         teachers = CustomUser.objects.filter(role=1)
+#         teachers_table = TeachersTable(teachers)
 
-        return render(
-            request,
-            "administrative/users/teachers/teachers_overview.html",
-            {"teachers_table": teachers_table},
-        )
+#         return render(
+#             request,
+#             "administrative/users/teachers/teachers_overview.html",
+#             {"teachers_table": teachers_table},
+#         )
 
 
 @method_decorator(login_staff, name="dispatch")
@@ -221,6 +221,46 @@ class StudentImportApproveAndApply(View):
             messages.error(request, "Der Änderungseintrag konnte nicht gefunden werden")
 
             return redirect("student_import_listchanges")
+
+
+@method_decorator(login_staff, name="dispatch")
+class StudentImportRemoveEntry(View):
+    def get(self, request, pk):
+        change = get_object_or_404(StudentChange, approved=False, pk=pk)
+        student = change.student
+        change.delete()
+        messages.success(
+            request, f"The change on {str(student)}´s account was successfully removed."
+        )
+        return redirect("student_import_listchanges")
+
+
+@method_decorator(login_staff, name="dispatch")
+class StudentChangeEditView(View):
+    def get(self, request, pk):
+        change = get_object_or_404(StudentChange, approved=False, pk=pk)
+
+        form = EditStudentChangesForm(instance=change)
+
+        return render(
+            request, "administrative/student/edit_student_changes.html", {"form": form}
+        )
+
+    def post(self, request, pk):
+        change = get_object_or_404(StudentChange, approved=False, pk=pk)
+
+        form = EditStudentChangesForm(instance=change, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "The student change was successfully editied.")
+
+            return redirect("student_import_listchanges")
+
+        return render(
+            request, "administrative/student/edit_student_changes.html", {"form": form}
+        )
 
 
 @method_decorator(login_staff, name="dispatch")
