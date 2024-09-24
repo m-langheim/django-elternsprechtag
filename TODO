@@ -79,6 +79,23 @@ leads?!
 
 authentication views.py 477
 
+<!-- Neue TODOS bis zur nächsten Version -->
+
+- Berechtigungen (geht in Admin)
+- Schüler Import: Vornamen taucht nicht auf: Beim Import auch Schüler aus der Liste löschen können;
+- alle Upcoming User auf einmal Mail schicken (geht in Admin)
+- Dropdown mit select
+- Base Events Listen bei Event Erstellung
+- Anmeldung für alle Events manuell bearbeiten (geht in Admin)
+
+<!-- Davon behoben -->
+
+- Zeitkonflikt bei Folgetermin als Warnung, nicht Verbot
+- Passwort wiederherstellung, Link verschicken
+- Users: Anderer zu Ende implementieren:
+- Admin Event berlegen mit Schüler auswahl (geht manuell in Admin)
+- Elternteile bearbeiten (geht in Admin)
+
 <!-- Behoben -->
 
 Termin absage -> Terminabsage

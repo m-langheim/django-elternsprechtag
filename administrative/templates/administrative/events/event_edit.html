@@ -1,11 +1,35 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 {% block control_content %}
 
 <div class="card card-body p-4">
     <div class="container">
         <p class="h1">Termin am {{event.start|date}}</p>
         <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+    </div>
+    <div class="card card-body p-4">
+        <ul class="list-group list-group-flush">
+            <div class="row align-items-center">
+                <div class="col text-start">
+                    <div>
+                        <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} 
+                        {{ event.teacher.last_name }}
+                    </div>
+                    <div>
+                        <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
+                    </div>
+                    <div>
+                        <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
+                    </div>
+                    <div>
+                        {% if event.room %}
+                        <strong>{% translate 'Room:' %} </strong>{{ event.room }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </ul>
     </div>
     <div class="container">
         <form method="POST">
@@ -19,11 +43,48 @@
                 <div class="col d-flex justify-content-end">
                     <button class="btn btn-outline-danger mt-2" type="submit">
                         Save
-                    </a>
+                    </button>
                 </div>
+            </div>
+        </form>
+        <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
+            {% csrf_token %}
+    
+            <div class="row">
+                <button class="btn btn-outline-danger mt-2" type="submit">
+                    Clear
+                </button>
+                {% if choices|length > 0 %}
+                <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add student</a>
+                {% endif %}
             </div>
         </form>
     </div>
 </div>
 
+{% if choices|length > 0 %}
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addStudentModalLabel">Add student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'administrative_event_add_student_view' event_id=event.id %}" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+              <p>Here you can upload previously downloaded backup files.</p>
+              {% csrf_token %}
+          {{ add_student_form | crispy }}
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal">Abbrechen</button>
+                  <button class="btn btn-outline-danger" type="submit">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endif %}
 {% endblock %}

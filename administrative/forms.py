@@ -26,6 +26,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 from django.core.exceptions import ValidationError
 
+from .forms_helpers import get_students_choices_for_event
+
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
@@ -120,13 +122,72 @@ class SettingsEditForm(forms.ModelForm):
 class EventEditForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ("teacher_event_group", "day_group")
+        exclude = ("teacher_event_group", "day_group", "teacher", "start", "end")
 
-    teacher = forms.ModelChoiceField(
-        queryset=CustomUser.objects.filter(role=1), disabled=True
-    )
-    start = forms.DateTimeField()
-    end = forms.DateTimeField()
+    def save(self, commit=True):
+        instance: Event = self.instance
+
+        if "lead_status" in self.changed_data:
+            instance.lead_manual_override = True
+
+        if commit:
+            instance.save()
+
+        return instance
+
+
+class EventAddStudentForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = []
+
+    add_student = forms.ModelChoiceField(queryset=Student.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(EventAddStudentForm, self).__init__(*args, **kwargs)
+
+        if self.instance.parent:
+            choices = get_students_choices_for_event(event=self.instance)
+
+            if choices.__len__() == 0:
+                print("Test")
+                self.fields["add_student"].widget = self.fields[
+                    "add_student"
+                ].hidden_widget()
+
+            self.fields["add_student"].choices = choices
+
+    def clean_add_student(self):
+        instance = self.instance
+
+        data = self.cleaned_data["add_student"]
+
+        if instance.parent and data and not data in instance.parent.students.all():
+            raise ValidationError(
+                "The specified student does not belong to the same parent as an already specified student. Please only choose students linked to the same parent account."
+            )
+
+        return data
+
+    def save(self, commit=True):
+        instance: Event = self.instance
+
+        if "add_student" in self.changed_data:
+            add_student = self.cleaned_data["add_student"]
+
+            instance.student.add(add_student)
+            if CustomUser.objects.filter(Q(role=0), Q(students=add_student)).exists():
+                instance.parent = CustomUser.objects.get(
+                    Q(role=0), Q(students=add_student)
+                )
+
+            instance.occupied = True
+            instance.status = 1
+
+        if commit:
+            instance.save()
+
+        return instance
 
 
 class ControlParentCreationForm(forms.Form):

@@ -31,14 +31,17 @@ from ..tasks import *
 from ..utils import *
 from ..tables import *
 from ..filters import *
+from ..forms_helpers import get_students_choices_for_event
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
 from general_tasks.tasks import async_send_mail
 
 from django.contrib.admin.views.decorators import staff_member_required
 
-from dashboard.models import Event, EventChangeFormula
+from dashboard.models import Event, EventChangeFormula, Announcements, Inquiry
 from dashboard.tasks import async_create_events_special, apply_event_change_formular
+
+from dashboard.utils import check_inquiry_reopen
 
 import csv, io, os
 
@@ -164,24 +167,104 @@ class EventDetailView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
         edit_form = EventEditForm(instance=event)
+
+        add_student_form = EventAddStudentForm(instance=event)
+
+        choices = get_students_choices_for_event(event)
+
         return render(
             request,
             "administrative/events/event_edit.html",
-            {"form": edit_form, "event": event},
+            {
+                "form": edit_form,
+                "event": event,
+                "add_student_form": add_student_form,
+                "choices": choices,
+            },
         )
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
         edit_form = EventEditForm(instance=event, data=request.POST)
 
+        add_student_form = EventAddStudentForm(instance=event)
+
         if edit_form.is_valid():
             edit_form.save()
+
+        edit_form = EventEditForm(instance=event)
+
+        choices = get_students_choices_for_event(event)
 
         return render(
             request,
             "administrative/events/event_edit.html",
-            {"form": edit_form, "event": event},
+            {
+                "form": edit_form,
+                "event": event,
+                "add_student_form": add_student_form,
+                "choices": choices,
+            },
         )
+
+
+class EventAddStudentView(View):
+    def get(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        form = EventAddStudentForm(instance=event)
+
+        return render(
+            request,
+            "administrative/events/event_edit.html",
+            {"form": form, "event": event},
+        )
+
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        form = EventAddStudentForm(instance=event, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("administrative_event_detail_view", event_id)
+
+        return render(
+            request,
+            "administrative/events/event_edit.html",
+            {"form": form, "event": event},
+        )
+
+
+class EventClearView(View):
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        parent = event.parent
+
+        Announcements.objects.create(
+            announcement_type=1,
+            user=event.teacher,
+            message="The portal organizer has canceled an event. Now others are able to book this event again.",
+        )
+
+        # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+        inquiries = Inquiry.objects.filter(
+            Q(type=1),
+            Q(requester=request.user),
+            Q(respondent=event.teacher),
+            Q(event=event),
+            Q(processed=False),
+        )
+        inquiries.update(processed=True)
+
+        event.parent = None
+        event.status = 0
+        event.occupied = False
+        event.student.clear()
+        event.save()
+
+        check_inquiry_reopen(parent, event.teacher)
+
+        return redirect("administrative_event_detail_view", event_id)
 
 
 @method_decorator(login_staff, name="dispatch")

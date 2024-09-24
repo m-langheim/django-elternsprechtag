@@ -50,4 +50,14 @@ urlpatterns = [
         EventDetailView.as_view(),
         name="administrative_event_detail_view",
     ),
+    path(
+        "event/<event_id>/clear/",
+        EventClearView.as_view(),
+        name="administrative_event_clear_view",
+    ),
+    path(
+        "event/<event_id>/add_student/",
+        EventAddStudentView.as_view(),
+        name="administrative_event_add_student_view",
+    ),
 ]
