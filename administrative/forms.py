@@ -279,18 +279,24 @@ class OthersEditForm(forms.ModelForm):
             "is_staff",
         )
 
-    email = forms.EmailField()
-    first_name = forms.CharField(max_length=48)
-    last_name = forms.CharField(max_length=48)
+    email = forms.EmailField(label=_("Email"))
+    first_name = forms.CharField(max_length=48, label=_("First name"))
+    last_name = forms.CharField(max_length=48, label=_("Last name"))
 
     custom_permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(OthersEditForm, self).__init__(*args, **kwargs)
+        
+        self.fields['is_active'].label = _("User is active")
+        self.fields['is_staff'].label = _("User is staff")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 

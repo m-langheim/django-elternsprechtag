@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 01:44+0200\n"
+"POT-Creation-Date: 2024-09-26 01:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:45 administrative/tables.py:186
-#: administrative/tables.py:223 administrative/tables.py:248
-#: authentication/models.py:18 authentication/models.py:57
-#: authentication/models.py:81
+#: administrative/forms.py:45 administrative/forms.py:283
+#: administrative/tables.py:186 administrative/tables.py:223
+#: administrative/tables.py:248 authentication/models.py:18
+#: authentication/models.py:57 authentication/models.py:81
 msgid "First name"
 msgstr "Vorname"
 
-#: administrative/forms.py:46 administrative/tables.py:191
-#: administrative/tables.py:228 administrative/tables.py:253
-#: authentication/models.py:19 authentication/models.py:58
-#: authentication/models.py:83
+#: administrative/forms.py:46 administrative/forms.py:284
+#: administrative/tables.py:191 administrative/tables.py:228
+#: administrative/tables.py:253 authentication/models.py:19
+#: authentication/models.py:58 authentication/models.py:83
 msgid "Last name"
 msgstr "Nachname"
 
@@ -43,14 +43,17 @@ msgid "Name of class"
 msgstr "Klasse"
 
 #: administrative/forms.py:121 administrative/forms.py:197
+#: administrative/forms.py:296
 msgid "User is active"
 msgstr "User ist aktiv"
 
 #: administrative/forms.py:122 administrative/forms.py:199
+#: administrative/forms.py:298
 msgid "Specific permissions"
 msgstr "Spezifische Berechtigungen"
 
-#: administrative/forms.py:180 authentication/models.py:79
+#: administrative/forms.py:180 administrative/forms.py:282
+#: authentication/models.py:79
 msgid "Email"
 msgstr "E-Mail"
 
@@ -63,7 +66,7 @@ msgstr "Kürzel"
 msgid "Profile image"
 msgstr "Profilbild"
 
-#: administrative/forms.py:198
+#: administrative/forms.py:198 administrative/forms.py:297
 msgid "User is staff"
 msgstr "User ist ein Mitarbeiter"
 
@@ -206,6 +209,71 @@ msgstr "Uhrzeit:"
 msgid "Room:"
 msgstr "Raum:"
 
+#: administrative/templates/administrative/users/others/others_edit.html:5
+msgid "Edit user"
+msgstr "User bearbeiten"
+
+#: administrative/templates/administrative/users/others/others_edit.html:15
+#: administrative/templates/administrative/users/parents/parent_edit.html:15
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:15
+msgid "This user is not active."
+msgstr "Dieser User ist nicht aktiv."
+
+#: administrative/templates/administrative/users/others/others_edit.html:20
+msgid "Edit the user"
+msgstr "User bearbeiten"
+
+#: administrative/templates/administrative/users/others/others_edit.html:29
+#: administrative/templates/administrative/users/parents/parent_edit.html:29
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:29
+msgid "Personal data"
+msgstr "Persönliche Daten"
+
+#: administrative/templates/administrative/users/others/others_edit.html:40
+#: administrative/templates/administrative/users/parents/parent_edit.html:41
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:44
+msgid "Reset password"
+msgstr "Kennwort zurücksetzen"
+
+#: administrative/templates/administrative/users/others/others_edit.html:45
+#: administrative/templates/administrative/users/parents/parent_edit.html:46
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:49
+#: authentication/admin.py:67
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+#: administrative/templates/administrative/users/others/others_edit.html:47
+#: administrative/templates/administrative/users/parents/parent_edit.html:48
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:51
+msgid "Custom permissions"
+msgstr "Persönliche Berechtigungen"
+
+#: administrative/templates/administrative/users/others/others_edit.html:54
+#: administrative/templates/administrative/users/parents/parent_edit.html:55
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
+#: dashboard/templates/dashboard/events/view.html:151
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/dashboard.html:328
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: administrative/templates/administrative/users/others/others_edit.html:58
+#: administrative/templates/administrative/users/parents/parent_edit.html:59
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
+#: dashboard/forms.py:260 dashboard/forms.py:273
+#: dashboard/templates/dashboard/events/view.html:114
+#: profile_settings/forms.py:38
+#: profile_settings/templates/profile_settings/change_password.html:23
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
+#: teacher/templates/teacher/inquiry/viewInquiry.html:72
+msgid "Save"
+msgstr "Speichern"
+
 #: administrative/templates/administrative/users/others/others_overview.html:5
 #: administrative/templates/administrative/users/others/others_overview.html:30
 #: administrative/templates/administrative/users/parents/parents_overview.html:28
@@ -236,59 +304,9 @@ msgstr "Lehrkräfte"
 msgid "Edit Parent"
 msgstr "Elternteil bearbeiten"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:15
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:15
-msgid "This user is not active."
-msgstr "Dieser User ist nicht aktiv."
-
 #: administrative/templates/administrative/users/parents/parent_edit.html:20
 msgid "Edit the parent"
 msgstr "Elternteil bearbeiten"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:29
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:29
-msgid "Personal data"
-msgstr "Persönliche Daten"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:41
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:44
-msgid "Reset password"
-msgstr "Kennwort zurücksetzen"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:46
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:49
-#: authentication/admin.py:67
-msgid "Permissions"
-msgstr "Berechtigungen"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:48
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:51
-msgid "Custom permissions"
-msgstr "Persönliche Berechtigungen"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:55
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
-#: dashboard/templates/dashboard/events/view.html:151
-#: profile_settings/templates/profile_settings/change_password.html:19
-#: profile_settings/templates/profile_settings/my_profile.html:39
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
-#: teacher/templates/teacher/dashboard.html:298
-#: teacher/templates/teacher/dashboard.html:328
-#: teacher/templates/teacher/event/detailEvent.html:147
-#: teacher/templates/teacher/event/detailEvent.html:178
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: administrative/templates/administrative/users/parents/parent_edit.html:59
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
-#: dashboard/forms.py:260 dashboard/forms.py:273
-#: dashboard/templates/dashboard/events/view.html:114
-#: profile_settings/forms.py:38
-#: profile_settings/templates/profile_settings/change_password.html:23
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
-#: teacher/templates/teacher/inquiry/viewInquiry.html:72
-msgid "Save"
-msgstr "Speichern"
 
 #: administrative/templates/administrative/users/parents/parents_overview.html:11
 msgid "All parent accounts are listed here."
