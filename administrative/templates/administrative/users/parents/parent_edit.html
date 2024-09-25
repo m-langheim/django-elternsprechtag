@@ -1,37 +1,107 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {% translate 'Edit Parent' %} {% endblock title %}
+
 {% block control_content %}
 
-<div class="card card-body p-4">
-    {% if not parent.is_active %}
-    <div class="alert alert-warning d-flex align-items-center" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-        <div>
-          This user is not active.
-        </div>
-      </div>
-    {% endif %}
-    <form method="POST" action="{% url 'administrative_reset_password_witk_link' pk=parent.pk %}">
-        {% csrf_token %}
-        <button class="btn btn-outline-danger mt-2" type="submit">
-            Reset password
-        </button>
-    </form>
-    <form method="POST">
-        {{ form | crispy }}
+
+<!-- Keine Ahnung, wann das hier in Benutzung ist. -->
+{% if not parent.is_active %}
+<div class="alert alert-warning d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+        <use xlink:href="#exclamation-triangle-fill" />
+    </svg>
+    <div>
+        This user is not active.
+    </div>
+</div>
+{% endif %}
+
+<p class="h1">{% translate 'Edit the parent' %}</p>
+
+<form method="POST" action="{% url 'administrative_reset_password_witk_link' pk=parent.pk %}">
+    {% csrf_token %}
+    <input type="submit" class="d-none" id="password_reset" />
+</form>
+
+<form method="POST">
+    <div class="card card-body p-3 mb-3">
+        <p class="h4 text-secondary">{% translate 'Personal data' %}</p>
+
         {% csrf_token %}
 
-        <div class="row">
-            <div class="col d-flex">
-                <a class="btn btn-outline-secondary mt-2" href="{% url 'parents_table' %}">Abbrechen</a>
-            </div>
-            <div class="col d-flex justify-content-end">
-                <button class="btn btn-outline-danger mt-2" type="submit">
-                    Save
-                </button>
-            </div>
+        {{ form.first_name|as_crispy_field }}
+        {{ form.last_name|as_crispy_field }}
+        {{ form.email|as_crispy_field }}
+        <!-- Add the search bar into the selector -->
+        {{ form.students|as_crispy_field }}
+        {{ form.is_active|as_crispy_field }}
+
+        <label for="password_reset" tabindex="0" style="cursor: pointer">
+            <i class="fa-solid fa-paper-plane text-primary"></i> {% translate 'Reset password' %}
+        </label>
+
+    </div>
+    <div class="card card-body p-3 mb-3">
+        <p class="h4 text-secondary">{% translate 'Permissions' %}</p>
+
+            <p>{% translate 'Custom permissions' %}</p>
+            {{ form.custom_permissions|as_crispy_field }}
+            {{ form.user_permissions|as_crispy_field }}
+
+    </div>
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'parents_table' %}">{% translate 'Cancel' %}</a>
         </div>
-    </form>
+        <div class="col d-flex justify-content-end">
+            <button type="submit" class="btn btn-outline-danger mt-2">
+                {% translate 'Save' %}
+            </button>
+        </div>
+    </div>
+</form>
 </div>
+
+
+
+
+
+
+
+
+
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>
+
+
+
+
+<!-- rest -->
+<!-- <form method="POST">
+    {{ form | crispy }}
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'parents_table' %}">Abbrechen</a>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                Save
+            </button>
+        </div>
+    </div>
+</form> -->
 
 {% endblock %}

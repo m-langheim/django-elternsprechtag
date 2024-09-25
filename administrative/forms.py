@@ -110,10 +110,17 @@ class ParentEditForm(forms.ModelForm):
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(ParentEditForm, self).__init__(*args, **kwargs)
+
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['is_active'].label = _("User is active")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 

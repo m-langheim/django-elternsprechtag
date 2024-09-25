@@ -5,7 +5,9 @@ from dashboard.models import Event, EventChangeFormula
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from custom_backup.models import *
+from django.utils.translation import gettext as _
 
+from django.utils.safestring import mark_safe # ist das so sicher?!
 
 class StudentExtrainformaionColumn(tables.Column):
     def render(self, value):
@@ -171,21 +173,42 @@ class EventFormularOldTable(tables.Table):
 
 
 class ParentsTable(tables.Table):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.base_columns['students'].verbose_name = _("Students")
+
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "students")
+        attrs = {"class": "table"}
 
-    # parent_edit_view
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
     edit = tables.LinkColumn(
         "parent_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
-
 class TeachersTable(tables.Table):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.base_columns['teacherextradata.acronym'] = tables.Column(orderable=False, verbose_name=_("Acronym"))
+        # verbose_name = _("Acronym")
+        # self.base_columns['teacherextradata.acronym'].orderable = False
+        self.base_columns['teacherextradata.tags'].verbose_name = _("Tags")
+
     class Meta:
         model = CustomUser
         fields = (
@@ -194,28 +217,50 @@ class TeachersTable(tables.Table):
             "teacherextradata.acronym",
             "teacherextradata.tags",
         )
+        attrs = {"class": "table"}
 
-    # teachers_edit_view
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
     edit = tables.LinkColumn(
         "teachers_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
-
 
 class OthersTable(tables.Table):
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name")
+        attrs = {"class": "table"}
+
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
 
     edit = tables.LinkColumn(
         "others_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
 

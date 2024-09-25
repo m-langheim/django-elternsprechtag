@@ -6,7 +6,7 @@ from django.conf import settings
 
 # from general_tasks.tasks import run_dbbackup
 os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "elternsprechtag.settings.production"
+    "DJANGO_SETTINGS_MODULE", "elternsprechtag.settings.development"
 )  # ! Always needs to be changed befor build
 
 app = Celery("elternsprechtag")

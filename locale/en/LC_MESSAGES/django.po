@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-19 04:14+0200\n"
+"POT-Creation-Date: 2024-09-26 01:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,43 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:40 authentication/models.py:18
-#: authentication/models.py:57 authentication/models.py:81
+#: administrative/forms.py:45 administrative/tables.py:186
+#: administrative/tables.py:223 administrative/tables.py:248
+#: authentication/models.py:18 authentication/models.py:57
+#: authentication/models.py:81
 msgid "First name"
 msgstr ""
 
-#: administrative/forms.py:41 authentication/models.py:19
-#: authentication/models.py:58 authentication/models.py:83
+#: administrative/forms.py:46 administrative/tables.py:191
+#: administrative/tables.py:228 administrative/tables.py:253
+#: authentication/models.py:19 authentication/models.py:58
+#: authentication/models.py:83
 msgid "Last name"
 msgstr ""
 
-#: administrative/forms.py:42 authentication/models.py:20
+#: administrative/forms.py:47 authentication/models.py:20
 #: authentication/models.py:60
 msgid "Child emails"
 msgstr ""
 
-#: administrative/forms.py:43 authentication/models.py:21
+#: administrative/forms.py:48 authentication/models.py:21
 #: authentication/models.py:63
 msgid "Name of class"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:39
-#: administrative/templates/administrative/administrative_base.html:55
-#: dashboard/templates/dashboard/public_dashboard.html:3
-#: teacher/templates/teacher/dashboard.html:3
-msgid "Dashboard"
+#: administrative/forms.py:121
+msgid "User is active"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:41
-#: administrative/templates/administrative/administrative_base.html:59
-#: administrative/templates/administrative/administrative_base.html:99
-#: authentication/models.py:103
-msgid "Users"
+#: administrative/forms.py:122
+msgid "Specific permissions"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:43
-#: administrative/templates/administrative/administrative_base.html:62
-#: administrative/templates/administrative/administrative_base.html:103
+#: administrative/tables.py:178
+#: administrative/templates/administrative/administrative_base.html:54
+#: administrative/templates/administrative/administrative_base.html:75
+#: administrative/templates/administrative/administrative_base.html:117
 #: authentication/models.py:37 authentication/models.py:91
 #: profile_settings/templates/profile_settings/profile_layout.html:57
 #: profile_settings/templates/profile_settings/profile_layout.html:96
@@ -63,34 +62,75 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:45
-#: administrative/templates/administrative/administrative_base.html:65
+#: administrative/tables.py:207 authentication/models.py:135
+msgid "Acronym"
+msgstr ""
+
+#: administrative/tables.py:210 authentication/models.py:125
+#: authentication/models.py:136
+#: profile_settings/templates/profile_settings/profile_layout.html:32
+#: profile_settings/templates/profile_settings/profile_layout.html:46
+#: profile_settings/templates/profile_settings/profile_layout.html:83
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:5
+msgid "Tags"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:50
 #: administrative/templates/administrative/administrative_base.html:68
-#: administrative/templates/administrative/administrative_base.html:107
-#: administrative/templates/administrative/administrative_base.html:111
+#: administrative/templates/administrative/administrative_base.html:109
+#: dashboard/templates/dashboard/public_dashboard.html:3
+#: teacher/templates/teacher/dashboard.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:52
+#: administrative/templates/administrative/administrative_base.html:72
+#: administrative/templates/administrative/administrative_base.html:113
+#: administrative/templates/administrative/users/others/others_overview.html:10
+#: administrative/templates/administrative/users/parents/parents_overview.html:10
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:10
+#: authentication/models.py:102
+msgid "User"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:56
+#: administrative/templates/administrative/administrative_base.html:78
+#: administrative/templates/administrative/administrative_base.html:121
+#: dashboard/templates/dashboard/inquiry.html:194
+#: dashboard/templates/dashboard/inquiry_answered.html:92
+#: dashboard/templates/dashboard/public_dashboard.html:16
+#: dashboard/templates/dashboard/public_dashboard.html:120
+#: teacher/templates/teacher/dashboard.html:32
+#: teacher/templates/teacher/dashboard.html:160
+msgid "Appointments"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:58
+#: administrative/templates/administrative/administrative_base.html:84
+#: administrative/templates/administrative/administrative_base.html:129
+msgid "Formulars"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:60
+#: administrative/templates/administrative/administrative_base.html:89
+#: administrative/templates/administrative/administrative_base.html:136
+msgid "Backup"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:62
+#: administrative/templates/administrative/administrative_base.html:92
+#: administrative/templates/administrative/administrative_base.html:140
+msgid "Settings"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:81
+#: administrative/templates/administrative/administrative_base.html:125
 #: dashboard/models.py:433
 msgid "Events"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:47
-#: administrative/templates/administrative/administrative_base.html:76
-#: administrative/templates/administrative/administrative_base.html:121
-msgid "Settings"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:49
-#: administrative/templates/administrative/administrative_base.html:79
-#: administrative/templates/administrative/administrative_base.html:125
-msgid "Backup"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:71
-#: administrative/templates/administrative/administrative_base.html:114
-msgid "Change formulars"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:85
-#: administrative/templates/administrative/administrative_base.html:132
+#: administrative/templates/administrative/administrative_base.html:98
+#: administrative/templates/administrative/administrative_base.html:147
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
 #: dashboard/templates/dashboard/events/book.html:105
@@ -112,12 +152,125 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:95
-msgid "Dashbaord"
+#: administrative/templates/administrative/backup_template/backup_overview.html:10
+msgid "Backup/Restore"
 msgstr ""
 
+#: administrative/templates/administrative/backup_template/backup_overview.html:11
+#: dashboard/templates/dashboard/public_dashboard.html:17
+#: teacher/templates/teacher/dashboard.html:34
+msgid "All booked appointments are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:16
+#: dashboard/templates/dashboard/events/book.html:34
+#: dashboard/templates/dashboard/events/view.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:87
+msgid "Teacher:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:20
+#: dashboard/templates/dashboard/events/book.html:37
+#: dashboard/templates/dashboard/events/view.html:28
+#: dashboard/templates/dashboard/public_dashboard.html:169
+msgid "Date:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:23
+#: dashboard/templates/dashboard/events/book.html:40
+#: dashboard/templates/dashboard/events/view.html:31
+msgid "Time:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:27
+#: dashboard/templates/dashboard/events/book.html:44
+#: dashboard/templates/dashboard/events/view.html:35
+msgid "Room:"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:5
+#: administrative/templates/administrative/users/others/others_overview.html:30
+#: administrative/templates/administrative/users/parents/parents_overview.html:28
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:29
+#: authentication/models.py:77
+msgid "Others"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:11
+msgid "All other users are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:21
+#: administrative/templates/administrative/users/parents/parents_overview.html:5
+#: administrative/templates/administrative/users/parents/parents_overview.html:19
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:20
+msgid "Parents"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:25
+#: administrative/templates/administrative/users/parents/parents_overview.html:23
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:5
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:24
+msgid "Teachers"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:5
+msgid "Edit Parent"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:22
+msgid "Edit the parent"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:31
+msgid "Personal data"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:43
+msgid "Reset password"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:48
 #: authentication/admin.py:67
 msgid "Permissions"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:50
+msgid "Custom permissions"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:57
+#: dashboard/templates/dashboard/events/view.html:151
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/dashboard.html:328
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
+msgid "Cancel"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:61
+#: dashboard/forms.py:260 dashboard/forms.py:273
+#: dashboard/templates/dashboard/events/view.html:114
+#: profile_settings/forms.py:38
+#: profile_settings/templates/profile_settings/change_password.html:23
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
+#: teacher/templates/teacher/inquiry/viewInquiry.html:72
+msgid "Save"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parents_overview.html:11
+msgid "All parent accounts are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:11
+msgid "All teacher accounts are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:15
+msgid "Add teachers"
 msgstr ""
 
 #: authentication/admin.py:221
@@ -159,13 +312,9 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
-#: authentication/models.py:77 dashboard/models.py:472
+#: authentication/models.py:77 dashboard/models.py:468
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
-msgstr ""
-
-#: authentication/models.py:77
-msgid "Others"
 msgstr ""
 
 #: authentication/models.py:79
@@ -180,8 +329,8 @@ msgstr ""
 msgid "Date joined"
 msgstr ""
 
-#: authentication/models.py:102
-msgid "User"
+#: authentication/models.py:103
+msgid "Users"
 msgstr ""
 
 #: authentication/models.py:116
@@ -200,20 +349,8 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
-#: authentication/models.py:125 authentication/models.py:136
-#: profile_settings/templates/profile_settings/profile_layout.html:32
-#: profile_settings/templates/profile_settings/profile_layout.html:46
-#: profile_settings/templates/profile_settings/profile_layout.html:83
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:5
-msgid "Tags"
-msgstr ""
-
 #: authentication/models.py:133
 msgid "User object of the teacher"
-msgstr ""
-
-#: authentication/models.py:135
-msgid "Acronym"
 msgstr ""
 
 #: authentication/models.py:137
@@ -341,15 +478,6 @@ msgstr ""
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:260 dashboard/forms.py:273
-#: dashboard/templates/dashboard/events/view.html:114
-#: profile_settings/forms.py:38
-#: profile_settings/templates/profile_settings/change_password.html:23
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
-#: teacher/templates/teacher/inquiry/viewInquiry.html:72
-msgid "Save"
-msgstr ""
-
 #: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
@@ -375,17 +503,17 @@ msgid ""
 msgstr ""
 
 #: dashboard/models.py:24 dashboard/models.py:94 dashboard/models.py:144
-#: dashboard/models.py:590
+#: dashboard/models.py:586
 msgid "Set a date from which all parents can request appointments."
 msgstr ""
 
 #: dashboard/models.py:32 dashboard/models.py:100 dashboard/models.py:149
-#: dashboard/models.py:594
+#: dashboard/models.py:590
 msgid "Determine when teachers' enquiries can be answered."
 msgstr ""
 
-#: dashboard/models.py:42
-msgid "Nobody can currently request this appointment.."
+#: dashboard/models.py:42 dashboard/models.py:212
+msgid "Nobody can currently request this appointment."
 msgstr ""
 
 #: dashboard/models.py:47 dashboard/models.py:214
@@ -410,10 +538,6 @@ msgstr ""
 
 #: dashboard/models.py:82
 msgid " and "
-msgstr ""
-
-#: dashboard/models.py:212
-msgid "Nobody can currently request this appointment."
 msgstr ""
 
 #: dashboard/models.py:243 dashboard/models.py:248
@@ -454,75 +578,75 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: dashboard/models.py:459
+#: dashboard/models.py:455
 msgid "Submit own time periods."
 msgstr ""
 
-#: dashboard/models.py:474
+#: dashboard/models.py:470
 msgid "Date"
 msgstr ""
 
-#: dashboard/models.py:475
+#: dashboard/models.py:471
 msgid "Start time"
 msgstr ""
 
-#: dashboard/models.py:476
+#: dashboard/models.py:472
 msgid "End time"
 msgstr ""
 
-#: dashboard/models.py:477
+#: dashboard/models.py:473
 msgid "No events"
 msgstr ""
 
-#: dashboard/models.py:479
+#: dashboard/models.py:475
 msgid "Wait for processing"
 msgstr ""
 
-#: dashboard/models.py:480
+#: dashboard/models.py:476
 msgid "Wait for confirmation"
 msgstr ""
 
-#: dashboard/models.py:481
+#: dashboard/models.py:477
 msgid "Approved"
 msgstr ""
 
-#: dashboard/models.py:482
+#: dashboard/models.py:478
 msgid "Declined"
 msgstr ""
 
-#: dashboard/models.py:487
+#: dashboard/models.py:483
 msgid "Event creation formula"
 msgstr ""
 
-#: dashboard/models.py:488
+#: dashboard/models.py:484
 msgid "Event creation formulas"
 msgstr ""
 
-#: dashboard/models.py:493
+#: dashboard/models.py:489
 msgid "Can accept or reject submitted time periods for other users."
 msgstr ""
 
-#: dashboard/models.py:502
+#: dashboard/models.py:498
 msgid "Inquiry to book an appointment (teacher->parents)"
 msgstr ""
 
-#: dashboard/models.py:503
+#: dashboard/models.py:499
 msgid "Request for confirmation of an appointment (parent->teacher)"
 msgstr ""
 
-#: dashboard/models.py:527
+#: dashboard/models.py:523
 msgid "No response"
 msgstr ""
 
-#: dashboard/models.py:528
+#: dashboard/models.py:524
 msgid "Inquiry accepted"
 msgstr ""
 
-#: dashboard/models.py:529
+#: dashboard/models.py:525
 msgid "Inquiry declined"
 msgstr ""
 
-#: dashboard/models.py:536 dashboard/templates/dashboard/inquiry.html:3
+#: dashboard/models.py:532 dashboard/templates/dashboard/inquiry.html:3
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
@@ -533,49 +657,49 @@ msgstr ""
 msgid "Inquiry"
 msgstr ""
 
-#: dashboard/models.py:537
+#: dashboard/models.py:533
 msgid "Inquries"
 msgstr ""
 
-#: dashboard/models.py:542
+#: dashboard/models.py:538
 msgid "New booking inquiry"
 msgstr ""
 
-#: dashboard/models.py:543
+#: dashboard/models.py:539
 msgid "Appointment cancellation"
 msgstr ""
 
-#: dashboard/models.py:544
+#: dashboard/models.py:540
 msgid "System notification"
 msgstr ""
 
-#: dashboard/models.py:560
+#: dashboard/models.py:556
 msgid "Notification"
 msgstr ""
 
-#: dashboard/models.py:561
+#: dashboard/models.py:557
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
-#: dashboard/templates/dashboard/base.html:73
-#: dashboard/templates/dashboard/base.html:143
+#: dashboard/templates/dashboard/base.html:79
+#: dashboard/templates/dashboard/base.html:149
 #: dashboard/templates/dashboard/public_dashboard.html:196
 #: teacher/templates/teacher/dashboard.html:215
 msgid "Notifications"
 msgstr ""
 
-#: dashboard/models.py:599
+#: dashboard/models.py:595
 msgid ""
 "Here you define the general length of an appointment. It applies to all "
 "appointments created with this function."
 msgstr ""
 
-#: dashboard/models.py:605
+#: dashboard/models.py:601
 msgid ""
 "Here you can set the interval between two appointments. You should allow "
 "some time to change rooms etc."
 msgstr ""
 
-#: dashboard/models.py:630 dashboard/models.py:631
+#: dashboard/models.py:626 dashboard/models.py:627
 msgid "SiteSettings"
 msgstr ""
 
@@ -605,36 +729,36 @@ msgstr ""
 msgid "Mark all as read"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:43
-#: dashboard/templates/dashboard/base.html:110
+#: dashboard/templates/dashboard/base.html:49
+#: dashboard/templates/dashboard/base.html:116
 msgid "Search..."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:55
+#: dashboard/templates/dashboard/base.html:61
 msgid "Help"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:61
+#: dashboard/templates/dashboard/base.html:67
 msgid "Profile"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:70
-#: dashboard/templates/dashboard/base.html:140
+#: dashboard/templates/dashboard/base.html:76
+#: dashboard/templates/dashboard/base.html:146
 msgid "My appointments"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:77
-#: dashboard/templates/dashboard/base.html:146
+#: dashboard/templates/dashboard/base.html:83
+#: dashboard/templates/dashboard/base.html:152
 msgid "Django administration"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:79
-#: dashboard/templates/dashboard/base.html:148
+#: dashboard/templates/dashboard/base.html:85
+#: dashboard/templates/dashboard/base.html:154
 msgid "Administration"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:83
-#: dashboard/templates/dashboard/base.html:151
+#: dashboard/templates/dashboard/base.html:89
+#: dashboard/templates/dashboard/base.html:157
 #: profile_settings/templates/profile_settings/my_profile.html:5
 #: profile_settings/templates/profile_settings/my_profile.html:11
 #: profile_settings/templates/profile_settings/profile_layout.html:28
@@ -643,29 +767,29 @@ msgstr ""
 msgid "My profile"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:88
-#: dashboard/templates/dashboard/base.html:156
+#: dashboard/templates/dashboard/base.html:94
+#: dashboard/templates/dashboard/base.html:162
 msgid "Instructions"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:94
-#: dashboard/templates/dashboard/base.html:162
+#: dashboard/templates/dashboard/base.html:100
+#: dashboard/templates/dashboard/base.html:168
 msgid "Logout"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:124
+#: dashboard/templates/dashboard/base.html:130
 msgid "Click for information about this page."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:131
+#: dashboard/templates/dashboard/base.html:137
 msgid "Click for information about your account."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:181
+#: dashboard/templates/dashboard/base.html:187
 msgid "Close"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:209
+#: dashboard/templates/dashboard/base.html:215
 msgid "Legal notice"
 msgstr ""
 
@@ -711,28 +835,6 @@ msgstr ""
 #: dashboard/templates/dashboard/events/view.html:18
 #: teacher/templates/teacher/event/detailEvent.html:17
 msgid "Detailed view of the appointment"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:34
-#: dashboard/templates/dashboard/events/view.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:87
-msgid "Teacher:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:37
-#: dashboard/templates/dashboard/events/view.html:28
-#: dashboard/templates/dashboard/public_dashboard.html:169
-msgid "Date:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:40
-#: dashboard/templates/dashboard/events/view.html:31
-msgid "Time:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:44
-#: dashboard/templates/dashboard/events/view.html:35
-msgid "Room:"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/book.html:60
@@ -830,17 +932,6 @@ msgstr ""
 msgid "Cancel appointment"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/view.html:151
-#: profile_settings/templates/profile_settings/change_password.html:19
-#: profile_settings/templates/profile_settings/my_profile.html:39
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
-#: teacher/templates/teacher/dashboard.html:298
-#: teacher/templates/teacher/dashboard.html:328
-#: teacher/templates/teacher/event/detailEvent.html:147
-#: teacher/templates/teacher/event/detailEvent.html:178
-msgid "Cancel"
-msgstr ""
-
 #: dashboard/templates/dashboard/inquiry.html:15
 #: dashboard/templates/dashboard/inquiry_answered.html:15
 msgid "Requestor:"
@@ -867,24 +958,10 @@ msgstr ""
 msgid "Please select one of the available appointments."
 msgstr ""
 
-#: dashboard/templates/dashboard/inquiry.html:194
-#: dashboard/templates/dashboard/inquiry_answered.html:92
-#: dashboard/templates/dashboard/public_dashboard.html:16
-#: dashboard/templates/dashboard/public_dashboard.html:120
-#: teacher/templates/teacher/dashboard.html:32
-#: teacher/templates/teacher/dashboard.html:160
-msgid "Appointments"
-msgstr ""
-
 #: dashboard/templates/dashboard/inquiry.html:195
 #: dashboard/templates/dashboard/inquiry_answered.html:93
 #: teacher/templates/teacher/dashboard.html:161
 msgid "You do not have any open appointments yet."
-msgstr ""
-
-#: dashboard/templates/dashboard/public_dashboard.html:17
-#: teacher/templates/teacher/dashboard.html:34
-msgid "All booked appointments are listed here."
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:22
