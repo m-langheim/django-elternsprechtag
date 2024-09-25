@@ -177,21 +177,27 @@ class TeacherEditForm(forms.ModelForm):
             "is_staff",
         )
 
-    email = forms.EmailField()
+    email = forms.EmailField(label=_("Email"))
     first_name = forms.CharField(max_length=48)
     last_name = forms.CharField(max_length=48)
-    acronym = forms.CharField(max_length=3)
+    acronym = forms.CharField(max_length=3, label=_("Acronym"))
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, label=_("Profile image"))
 
     custom_permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(TeacherEditForm, self).__init__(*args, **kwargs)
+
+        self.fields['is_active'].label = _("User is active")
+        self.fields['is_staff'].label = _("User is staff")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 
@@ -231,7 +237,7 @@ class TeacherEditForm(forms.ModelForm):
             .exists()
         ):
             raise ValueError(
-                "Another teacher has the same acronym. Please choose a different one."
+                _("Another teacher has the same acronym. Please choose a different one.")
             )
         return data
 

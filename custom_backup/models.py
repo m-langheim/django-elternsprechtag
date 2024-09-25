@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.conf import settings
 
 # Create your models here.
@@ -38,8 +39,8 @@ class Backup(models.Model):
 
     class Meta:
         permissions = (
-            ("can_restore_backup", "Can restore backup"),
-            ("can_add_backup", "Can create a backup"),
+            ("can_restore_backup", _("Can restore backup")),
+            ("can_add_backup", _("Can create a backup")),
         )
 
 

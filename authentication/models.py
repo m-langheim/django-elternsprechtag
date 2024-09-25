@@ -68,7 +68,7 @@ class StudentChange(models.Model):
     applied_time = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        permissions = [("apply_changes", "Can apply changes to the students")]
+        permissions = [("apply_changes", _("Can apply changes to the students"))]
 
 
 class CustomUser(

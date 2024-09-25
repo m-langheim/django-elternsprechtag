@@ -6,15 +6,13 @@
 
 {% block control_content %}
 
-
-<!-- Keine Ahnung, wann das hier in Benutzung ist. -->
 {% if not parent.is_active %}
 <div class="alert alert-warning d-flex align-items-center" role="alert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
         <use xlink:href="#exclamation-triangle-fill" />
     </svg>
     <div>
-        This user is not active.
+        {% translate 'This user is not active.' %}
     </div>
 </div>
 {% endif %}
@@ -65,15 +63,6 @@
 </form>
 </div>
 
-
-
-
-
-
-
-
-
-
 <style>
     .form-check-input {
         cursor: pointer;
@@ -83,25 +72,4 @@
         cursor: pointer;
     }
 </style>
-
-
-
-
-<!-- rest -->
-<!-- <form method="POST">
-    {{ form | crispy }}
-    {% csrf_token %}
-
-    <div class="row">
-        <div class="col d-flex">
-            <a class="btn btn-outline-secondary mt-2" href="{% url 'parents_table' %}">Abbrechen</a>
-        </div>
-        <div class="col d-flex justify-content-end">
-            <button class="btn btn-outline-danger mt-2" type="submit">
-                Save
-            </button>
-        </div>
-    </div>
-</form> -->
-
 {% endblock %}

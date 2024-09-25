@@ -91,7 +91,7 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(instance=parent)
             return render(
@@ -104,7 +104,7 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(request.POST, instance=parent)
             if form.is_valid():

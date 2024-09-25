@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 01:13+0200\n"
+"POT-Creation-Date: 2024-09-26 01:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,13 +42,35 @@ msgstr "Email des Kindes"
 msgid "Name of class"
 msgstr "Klasse"
 
-#: administrative/forms.py:121
+#: administrative/forms.py:121 administrative/forms.py:197
 msgid "User is active"
 msgstr "User ist aktiv"
 
-#: administrative/forms.py:122
+#: administrative/forms.py:122 administrative/forms.py:199
 msgid "Specific permissions"
 msgstr "Spezifische Berechtigungen"
+
+#: administrative/forms.py:180 authentication/models.py:79
+msgid "Email"
+msgstr "E-Mail"
+
+#: administrative/forms.py:183 administrative/tables.py:207
+#: authentication/models.py:135
+msgid "Acronym"
+msgstr "Kürzel"
+
+#: administrative/forms.py:185 authentication/models.py:141
+msgid "Profile image"
+msgstr "Profilbild"
+
+#: administrative/forms.py:198
+msgid "User is staff"
+msgstr "User ist ein Mitarbeiter"
+
+#: administrative/forms.py:240
+msgid "Another teacher has the same acronym. Please choose a different one."
+msgstr ""
+"Ein anderer Lehrer hat das gleiche Kürzel. Bitte wählen Sie ein anderes."
 
 #: administrative/tables.py:178
 #: administrative/templates/administrative/administrative_base.html:54
@@ -61,10 +83,6 @@ msgstr "Spezifische Berechtigungen"
 #: profile_settings/templates/profile_settings/student_list.html:11
 msgid "Students"
 msgstr "Schüler*innen"
-
-#: administrative/tables.py:207 authentication/models.py:135
-msgid "Acronym"
-msgstr "Abkürzung"
 
 #: administrative/tables.py:210 authentication/models.py:125
 #: authentication/models.py:136
@@ -218,28 +236,38 @@ msgstr "Lehrkräfte"
 msgid "Edit Parent"
 msgstr "Elternteil bearbeiten"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:22
+#: administrative/templates/administrative/users/parents/parent_edit.html:15
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:15
+msgid "This user is not active."
+msgstr "Dieser User ist nicht aktiv."
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:20
 msgid "Edit the parent"
 msgstr "Elternteil bearbeiten"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:31
+#: administrative/templates/administrative/users/parents/parent_edit.html:29
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:29
 msgid "Personal data"
 msgstr "Persönliche Daten"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:43
+#: administrative/templates/administrative/users/parents/parent_edit.html:41
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:44
 msgid "Reset password"
 msgstr "Kennwort zurücksetzen"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:48
+#: administrative/templates/administrative/users/parents/parent_edit.html:46
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:49
 #: authentication/admin.py:67
 msgid "Permissions"
 msgstr "Berechtigungen"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:50
+#: administrative/templates/administrative/users/parents/parent_edit.html:48
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:51
 msgid "Custom permissions"
 msgstr "Persönliche Berechtigungen"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:57
+#: administrative/templates/administrative/users/parents/parent_edit.html:55
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
 #: dashboard/templates/dashboard/events/view.html:151
 #: profile_settings/templates/profile_settings/change_password.html:19
 #: profile_settings/templates/profile_settings/my_profile.html:39
@@ -251,7 +279,8 @@ msgstr "Persönliche Berechtigungen"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: administrative/templates/administrative/users/parents/parent_edit.html:61
+#: administrative/templates/administrative/users/parents/parent_edit.html:59
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
 #: dashboard/forms.py:260 dashboard/forms.py:273
 #: dashboard/templates/dashboard/events/view.html:114
 #: profile_settings/forms.py:38
@@ -265,6 +294,14 @@ msgstr "Speichern"
 msgid "All parent accounts are listed here."
 msgstr "Hier werden alle Eltern aufgeführt."
 
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:5
+msgid "Edit Teacher"
+msgstr "Lehrkraft bearbeiten"
+
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:20
+msgid "Edit the teacher"
+msgstr "Lehrkraft bearbeiten"
+
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:11
 msgid "All teacher accounts are listed here."
 msgstr "Hier werden alle Lehrkräfte aufgeführt."
@@ -272,6 +309,10 @@ msgstr "Hier werden alle Lehrkräfte aufgeführt."
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:15
 msgid "Add teachers"
 msgstr "Lehrkraft hinzufügen"
+
+#: administrative/views/users.py:94 administrative/views/users.py:107
+msgid "The parent could not be found."
+msgstr "Das Elternteil konnte nicht gefunden werden."
 
 #: authentication/admin.py:221
 #, python-format
@@ -309,6 +350,10 @@ msgstr "Eltern des Kindes haben sich registriert."
 msgid "Student"
 msgstr "Schüler*in"
 
+#: authentication/models.py:71
+msgid "Can apply changes to the students"
+msgstr "Kann Änderungen an Schüler*innen vornehmen"
+
 #: authentication/models.py:77
 #: teacher/templates/teacher/event/detailEvent.html:34
 msgid "Parent"
@@ -318,10 +363,6 @@ msgstr "Eltern"
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
 msgstr "Lehrkraft"
-
-#: authentication/models.py:79
-msgid "Email"
-msgstr "E-Mail"
 
 #: authentication/models.py:86
 msgid "Role"
@@ -358,10 +399,6 @@ msgstr "Zugeordneter User der Lehrkraft"
 #: authentication/models.py:137
 msgid "Room"
 msgstr "Raum"
-
-#: authentication/models.py:141
-msgid "Profile image"
-msgstr "Profilbild"
 
 #: authentication/models.py:159
 msgid "Additional data for teacher"
@@ -419,6 +456,14 @@ msgstr "Registrierung"
 #: authentication/templates/authentication/register_teacher/register_teacher_create_account.html:3
 msgid "Teacher register"
 msgstr "Lehrkraft registrieren"
+
+#: custom_backup/models.py:42
+msgid "Can restore backup"
+msgstr "Kann Backup wiederherstellen"
+
+#: custom_backup/models.py:43
+msgid "Can create a backup"
+msgstr "Kann Backup erstellen"
 
 #: custom_backup/templates/custom_backup/create_backup.html:4
 #: custom_backup/templates/custom_backup/load_backup.html:4
