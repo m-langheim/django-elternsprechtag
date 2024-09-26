@@ -6,6 +6,9 @@ from django.utils.html import format_html
 from django.template.loader import render_to_string
 from custom_backup.models import *
 from django.utils.translation import gettext as _
+from django_tables2.utils import A
+from django.urls import reverse_lazy
+
 
 class StudentExtrainformaionColumn(tables.Column):
     def render(self, value):
@@ -23,6 +26,34 @@ class StudentExtrainformaionColumn(tables.Column):
         return format_html(column_text)
 
 
+class StudentParentLinkColumn(tables.Column):
+    def render(self, value):
+        student = Student.objects.get(pk=value)
+
+        if student.parent():
+            column_text = f'<a href={reverse_lazy("parent_edit_view", args=[student.parent().pk])}>{student.parent().first_name} {student.parent().last_name}</a>'
+        elif student.upcomming_user.email_send:
+            column_text = "Pending"
+        else:
+            column_text = "None"
+
+        return format_html(column_text)
+
+
+class StudentParentLinkColumn(tables.Column):
+    def render(self, value):
+        student = Student.objects.get(pk=value)
+
+        if student.parent():
+            column_text = f'<a href={reverse_lazy("parent_edit_view", args=[student.parent().pk])}>{student.parent().first_name} {student.parent().last_name}</a>'
+        elif student.upcomming_user.email_send:
+            column_text = "Pending"
+        else:
+            column_text = "None"
+
+        return format_html(column_text)
+
+
 class StudentTable(tables.Table):
     class Meta:
         model = Student
@@ -32,32 +63,32 @@ class StudentTable(tables.Table):
             "last_name",
             "child_email",
             "class_name",
-            "parent",
         )
 
     first_name = tables.Column(
-        verbose_name = _("First name"),
+        verbose_name=_("First name"),
         attrs={"th": {"id": "first_name_id"}},
     )
 
     last_name = tables.Column(
-        verbose_name = _("Last name"),
+        verbose_name=_("Last name"),
         attrs={"th": {"id": "last_name_id"}},
     )
 
     child_email = tables.Column(
         orderable=False,
-        verbose_name=_("Child email"),    
+        verbose_name=_("Child email"),
     )
 
     class_name = tables.Column(
-        verbose_name = _("Class"),
+        verbose_name=_("Class"),
         attrs={"th": {"id": "class_name_id"}},
     )
 
-    parent = tables.Column(
-        orderable=False,
-        verbose_name=_("Parent Email"),
+    parent = StudentParentLinkColumn(
+        accessor="pk",
+        verbose_name=_("Parent"),
+        attrs={"th": {"id": "parent_id"}},
     )
 
     info = StudentExtrainformaionColumn(
@@ -200,7 +231,7 @@ class EventFormularOldTable(tables.Table):
 class ParentsTable(tables.Table):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_columns['students'].verbose_name = _("Students")
+        self.base_columns["students"].verbose_name = _("Students")
 
     class Meta:
         model = CustomUser
@@ -208,12 +239,12 @@ class ParentsTable(tables.Table):
         attrs = {"class": "table"}
 
     first_name = tables.Column(
-        verbose_name = _("First name"),
+        verbose_name=_("First name"),
         attrs={"th": {"id": "first_name_id"}},
     )
 
     last_name = tables.Column(
-        verbose_name = _("Last name"),
+        verbose_name=_("Last name"),
         attrs={"th": {"id": "last_name_id"}},
     )
 
@@ -226,10 +257,16 @@ class ParentsTable(tables.Table):
         attrs={"td": {"align": "right"}},
     )
 
+
 class TeachersTable(tables.Table):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_columns['teacherextradata.tags'].verbose_name = _("Tags")
+        self.base_columns["teacherextradata.acronym"] = tables.Column(
+            orderable=False, verbose_name=_("Acronym")
+        )
+        # verbose_name = _("Acronym")
+        # self.base_columns['teacherextradata.acronym'].orderable = False
+        self.base_columns["teacherextradata.tags"].verbose_name = _("Tags")
 
     class Meta:
         model = CustomUser
@@ -241,12 +278,12 @@ class TeachersTable(tables.Table):
         attrs = {"class": "table"}
 
     first_name = tables.Column(
-        verbose_name = _("First name"),
+        verbose_name=_("First name"),
         attrs={"th": {"id": "first_name_id"}},
     )
 
     last_name = tables.Column(
-        verbose_name = _("Last name"),
+        verbose_name=_("Last name"),
         attrs={"th": {"id": "last_name_id"}},
     )
 
@@ -265,6 +302,7 @@ class TeachersTable(tables.Table):
         attrs={"td": {"align": "right"}},
     )
 
+
 class OthersTable(tables.Table):
     class Meta:
         model = CustomUser
@@ -272,12 +310,12 @@ class OthersTable(tables.Table):
         attrs = {"class": "table"}
 
     first_name = tables.Column(
-        verbose_name = _("First name"),
+        verbose_name=_("First name"),
         attrs={"th": {"id": "first_name_id"}},
     )
 
     last_name = tables.Column(
-        verbose_name = _("Last name"),
+        verbose_name=_("Last name"),
         attrs={"th": {"id": "last_name_id"}},
     )
 
