@@ -1,38 +1,45 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %} {% translate 'Import students' %} {% endblock title %}
+
 {% block control_content %}
 
 {% if unapproved_changes %}
 <div class="card border-danger mb-3">
-	<div class="card-body row">
-		<div class="col col-12 col-md-8">
-			<h5 class="card-title">Offene Änderungen</h5>
-			<div class="card-text">Es gibt mehrere Änderungen an der Schülerdatenbank, die Sie noch nicht bestätigt haben. Bitte fahren Sie mit den Änderungen fort. </div>
-		</div>
-		<div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
-			<a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">Jetzt ansehen</a>
-		</div>
-	</div>
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Outstanding changes' %}</h5>
+            <div class="card-text">{% translate 'There are several changes to the student database that are not confirmed yet. Please continue with the changes.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
 </div>
-{% comment %} <a href="{% url 'student_import_listchanges' %}">View</a> {% endcomment %}
 {% endif %}
 
-<div class="card card-body p-4">
-    <form action="." method="POST" enctype="multipart/form-data">
-        {{ form | crispy }}
-        {% csrf_token %}
-
-        <div class="row">
-            <div class="col d-flex">
-                <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Abbrechen</a>
-            </div>
-            <div class="col d-flex justify-content-end">
-                <button class="btn btn-outline-danger mt-2" type="submit">
-                    Upload
-                </a>
-            </div>
-        </div>
-    </form>
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Add students' %}</p>
+        <p class="text-muted">{% translate 'Upload a CSV-File to import students.' %}</p>
+    </div>
 </div>
+
+<form action="." method="POST" enctype="multipart/form-data">
+    {{ form | crispy }}
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">{% translate 'Cancel' %}</a>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                {% translate 'Upload' %}
+            </button>
+        </div>
+    </div>
+</form>
 
 {% endblock %}

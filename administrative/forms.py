@@ -34,7 +34,7 @@ from .tasks import *
 
 
 class CsvImportForm(forms.Form):
-    csv_file = forms.FileField()
+    csv_file = forms.FileField(label=_("CSV-File"))
 
 
 class TeacherImportForm(forms.Form):

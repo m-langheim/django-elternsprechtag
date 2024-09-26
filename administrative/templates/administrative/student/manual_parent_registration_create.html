@@ -64,13 +64,13 @@
                             {% if form.confirm_password.errors %}
                             {% with form.confirm_password.errors.as_data.0.code as code %}
                             {% if code == 'passwords_wrong' %}
-                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter two identical passwords</div>
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> {% translate 'Please enter two identical passwords' %}</div>
                             {% elif code == 'password_too_short' %}
-                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password longer than 8 chars</div>
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> {% translate 'Please enter a password longer than 8 chars' %}</div>
                             {% elif code == 'password_too_common' %}
-                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a more unusual password</div>
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> {% translate 'Please enter a more unusual password' %}</div>
                             {% elif code == 'password_entirely_numeric' %}
-                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password consisting not only of numbers</div>
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> {% translate 'Please enter a password consisting not only of numbers' %}</div>
                             {% endif %}
                             {% endwith %}
                             {% endif %}
