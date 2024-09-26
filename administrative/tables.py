@@ -179,22 +179,26 @@ class EventFormularActionTable(tables.Table):
 
     teacher = tables.Column(
         verbose_name = _("Teacher"),
-        attrs={"th": {"id": "teacher_id1"}},
+        # attrs={"th": {"id": "teacher_id1"}},
+        orderable=False,
     )
 
     date = tables.Column(
         verbose_name = _("Date"),
-        attrs={"th": {"id": "date_id1"}},
+        # attrs={"th": {"id": "date_id1"}},
+        orderable=False,
     )
 
     start_time = tables.Column(
         verbose_name = _("Start"),
-        attrs={"th": {"id": "start_time_id1"}},
+        # attrs={"th": {"id": "start_time_id1"}},
+        orderable=False,
     )
 
     end_time = tables.Column(
         verbose_name = _("End"),
-        attrs={"th": {"id": "end_time_id1"}},
+        # attrs={"th": {"id": "end_time_id1"}},
+        orderable=False,
     )
 
     # approve = tables.LinkColumn(
@@ -230,12 +234,14 @@ class EventFormularUpcommingTable(tables.Table):
 
     teacher = tables.Column(
         verbose_name = _("Teacher"),
-        attrs={"th": {"id": "teacher_id2"}},
+        # attrs={"th": {"id": "teacher_id2"}},
+        orderable=False,
     )
 
     date = tables.Column(
         verbose_name = _("Date"),
-        attrs={"th": {"id": "date_id2"}},
+        # attrs={"th": {"id": "date_id2"}},
+        orderable=False,
     )
     
 
@@ -261,17 +267,20 @@ class EventFormularOldTable(tables.Table):
 
     teacher = tables.Column(
         verbose_name = _("Teacher"),
-        attrs={"th": {"id": "teacher_id3"}},
+        # attrs={"th": {"id": "teacher_id3"}},
+        orderable=False,
     )
 
     date = tables.Column(
         verbose_name = _("Date"),
-        attrs={"th": {"id": "date_id3"}},
+        # attrs={"th": {"id": "date_id3"}},
+        orderable=False,
     )
 
     status = tables.Column(
         verbose_name = _("Status"),
-        attrs={"th": {"id": "status_id3"}},
+        # attrs={"th": {"id": "status_id3"}},
+        orderable=False,
     )
 
     # result = tables.BooleanColumn(null=True)

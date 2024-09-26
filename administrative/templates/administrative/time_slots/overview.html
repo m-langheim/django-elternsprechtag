@@ -16,7 +16,7 @@
 
 	{% if action_table_entries > 0 %}
 	{% render_table action_table %}
-	<script>
+	<!-- <script>
 		var teacher = document.getElementById("teacher_id1");
 		var date = document.getElementById("date_id1");
 		var start_time = document.getElementById("start_time_id1");
@@ -25,7 +25,7 @@
 		date.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
 		start_time.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
 		end_time.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
-	</script>
+	</script> -->
 	{% else %}
 	{% translate 'There are currently no open formulars.' %}
 	{% endif %}
@@ -37,12 +37,12 @@
 
 	{% if upcomming_table_entries > 0 %}
 	{% render_table upcomming_table %}
-	<script>
+	<!-- <script>
 		var teacher = document.getElementById("teacher_id2");
 		var date = document.getElementById("date_id2");
 		teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
 		date.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
-	</script>
+	</script> -->
 	{% else %}
 	{% translate 'No times are requested.' %}
 	{% endif %}
@@ -54,7 +54,7 @@
 
 	{% if closed_table_entries > 0 %}
 	{% render_table approved_formulars_table %}
-	<script>
+	<!-- <script>
 		var teacher = document.getElementById("teacher_id3");
 		var date = document.getElementById("date_id3");
 		teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
@@ -62,7 +62,7 @@
 
 		// var status = document.getElementById("status_id3"); seperat does not work at all idk why
 		document.getElementById("status_id3").children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
-	</script>
+	</script> -->
 	{% else %}
 	{% translate 'No times are requested.' %}
 	{% endif %}
