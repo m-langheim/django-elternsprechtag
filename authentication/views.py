@@ -185,6 +185,9 @@ class RegistrationStartView(View):
             )
 
 
+@method_decorator(
+    [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
+)
 class RegistrationResetView(View):
     def get(self, request, user_token, key_token, *args, **kwargs):
         try:
@@ -206,51 +209,51 @@ class RegistrationResetView(View):
             )
 
 
-#! Wahrscheinlich ist diese Funktion nicht länger benötigt
-@method_decorator(
-    [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
-)
-class RegistrationAccountLinkChooseView(View):
-    def get(self, request, user_token, key_token, *args, **kwargs):
-        try:
-            user_data = Upcomming_User.objects.get(
-                Q(user_token=user_token), Q(access_key=key_token)
-            )
-        except:
-            user_data = None
+# #! Wahrscheinlich ist diese Funktion nicht länger benötigt
+# @method_decorator(
+#     [valid_custom_user_link, upcomming_user_otp_validated], name="dispatch"
+# )
+# class RegistrationAccountLinkChooseView(View):
+#     def get(self, request, user_token, key_token, *args, **kwargs):
+#         try:
+#             user_data = Upcomming_User.objects.get(
+#                 Q(user_token=user_token), Q(access_key=key_token)
+#             )
+#         except:
+#             user_data = None
 
-        if user_data is not None and not parent_registration_link_deprecated(user_data):
-            if not parent_registration_check_otp_verified(user_data):
-                return redirect(
-                    "parent_check_otp",
-                    user_token=user_token,
-                    key_token=key_token,
-                )
-            if not user_data.parent_email:
-                return redirect(
-                    "parent_register",
-                    user_token=user_token,
-                    key_token=key_token,
-                )
-            try:
-                existing_user = CustomUser.objects.get(email=user_data.parent_email)
-            except CustomUser.DoesNotExist:
-                return redirect(
-                    "parent_register",
-                    user_token=user_token,
-                    key_token=key_token,
-                )
-            else:
-                if existing_user.role != 0:
-                    messages.error(
-                        request,
-                        "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
-                    )
-                    return redirect(
-                        "parent_register",
-                        user_token=user_token,
-                        key_token=key_token,
-                    )
+#         if user_data is not None and not parent_registration_link_deprecated(user_data):
+#             if not parent_registration_check_otp_verified(user_data):
+#                 return redirect(
+#                     "parent_check_otp",
+#                     user_token=user_token,
+#                     key_token=key_token,
+#                 )
+#             if not user_data.parent_email:
+#                 return redirect(
+#                     "parent_register",
+#                     user_token=user_token,
+#                     key_token=key_token,
+#                 )
+#             try:
+#                 existing_user = CustomUser.objects.get(email=user_data.parent_email)
+#             except CustomUser.DoesNotExist:
+#                 return redirect(
+#                     "parent_register",
+#                     user_token=user_token,
+#                     key_token=key_token,
+#                 )
+#             else:
+#                 if existing_user.role != 0:
+#                     messages.error(
+#                         request,
+#                         "Diese Email gehört zu einem Account, welcher nicht als Elternteil eingetragen ist. Es handelt sich wahrscheinlich um einen Lehreraccount. Bitte verwenden Sie eine andere Email-Adresse um einen Eltern Account zu erstellen.",
+#                     )
+#                     return redirect(
+#                         "parent_register",
+#                         user_token=user_token,
+#                         key_token=key_token,
+#                     )
 
 
 @method_decorator(
@@ -658,7 +661,8 @@ class TeacherRegistrationView(View):
         else:
             messages.error(request, "Dieser Link ist ungültig.")
             return redirect("login")
-    
+
+
 @login_required
 def logout_view(request):
     logout(request)

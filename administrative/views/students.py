@@ -440,6 +440,7 @@ class ResetStudentParentRelationshipView(View):
             return redirect("..")
 
 
+@method_decorator(login_staff, name="dispatch")
 class ManualParentRegistration(View):
     def get(self, request, pk):
         try:
@@ -451,7 +452,11 @@ class ManualParentRegistration(View):
             return render(
                 request,
                 "administrative/student/manual_parent_registration_create.html",
-                {"form": form, "student": student, "validators": password_validators_help_text_html},
+                {
+                    "form": form,
+                    "student": student,
+                    "validators": password_validators_help_text_html,
+                },
             )
 
     def post(self, request, pk):
@@ -489,10 +494,15 @@ class ManualParentRegistration(View):
             return render(
                 request,
                 "administrative/student/manual_parent_registration_create.html",
-                {"form": form, "student": student, "validators": password_validators_help_text_html},
+                {
+                    "form": form,
+                    "student": student,
+                    "validators": password_validators_help_text_html,
+                },
             )
 
 
+@method_decorator(login_staff, name="dispatch")
 class ManualParentAddStudent(View):
     def get(self, request, pk):
         try:
