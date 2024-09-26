@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 16:10+0200\n"
+"POT-Creation-Date: 2024-09-26 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr "E-Mail der Lehrkraft"
 
 #: administrative/forms.py:56 administrative/forms.py:296
 #: administrative/tables.py:69 administrative/tables.py:242
-#: administrative/tables.py:282 administrative/tables.py:308
+#: administrative/tables.py:281 administrative/tables.py:313
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:81
 msgid "First name"
@@ -36,7 +36,7 @@ msgstr "Vorname"
 
 #: administrative/forms.py:57 administrative/forms.py:297
 #: administrative/tables.py:74 administrative/tables.py:247
-#: administrative/tables.py:287 administrative/tables.py:313
+#: administrative/tables.py:286 administrative/tables.py:318
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:83
 msgid "Last name"
@@ -68,7 +68,7 @@ msgid "Email"
 msgstr "E-Mail"
 
 #: administrative/forms.py:194 administrative/tables.py:265
-#: authentication/models.py:135
+#: administrative/tables.py:291 authentication/models.py:135
 msgid "Acronym"
 msgstr "Kürzel"
 
@@ -138,16 +138,16 @@ msgstr "Schüler*innen"
 msgid "Tags"
 msgstr "Tags"
 
-#: administrative/tables.py:324 authentication/models.py:77
-#: dashboard/models.py:468 teacher/templates/teacher/event/detailEvent.html:32
+#: administrative/tables.py:362 authentication/models.py:77
+#: dashboard/models.py:474 teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
 msgstr "Lehrkraft"
 
-#: administrative/tables.py:329
+#: administrative/tables.py:367
 msgid "Start"
 msgstr "Start"
 
-#: administrative/tables.py:334
+#: administrative/tables.py:372
 msgid "Base event"
 msgstr "Elternsprechtag"
 
@@ -682,11 +682,6 @@ msgstr "Eltern des Kindes haben sich registriert."
 msgid "Can apply changes to the students"
 msgstr "Kann Änderungen an Schüler*innen vornehmen"
 
-#: authentication/models.py:77 dashboard/models.py:474
-#: teacher/templates/teacher/event/detailEvent.html:32
-msgid "Teacher"
-msgstr "Lehrkraft"
-
 #: authentication/models.py:86
 msgid "Role"
 msgstr "Rolle"
@@ -922,15 +917,42 @@ msgstr " und "
 msgid "Unoccupied"
 msgstr "Frei"
 
-#: dashboard/models.py:244 dashboard/models.py:249
+#: dashboard/models.py:244 dashboard/models.py:249 dashboard/models.py:261
 #: dashboard/templates/dashboard/events/teacher.html:189
 #: dashboard/templates/dashboard/inquiry.html:167
 msgid "Occupied"
 msgstr "Belegt"
 
-#: dashboard/models.py:245 dashboard/models.py:250
+#: dashboard/models.py:245 dashboard/models.py:250 dashboard/models.py:259
 msgid "Inquiry pending"
 msgstr "Anfrage ausstehend"
+
+#: dashboard/models.py:258
+msgid "Event bookable"
+msgstr "Termin buchbar"
+
+#: dashboard/models.py:260 dashboard/templates/dashboard/events/teacher.html:86
+#: dashboard/templates/dashboard/events/teacher.html:156
+#: dashboard/templates/dashboard/inquiry.html:134
+#: dashboard/templates/dashboard/inquiry_answered.html:80
+msgid "Booked"
+msgstr "Gebucht"
+
+#: dashboard/models.py:262
+#: dashboard/templates/dashboard/events/teacher.html:197
+#: dashboard/templates/dashboard/inquiry.html:175
+msgid "Blocked"
+msgstr "Blockiert"
+
+#: dashboard/models.py:263
+#: dashboard/templates/dashboard/events/teacher.html:193
+#: dashboard/templates/dashboard/inquiry.html:171
+msgid "Time conflict"
+msgstr "Zeitkonflikt"
+
+#: dashboard/models.py:264 dashboard/templates/dashboard/events/book.html:14
+msgid "Followup event"
+msgstr "Folge Termin"
 
 #: dashboard/models.py:335
 msgid "This user is not a parent."
@@ -960,19 +982,25 @@ msgstr "Termin"
 msgid ""
 "The user is allowed to book an event. Without this permission the user will "
 "be completely blocked from booking."
-msgstr "Dieser Nutzer darf Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen."
+msgstr ""
+"Dieser Nutzer darf Termin buchen. Ohne diese Berechtigung ist er komplett "
+"ausgeschlossen vom Buchen von Terminen."
 
 #: dashboard/models.py:444
 msgid ""
 "The user is allowed to book an event before the official booking period "
 "because he has an e.g. medical condition."
-msgstr "Dieser Nutzer darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen."
+msgstr ""
+"Dieser Nutzer darf aus z.B. medizinischen Gründen einen Termin vor der "
+"offiziellen Buchungsphasen anfragen."
 
 #: dashboard/models.py:450
 msgid ""
 "The user is allowed to book a double event with all teachers because of an "
 "medical condition."
-msgstr "Dieser Nutzer darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen."
+msgstr ""
+"Dieser Nutzer darf aus z.B. medizinischen Gründen auch Doppeltermine bei "
+"einer Lehrkraft anfragen."
 
 #: dashboard/models.py:461
 msgid "Submit own time periods."
@@ -1215,10 +1243,6 @@ msgstr "Sie dürfen diesen Termin noch nicht anfragen."
 msgid "Appointment view"
 msgstr "Terminansicht"
 
-#: dashboard/templates/dashboard/events/book.html:14
-msgid "Followup event"
-msgstr "Folge Termin"
-
 #: dashboard/templates/dashboard/events/book.html:16
 #, python-format
 msgid ""
@@ -1286,13 +1310,6 @@ msgstr "Gebuchte Termine"
 msgid "Requested"
 msgstr "Angefragt"
 
-#: dashboard/templates/dashboard/events/teacher.html:86
-#: dashboard/templates/dashboard/events/teacher.html:156
-#: dashboard/templates/dashboard/inquiry.html:134
-#: dashboard/templates/dashboard/inquiry_answered.html:80
-msgid "Booked"
-msgstr "Gebucht"
-
 #: dashboard/templates/dashboard/events/teacher.html:108
 #: dashboard/templates/dashboard/events/teacher.html:257
 #: dashboard/templates/dashboard/inquiry.html:49
@@ -1310,16 +1327,6 @@ msgstr ""
 #: dashboard/templates/dashboard/inquiry.html:156
 msgid "Followup"
 msgstr "Nachfolge"
-
-#: dashboard/templates/dashboard/events/teacher.html:193
-#: dashboard/templates/dashboard/inquiry.html:171
-msgid "Time conflict"
-msgstr "Zeitkonflikt"
-
-#: dashboard/templates/dashboard/events/teacher.html:197
-#: dashboard/templates/dashboard/inquiry.html:175
-msgid "Blocked"
-msgstr "Blockiert"
 
 #: dashboard/templates/dashboard/events/teacher.html:260
 msgid "There are no appointments for this teacher yet."
