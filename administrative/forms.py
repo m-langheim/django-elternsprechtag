@@ -41,6 +41,8 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin,
 )
 
+from colorfield.widgets import ColorWidget
+
 
 class StudentSelect2View(LoginRequiredMixin, PermissionRequiredMixin, AutoResponseView):
     permission_required = "student.can_view_all"
@@ -284,7 +286,7 @@ class TeacherEditForm(forms.ModelForm):
 
         if (
             TeacherExtraData.objects.filter(acronym=data)
-            .exclude(pk=instance.pk)
+            .exclude(pk=instance.teacherextradata.pk)
             .exists()
         ):
             raise ValueError(
@@ -576,3 +578,10 @@ class EditStudentChangesForm(forms.ModelForm):
         if apply:
             apply_and_approve_student_changes.delay([instance.pk])
         return instance
+
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ["name", "synonyms", "color"]
+        widgets = {"color": ColorWidget}
