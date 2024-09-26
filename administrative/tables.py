@@ -7,8 +7,6 @@ from django.template.loader import render_to_string
 from custom_backup.models import *
 from django.utils.translation import gettext as _
 
-from django.utils.safestring import mark_safe # ist das so sicher?!
-
 class StudentExtrainformaionColumn(tables.Column):
     def render(self, value):
         student = Student.objects.get(pk=value)
@@ -21,11 +19,7 @@ class StudentExtrainformaionColumn(tables.Column):
                     "<i class='fa-solid fa-triangle-exclamation text-danger'></i>"
                 )
             else:
-                column_text += "<i class='fa-solid fa-user-plus text-warning'></i>"
-        else:
-            column_text += (
-                "<i class='fa-solid fa-person-circle-check text-success'></i>"
-            )
+                column_text += "<i class='fa-regular fa-clock text-warning fs-5'></i>"
         return format_html(column_text)
 
 
@@ -38,17 +32,48 @@ class StudentTable(tables.Table):
             "last_name",
             "child_email",
             "class_name",
+            "parent",
         )
 
-    child_email = tables.EmailColumn(orderable=False)
-    parent = tables.Column(accessor="parent", orderable=False)
-    info = StudentExtrainformaionColumn(accessor="pk", orderable=False)
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
+    child_email = tables.Column(
+        orderable=False,
+        verbose_name=_("Child email"),    
+    )
+
+    class_name = tables.Column(
+        verbose_name = _("Class"),
+        attrs={"th": {"id": "class_name_id"}},
+    )
+
+    parent = tables.Column(
+        orderable=False,
+        verbose_name=_("Parent Email"),
+    )
+
+    info = StudentExtrainformaionColumn(
+        accessor="pk",
+        orderable=False,
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )
+
     details = tables.LinkColumn(
         "student_details_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="View",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
 
@@ -196,7 +221,7 @@ class ParentsTable(tables.Table):
         "parent_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
         verbose_name="",
         attrs={"td": {"align": "right"}},
     )
@@ -233,7 +258,7 @@ class TeachersTable(tables.Table):
         "teachers_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
         verbose_name="",
         attrs={"td": {"align": "right"}},
     )
@@ -258,7 +283,7 @@ class OthersTable(tables.Table):
         "others_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text=mark_safe("<i class='fa-solid fa-pen text-secondary'></i>"),
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
         verbose_name="",
         attrs={"td": {"align": "right"}},
     )

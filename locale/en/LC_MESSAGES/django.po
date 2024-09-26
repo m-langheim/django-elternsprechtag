@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 02:06+0200\n"
+"POT-Creation-Date: 2024-09-26 02:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,16 +27,18 @@ msgid "Teacher-Email"
 msgstr ""
 
 #: administrative/forms.py:46 administrative/forms.py:284
-#: administrative/tables.py:186 administrative/tables.py:223
-#: administrative/tables.py:248 authentication/models.py:18
-#: authentication/models.py:57 authentication/models.py:81
+#: administrative/tables.py:39 administrative/tables.py:211
+#: administrative/tables.py:248 administrative/tables.py:273
+#: authentication/models.py:18 authentication/models.py:57
+#: authentication/models.py:81
 msgid "First name"
 msgstr ""
 
 #: administrative/forms.py:47 administrative/forms.py:285
-#: administrative/tables.py:191 administrative/tables.py:228
-#: administrative/tables.py:253 authentication/models.py:19
-#: authentication/models.py:58 authentication/models.py:83
+#: administrative/tables.py:44 administrative/tables.py:216
+#: administrative/tables.py:253 administrative/tables.py:278
+#: authentication/models.py:19 authentication/models.py:58
+#: authentication/models.py:83
 msgid "Last name"
 msgstr ""
 
@@ -65,7 +67,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: administrative/forms.py:184 administrative/tables.py:207
+#: administrative/forms.py:184 administrative/tables.py:232
 #: authentication/models.py:135
 msgid "Acronym"
 msgstr ""
@@ -82,10 +84,24 @@ msgstr ""
 msgid "Another teacher has the same acronym. Please choose a different one."
 msgstr ""
 
-#: administrative/tables.py:178
+#: administrative/tables.py:50
+msgid "Child email"
+msgstr ""
+
+#: administrative/tables.py:54
+msgid "Class"
+msgstr ""
+
+#: administrative/tables.py:60
+msgid "Parent Email"
+msgstr ""
+
+#: administrative/tables.py:203
 #: administrative/templates/administrative/administrative_base.html:54
 #: administrative/templates/administrative/administrative_base.html:75
 #: administrative/templates/administrative/administrative_base.html:117
+#: administrative/templates/administrative/student/student_list_view.html:5
+#: administrative/templates/administrative/student/student_list_view.html:10
 #: authentication/models.py:37 authentication/models.py:91
 #: profile_settings/templates/profile_settings/profile_layout.html:57
 #: profile_settings/templates/profile_settings/profile_layout.html:96
@@ -94,7 +110,7 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: administrative/tables.py:210 authentication/models.py:125
+#: administrative/tables.py:235 authentication/models.py:125
 #: authentication/models.py:136
 #: profile_settings/templates/profile_settings/profile_layout.html:32
 #: profile_settings/templates/profile_settings/profile_layout.html:46
@@ -214,6 +230,14 @@ msgstr ""
 #: dashboard/templates/dashboard/events/book.html:44
 #: dashboard/templates/dashboard/events/view.html:35
 msgid "Room:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_list_view.html:11
+msgid "All students are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_list_view.html:15
+msgid "Add students"
 msgstr ""
 
 #: administrative/templates/administrative/users/others/others_edit.html:5
