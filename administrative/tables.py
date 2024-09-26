@@ -16,7 +16,7 @@ class StudentExtrainformaionColumn(tables.Column):
         if not student.parent():
             if not student.upcomming_user.email_send:
                 column_text += (
-                    "<i class='fa-solid fa-triangle-exclamation text-danger'></i>"
+                    "<i class='fa-solid fa-triangle-exclamation text-danger fs-5'></i>"
                 )
             else:
                 column_text += "<i class='fa-regular fa-clock text-warning fs-5'></i>"

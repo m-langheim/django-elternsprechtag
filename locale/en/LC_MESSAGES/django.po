@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 02:51+0200\n"
+"POT-Creation-Date: 2024-09-26 04:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -175,6 +175,7 @@ msgstr ""
 
 #: administrative/templates/administrative/administrative_base.html:98
 #: administrative/templates/administrative/administrative_base.html:147
+#: administrative/templates/administrative/student/student_detail_view.html:153
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
 #: dashboard/templates/dashboard/events/book.html:105
@@ -232,6 +233,125 @@ msgstr ""
 msgid "Room:"
 msgstr ""
 
+#: administrative/templates/administrative/student/student_detail_view.html:5
+#: administrative/templates/administrative/student/student_detail_view.html:24
+#: authentication/models.py:36 authentication/models.py:51
+#: authentication/models.py:220
+msgid "Student"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:25
+msgid "Here is some information on the student."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:33
+#: dashboard/templates/dashboard/inquiry.html:24
+#: dashboard/templates/dashboard/inquiry_answered.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:167
+#: teacher/templates/teacher/dashboard.html:190
+#: teacher/templates/teacher/inquiry/createInquiry.html:55
+#: teacher/templates/teacher/inquiry/viewInquiry.html:24
+msgid "Student:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:36
+msgid "Class:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:39
+#: administrative/templates/administrative/student/student_detail_view.html:96
+msgid "Email:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:50
+#: administrative/templates/administrative/student/student_detail_view.html:110
+#: teacher/templates/teacher/dashboard.html:194
+msgid "Edit"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:64
+#: teacher/templates/teacher/studentList.html:39
+msgid "This child does not have a registered parent yet!"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:73
+msgid ""
+"The registration email was not yet send to the parents. After sending the "
+"email, the parents will be able to register for this student."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:82
+#: authentication/models.py:77
+#: teacher/templates/teacher/event/detailEvent.html:34
+msgid "Parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:83
+msgid "Here is some information on the parents."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:93
+msgid "Name:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:107
+msgid "Reset"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:123
+msgid "URL:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:126
+msgid "One-Time-Password:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:137
+msgid "Manually register parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:141
+msgid "Resend Registration Email"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:143
+msgid "Send Registration Email"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:161
+msgid "Register Parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:166
+msgid ""
+"Choose \"Add to parent\" to add the student to an existing parent account. "
+"Please choose \"Register parent\" to add to a new parent account."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:171
+#: administrative/templates/administrative/users/others/others_edit.html:54
+#: administrative/templates/administrative/users/parents/parent_edit.html:55
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
+#: administrative/templates/administrative/users/teachers/teacher_import.html:18
+#: dashboard/templates/dashboard/events/view.html:151
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/dashboard.html:328
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
+msgid "Cancel"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:176
+msgid "Add to parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:178
+msgid "Register parent"
+msgstr ""
+
 #: administrative/templates/administrative/student/student_list_view.html:11
 msgid "All students are listed here."
 msgstr ""
@@ -277,21 +397,6 @@ msgstr ""
 #: administrative/templates/administrative/users/parents/parent_edit.html:48
 #: administrative/templates/administrative/users/teachers/teacher_edit.html:51
 msgid "Custom permissions"
-msgstr ""
-
-#: administrative/templates/administrative/users/others/others_edit.html:54
-#: administrative/templates/administrative/users/parents/parent_edit.html:55
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
-#: administrative/templates/administrative/users/teachers/teacher_import.html:18
-#: dashboard/templates/dashboard/events/view.html:151
-#: profile_settings/templates/profile_settings/change_password.html:19
-#: profile_settings/templates/profile_settings/my_profile.html:39
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
-#: teacher/templates/teacher/dashboard.html:298
-#: teacher/templates/teacher/dashboard.html:328
-#: teacher/templates/teacher/event/detailEvent.html:147
-#: teacher/templates/teacher/event/detailEvent.html:178
-msgid "Cancel"
 msgstr ""
 
 #: administrative/templates/administrative/users/others/others_edit.html:58
@@ -402,18 +507,8 @@ msgstr[1] ""
 msgid "Childs parents have registered"
 msgstr ""
 
-#: authentication/models.py:36 authentication/models.py:51
-#: authentication/models.py:220
-msgid "Student"
-msgstr ""
-
 #: authentication/models.py:71
 msgid "Can apply changes to the students"
-msgstr ""
-
-#: authentication/models.py:77
-#: teacher/templates/teacher/event/detailEvent.html:34
-msgid "Parent"
 msgstr ""
 
 #: authentication/models.py:77 dashboard/models.py:468
@@ -1041,15 +1136,6 @@ msgstr ""
 msgid "Requestor:"
 msgstr ""
 
-#: dashboard/templates/dashboard/inquiry.html:24
-#: dashboard/templates/dashboard/inquiry_answered.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:167
-#: teacher/templates/teacher/dashboard.html:190
-#: teacher/templates/teacher/inquiry/createInquiry.html:55
-#: teacher/templates/teacher/inquiry/viewInquiry.html:24
-msgid "Student:"
-msgstr ""
-
 #: dashboard/templates/dashboard/inquiry.html:30
 #: dashboard/templates/dashboard/inquiry_answered.html:30
 #: dashboard/templates/dashboard/public_dashboard.html:168
@@ -1382,10 +1468,6 @@ msgstr ""
 msgid "Parent:"
 msgstr ""
 
-#: teacher/templates/teacher/dashboard.html:194
-msgid "Edit"
-msgstr ""
-
 #: teacher/templates/teacher/dashboard.html:205
 msgid "You have no unconfirmed requests for students."
 msgstr ""
@@ -1510,10 +1592,6 @@ msgstr ""
 
 #: teacher/templates/teacher/studentList.html:23
 msgid "All students"
-msgstr ""
-
-#: teacher/templates/teacher/studentList.html:39
-msgid "The child does not have a registered parent yet!"
 msgstr ""
 
 #: teacher/templates/teacher/studentList.html:47
