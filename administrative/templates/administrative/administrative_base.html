@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %} Administrative {% endblock title %}
+{% block title %}  {% endblock title %}
 
 {% block extra_js %}
 {{super}}
@@ -38,8 +38,10 @@
 {% url 'administrative_event_list_view' as event_view %}
 {% url 'administrative_settings' as settings_view %}
 {% url 'administrative_backup' as backup_view %}
+{% url 'administrative_event_formular_view' as formular_view %}
 
 <div class="row gx-3 gy-3">
+    <!-- Small screen -->
     <div class="d-block d-sm-none">
         <div class="btn-group col-12">
             <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -47,15 +49,17 @@
                 {% if dashboard_url == request.get_full_path %}
                 {% translate 'Dashboard' %}
                 {% elif users_view in request.get_full_path %}
-                {% translate 'Users' %}
+                {% translate 'User' %}
                 {% elif student_list_view in request.get_full_path %}
                 {% translate 'Students' %}
-                {% elif event_view in request.get_full_path %}
-                {% translate 'Events' %}
-                {% elif settings_view in request.get_full_path %}
-                {% translate 'Settings' %}
+                {% elif event_view == request.path %} <!-- used == request.path instead of in request.get_full_path -->
+                {% translate 'Appointments' %}
+                {% elif formular_view in request.get_full_path %}
+                {% translate 'Formulars' %}
                 {% elif backup_view in request.get_full_path %}
                 {% translate 'Backup' %}
+                {% elif settings_view in request.get_full_path %}
+                {% translate 'Settings' %}
                 {% endif %}
             </button>
             <ul class="dropdown-menu col-12">
@@ -65,27 +69,27 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'parents_table' %}">{% translate 'Users' %}</a>
+                    <a class="dropdown-item" href="{% url 'parents_table' %}">{% translate 'User' %}</a>
                 </li>
                 <li>
                     <a class="dropdown-item" href="{% url 'student_list_view' %}">{% translate 'Students' %}</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
+                    <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Appointments' %}</a>
                     <ul style="list-style-type: none;">
-                        <li>
+                        <!-- <li>
                             <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
-                        </li>
+                        </li> -->
                         <li>
-                            <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">{% translate 'Change formulars' %}</a>
+                            <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">{% translate 'Formulars' %}</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
+                    <a class="dropdown-item" href="{% url 'administrative_backup' %}">{% translate 'Backup' %}</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{% url 'administrative_backup' %}">{% translate 'Backup' %}</a>
+                    <a class="dropdown-item" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
                 </li>
                 <li>
                     <div class="dropdown-divider"></div>
@@ -96,42 +100,44 @@
             </ul>
         </div>
     </div>
+    <!-- Big screen -->
     <div class="d-none d-sm-block col-sm-4 col-xl-2 col-lg-3">
         <ul class="nav flex-column nav-tabs p-2 card card-body" style="border-radius: 0.5rem;"
             role="tablist" aria-orientation="vertical" id="profilePageTabs">
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if request.get_full_path == dashboard_url %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_dashboard' %}">{% translate 'Dashbaord' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_dashboard' %}">{% translate 'Dashboard' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if users_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'parents_table' %}">{% translate 'Users' %}</a>
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'parents_table' %}">{% translate 'User' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if student_list_view in request.get_full_path %} border-danger text-danger {% endif %}"
                     style="border-radius: 0.5rem; color: black;" href="{% url 'student_list_view' %}">{% translate 'Students' %}</a>
             </li>
             <li class="nav-item mb-1" role="presentation">
-                <a class="nav-link {% if event_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
+                <a class="nav-link {% if event_view == request.path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Appointments' %}</a> <!-- user == request.path instead of in request.get_full_path-->
                     {% if event_view in request.get_full_path %}
                     <ul style="list-style-type: none;">
-                        <li>
+                        <!-- <li>
                             <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
-                        </li>
+                        </li> -->
                         <li>
-                            <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">{% translate 'Change formulars' %}</a>
+                            <a class="nav-link {% if formular_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                            style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">{% translate 'Formulars' %}</a>
                         </li>
                     </ul>
                     {% endif %}
             </li>
             <li class="nav-item mb-1" role="presentation">
-                <a class="nav-link {% if settings_view in request.get_full_path %} border-danger text-danger {% endif %}"
-                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
-            </li>
-            <li class="nav-item mb-1" role="presentation">
                 <a class="nav-link {% if backup_view in request.get_full_path %} border-danger text-danger {% endif %}"
                     style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_backup' %}">{% translate 'Backup' %}</a>
+            </li>
+            <li class="nav-item mb-1" role="presentation">
+                <a class="nav-link {% if settings_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                    style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_settings' %}">{% translate 'Settings' %}</a>
             </li>
             <li>
                 <div class="dropdown-divider"></div>
@@ -143,10 +149,10 @@
         </ul>
     </div>
     <div class="col-12 col-sm-8 col-xl-10 col-lg-9">
-        {% comment %} <div class="card card-body p-4"> {% endcomment %}
+        <div class="card card-body p-4">
             {% block control_content %}
             {% endblock control_content %}
-        {% comment %} </div> {% endcomment %}
+        </div>
     </div>
 </div>
 {% endblock content %}

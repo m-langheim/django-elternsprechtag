@@ -91,7 +91,7 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(instance=parent)
             return render(
@@ -104,17 +104,27 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, "Das Elternteil konnte nicht gefunden werden.")
+            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(request.POST, instance=parent)
             if form.is_valid():
                 form.save()
                 form = ParentEditForm(instance=parent)
+            
+            parents = CustomUser.objects.filter(role=0)
+            parents_table = ParentsTable(parents)
+
             return render(
                 request,
-                "administrative/users/parents/parent_edit.html",
-                {"form": form, "parent": parent},
+                "administrative/users/parents/parents_overview.html",
+                {"parents_table": parents_table},
             )
+            
+            # return render(
+            #     request,
+            #     "administrative/users/parents/parent_edit.html",
+            #     {"form": form, "parent": parent},
+            # )
 
 
 @method_decorator(login_staff, name="dispatch")

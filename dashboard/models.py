@@ -39,7 +39,7 @@ class BaseEventGroup(models.Model):
     LEAD_STATUS_CHOICES = (
         (
             0,
-            _("Nobody can currently request this appointment.."),
+            _("Nobody can currently request this appointment."),
         ),  # No one is allowed to book this event
         (
             1,

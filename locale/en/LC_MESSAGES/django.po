@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-19 04:14+0200\n"
+"POT-Creation-Date: 2024-09-26 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,43 +18,105 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:40 authentication/models.py:18
-#: authentication/models.py:57 authentication/models.py:81
+#: administrative/forms.py:37 administrative/forms.py:41
+msgid "CSV-File"
+msgstr ""
+
+#: administrative/forms.py:42
+msgid "Teacher-Email"
+msgstr ""
+
+#: administrative/forms.py:46 administrative/forms.py:284
+#: administrative/tables.py:39 administrative/tables.py:211
+#: administrative/tables.py:248 administrative/tables.py:273
+#: authentication/models.py:18 authentication/models.py:57
+#: authentication/models.py:81
 msgid "First name"
 msgstr ""
 
-#: administrative/forms.py:41 authentication/models.py:19
-#: authentication/models.py:58 authentication/models.py:83
+#: administrative/forms.py:47 administrative/forms.py:285
+#: administrative/tables.py:44 administrative/tables.py:216
+#: administrative/tables.py:253 administrative/tables.py:278
+#: authentication/models.py:19 authentication/models.py:58
+#: authentication/models.py:83
 msgid "Last name"
 msgstr ""
 
-#: administrative/forms.py:42 authentication/models.py:20
+#: administrative/forms.py:48 authentication/models.py:20
 #: authentication/models.py:60
 msgid "Child emails"
 msgstr ""
 
-#: administrative/forms.py:43 authentication/models.py:21
+#: administrative/forms.py:49 authentication/models.py:21
 #: authentication/models.py:63
 msgid "Name of class"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:39
-#: administrative/templates/administrative/administrative_base.html:55
-#: dashboard/templates/dashboard/public_dashboard.html:3
-#: teacher/templates/teacher/dashboard.html:3
-msgid "Dashboard"
+#: administrative/forms.py:122 administrative/forms.py:198
+#: administrative/forms.py:297
+msgid "User is active"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:41
-#: administrative/templates/administrative/administrative_base.html:59
-#: administrative/templates/administrative/administrative_base.html:99
-#: authentication/models.py:103
-msgid "Users"
+#: administrative/forms.py:123 administrative/forms.py:200
+#: administrative/forms.py:299
+msgid "Specific permissions"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:43
-#: administrative/templates/administrative/administrative_base.html:62
-#: administrative/templates/administrative/administrative_base.html:103
+#: administrative/forms.py:181 administrative/forms.py:283
+#: authentication/models.py:79
+msgid "Email"
+msgstr ""
+
+#: administrative/forms.py:184 administrative/tables.py:232
+#: authentication/models.py:135
+msgid "Acronym"
+msgstr ""
+
+#: administrative/forms.py:186 authentication/models.py:141
+msgid "Profile image"
+msgstr ""
+
+#: administrative/forms.py:199 administrative/forms.py:298
+msgid "User is staff"
+msgstr ""
+
+#: administrative/forms.py:241
+msgid "Another teacher has the same acronym. Please choose a different one."
+msgstr ""
+
+#: administrative/forms.py:431
+#: profile_settings/templates/profile_settings/change_password.html:5
+#: profile_settings/templates/profile_settings/profile_layout.html:30
+#: profile_settings/templates/profile_settings/profile_layout.html:41
+msgid "Password"
+msgstr ""
+
+#: administrative/forms.py:442
+msgid "Confirm password"
+msgstr ""
+
+#: administrative/forms.py:454
+msgid "This email is already taken. Please provide a different one."
+msgstr ""
+
+#: administrative/tables.py:50
+msgid "Child email"
+msgstr ""
+
+#: administrative/tables.py:54
+msgid "Class"
+msgstr ""
+
+#: administrative/tables.py:60
+msgid "Parent Email"
+msgstr ""
+
+#: administrative/tables.py:203
+#: administrative/templates/administrative/administrative_base.html:54
+#: administrative/templates/administrative/administrative_base.html:75
+#: administrative/templates/administrative/administrative_base.html:117
+#: administrative/templates/administrative/student/student_list_view.html:5
+#: administrative/templates/administrative/student/student_list_view.html:10
 #: authentication/models.py:37 authentication/models.py:91
 #: profile_settings/templates/profile_settings/profile_layout.html:57
 #: profile_settings/templates/profile_settings/profile_layout.html:96
@@ -63,34 +125,72 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:45
-#: administrative/templates/administrative/administrative_base.html:65
+#: administrative/tables.py:235 authentication/models.py:125
+#: authentication/models.py:136
+#: profile_settings/templates/profile_settings/profile_layout.html:32
+#: profile_settings/templates/profile_settings/profile_layout.html:46
+#: profile_settings/templates/profile_settings/profile_layout.html:83
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:5
+msgid "Tags"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:50
 #: administrative/templates/administrative/administrative_base.html:68
-#: administrative/templates/administrative/administrative_base.html:107
-#: administrative/templates/administrative/administrative_base.html:111
+#: administrative/templates/administrative/administrative_base.html:109
+#: dashboard/templates/dashboard/public_dashboard.html:3
+#: teacher/templates/teacher/dashboard.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:52
+#: administrative/templates/administrative/administrative_base.html:72
+#: administrative/templates/administrative/administrative_base.html:113
+#: administrative/templates/administrative/users/others/others_overview.html:10
+#: administrative/templates/administrative/users/parents/parents_overview.html:10
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:10
+#: authentication/models.py:102
+msgid "User"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:56
+#: administrative/templates/administrative/administrative_base.html:78
+#: administrative/templates/administrative/administrative_base.html:121
+#: dashboard/templates/dashboard/inquiry.html:194
+#: dashboard/templates/dashboard/inquiry_answered.html:92
+#: dashboard/templates/dashboard/public_dashboard.html:16
+#: dashboard/templates/dashboard/public_dashboard.html:120
+#: teacher/templates/teacher/dashboard.html:32
+#: teacher/templates/teacher/dashboard.html:160
+msgid "Appointments"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:58
+#: administrative/templates/administrative/administrative_base.html:84
+#: administrative/templates/administrative/administrative_base.html:129
+msgid "Formulars"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:60
+#: administrative/templates/administrative/administrative_base.html:89
+#: administrative/templates/administrative/administrative_base.html:136
+msgid "Backup"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:62
+#: administrative/templates/administrative/administrative_base.html:92
+#: administrative/templates/administrative/administrative_base.html:140
+msgid "Settings"
+msgstr ""
+
+#: administrative/templates/administrative/administrative_base.html:81
+#: administrative/templates/administrative/administrative_base.html:125
 #: dashboard/models.py:433
 msgid "Events"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:47
-#: administrative/templates/administrative/administrative_base.html:76
-#: administrative/templates/administrative/administrative_base.html:121
-msgid "Settings"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:49
-#: administrative/templates/administrative/administrative_base.html:79
-#: administrative/templates/administrative/administrative_base.html:125
-msgid "Backup"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:71
-#: administrative/templates/administrative/administrative_base.html:114
-msgid "Change formulars"
-msgstr ""
-
-#: administrative/templates/administrative/administrative_base.html:85
-#: administrative/templates/administrative/administrative_base.html:132
+#: administrative/templates/administrative/administrative_base.html:98
+#: administrative/templates/administrative/administrative_base.html:147
+#: administrative/templates/administrative/student/student_detail_view.html:153
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
 #: dashboard/templates/dashboard/events/book.html:105
@@ -112,12 +212,397 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: administrative/templates/administrative/administrative_base.html:95
-msgid "Dashbaord"
+#: administrative/templates/administrative/backup_template/backup_overview.html:10
+msgid "Backup/Restore"
 msgstr ""
 
+#: administrative/templates/administrative/backup_template/backup_overview.html:11
+#: dashboard/templates/dashboard/public_dashboard.html:17
+#: teacher/templates/teacher/dashboard.html:34
+msgid "All booked appointments are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:16
+#: dashboard/templates/dashboard/events/book.html:34
+#: dashboard/templates/dashboard/events/view.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:87
+msgid "Teacher:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:20
+#: dashboard/templates/dashboard/events/book.html:37
+#: dashboard/templates/dashboard/events/view.html:28
+#: dashboard/templates/dashboard/public_dashboard.html:169
+msgid "Date:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:23
+#: dashboard/templates/dashboard/events/book.html:40
+#: dashboard/templates/dashboard/events/view.html:31
+msgid "Time:"
+msgstr ""
+
+#: administrative/templates/administrative/events/event_edit.html:27
+#: dashboard/templates/dashboard/events/book.html:44
+#: dashboard/templates/dashboard/events/view.html:35
+msgid "Room:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:5
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:5
+msgid "Manual registration"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:10
+msgid "Select parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:11
+msgid "Select the parent to add the student to."
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:17
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:17
+#: administrative/templates/administrative/student/student_detail_view.html:33
+#: dashboard/templates/dashboard/inquiry.html:24
+#: dashboard/templates/dashboard/inquiry_answered.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:167
+#: teacher/templates/teacher/dashboard.html:190
+#: teacher/templates/teacher/inquiry/createInquiry.html:55
+#: teacher/templates/teacher/inquiry/viewInquiry.html:24
+msgid "Student:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:32
+#: teacher/templates/teacher/dashboard.html:188
+#: teacher/templates/teacher/event/detailEvent.html:52
+#: teacher/templates/teacher/inquiry/createInquiry.html:59
+#: teacher/templates/teacher/inquiry/viewInquiry.html:28
+msgid "Parent:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:47
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:87
+#: administrative/templates/administrative/student/student_detail_view.html:171
+#: administrative/templates/administrative/student/student_edit.html:21
+#: administrative/templates/administrative/student/student_import_fileupload.html:35
+#: administrative/templates/administrative/users/others/others_edit.html:54
+#: administrative/templates/administrative/users/parents/parent_edit.html:55
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
+#: administrative/templates/administrative/users/teachers/teacher_import.html:20
+#: dashboard/templates/dashboard/events/view.html:151
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/dashboard.html:328
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
+msgid "Cancel"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:51
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:91
+#: administrative/templates/administrative/student/student_edit.html:25
+#: administrative/templates/administrative/users/others/others_edit.html:58
+#: administrative/templates/administrative/users/parents/parent_edit.html:59
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
+#: dashboard/forms.py:260 dashboard/forms.py:273
+#: dashboard/templates/dashboard/events/view.html:114
+#: profile_settings/forms.py:38
+#: profile_settings/templates/profile_settings/change_password.html:23
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
+#: teacher/templates/teacher/inquiry/viewInquiry.html:72
+msgid "Save"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:10
+#: administrative/templates/administrative/student/student_detail_view.html:178
+msgid "Register parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:11
+msgid "Create a parent account to add the student to."
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:32
+msgid "First name*:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:38
+msgid "Last name*:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:44
+msgid "Email*:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:50
+msgid "Password*:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:59
+msgid "Confirm password*:"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:67
+msgid "Please enter two identical passwords"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:69
+msgid "Please enter a password longer than 8 chars"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:71
+msgid "Please enter a more unusual password"
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:73
+msgid "Please enter a password consisting not only of numbers"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:5
+#: administrative/templates/administrative/student/student_detail_view.html:24
+#: authentication/models.py:36 authentication/models.py:51
+#: authentication/models.py:220
+msgid "Student"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:25
+msgid "Here is some information on the student."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:36
+msgid "Class:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:39
+#: administrative/templates/administrative/student/student_detail_view.html:96
+msgid "Email:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:50
+#: administrative/templates/administrative/student/student_detail_view.html:110
+#: teacher/templates/teacher/dashboard.html:194
+msgid "Edit"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:64
+#: teacher/templates/teacher/studentList.html:39
+msgid "This child does not have a registered parent yet!"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:73
+msgid ""
+"The registration email was not yet send to the parents. After sending the "
+"email, the parents will be able to register for this student."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:82
+#: authentication/models.py:77
+#: teacher/templates/teacher/event/detailEvent.html:34
+msgid "Parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:83
+msgid "Here is some information on the parents."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:93
+msgid "Name:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:107
+msgid "Reset"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:123
+msgid "URL:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:126
+msgid "One-Time-Password:"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:137
+msgid "Manually register parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:141
+msgid "Resend Registration Email"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:143
+msgid "Send Registration Email"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:161
+msgid "Register Parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:166
+msgid ""
+"Choose \"Add to parent\" to add the student to an existing parent account. "
+"Please choose \"Register parent\" to add to a new parent account."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_detail_view.html:176
+msgid "Add to parent"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_edit.html:5
+msgid "Edit student"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_edit.html:9
+msgid "Edit the student"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_edit.html:10
+msgid "Edit the personal data of the student."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:4
+msgid "Import students"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:12
+msgid "Outstanding changes"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:13
+msgid ""
+"There are several changes to the student database that are not confirmed "
+"yet. Please continue with the changes."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:16
+#: dashboard/templates/dashboard/public_dashboard.html:178
+msgid "View"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:24
+#: administrative/templates/administrative/student/student_list_view.html:15
+msgid "Add students"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:25
+msgid "Upload a CSV-File to import students."
+msgstr ""
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:39
+#: administrative/templates/administrative/users/teachers/teacher_import.html:24
+msgid "Upload"
+msgstr ""
+
+#: administrative/templates/administrative/student/student_list_view.html:11
+msgid "All students are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:5
+msgid "Edit user"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:15
+#: administrative/templates/administrative/users/parents/parent_edit.html:15
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:15
+msgid "This user is not active."
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:20
+msgid "Edit the user"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:29
+#: administrative/templates/administrative/users/parents/parent_edit.html:29
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:29
+msgid "Personal data"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:40
+#: administrative/templates/administrative/users/parents/parent_edit.html:41
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:44
+msgid "Reset password"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:45
+#: administrative/templates/administrative/users/parents/parent_edit.html:46
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:49
 #: authentication/admin.py:67
 msgid "Permissions"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_edit.html:47
+#: administrative/templates/administrative/users/parents/parent_edit.html:48
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:51
+msgid "Custom permissions"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:5
+#: administrative/templates/administrative/users/others/others_overview.html:30
+#: administrative/templates/administrative/users/parents/parents_overview.html:28
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:29
+#: authentication/models.py:77
+msgid "Others"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:11
+msgid "All other users are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:21
+#: administrative/templates/administrative/users/parents/parents_overview.html:5
+#: administrative/templates/administrative/users/parents/parents_overview.html:19
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:20
+msgid "Parents"
+msgstr ""
+
+#: administrative/templates/administrative/users/others/others_overview.html:25
+#: administrative/templates/administrative/users/parents/parents_overview.html:23
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:5
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:24
+msgid "Teachers"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:5
+msgid "Edit Parent"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parent_edit.html:20
+msgid "Edit the parent"
+msgstr ""
+
+#: administrative/templates/administrative/users/parents/parents_overview.html:11
+msgid "All parent accounts are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:5
+msgid "Edit Teacher"
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:20
+msgid "Edit the teacher"
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:4
+msgid "Import teachers"
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:9
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:15
+msgid "Add teachers"
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:10
+msgid "Fill at least one field to add new teachers."
+msgstr ""
+
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:11
+msgid "All teacher accounts are listed here."
+msgstr ""
+
+#: administrative/views/users.py:94 administrative/views/users.py:107
+msgid "The parent could not be found."
 msgstr ""
 
 #: authentication/admin.py:221
@@ -149,27 +634,13 @@ msgstr[1] ""
 msgid "Childs parents have registered"
 msgstr ""
 
-#: authentication/models.py:36 authentication/models.py:51
-#: authentication/models.py:220
-msgid "Student"
+#: authentication/models.py:71
+msgid "Can apply changes to the students"
 msgstr ""
 
-#: authentication/models.py:77
-#: teacher/templates/teacher/event/detailEvent.html:34
-msgid "Parent"
-msgstr ""
-
-#: authentication/models.py:77 dashboard/models.py:472
+#: authentication/models.py:77 dashboard/models.py:468
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
-msgstr ""
-
-#: authentication/models.py:77
-msgid "Others"
-msgstr ""
-
-#: authentication/models.py:79
-msgid "Email"
 msgstr ""
 
 #: authentication/models.py:86
@@ -180,8 +651,8 @@ msgstr ""
 msgid "Date joined"
 msgstr ""
 
-#: authentication/models.py:102
-msgid "User"
+#: authentication/models.py:103
+msgid "Users"
 msgstr ""
 
 #: authentication/models.py:116
@@ -200,28 +671,12 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
-#: authentication/models.py:125 authentication/models.py:136
-#: profile_settings/templates/profile_settings/profile_layout.html:32
-#: profile_settings/templates/profile_settings/profile_layout.html:46
-#: profile_settings/templates/profile_settings/profile_layout.html:83
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:5
-msgid "Tags"
-msgstr ""
-
 #: authentication/models.py:133
 msgid "User object of the teacher"
 msgstr ""
 
-#: authentication/models.py:135
-msgid "Acronym"
-msgstr ""
-
 #: authentication/models.py:137
 msgid "Room"
-msgstr ""
-
-#: authentication/models.py:141
-msgid "Profile image"
 msgstr ""
 
 #: authentication/models.py:159
@@ -279,6 +734,14 @@ msgstr ""
 
 #: authentication/templates/authentication/register_teacher/register_teacher_create_account.html:3
 msgid "Teacher register"
+msgstr ""
+
+#: custom_backup/models.py:42
+msgid "Can restore backup"
+msgstr ""
+
+#: custom_backup/models.py:43
+msgid "Can create a backup"
 msgstr ""
 
 #: custom_backup/templates/custom_backup/create_backup.html:4
@@ -341,15 +804,6 @@ msgstr ""
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:260 dashboard/forms.py:273
-#: dashboard/templates/dashboard/events/view.html:114
-#: profile_settings/forms.py:38
-#: profile_settings/templates/profile_settings/change_password.html:23
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
-#: teacher/templates/teacher/inquiry/viewInquiry.html:72
-msgid "Save"
-msgstr ""
-
 #: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
@@ -375,17 +829,17 @@ msgid ""
 msgstr ""
 
 #: dashboard/models.py:24 dashboard/models.py:94 dashboard/models.py:144
-#: dashboard/models.py:590
+#: dashboard/models.py:586
 msgid "Set a date from which all parents can request appointments."
 msgstr ""
 
 #: dashboard/models.py:32 dashboard/models.py:100 dashboard/models.py:149
-#: dashboard/models.py:594
+#: dashboard/models.py:590
 msgid "Determine when teachers' enquiries can be answered."
 msgstr ""
 
-#: dashboard/models.py:42
-msgid "Nobody can currently request this appointment.."
+#: dashboard/models.py:42 dashboard/models.py:212
+msgid "Nobody can currently request this appointment."
 msgstr ""
 
 #: dashboard/models.py:47 dashboard/models.py:214
@@ -410,10 +864,6 @@ msgstr ""
 
 #: dashboard/models.py:82
 msgid " and "
-msgstr ""
-
-#: dashboard/models.py:212
-msgid "Nobody can currently request this appointment."
 msgstr ""
 
 #: dashboard/models.py:243 dashboard/models.py:248
@@ -454,75 +904,75 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: dashboard/models.py:459
+#: dashboard/models.py:455
 msgid "Submit own time periods."
 msgstr ""
 
-#: dashboard/models.py:474
+#: dashboard/models.py:470
 msgid "Date"
 msgstr ""
 
-#: dashboard/models.py:475
+#: dashboard/models.py:471
 msgid "Start time"
 msgstr ""
 
-#: dashboard/models.py:476
+#: dashboard/models.py:472
 msgid "End time"
 msgstr ""
 
-#: dashboard/models.py:477
+#: dashboard/models.py:473
 msgid "No events"
 msgstr ""
 
-#: dashboard/models.py:479
+#: dashboard/models.py:475
 msgid "Wait for processing"
 msgstr ""
 
-#: dashboard/models.py:480
+#: dashboard/models.py:476
 msgid "Wait for confirmation"
 msgstr ""
 
-#: dashboard/models.py:481
+#: dashboard/models.py:477
 msgid "Approved"
 msgstr ""
 
-#: dashboard/models.py:482
+#: dashboard/models.py:478
 msgid "Declined"
 msgstr ""
 
-#: dashboard/models.py:487
+#: dashboard/models.py:483
 msgid "Event creation formula"
 msgstr ""
 
-#: dashboard/models.py:488
+#: dashboard/models.py:484
 msgid "Event creation formulas"
 msgstr ""
 
-#: dashboard/models.py:493
+#: dashboard/models.py:489
 msgid "Can accept or reject submitted time periods for other users."
 msgstr ""
 
-#: dashboard/models.py:502
+#: dashboard/models.py:498
 msgid "Inquiry to book an appointment (teacher->parents)"
 msgstr ""
 
-#: dashboard/models.py:503
+#: dashboard/models.py:499
 msgid "Request for confirmation of an appointment (parent->teacher)"
 msgstr ""
 
-#: dashboard/models.py:527
+#: dashboard/models.py:523
 msgid "No response"
 msgstr ""
 
-#: dashboard/models.py:528
+#: dashboard/models.py:524
 msgid "Inquiry accepted"
 msgstr ""
 
-#: dashboard/models.py:529
+#: dashboard/models.py:525
 msgid "Inquiry declined"
 msgstr ""
 
-#: dashboard/models.py:536 dashboard/templates/dashboard/inquiry.html:3
+#: dashboard/models.py:532 dashboard/templates/dashboard/inquiry.html:3
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
@@ -533,49 +983,49 @@ msgstr ""
 msgid "Inquiry"
 msgstr ""
 
-#: dashboard/models.py:537
+#: dashboard/models.py:533
 msgid "Inquries"
 msgstr ""
 
-#: dashboard/models.py:542
+#: dashboard/models.py:538
 msgid "New booking inquiry"
 msgstr ""
 
-#: dashboard/models.py:543
+#: dashboard/models.py:539
 msgid "Appointment cancellation"
 msgstr ""
 
-#: dashboard/models.py:544
+#: dashboard/models.py:540
 msgid "System notification"
 msgstr ""
 
-#: dashboard/models.py:560
+#: dashboard/models.py:556
 msgid "Notification"
 msgstr ""
 
-#: dashboard/models.py:561
+#: dashboard/models.py:557
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
-#: dashboard/templates/dashboard/base.html:73
-#: dashboard/templates/dashboard/base.html:143
+#: dashboard/templates/dashboard/base.html:79
+#: dashboard/templates/dashboard/base.html:149
 #: dashboard/templates/dashboard/public_dashboard.html:196
 #: teacher/templates/teacher/dashboard.html:215
 msgid "Notifications"
 msgstr ""
 
-#: dashboard/models.py:599
+#: dashboard/models.py:595
 msgid ""
 "Here you define the general length of an appointment. It applies to all "
 "appointments created with this function."
 msgstr ""
 
-#: dashboard/models.py:605
+#: dashboard/models.py:601
 msgid ""
 "Here you can set the interval between two appointments. You should allow "
 "some time to change rooms etc."
 msgstr ""
 
-#: dashboard/models.py:630 dashboard/models.py:631
+#: dashboard/models.py:626 dashboard/models.py:627
 msgid "SiteSettings"
 msgstr ""
 
@@ -605,36 +1055,36 @@ msgstr ""
 msgid "Mark all as read"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:43
-#: dashboard/templates/dashboard/base.html:110
+#: dashboard/templates/dashboard/base.html:49
+#: dashboard/templates/dashboard/base.html:116
 msgid "Search..."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:55
+#: dashboard/templates/dashboard/base.html:61
 msgid "Help"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:61
+#: dashboard/templates/dashboard/base.html:67
 msgid "Profile"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:70
-#: dashboard/templates/dashboard/base.html:140
+#: dashboard/templates/dashboard/base.html:76
+#: dashboard/templates/dashboard/base.html:146
 msgid "My appointments"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:77
-#: dashboard/templates/dashboard/base.html:146
+#: dashboard/templates/dashboard/base.html:83
+#: dashboard/templates/dashboard/base.html:152
 msgid "Django administration"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:79
-#: dashboard/templates/dashboard/base.html:148
+#: dashboard/templates/dashboard/base.html:85
+#: dashboard/templates/dashboard/base.html:154
 msgid "Administration"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:83
-#: dashboard/templates/dashboard/base.html:151
+#: dashboard/templates/dashboard/base.html:89
+#: dashboard/templates/dashboard/base.html:157
 #: profile_settings/templates/profile_settings/my_profile.html:5
 #: profile_settings/templates/profile_settings/my_profile.html:11
 #: profile_settings/templates/profile_settings/profile_layout.html:28
@@ -643,29 +1093,29 @@ msgstr ""
 msgid "My profile"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:88
-#: dashboard/templates/dashboard/base.html:156
+#: dashboard/templates/dashboard/base.html:94
+#: dashboard/templates/dashboard/base.html:162
 msgid "Instructions"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:94
-#: dashboard/templates/dashboard/base.html:162
+#: dashboard/templates/dashboard/base.html:100
+#: dashboard/templates/dashboard/base.html:168
 msgid "Logout"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:124
+#: dashboard/templates/dashboard/base.html:130
 msgid "Click for information about this page."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:131
+#: dashboard/templates/dashboard/base.html:137
 msgid "Click for information about your account."
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:181
+#: dashboard/templates/dashboard/base.html:187
 msgid "Close"
 msgstr ""
 
-#: dashboard/templates/dashboard/base.html:209
+#: dashboard/templates/dashboard/base.html:215
 msgid "Legal notice"
 msgstr ""
 
@@ -711,28 +1161,6 @@ msgstr ""
 #: dashboard/templates/dashboard/events/view.html:18
 #: teacher/templates/teacher/event/detailEvent.html:17
 msgid "Detailed view of the appointment"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:34
-#: dashboard/templates/dashboard/events/view.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:87
-msgid "Teacher:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:37
-#: dashboard/templates/dashboard/events/view.html:28
-#: dashboard/templates/dashboard/public_dashboard.html:169
-msgid "Date:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:40
-#: dashboard/templates/dashboard/events/view.html:31
-msgid "Time:"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/book.html:44
-#: dashboard/templates/dashboard/events/view.html:35
-msgid "Room:"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/book.html:60
@@ -830,29 +1258,9 @@ msgstr ""
 msgid "Cancel appointment"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/view.html:151
-#: profile_settings/templates/profile_settings/change_password.html:19
-#: profile_settings/templates/profile_settings/my_profile.html:39
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
-#: teacher/templates/teacher/dashboard.html:298
-#: teacher/templates/teacher/dashboard.html:328
-#: teacher/templates/teacher/event/detailEvent.html:147
-#: teacher/templates/teacher/event/detailEvent.html:178
-msgid "Cancel"
-msgstr ""
-
 #: dashboard/templates/dashboard/inquiry.html:15
 #: dashboard/templates/dashboard/inquiry_answered.html:15
 msgid "Requestor:"
-msgstr ""
-
-#: dashboard/templates/dashboard/inquiry.html:24
-#: dashboard/templates/dashboard/inquiry_answered.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:167
-#: teacher/templates/teacher/dashboard.html:190
-#: teacher/templates/teacher/inquiry/createInquiry.html:55
-#: teacher/templates/teacher/inquiry/viewInquiry.html:24
-msgid "Student:"
 msgstr ""
 
 #: dashboard/templates/dashboard/inquiry.html:30
@@ -867,24 +1275,10 @@ msgstr ""
 msgid "Please select one of the available appointments."
 msgstr ""
 
-#: dashboard/templates/dashboard/inquiry.html:194
-#: dashboard/templates/dashboard/inquiry_answered.html:92
-#: dashboard/templates/dashboard/public_dashboard.html:16
-#: dashboard/templates/dashboard/public_dashboard.html:120
-#: teacher/templates/teacher/dashboard.html:32
-#: teacher/templates/teacher/dashboard.html:160
-msgid "Appointments"
-msgstr ""
-
 #: dashboard/templates/dashboard/inquiry.html:195
 #: dashboard/templates/dashboard/inquiry_answered.html:93
 #: teacher/templates/teacher/dashboard.html:161
 msgid "You do not have any open appointments yet."
-msgstr ""
-
-#: dashboard/templates/dashboard/public_dashboard.html:17
-#: teacher/templates/teacher/dashboard.html:34
-msgid "All booked appointments are listed here."
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:22
@@ -946,10 +1340,6 @@ msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:149
 msgid "You still need to answer the request."
-msgstr ""
-
-#: dashboard/templates/dashboard/public_dashboard.html:178
-msgid "View"
 msgstr ""
 
 #: dashboard/templates/dashboard/public_dashboard.html:188
@@ -1056,12 +1446,6 @@ msgstr ""
 
 #: general_tasks/templates/error_file_template.html:28
 msgid "What can I do?"
-msgstr ""
-
-#: profile_settings/templates/profile_settings/change_password.html:5
-#: profile_settings/templates/profile_settings/profile_layout.html:30
-#: profile_settings/templates/profile_settings/profile_layout.html:41
-msgid "Password"
 msgstr ""
 
 #: profile_settings/templates/profile_settings/change_password.html:11
@@ -1194,17 +1578,6 @@ msgstr ""
 msgid "Your unanswered requests to particular students."
 msgstr ""
 
-#: teacher/templates/teacher/dashboard.html:188
-#: teacher/templates/teacher/event/detailEvent.html:52
-#: teacher/templates/teacher/inquiry/createInquiry.html:59
-#: teacher/templates/teacher/inquiry/viewInquiry.html:28
-msgid "Parent:"
-msgstr ""
-
-#: teacher/templates/teacher/dashboard.html:194
-msgid "Edit"
-msgstr ""
-
 #: teacher/templates/teacher/dashboard.html:205
 msgid "You have no unconfirmed requests for students."
 msgstr ""
@@ -1329,10 +1702,6 @@ msgstr ""
 
 #: teacher/templates/teacher/studentList.html:23
 msgid "All students"
-msgstr ""
-
-#: teacher/templates/teacher/studentList.html:39
-msgid "The child does not have a registered parent yet!"
 msgstr ""
 
 #: teacher/templates/teacher/studentList.html:47

@@ -27,18 +27,19 @@ from crispy_forms.helper import FormHelper
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 
 from .forms_helpers import get_students_choices_for_event
 from .tasks import *
 
 
 class CsvImportForm(forms.Form):
-    csv_file = forms.FileField()
+    csv_file = forms.FileField(label=_("CSV-File"))
 
 
 class TeacherImportForm(forms.Form):
-    csv_file = forms.FileField(required=False)
-    teacher_email = forms.EmailField(required=False)
+    csv_file = forms.FileField(required=False, label=_("CSV-File"))
+    teacher_email = forms.EmailField(required=False, label=_("Teacher-Email"))
 
 
 class AdminStudentEditForm(forms.Form):
@@ -110,10 +111,17 @@ class ParentEditForm(forms.ModelForm):
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(ParentEditForm, self).__init__(*args, **kwargs)
+
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['is_active'].label = _("User is active")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 
@@ -170,21 +178,27 @@ class TeacherEditForm(forms.ModelForm):
             "is_staff",
         )
 
-    email = forms.EmailField()
+    email = forms.EmailField(label=_("Email"))
     first_name = forms.CharField(max_length=48)
     last_name = forms.CharField(max_length=48)
-    acronym = forms.CharField(max_length=3)
+    acronym = forms.CharField(max_length=3, label=_("Acronym"))
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, label=_("Profile image"))
 
     custom_permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(TeacherEditForm, self).__init__(*args, **kwargs)
+
+        self.fields['is_active'].label = _("User is active")
+        self.fields['is_staff'].label = _("User is staff")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 
@@ -224,7 +238,7 @@ class TeacherEditForm(forms.ModelForm):
             .exists()
         ):
             raise ValueError(
-                "Another teacher has the same acronym. Please choose a different one."
+                _("Another teacher has the same acronym. Please choose a different one.")
             )
         return data
 
@@ -266,18 +280,24 @@ class OthersEditForm(forms.ModelForm):
             "is_staff",
         )
 
-    email = forms.EmailField()
-    first_name = forms.CharField(max_length=48)
-    last_name = forms.CharField(max_length=48)
+    email = forms.EmailField(label=_("Email"))
+    first_name = forms.CharField(max_length=48, label=_("First name"))
+    last_name = forms.CharField(max_length=48, label=_("Last name"))
 
     custom_permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
+        label="",
     )
 
     def __init__(self, *args, **kwargs):
         super(OthersEditForm, self).__init__(*args, **kwargs)
+        
+        self.fields['is_active'].label = _("User is active")
+        self.fields['is_staff'].label = _("User is staff")
+        self.fields['user_permissions'].label = _("Specific permissions")
+        self.fields['user_permissions'].help_text = ""
 
         user: CustomUser = self.instance
 
@@ -400,28 +420,30 @@ class EventAddStudentForm(forms.ModelForm):
 
 class ControlParentCreationForm(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=48)
-    last_name = forms.CharField(max_length=48)
+    email = forms.EmailField(required=True, label="")
+    first_name = forms.CharField(max_length=48, label="")
+    last_name = forms.CharField(max_length=48, label="")
 
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Password",
+                "placeholder": _("Password"),
                 "autocomplete": "off",
             }
         ),
-        validators=[validate_password],
+        # validators=[validate_password],
+        label="",
     )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Confirrm password",
+                "placeholder": _("Confirm password"),
                 "autocomplete": "off",
             }
         ),
+        label="",
     )
 
     def clean_email(self):
@@ -429,28 +451,42 @@ class ControlParentCreationForm(forms.Form):
 
         if CustomUser.objects.filter(email=email).exists():
             raise ValidationError(
-                "This email is already taken. Please provide a different one."
+                _("This email is already taken. Please provide a different one.")
             )
 
         return email
 
-    def clean(self):
+    # def clean(self):
+    #     password = self.cleaned_data["password"]
+    #     confirm_password = self.cleaned_data["confirm_password"]
+
+    #     validate_password(password, user=None, password_validators=None)
+
+    #     if password != confirm_password:
+            # self.add_error(
+            #     "password", _("The password and the confirm password must be equal.")
+            # )
+            # self.add_error(
+            #     "confirm_password",
+            #     _("The password and the confirm password must be equal."),
+            # )
+            # raise ValidationError(":..")
+        
+    def clean_confirm_password(self):
         password = self.cleaned_data["password"]
         confirm_password = self.cleaned_data["confirm_password"]
 
         if password != confirm_password:
-            self.add_error(
-                "password", "The password and the confirm password must be equal."
+            raise forms.ValidationError(
+                "The passwords do not match", code="passwords_wrong"
             )
-            self.add_error(
-                "confirm_password",
-                "The password and the confirm password must be equal.",
-            )
-
+        validate_password(password, user=None, password_validators=None)
+        
+        
 
 class ControlParentAddStudent(forms.Form):
-    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
-    parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)))
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True, label="")
+    parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)), label="")
 
 
 class EditStudentChangesForm(forms.ModelForm):

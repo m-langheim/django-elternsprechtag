@@ -5,7 +5,7 @@ from dashboard.models import Event, EventChangeFormula
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from custom_backup.models import *
-
+from django.utils.translation import gettext as _
 
 class StudentExtrainformaionColumn(tables.Column):
     def render(self, value):
@@ -16,14 +16,10 @@ class StudentExtrainformaionColumn(tables.Column):
         if not student.parent():
             if not student.upcomming_user.email_send:
                 column_text += (
-                    "<i class='fa-solid fa-triangle-exclamation text-danger'></i>"
+                    "<i class='fa-solid fa-triangle-exclamation text-danger fs-5'></i>"
                 )
             else:
-                column_text += "<i class='fa-solid fa-user-plus text-warning'></i>"
-        else:
-            column_text += (
-                "<i class='fa-solid fa-person-circle-check text-success'></i>"
-            )
+                column_text += "<i class='fa-regular fa-clock text-warning fs-5'></i>"
         return format_html(column_text)
 
 
@@ -36,17 +32,48 @@ class StudentTable(tables.Table):
             "last_name",
             "child_email",
             "class_name",
+            "parent",
         )
 
-    child_email = tables.EmailColumn(orderable=False)
-    parent = tables.Column(accessor="parent", orderable=False)
-    info = StudentExtrainformaionColumn(accessor="pk", orderable=False)
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
+    child_email = tables.Column(
+        orderable=False,
+        verbose_name=_("Child email"),    
+    )
+
+    class_name = tables.Column(
+        verbose_name = _("Class"),
+        attrs={"th": {"id": "class_name_id"}},
+    )
+
+    parent = tables.Column(
+        orderable=False,
+        verbose_name=_("Parent Email"),
+    )
+
+    info = StudentExtrainformaionColumn(
+        accessor="pk",
+        orderable=False,
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )
+
     details = tables.LinkColumn(
         "student_details_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="View",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
 
@@ -171,21 +198,42 @@ class EventFormularOldTable(tables.Table):
 
 
 class ParentsTable(tables.Table):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.base_columns['students'].verbose_name = _("Students")
+
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "students")
+        attrs = {"class": "table"}
 
-    # parent_edit_view
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
     edit = tables.LinkColumn(
         "parent_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
-
 class TeachersTable(tables.Table):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.base_columns['teacherextradata.acronym'] = tables.Column(orderable=False, verbose_name=_("Acronym"))
+        # verbose_name = _("Acronym")
+        # self.base_columns['teacherextradata.acronym'].orderable = False
+        self.base_columns['teacherextradata.tags'].verbose_name = _("Tags")
+
     class Meta:
         model = CustomUser
         fields = (
@@ -194,28 +242,50 @@ class TeachersTable(tables.Table):
             "teacherextradata.acronym",
             "teacherextradata.tags",
         )
+        attrs = {"class": "table"}
 
-    # teachers_edit_view
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
+
     edit = tables.LinkColumn(
         "teachers_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
-
 
 class OthersTable(tables.Table):
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name")
+        attrs = {"class": "table"}
+
+    first_name = tables.Column(
+        verbose_name = _("First name"),
+        attrs={"th": {"id": "first_name_id"}},
+    )
+
+    last_name = tables.Column(
+        verbose_name = _("Last name"),
+        attrs={"th": {"id": "last_name_id"}},
+    )
 
     edit = tables.LinkColumn(
         "others_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
 
 
