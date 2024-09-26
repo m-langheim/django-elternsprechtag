@@ -33,9 +33,41 @@ from .forms_helpers import get_students_choices_for_event
 from .tasks import *
 
 from django_select2 import forms as s2forms
+from django_select2.views import AutoResponseView
+
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin,
+)
+
+
+class StudentSelect2View(LoginRequiredMixin, PermissionRequiredMixin, AutoResponseView):
+    permission_required = "student.can_view_all"
+
+
+class StudentSelect2WidgetMixin(object):
+    def __init__(self, *args, **kwargs):
+        kwargs["data_view"] = "student-select2-view"
+        super(StudentSelect2WidgetMixin, self).__init__(*args, **kwargs)
 
 
 class StudentWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "first_name__icontains",
+        "last_name__icontains",
+        "child_email__icontains",
+    ]
+
+
+class PermissionWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "codename__icontains",
+        "name__icontains",
+    ]
+
+
+class MultiStudentWidget(StudentSelect2WidgetMixin, s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "first_name__icontains",
         "last_name__icontains",
@@ -115,13 +147,16 @@ class ParentEditForm(forms.ModelForm):
         )
 
     students = forms.ModelMultipleChoiceField(
-        queryset=Student.objects, widget=forms.SelectMultiple
+        queryset=Student.objects.all(), widget=MultiStudentWidget
     )
     custom_permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label="",
+    )
+    user_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(), required=False, widget=PermissionWidget
     )
 
     def __init__(self, *args, **kwargs):
@@ -159,8 +194,9 @@ class ParentEditForm(forms.ModelForm):
         all_permissions = self.parent_permissions
         initial_permissions = self.initial["custom_permissions"]
         user_permissions = self.cleaned_data["user_permissions"]
+        students = self.cleaned_data["students"]
 
-        print(custom_permissions, initial_permissions, all_permissions)
+        instance.students.set(students)
 
         instance.user_permissions.set(user_permissions)
 
@@ -200,6 +236,10 @@ class TeacherEditForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label="",
+    )
+
+    user_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(), required=False, widget=PermissionWidget
     )
 
     def __init__(self, *args, **kwargs):
@@ -301,6 +341,10 @@ class OthersEditForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label="",
+    )
+
+    user_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(), required=False, widget=PermissionWidget
     )
 
     def __init__(self, *args, **kwargs):

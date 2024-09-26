@@ -4,6 +4,10 @@
 
 {% block title %} {% translate 'Edit Teacher' %} {% endblock title %}
 
+{% block extra_head %}
+{{ form.media.css }}
+{% endblock extra_head %}
+
 {% block control_content %}
 
 {% if not teacher.is_active %}
@@ -39,6 +43,8 @@
         {{ form.image|as_crispy_field }}
         {{ form.is_staff|as_crispy_field }}
         {{ form.is_active|as_crispy_field }}
+
+        {{ form.media.js }}
 
         <label for="password_reset" tabindex="0" style="cursor: pointer">
             <i class="fa-solid fa-paper-plane text-primary"></i> {% translate 'Reset password' %}

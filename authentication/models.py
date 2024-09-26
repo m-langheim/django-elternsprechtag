@@ -74,7 +74,12 @@ class StudentChange(models.Model):
 class CustomUser(
     AbstractBaseUser, PermissionsMixin
 ):  # Erwachsene (also alle außer Schüler)
-    CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
+    class UserRoleChoices(models.IntegerChoices):
+        PARENT = 0, _("Parent")
+        TEACHER = 1, _("Teacher")
+        OTHER = 2, _("Others")
+
+    # CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
     email = models.EmailField(_("Email"), unique=True)
     first_name = models.CharField(
@@ -83,7 +88,9 @@ class CustomUser(
     last_name = models.CharField(_("Last name"), max_length=48, default="", blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    role = models.IntegerField(_("Role"), choices=CHOCES_ROLES, default=2)
+    role = models.IntegerField(
+        _("Role"), choices=UserRoleChoices, default=UserRoleChoices.OTHER
+    )
     date_joined = models.DateTimeField(
         verbose_name=_("Date joined"), default=timezone.now
     )
