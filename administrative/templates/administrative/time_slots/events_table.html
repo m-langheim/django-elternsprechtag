@@ -3,6 +3,9 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
+{% block header %} {% translate 'Appointments' %} {% endblock header %}
+{% block underline %} {% translate 'All appointments are listed here.' %} {% endblock underline %}
+
 {% block title %} {% translate 'Appointments' %} {% endblock title %}
 
 {% block time_slot_content %}
