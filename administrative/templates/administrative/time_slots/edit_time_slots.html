@@ -1,23 +1,27 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {% translate 'Fill formular' %} {% endblock title %}
+
 {% block control_content %}
+<p class="h1">{% translate 'Fill the formular' %}</p>
+<p class="text-secondary">{% translate 'Fill the formular for a teacher.' %}</p>
 
-<div class="card card-body p-4">
-    <form method="POST">
-        {{ form | crispy }}
-        {% csrf_token %}
+<form method="POST">
+    {{ form | crispy }}
+    {% csrf_token %}
 
-        <div class="row">
-            <div class="col d-flex">
-                <a class="btn btn-outline-secondary mt-2" href="{% url 'administrative_event_formular_view' %}">Abbrechen</a>
-            </div>
-            <div class="col d-flex justify-content-end">
-                <button class="btn btn-outline-danger mt-2" type="submit">
-                    Saveasdf
-                </a>
-            </div>
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'administrative_event_formular_view' %}">
+                {% translate 'Cancel' %}</a>
         </div>
-    </form>
-</div>
-
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                {% translate 'Save' %}
+            </button>
+        </div>
+    </div>
+</form>
 {% endblock %}

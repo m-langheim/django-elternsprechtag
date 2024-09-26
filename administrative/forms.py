@@ -61,22 +61,34 @@ class AdminStudentEditForm(forms.Form):
 
 class EventChangeFormularForm(forms.Form):
     teacher = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple
+        queryset=CustomUser.objects.filter(role=1),
+        widget=forms.CheckboxSelectMultiple,
+        label="",
+        required=True,
     )
 
 
 class EventAddNewDateForm(forms.Form):
     base_event = forms.ModelChoiceField(
         queryset=BaseEventGroup.objects.filter(valid_until__gte=timezone.now().date()),
-        empty_label="Neues Base Event erstellen",
+        empty_label=_("New base event"),
         required=False,
+        label="",
     )
-    date = forms.DateField()
+    date = forms.DateField(
+        label="",
+    )
     teacher = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.filter(role=1), widget=forms.CheckboxSelectMultiple
+        queryset=CustomUser.objects.filter(role=1),
+        widget=forms.CheckboxSelectMultiple,
+        label="",
     )
-    lead_start = forms.DateField()
-    lead_inquiry_start = forms.DateField()
+    lead_start = forms.DateField(
+        label="",
+    )
+    lead_inquiry_start = forms.DateField(
+        label="",
+    )
 
 
 class EventChangeFormulaEditForm(forms.ModelForm):
@@ -88,8 +100,14 @@ class EventChangeFormulaEditForm(forms.ModelForm):
             "no_events",
         )
 
-    start_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
-    end_time = forms.TimeField(widget=forms.TimeInput(attrs={"class": "timepicker"}))
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={"class": "timepicker"}),
+        label=_("Start"),
+    )
+    end_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={"class": "timepicker"}),
+        label=_("End"),
+    )
 
     def save(self, commit=True):
         self.instance.status = 1
