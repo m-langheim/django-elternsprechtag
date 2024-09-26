@@ -41,7 +41,6 @@ from dashboard.models import Event, EventChangeFormula
 from dashboard.tasks import async_create_events_special, apply_event_change_formular
 
 import csv, io, os
-
 from django.utils.decorators import method_decorator
 
 login_staff = [login_required, staff_member_required]
@@ -73,6 +72,7 @@ class TeacherTableView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class OthersTableView(View):
     def get(self, request):
         others = CustomUser.objects.filter(role=2)
@@ -91,7 +91,9 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
+            messages.error(
+                request, _("The parent could not be found.")
+            )  # Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(instance=parent)
             return render(
@@ -104,13 +106,15 @@ class ParentEditView(View):
         try:
             parent = CustomUser.objects.get(Q(pk=parent_id), Q(role=0))
         except:
-            messages.error(request, _("The parent could not be found."))# Das Elternteil konnte nicht gefunden werden.
+            messages.error(
+                request, _("The parent could not be found.")
+            )  # Das Elternteil konnte nicht gefunden werden.
         else:
             form = ParentEditForm(request.POST, instance=parent)
             if form.is_valid():
                 form.save()
                 form = ParentEditForm(instance=parent)
-            
+
             parents = CustomUser.objects.filter(role=0)
             parents_table = ParentsTable(parents)
 
@@ -119,7 +123,7 @@ class ParentEditView(View):
                 "administrative/users/parents/parents_overview.html",
                 {"parents_table": parents_table},
             )
-            
+
             # return render(
             #     request,
             #     "administrative/users/parents/parent_edit.html",
@@ -179,6 +183,8 @@ class TeacherEditView(View):
                     request, "Die Änderungen wurden erfolgreich übernommen."
                 )
 
+                return redirect("teachers_table")
+
             return render(
                 request,
                 "administrative/users/teachers/teacher_edit.html",
@@ -234,6 +240,7 @@ class TeacherImportView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class OthersEditView(View):
     def get(self, request, pk):
         user = get_object_or_404(CustomUser, pk=pk, role=2)
@@ -251,7 +258,7 @@ class OthersEditView(View):
         if edit_form.is_valid():
             edit_form.save()
             messages.success(request, "Changes successfully made")
-            edit_form = OthersEditForm(instance=user)
+            return redirect("others_table")
 
         return render(
             request,
@@ -260,6 +267,7 @@ class OthersEditView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class ResetPasswordWithLink(View):
     def post(self, request, pk):
         user = get_object_or_404(CustomUser, pk=pk)
@@ -321,3 +329,66 @@ class ResetPasswordWithLink(View):
                 return redirect("parent_edit_view", user.pk)
             case 1:
                 return redirect("teachers_edit_view", user.pk)
+
+
+class TagsListView(SingleTableView):
+    model = Tag
+    table_class = TagsTable
+    paginate_by = 50
+    template_name = "administrative/users/teachers/tags/tags_list.html"
+
+
+class TagEditView(View):
+    def get(self, request, pk):
+        tag = get_object_or_404(Tag, pk=pk)
+
+        form = TagForm(instance=tag)
+
+        return render(
+            request,
+            "administrative/users/teachers/tags/tag_edit.html",
+            {"form": form, "tag": tag},
+        )
+
+    def post(self, request, pk):
+        tag = get_object_or_404(Tag, pk=pk)
+
+        form = TagForm(instance=tag, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("teachers_tags")
+
+        return render(
+            request,
+            "administrative/users/teachers/tags/tag_edit.html",
+            {"form": form, "tag": tag},
+        )
+
+
+class TagCreateView(View):
+    def get(self, request):
+
+        form = TagForm()
+
+        return render(
+            request,
+            "administrative/users/teachers/tags/tag_edit.html",
+            {
+                "form": form,
+            },
+        )
+
+    def post(self, request):
+
+        form = TagForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("teachers_tags")
+
+        return render(
+            request,
+            "administrative/users/teachers/tags/tag_edit.html",
+            {"form": form},
+        )

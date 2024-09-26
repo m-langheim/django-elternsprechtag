@@ -214,6 +214,13 @@ class ParentEditForm(forms.ModelForm):
         return instance
 
 
+class TagsWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "name__icontains",
+        "synonyms__icontains",
+    ]
+
+
 class TeacherEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -230,7 +237,9 @@ class TeacherEditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=48)
     last_name = forms.CharField(max_length=48)
     acronym = forms.CharField(max_length=3, label=_("Acronym"))
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(), required=False, widget=TagsWidget
+    )
     image = forms.ImageField(required=False, label=_("Profile image"))
 
     custom_permissions = forms.ModelMultipleChoiceField(
