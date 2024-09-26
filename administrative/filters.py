@@ -1,5 +1,5 @@
 import django_filters
-from dashboard.models import Event
+from dashboard.models import Event, LeadStatusChoices
 from authentication.models import CustomUser
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Submit
@@ -24,20 +24,18 @@ class EventFilter(django_filters.FilterSet):
         label="",
         widget=forms.Select(
             attrs={
-                'onchange': 'this.form.submit()',
+                "onchange": "this.form.submit()",
             }
-        )
+        ),
     )
 
     status = django_filters.MultipleChoiceFilter(
-        choices=Event.STATUS_CHOICES,
+        choices=Event.StatusChoices,
         widget=forms.CheckboxSelectMultiple(),
         label="",
     )
     lead_status = django_filters.MultipleChoiceFilter(
-        choices=Event.LEAD_STATUS_CHOICES,
-        widget=forms.CheckboxSelectMultiple(),
-        label=""
+        choices=LeadStatusChoices, widget=forms.CheckboxSelectMultiple(), label=""
     )
 
 

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "colorfield",
     "administrative",
     "custom_backup",
+    "rules.apps.AutodiscoverRulesConfig",
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "elternsprechtag.urls"
+
+AUTHENTICATION_BACKENDS = (
+    "rules.permissions.ObjectPermissionBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 TEMPLATES = [
     {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 21:17+0200\n"
+"POT-Creation-Date: 2024-09-26 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,16 +27,16 @@ msgid "Teacher-Email"
 msgstr ""
 
 #: administrative/forms.py:56 administrative/forms.py:296
-#: administrative/tables.py:69 administrative/tables.py:291
-#: administrative/tables.py:330 administrative/tables.py:362
+#: administrative/tables.py:69 administrative/tables.py:242
+#: administrative/tables.py:281 administrative/tables.py:313
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:81
 msgid "First name"
 msgstr ""
 
 #: administrative/forms.py:57 administrative/forms.py:297
-#: administrative/tables.py:74 administrative/tables.py:296
-#: administrative/tables.py:335 administrative/tables.py:367
+#: administrative/tables.py:74 administrative/tables.py:247
+#: administrative/tables.py:286 administrative/tables.py:318
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:83
 msgid "Last name"
@@ -67,8 +67,8 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: administrative/forms.py:194 administrative/tables.py:314
-#: administrative/tables.py:340 authentication/models.py:135
+#: administrative/forms.py:194 administrative/tables.py:265
+#: administrative/tables.py:291 authentication/models.py:135
 msgid "Acronym"
 msgstr ""
 
@@ -162,7 +162,16 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: administrative/tables.py:421
+#: administrative/tables.py:362 authentication/models.py:77
+#: dashboard/models.py:474 teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr ""
+
+#: administrative/tables.py:367
+msgid "Start"
+msgstr ""
+
+#: administrative/tables.py:372
 msgid "Base event"
 msgstr ""
 
@@ -950,14 +959,41 @@ msgstr ""
 msgid "Unoccupied"
 msgstr ""
 
-#: dashboard/models.py:244 dashboard/models.py:249
+#: dashboard/models.py:244 dashboard/models.py:249 dashboard/models.py:261
 #: dashboard/templates/dashboard/events/teacher.html:189
 #: dashboard/templates/dashboard/inquiry.html:167
 msgid "Occupied"
 msgstr ""
 
-#: dashboard/models.py:245 dashboard/models.py:250
+#: dashboard/models.py:245 dashboard/models.py:250 dashboard/models.py:259
 msgid "Inquiry pending"
+msgstr ""
+
+#: dashboard/models.py:258
+msgid "Event bookable"
+msgstr ""
+
+#: dashboard/models.py:260 dashboard/templates/dashboard/events/teacher.html:86
+#: dashboard/templates/dashboard/events/teacher.html:156
+#: dashboard/templates/dashboard/inquiry.html:134
+#: dashboard/templates/dashboard/inquiry_answered.html:80
+msgid "Booked"
+msgstr ""
+
+#: dashboard/models.py:262
+#: dashboard/templates/dashboard/events/teacher.html:197
+#: dashboard/templates/dashboard/inquiry.html:175
+msgid "Blocked"
+msgstr ""
+
+#: dashboard/models.py:263
+#: dashboard/templates/dashboard/events/teacher.html:193
+#: dashboard/templates/dashboard/inquiry.html:171
+msgid "Time conflict"
+msgstr ""
+
+#: dashboard/models.py:264 dashboard/templates/dashboard/events/book.html:14
+msgid "Followup event"
 msgstr ""
 
 #: dashboard/models.py:335
@@ -1233,10 +1269,6 @@ msgstr ""
 msgid "Appointment view"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/book.html:14
-msgid "Followup event"
-msgstr ""
-
 #: dashboard/templates/dashboard/events/book.html:16
 #, python-format
 msgid ""
@@ -1301,13 +1333,6 @@ msgstr ""
 msgid "Requested"
 msgstr ""
 
-#: dashboard/templates/dashboard/events/teacher.html:86
-#: dashboard/templates/dashboard/events/teacher.html:156
-#: dashboard/templates/dashboard/inquiry.html:134
-#: dashboard/templates/dashboard/inquiry_answered.html:80
-msgid "Booked"
-msgstr ""
-
 #: dashboard/templates/dashboard/events/teacher.html:108
 #: dashboard/templates/dashboard/events/teacher.html:257
 #: dashboard/templates/dashboard/inquiry.html:49
@@ -1323,16 +1348,6 @@ msgstr ""
 #: dashboard/templates/dashboard/events/teacher.html:178
 #: dashboard/templates/dashboard/inquiry.html:156
 msgid "Followup"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/teacher.html:193
-#: dashboard/templates/dashboard/inquiry.html:171
-msgid "Time conflict"
-msgstr ""
-
-#: dashboard/templates/dashboard/events/teacher.html:197
-#: dashboard/templates/dashboard/inquiry.html:175
-msgid "Blocked"
 msgstr ""
 
 #: dashboard/templates/dashboard/events/teacher.html:260

@@ -163,6 +163,7 @@ class EventsListView(SingleTableMixin, FilterView):
         return Event.objects.filter(start__gte=timezone.now()).all()
 
 
+@method_decorator(login_staff, name="dispatch")
 class EventDetailView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
@@ -207,7 +208,7 @@ class EventDetailView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class EventAddStudentView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
@@ -234,7 +235,7 @@ class EventAddStudentView(View):
             {"form": form, "event": event},
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class EventClearView(View):
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
