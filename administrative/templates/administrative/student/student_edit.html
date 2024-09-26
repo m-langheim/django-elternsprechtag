@@ -1,23 +1,30 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {% translate 'Edit student' %} {% endblock title %}
+
 {% block control_content %}
 
-<div class="card card-body p-4">
-    <form method="POST">
-        {{ form | crispy }}
-        {% csrf_token %}
+<p class="h1">{% translate 'Edit the student' %}</p>
+<p class="text-secondary">{% translate 'Edit the personal data of the student.' %}</p>
 
-        <div class="row">
-            <div class="col d-flex">
-                <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">Abbrechen</a>
-            </div>
-            <div class="col d-flex justify-content-end">
-                <button class="btn btn-outline-danger mt-2" type="submit">
-                    Saveasdf
-                </a>
-            </div>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.first_name|as_crispy_field }}
+    {{ form.last_name|as_crispy_field }}
+    {{ form.child_email|as_crispy_field }}
+    {{ form.class_name|as_crispy_field }}
+
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">{% translate 'Cancel' %}</a>
         </div>
-    </form>
-</div>
-
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                {% translate 'Save' %}
+            </button>
+        </div>
+    </div>
+</form>
 {% endblock %}

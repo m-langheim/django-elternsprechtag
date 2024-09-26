@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 04:13+0200\n"
+"POT-Creation-Date: 2024-09-26 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:41
+#: administrative/forms.py:37 administrative/forms.py:41
 msgid "CSV-File"
 msgstr "CSV-Datei"
 
@@ -84,6 +84,22 @@ msgstr "User ist ein Mitarbeiter"
 msgid "Another teacher has the same acronym. Please choose a different one."
 msgstr ""
 "Ein anderer Lehrer hat das gleiche Kürzel. Bitte wählen Sie ein anderes."
+
+#: administrative/forms.py:431
+#: profile_settings/templates/profile_settings/change_password.html:5
+#: profile_settings/templates/profile_settings/profile_layout.html:30
+#: profile_settings/templates/profile_settings/profile_layout.html:41
+msgid "Password"
+msgstr "Kennwort"
+
+#: administrative/forms.py:442
+msgid "Confirm password"
+msgstr "Kennwort bestätigen"
+
+#: administrative/forms.py:454
+msgid "This email is already taken. Please provide a different one."
+msgstr ""
+"Diese E-Mail ist bereits vergeben. Bitte geben Sie eine andere an."
 
 #: administrative/tables.py:50
 msgid "Child email"
@@ -234,6 +250,119 @@ msgstr "Uhrzeit:"
 msgid "Room:"
 msgstr "Raum:"
 
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:5
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:5
+msgid "Manual registration"
+msgstr "Manuelle Registrierung"
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:10
+msgid "Select parent"
+msgstr "Account auswählen"
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:11
+msgid "Select the parent to add the student to."
+msgstr "Wählen Sie das Elternteil aus, dem die Schüler*in hinzugefügt werden soll."
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:17
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:17
+#: administrative/templates/administrative/student/student_detail_view.html:33
+#: dashboard/templates/dashboard/inquiry.html:24
+#: dashboard/templates/dashboard/inquiry_answered.html:24
+#: dashboard/templates/dashboard/public_dashboard.html:167
+#: teacher/templates/teacher/dashboard.html:190
+#: teacher/templates/teacher/inquiry/createInquiry.html:55
+#: teacher/templates/teacher/inquiry/viewInquiry.html:24
+msgid "Student:"
+msgstr "Schüler*in:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:32
+#: teacher/templates/teacher/dashboard.html:188
+#: teacher/templates/teacher/event/detailEvent.html:52
+#: teacher/templates/teacher/inquiry/createInquiry.html:59
+#: teacher/templates/teacher/inquiry/viewInquiry.html:28
+msgid "Parent:"
+msgstr "Elternteil:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:47
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:87
+#: administrative/templates/administrative/student/student_detail_view.html:171
+#: administrative/templates/administrative/student/student_edit.html:21
+#: administrative/templates/administrative/student/student_import_fileupload.html:35
+#: administrative/templates/administrative/users/others/others_edit.html:54
+#: administrative/templates/administrative/users/parents/parent_edit.html:55
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
+#: administrative/templates/administrative/users/teachers/teacher_import.html:20
+#: dashboard/templates/dashboard/events/view.html:151
+#: profile_settings/templates/profile_settings/change_password.html:19
+#: profile_settings/templates/profile_settings/my_profile.html:39
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
+#: teacher/templates/teacher/dashboard.html:298
+#: teacher/templates/teacher/dashboard.html:328
+#: teacher/templates/teacher/event/detailEvent.html:147
+#: teacher/templates/teacher/event/detailEvent.html:178
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: administrative/templates/administrative/student/manual_parent_registration_add.html:51
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:91
+#: administrative/templates/administrative/student/student_edit.html:25
+#: administrative/templates/administrative/users/others/others_edit.html:58
+#: administrative/templates/administrative/users/parents/parent_edit.html:59
+#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
+#: dashboard/forms.py:260 dashboard/forms.py:273
+#: dashboard/templates/dashboard/events/view.html:114
+#: profile_settings/forms.py:38
+#: profile_settings/templates/profile_settings/change_password.html:23
+#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
+#: teacher/templates/teacher/inquiry/viewInquiry.html:72
+msgid "Save"
+msgstr "Speichern"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:10
+#: administrative/templates/administrative/student/student_detail_view.html:178
+msgid "Register parent"
+msgstr "Neuer Account"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:11
+msgid "Create a parent account to add the student to."
+msgstr ""
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:32
+msgid "First name*:"
+msgstr "Vorname*:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:38
+msgid "Last name*:"
+msgstr "Nachname*:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:44
+msgid "Email*:"
+msgstr "E-Mail*:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:50
+msgid "Password*:"
+msgstr "Kennwort*:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:59
+msgid "Confirm password*:"
+msgstr "Kennwort bestätigen*:"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:67
+msgid "Please enter two identical passwords"
+msgstr "Bitte geben Sie zwei identische Kennwörter ein"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:69
+msgid "Please enter a password longer than 8 chars"
+msgstr "Bitte geben Sie ein Kennwort ein, das länger als 8 Zeichen ist."
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:71
+msgid "Please enter a more unusual password"
+msgstr "Bitte geben Sie ein ungewöhnlicheres Kennwort ein"
+
+#: administrative/templates/administrative/student/manual_parent_registration_create.html:73
+msgid "Please enter a password consisting not only of numbers"
+msgstr "Bitte geben Sie ein Kennwort ein, das nicht nur aus Zahlen besteht"
+
 #: administrative/templates/administrative/student/student_detail_view.html:5
 #: administrative/templates/administrative/student/student_detail_view.html:24
 #: authentication/models.py:36 authentication/models.py:51
@@ -244,16 +373,6 @@ msgstr "Schüler*in"
 #: administrative/templates/administrative/student/student_detail_view.html:25
 msgid "Here is some information on the student."
 msgstr "Hier sind einige Informationen zur Schüler*in gegeben."
-
-#: administrative/templates/administrative/student/student_detail_view.html:33
-#: dashboard/templates/dashboard/inquiry.html:24
-#: dashboard/templates/dashboard/inquiry_answered.html:24
-#: dashboard/templates/dashboard/public_dashboard.html:167
-#: teacher/templates/teacher/dashboard.html:190
-#: teacher/templates/teacher/inquiry/createInquiry.html:55
-#: teacher/templates/teacher/inquiry/viewInquiry.html:24
-msgid "Student:"
-msgstr "Schüler*in:"
 
 #: administrative/templates/administrative/student/student_detail_view.html:36
 msgid "Class:"
@@ -331,40 +450,61 @@ msgid ""
 "Please choose \"Register parent\" to add to a new parent account."
 msgstr ""
 "Wählen Sie \"Bestehender Account\", um die Schüler*in zu einem bestehenden "
-"Elternkonto hinzuzufügen. Wählen Sie \"Neuer Account\", um "
-"die Schüler*in einem neuen Elternkonto hinzuzufügen."
-
-#: administrative/templates/administrative/student/student_detail_view.html:171
-#: administrative/templates/administrative/users/others/others_edit.html:54
-#: administrative/templates/administrative/users/parents/parent_edit.html:55
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:58
-#: administrative/templates/administrative/users/teachers/teacher_import.html:18
-#: dashboard/templates/dashboard/events/view.html:151
-#: profile_settings/templates/profile_settings/change_password.html:19
-#: profile_settings/templates/profile_settings/my_profile.html:39
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:67
-#: teacher/templates/teacher/dashboard.html:298
-#: teacher/templates/teacher/dashboard.html:328
-#: teacher/templates/teacher/event/detailEvent.html:147
-#: teacher/templates/teacher/event/detailEvent.html:178
-msgid "Cancel"
-msgstr "Abbrechen"
+"Elternkonto hinzuzufügen. Wählen Sie \"Neuer Account\", um die Schüler*in "
+"einem neuen Elternkonto hinzuzufügen."
 
 #: administrative/templates/administrative/student/student_detail_view.html:176
 msgid "Add to parent"
 msgstr "Bestehender Account"
 
-#: administrative/templates/administrative/student/student_detail_view.html:178
-msgid "Register parent"
-msgstr "Neuer Account"
+#: administrative/templates/administrative/student/student_edit.html:5
+msgid "Edit student"
+msgstr "Schüler*in bearbeiten"
+
+#: administrative/templates/administrative/student/student_edit.html:9
+msgid "Edit the student"
+msgstr "Schüler*in bearbeiten"
+
+#: administrative/templates/administrative/student/student_edit.html:10
+msgid "Edit the personal data of the student."
+msgstr "Bearbeiten Sie die persönlichen Daten der Schüler*in."
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:4
+msgid "Import students"
+msgstr "Schüler*innen importieren"
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:12
+msgid "Outstanding changes"
+msgstr "Offene Änderungen"
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:13
+msgid ""
+"There are several changes to the student database that are not confirmed "
+"yet. Please continue with the changes."
+msgstr "Es gibt einige Änderungen in der Schülerdatenbank, die noch nicht bestätigt sind. Bitte fahren Sie mit den Änderungen fort."
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:16
+#: dashboard/templates/dashboard/public_dashboard.html:178
+msgid "View"
+msgstr "Ansehen"
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:24
+#: administrative/templates/administrative/student/student_list_view.html:15
+msgid "Add students"
+msgstr "Schüler*innen hinzufügen"
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:25
+msgid "Upload a CSV-File to import students."
+msgstr "Laden Sie eine CSV-Datei hoch, um Schüler*innen zu importieren."
+
+#: administrative/templates/administrative/student/student_import_fileupload.html:39
+#: administrative/templates/administrative/users/teachers/teacher_import.html:24
+msgid "Upload"
+msgstr "Hochladen"
 
 #: administrative/templates/administrative/student/student_list_view.html:11
 msgid "All students are listed here."
 msgstr "Hier werden alle Schüler*innen aufgeführt."
-
-#: administrative/templates/administrative/student/student_list_view.html:15
-msgid "Add students"
-msgstr "Schüler*innen hinzufügen"
 
 #: administrative/templates/administrative/users/others/others_edit.html:5
 msgid "Edit user"
@@ -404,18 +544,6 @@ msgstr "Berechtigungen"
 #: administrative/templates/administrative/users/teachers/teacher_edit.html:51
 msgid "Custom permissions"
 msgstr "Persönliche Berechtigungen"
-
-#: administrative/templates/administrative/users/others/others_edit.html:58
-#: administrative/templates/administrative/users/parents/parent_edit.html:59
-#: administrative/templates/administrative/users/teachers/teacher_edit.html:62
-#: dashboard/forms.py:260 dashboard/forms.py:273
-#: dashboard/templates/dashboard/events/view.html:114
-#: profile_settings/forms.py:38
-#: profile_settings/templates/profile_settings/change_password.html:23
-#: profile_settings/templates/profile_settings/teacher_change_tags.html:72
-#: teacher/templates/teacher/inquiry/viewInquiry.html:72
-msgid "Save"
-msgstr "Speichern"
 
 #: administrative/templates/administrative/users/others/others_overview.html:5
 #: administrative/templates/administrative/users/others/others_overview.html:30
@@ -463,18 +591,18 @@ msgstr "Lehrkraft bearbeiten"
 msgid "Edit the teacher"
 msgstr "Lehrkraft bearbeiten"
 
-#: administrative/templates/administrative/users/teachers/teacher_import.html:7
+#: administrative/templates/administrative/users/teachers/teacher_import.html:4
+msgid "Import teachers"
+msgstr "Lehrkräfte importieren"
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:9
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:15
 msgid "Add teachers"
 msgstr "Lehrkraft hinzufügen"
 
-#: administrative/templates/administrative/users/teachers/teacher_import.html:8
+#: administrative/templates/administrative/users/teachers/teacher_import.html:10
 msgid "Fill at least one field to add new teachers."
 msgstr "Fülle mindestens ein Feld aus, um neue Lehrkräfte hinzuzufügen."
-
-#: administrative/templates/administrative/users/teachers/teacher_import.html:22
-msgid "Upload"
-msgstr "Hochladen"
 
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:11
 msgid "All teacher accounts are listed here."
@@ -1241,10 +1369,6 @@ msgstr "Folgende Lehrkräfte haben einen Termin mit Ihnen angefragt."
 msgid "You still need to answer the request."
 msgstr "Sie müssen die Anfrage noch beantworten."
 
-#: dashboard/templates/dashboard/public_dashboard.html:178
-msgid "View"
-msgstr "Ansehen"
-
 #: dashboard/templates/dashboard/public_dashboard.html:188
 #: teacher/templates/teacher/dashboard.html:204
 msgid "No inquiries"
@@ -1357,12 +1481,6 @@ msgstr "Was ist passiert?"
 #: general_tasks/templates/error_file_template.html:28
 msgid "What can I do?"
 msgstr "Was können Sie tun?"
-
-#: profile_settings/templates/profile_settings/change_password.html:5
-#: profile_settings/templates/profile_settings/profile_layout.html:30
-#: profile_settings/templates/profile_settings/profile_layout.html:41
-msgid "Password"
-msgstr "Kennwort"
 
 #: profile_settings/templates/profile_settings/change_password.html:11
 msgid "Change password"
@@ -1499,13 +1617,6 @@ msgstr "Termin bestätigen"
 #: teacher/templates/teacher/dashboard.html:170
 msgid "Your unanswered requests to particular students."
 msgstr "Ihre unbeantworteten Anfragen an einzelne Schüler*innen."
-
-#: teacher/templates/teacher/dashboard.html:188
-#: teacher/templates/teacher/event/detailEvent.html:52
-#: teacher/templates/teacher/inquiry/createInquiry.html:59
-#: teacher/templates/teacher/inquiry/viewInquiry.html:28
-msgid "Parent:"
-msgstr "Elternteil:"
 
 #: teacher/templates/teacher/dashboard.html:205
 msgid "You have no unconfirmed requests for students."
