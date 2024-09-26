@@ -85,7 +85,11 @@ class StudentTable(tables.Table):
         attrs={"th": {"id": "class_name_id"}},
     )
 
-    parent = StudentParentLinkColumn(accessor="pk", verbose_name=_("Parent"))
+    parent = StudentParentLinkColumn(
+        accessor="pk",
+        verbose_name=_("Parent"),
+        attrs={"th": {"id": "parent_id"}},
+    )
 
     info = StudentExtrainformaionColumn(
         accessor="pk",
@@ -93,6 +97,7 @@ class StudentTable(tables.Table):
         verbose_name="",
         attrs={"td": {"align": "right"}},
     )
+
     details = tables.LinkColumn(
         "student_details_view",
         args=[Accessor("pk")],
