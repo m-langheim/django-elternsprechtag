@@ -126,3 +126,13 @@ else:
 DBBACKUP_SERVER_EMAIL = os.environ.get("EMAIL_COMPLETE")
 DBBACKUP_CLEANUP_KEEP = 30
 DBBACKUP_CLEANUP_KEEP_MEDIA = 30
+
+
+CACHES = {
+    "select2": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",
+    }
+}
+
+SELECT2_CACHE_BACKEND = "select2"

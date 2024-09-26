@@ -29,6 +29,7 @@ urlpatterns = [
     path("control/", include("administrative.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("backup/", include("custom_backup.urls")),
+    path("select2/", include("django_select2.urls")),
     # path('register/', include("login.urls"))
 ]
 
