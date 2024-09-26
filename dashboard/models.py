@@ -434,15 +434,21 @@ class Event(models.Model):  # Termin
         permissions = [
             (
                 "book_event",
-                "Dieser User darf kein Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen.",  # The user is allowed to book an event. Without this permission the user will be completely blocked from booking.
+                _(
+                    "The user is allowed to book an event. Without this permission the user will be completely blocked from booking."
+                ),  # Dieser User darf Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen.
             ),  #! Aktuell nicht in Benutzung
             (
                 "condition_prebook_event",
-                "Dieser User darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen.",  # The user is allowed to book an event before the official booking period because he has an e.g. medical condition.
+                _(
+                    "The user is allowed to book an event before the official booking period because he has an e.g. medical condition."
+                ),  # Dieser User darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen.
             ),
             (
                 "book_double_event",
-                "Dieser User darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen.",  # The user is allowed to book a double event with all teachers because of an medical condition.
+                _(
+                    "The user is allowed to book a double event with all teachers because of an medical condition."
+                ),  # Dieser User darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen.
             ),  #! Aktuell nicht in Benutzung
         ]
 

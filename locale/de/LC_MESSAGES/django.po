@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 14:58+0200\n"
+"POT-Creation-Date: 2024-09-26 16:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,102 +18,104 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:37 administrative/forms.py:41
+#: administrative/forms.py:47 administrative/forms.py:51
 msgid "CSV-File"
 msgstr "CSV-Datei"
 
-#: administrative/forms.py:42
+#: administrative/forms.py:52
 msgid "Teacher-Email"
 msgstr "E-Mail der Lehrkraft"
 
-#: administrative/forms.py:46 administrative/forms.py:284
-#: administrative/tables.py:39 administrative/tables.py:211
-#: administrative/tables.py:248 administrative/tables.py:273
+#: administrative/forms.py:56 administrative/forms.py:296
+#: administrative/tables.py:69 administrative/tables.py:242
+#: administrative/tables.py:282 administrative/tables.py:308
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:81
 msgid "First name"
 msgstr "Vorname"
 
-#: administrative/forms.py:47 administrative/forms.py:285
-#: administrative/tables.py:44 administrative/tables.py:216
-#: administrative/tables.py:253 administrative/tables.py:278
+#: administrative/forms.py:57 administrative/forms.py:297
+#: administrative/tables.py:74 administrative/tables.py:247
+#: administrative/tables.py:287 administrative/tables.py:313
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:83
 msgid "Last name"
 msgstr "Nachname"
 
-#: administrative/forms.py:48 authentication/models.py:20
+#: administrative/forms.py:58 authentication/models.py:20
 #: authentication/models.py:60
 msgid "Child emails"
 msgstr "Email des Kindes"
 
-#: administrative/forms.py:49 authentication/models.py:21
+#: administrative/forms.py:59 authentication/models.py:21
 #: authentication/models.py:63
 msgid "Name of class"
 msgstr "Klasse"
 
-#: administrative/forms.py:122 administrative/forms.py:198
-#: administrative/forms.py:297
+#: administrative/forms.py:132 administrative/forms.py:208
+#: administrative/forms.py:309
 msgid "User is active"
 msgstr "User ist aktiv"
 
-#: administrative/forms.py:123 administrative/forms.py:200
-#: administrative/forms.py:299
+#: administrative/forms.py:133 administrative/forms.py:210
+#: administrative/forms.py:311
 msgid "Specific permissions"
 msgstr "Spezifische Berechtigungen"
 
-#: administrative/forms.py:181 administrative/forms.py:283
+#: administrative/forms.py:191 administrative/forms.py:295
 #: authentication/models.py:79
 msgid "Email"
 msgstr "E-Mail"
 
-#: administrative/forms.py:184 administrative/tables.py:232
+#: administrative/forms.py:194 administrative/tables.py:265
 #: authentication/models.py:135
 msgid "Acronym"
 msgstr "Kürzel"
 
-#: administrative/forms.py:186 authentication/models.py:141
+#: administrative/forms.py:196 authentication/models.py:141
 msgid "Profile image"
 msgstr "Profilbild"
 
-#: administrative/forms.py:199 administrative/forms.py:298
+#: administrative/forms.py:209 administrative/forms.py:310
 msgid "User is staff"
 msgstr "User ist ein Mitarbeiter"
 
-#: administrative/forms.py:241
+#: administrative/forms.py:252
 msgid "Another teacher has the same acronym. Please choose a different one."
 msgstr ""
 "Ein anderer Lehrer hat das gleiche Kürzel. Bitte wählen Sie ein anderes."
 
-#: administrative/forms.py:431
+#: administrative/forms.py:445
 #: profile_settings/templates/profile_settings/change_password.html:5
 #: profile_settings/templates/profile_settings/profile_layout.html:30
 #: profile_settings/templates/profile_settings/profile_layout.html:41
 msgid "Password"
 msgstr "Kennwort"
 
-#: administrative/forms.py:442
+#: administrative/forms.py:456
 msgid "Confirm password"
 msgstr "Kennwort bestätigen"
 
-#: administrative/forms.py:454
+#: administrative/forms.py:468
 msgid "This email is already taken. Please provide a different one."
-msgstr ""
-"Diese E-Mail ist bereits vergeben. Bitte geben Sie eine andere an."
+msgstr "Diese E-Mail ist bereits vergeben. Bitte geben Sie eine andere an."
 
-#: administrative/tables.py:50
+#: administrative/tables.py:80
 msgid "Child email"
 msgstr "E-Mail des Kindes"
 
-#: administrative/tables.py:54
+#: administrative/tables.py:84
 msgid "Class"
 msgstr "Klasse"
 
-#: administrative/tables.py:60
-msgid "Parent Email"
-msgstr "E-Mail der Eltern"
+#: administrative/tables.py:90
+#: administrative/templates/administrative/student/student_detail_view.html:82
+#: authentication/models.py:77
+#: teacher/templates/teacher/event/detailEvent.html:34
+msgid "Parent"
+msgstr "Eltern"
 
-#: administrative/tables.py:203
+#: administrative/tables.py:234
 #: administrative/templates/administrative/administrative_base.html:54
 #: administrative/templates/administrative/administrative_base.html:75
 #: administrative/templates/administrative/administrative_base.html:117
@@ -127,7 +129,7 @@ msgstr "E-Mail der Eltern"
 msgid "Students"
 msgstr "Schüler*innen"
 
-#: administrative/tables.py:235 authentication/models.py:125
+#: administrative/tables.py:269 authentication/models.py:125
 #: authentication/models.py:136
 #: profile_settings/templates/profile_settings/profile_layout.html:32
 #: profile_settings/templates/profile_settings/profile_layout.html:46
@@ -261,7 +263,8 @@ msgstr "Account auswählen"
 
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:11
 msgid "Select the parent to add the student to."
-msgstr "Wählen Sie das Elternteil aus, dem die Schüler*in hinzugefügt werden soll."
+msgstr ""
+"Wählen Sie das Elternteil aus, dem die Schüler*in hinzugefügt werden soll."
 
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:17
 #: administrative/templates/administrative/student/manual_parent_registration_create.html:17
@@ -402,12 +405,6 @@ msgstr ""
 "Die Registrierungs-E-Mail wurde noch nicht an die Eltern verschickt. Nach "
 "dem Versand der E-Mail können sich die Eltern für diese Schüler*in anmelden."
 
-#: administrative/templates/administrative/student/student_detail_view.html:82
-#: authentication/models.py:77
-#: teacher/templates/teacher/event/detailEvent.html:34
-msgid "Parent"
-msgstr "Eltern"
-
 #: administrative/templates/administrative/student/student_detail_view.html:83
 msgid "Here is some information on the parents."
 msgstr "Hier sind einige Informationen zum Elternteil gegeben."
@@ -481,7 +478,9 @@ msgstr "Offene Änderungen"
 msgid ""
 "There are several changes to the student database that are not confirmed "
 "yet. Please continue with the changes."
-msgstr "Es gibt einige Änderungen in der Schülerdatenbank, die noch nicht bestätigt sind. Bitte fahren Sie mit den Änderungen fort."
+msgstr ""
+"Es gibt einige Änderungen in der Schülerdatenbank, die noch nicht bestätigt "
+"sind. Bitte fahren Sie mit den Änderungen fort."
 
 #: administrative/templates/administrative/student/student_import_fileupload.html:16
 #: dashboard/templates/dashboard/public_dashboard.html:178
@@ -647,7 +646,7 @@ msgstr "Eltern des Kindes haben sich registriert."
 msgid "Can apply changes to the students"
 msgstr "Kann Änderungen an Schüler*innen vornehmen"
 
-#: authentication/models.py:77 dashboard/models.py:468
+#: authentication/models.py:77 dashboard/models.py:474
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
 msgstr "Lehrkraft"
@@ -841,12 +840,12 @@ msgstr ""
 "Startzeitpunkt der Buchungsphase liegen."
 
 #: dashboard/models.py:24 dashboard/models.py:94 dashboard/models.py:144
-#: dashboard/models.py:586
+#: dashboard/models.py:592
 msgid "Set a date from which all parents can request appointments."
 msgstr "Setzen Sie fest, ab wann alle Eltern Termine anfragen können."
 
 #: dashboard/models.py:32 dashboard/models.py:100 dashboard/models.py:149
-#: dashboard/models.py:590
+#: dashboard/models.py:596
 msgid "Determine when teachers' enquiries can be answered."
 msgstr ""
 "Setzen Sie fest, ab wann Anfragen der Lehrkräfte beantwortet werden können."
@@ -921,75 +920,93 @@ msgstr " bis "
 msgid "Event"
 msgstr "Termin"
 
-#: dashboard/models.py:455
+#: dashboard/models.py:438
+msgid ""
+"The user is allowed to book an event. Without this permission the user will "
+"be completely blocked from booking."
+msgstr "Dieser Nutzer darf Termin buchen. Ohne diese Berechtigung ist er komplett ausgeschlossen vom Buchen von Terminen."
+
+#: dashboard/models.py:444
+msgid ""
+"The user is allowed to book an event before the official booking period "
+"because he has an e.g. medical condition."
+msgstr "Dieser Nutzer darf aus z.B. medizinischen Gründen einen Termin vor der offiziellen Buchungsphasen anfragen."
+
+#: dashboard/models.py:450
+msgid ""
+"The user is allowed to book a double event with all teachers because of an "
+"medical condition."
+msgstr "Dieser Nutzer darf aus z.B. medizinischen Gründen auch Doppeltermine bei einer Lehrkraft anfragen."
+
+#: dashboard/models.py:461
 msgid "Submit own time periods."
 msgstr "Eigene Zeiträume abschicken."
 
-#: dashboard/models.py:470
+#: dashboard/models.py:476
 msgid "Date"
 msgstr "Datum"
 
-#: dashboard/models.py:471
+#: dashboard/models.py:477
 msgid "Start time"
 msgstr "Startzeitpunkt"
 
-#: dashboard/models.py:472
+#: dashboard/models.py:478
 msgid "End time"
 msgstr "Endzeitpunkt"
 
-#: dashboard/models.py:473
+#: dashboard/models.py:479
 msgid "No events"
 msgstr "Keine Termine"
 
-#: dashboard/models.py:475
+#: dashboard/models.py:481
 msgid "Wait for processing"
 msgstr "Warte auf Bearbeitung"
 
-#: dashboard/models.py:476
+#: dashboard/models.py:482
 msgid "Wait for confirmation"
 msgstr "Warte auf Bestätigung"
 
-#: dashboard/models.py:477
+#: dashboard/models.py:483
 msgid "Approved"
 msgstr "Angenommen"
 
-#: dashboard/models.py:478
+#: dashboard/models.py:484
 msgid "Declined"
 msgstr "Abgelehnt"
 
-#: dashboard/models.py:483
+#: dashboard/models.py:489
 msgid "Event creation formula"
 msgstr "Terminerstellungsformular"
 
-#: dashboard/models.py:484
+#: dashboard/models.py:490
 msgid "Event creation formulas"
 msgstr "Terminerstellungsformulare"
 
-#: dashboard/models.py:489
+#: dashboard/models.py:495
 msgid "Can accept or reject submitted time periods for other users."
 msgstr "Kann eingereichte Zeiträume für andere User annehmen oder ablehnen."
 
-#: dashboard/models.py:498
+#: dashboard/models.py:504
 msgid "Inquiry to book an appointment (teacher->parents)"
 msgstr "Anfrage zur Buchung eines Termins (Lehrer->Eltern)"
 
-#: dashboard/models.py:499
+#: dashboard/models.py:505
 msgid "Request for confirmation of an appointment (parent->teacher)"
 msgstr "Anfrage zur Bestätigung eines Termins (Eltern->Lehrer)"
 
-#: dashboard/models.py:523
+#: dashboard/models.py:529
 msgid "No response"
 msgstr "Keine Antwort"
 
-#: dashboard/models.py:524
+#: dashboard/models.py:530
 msgid "Inquiry accepted"
 msgstr "Anfrage angenommen"
 
-#: dashboard/models.py:525
+#: dashboard/models.py:531
 msgid "Inquiry declined"
 msgstr "Anfrage abgelehnt"
 
-#: dashboard/models.py:532 dashboard/templates/dashboard/inquiry.html:3
+#: dashboard/models.py:538 dashboard/templates/dashboard/inquiry.html:3
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
@@ -1000,37 +1017,37 @@ msgstr "Anfrage abgelehnt"
 msgid "Inquiry"
 msgstr "Anfrage"
 
-#: dashboard/models.py:533
+#: dashboard/models.py:539
 msgid "Inquries"
 msgstr "Anfragen"
 
-#: dashboard/models.py:538
+#: dashboard/models.py:544
 msgid "New booking inquiry"
 msgstr "Neue Buchungsanfrage"
 
-#: dashboard/models.py:539
+#: dashboard/models.py:545
 msgid "Appointment cancellation"
 msgstr "Terminabsage"
 
-#: dashboard/models.py:540
+#: dashboard/models.py:546
 msgid "System notification"
 msgstr "Systembenachrichtigung"
 
-#: dashboard/models.py:556
+#: dashboard/models.py:562
 msgid "Notification"
 msgstr "Benachrichtigung"
 
-#: dashboard/models.py:557
+#: dashboard/models.py:563
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
-#: dashboard/templates/dashboard/base.html:79
-#: dashboard/templates/dashboard/base.html:149
+#: dashboard/templates/dashboard/base.html:80
+#: dashboard/templates/dashboard/base.html:150
 #: dashboard/templates/dashboard/public_dashboard.html:196
 #: teacher/templates/teacher/dashboard.html:215
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: dashboard/models.py:595
+#: dashboard/models.py:601
 msgid ""
 "Here you define the general length of an appointment. It applies to all "
 "appointments created with this function."
@@ -1038,7 +1055,7 @@ msgstr ""
 "Hier legen Sie die allgemeine Länge eines Termins fest. Sie bezieht sich auf "
 "alle mit dieser Funktion erstellten Termine."
 
-#: dashboard/models.py:601
+#: dashboard/models.py:607
 msgid ""
 "Here you can set the interval between two appointments. You should allow "
 "some time to change rooms etc."
@@ -1046,7 +1063,7 @@ msgstr ""
 "Hier können Sie den Abstand zwischen zwei Terminen festlegen. Sie sollten "
 "etwas Zeit zum Wechseln der Räume usw. einplanen."
 
-#: dashboard/models.py:626 dashboard/models.py:627
+#: dashboard/models.py:632 dashboard/models.py:633
 msgid "SiteSettings"
 msgstr "Seiteneinstellungen"
 
@@ -1078,36 +1095,36 @@ msgstr "Es gibt bei Ihnen bisher keine offenen Termine."
 msgid "Mark all as read"
 msgstr "Alle als gelesen markieren"
 
-#: dashboard/templates/dashboard/base.html:49
-#: dashboard/templates/dashboard/base.html:116
+#: dashboard/templates/dashboard/base.html:50
+#: dashboard/templates/dashboard/base.html:117
 msgid "Search..."
 msgstr "Suchen..."
 
-#: dashboard/templates/dashboard/base.html:61
+#: dashboard/templates/dashboard/base.html:62
 msgid "Help"
 msgstr "Hilfe"
 
-#: dashboard/templates/dashboard/base.html:67
+#: dashboard/templates/dashboard/base.html:68
 msgid "Profile"
 msgstr "Profil"
 
-#: dashboard/templates/dashboard/base.html:76
-#: dashboard/templates/dashboard/base.html:146
+#: dashboard/templates/dashboard/base.html:77
+#: dashboard/templates/dashboard/base.html:147
 msgid "My appointments"
 msgstr "Meine Termine"
 
-#: dashboard/templates/dashboard/base.html:83
-#: dashboard/templates/dashboard/base.html:152
+#: dashboard/templates/dashboard/base.html:84
+#: dashboard/templates/dashboard/base.html:153
 msgid "Django administration"
 msgstr "Django-Verwaltung"
 
-#: dashboard/templates/dashboard/base.html:85
-#: dashboard/templates/dashboard/base.html:154
+#: dashboard/templates/dashboard/base.html:86
+#: dashboard/templates/dashboard/base.html:155
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: dashboard/templates/dashboard/base.html:89
-#: dashboard/templates/dashboard/base.html:157
+#: dashboard/templates/dashboard/base.html:90
+#: dashboard/templates/dashboard/base.html:158
 #: profile_settings/templates/profile_settings/my_profile.html:5
 #: profile_settings/templates/profile_settings/my_profile.html:11
 #: profile_settings/templates/profile_settings/profile_layout.html:28
@@ -1116,29 +1133,29 @@ msgstr "Verwaltung"
 msgid "My profile"
 msgstr "Mein Profil"
 
-#: dashboard/templates/dashboard/base.html:94
-#: dashboard/templates/dashboard/base.html:162
+#: dashboard/templates/dashboard/base.html:95
+#: dashboard/templates/dashboard/base.html:163
 msgid "Instructions"
 msgstr "Anleitung"
 
-#: dashboard/templates/dashboard/base.html:100
-#: dashboard/templates/dashboard/base.html:168
+#: dashboard/templates/dashboard/base.html:101
+#: dashboard/templates/dashboard/base.html:169
 msgid "Logout"
 msgstr "Abmelden"
 
-#: dashboard/templates/dashboard/base.html:130
+#: dashboard/templates/dashboard/base.html:131
 msgid "Click for information about this page."
 msgstr "Klicken Sie für Informationen zu dieser Seite."
 
-#: dashboard/templates/dashboard/base.html:137
+#: dashboard/templates/dashboard/base.html:138
 msgid "Click for information about your account."
 msgstr "Klicken Sie für Informationen zu Ihrem Konto."
 
-#: dashboard/templates/dashboard/base.html:187
+#: dashboard/templates/dashboard/base.html:188
 msgid "Close"
 msgstr "Schließen"
 
-#: dashboard/templates/dashboard/base.html:215
+#: dashboard/templates/dashboard/base.html:216
 msgid "Legal notice"
 msgstr "Impressum"
 
@@ -1760,6 +1777,9 @@ msgstr "Sie haben bereits eine Anfrage bekommen!"
 #: teacher/templates/teacher/studentList.html:61
 msgid "You already have an appointment with the parents of this child!"
 msgstr "Sie haben bereits ein Termin mit diesem Kind!"
+
+#~ msgid "Parent Email"
+#~ msgstr "E-Mail der Eltern"
 
 #~ msgid "The child does not have a registered parent yet!"
 #~ msgstr "Das Kind hat bisher kein registriertes Elternteil!"
