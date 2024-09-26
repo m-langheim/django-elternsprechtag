@@ -208,6 +208,7 @@ class EventDetailView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
 class EventAddStudentView(View):
     def get(self, request, event_id):
@@ -234,6 +235,7 @@ class EventAddStudentView(View):
             "administrative/events/event_edit.html",
             {"form": form, "event": event},
         )
+
 
 @method_decorator(login_staff, name="dispatch")
 class EventClearView(View):
@@ -285,6 +287,17 @@ class EventBlockView(View):
 
 @method_decorator(login_staff, name="dispatch")
 class EventChangeFormularAddView(View):
+    def get(self, request, event_group_id):
+        day_group = get_object_or_404(
+            DayEventGroup, id=force_str(urlsafe_base64_decode(event_group_id))
+        )
+
+        form = EventChangeFormularForm()
+
+        return render(
+            request, "administrative/time_slots/formular_fallback.html", {"form": form}
+        )
+
     def post(self, request, event_group_id):
         day_group = get_object_or_404(
             DayEventGroup, id=force_str(urlsafe_base64_decode(event_group_id))
@@ -311,10 +324,20 @@ class EventChangeFormularAddView(View):
                     status=0,
                 )
             return redirect("administrative_event_formular_view")
+        return render(
+            request, "administrative/time_slots/formular_fallback.html", {"form": form}
+        )
 
 
 @method_decorator(login_staff, name="dispatch")
 class EventAddNewDateAndFormularsView(View):
+    def get(self, request):
+        form = EventAddNewDateForm()
+
+        return render(
+            request, "administrative/time_slots/formular_fallback.html", {"form": form}
+        )
+
     def post(self, request):
         form = EventAddNewDateForm(request.POST)
 
@@ -332,8 +355,8 @@ class EventAddNewDateAndFormularsView(View):
             day_group, created = DayEventGroup.objects.get_or_create(
                 base_event=base_event,
                 date=date,
-                lead_start=form.cleaned_data["lead_start"],
-                lead_inquiry_start=form.cleaned_data["lead_inquiry_start"],
+                lead_start=base_event.lead_start,
+                lead_inquiry_start=base_event.lead_inquiry_start,
             )
 
             for teacher in teachers:
@@ -350,7 +373,11 @@ class EventAddNewDateAndFormularsView(View):
                     teacher_event_group=teacher_event_group,
                     status=0,
                 )
+            messages.success(request, "The new day was successfully added.")
             return redirect("administrative_event_formular_view")
+        return render(
+            request, "administrative/time_slots/formular_fallback.html", {"form": form}
+        )
 
 
 @method_decorator(login_staff, name="dispatch")

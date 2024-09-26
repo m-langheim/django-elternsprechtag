@@ -107,22 +107,71 @@ class EventAddNewDateForm(forms.Form):
         queryset=BaseEventGroup.objects.filter(valid_until__gte=timezone.now().date()),
         empty_label=_("New base event"),
         required=False,
-        label="",
     )
-    date = forms.DateField(
-        label="",
-    )
+    date = forms.DateField()
     teacher = forms.ModelMultipleChoiceField(
         queryset=CustomUser.objects.filter(role=1),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(),
         label="",
     )
     lead_start = forms.DateField(
-        label="",
+        required=False,
+        help_text="This setting is only required if you create a new base event.",
     )
     lead_inquiry_start = forms.DateField(
-        label="",
+        required=False,
+        help_text="This setting is only required if you create a new base event.",
     )
+
+    def clean_date(self):
+        date = self.cleaned_data["date"]
+
+        if not date >= timezone.now().date():
+            self.add_error(
+                "date", _("The date of the event should be set in the future.")
+            )
+
+        return date
+
+    def clean_lead_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+        date = self.cleaned_data["date"]
+        base_event = self.cleaned_data.get("base_event", None)
+
+        if not base_event and not lead_start:
+            self.add_error(
+                "lead_inquiry_start",
+                _("This field must be set if you want to create a new base event."),
+            )
+
+        if lead_start >= date:
+            self.add_error("lead_start", _("The lead must start before the event."))
+
+        return lead_start
+
+    def clean_lead_inquiry_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+        lead_inquiry_start = self.cleaned_data["lead_inquiry_start"]
+        base_event = self.cleaned_data.get("base_event", None)
+        date = self.cleaned_data["date"]
+
+        if not base_event and not lead_inquiry_start:
+            self.add_error(
+                "lead_inquiry_start",
+                _("This field must be set if you want to create a new base event."),
+            )
+
+        if lead_inquiry_start >= date:
+            self.add_error(
+                "lead_inquiry_start", _("The lead must start before the event.")
+            )
+
+        if lead_inquiry_start > lead_start:
+            self.add_error(
+                "lead_inquiry_start",
+                _("The lead inquiry must start before the main lead."),
+            )
+        return lead_inquiry_start
 
 
 class EventChangeFormulaEditForm(forms.ModelForm):

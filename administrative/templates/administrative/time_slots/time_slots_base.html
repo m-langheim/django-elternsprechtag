@@ -86,36 +86,36 @@
                         <form action="{% url 'administrative_event_formular_new_date_add_view' %}" method="post">
                             {% csrf_token %}
                                 
-                                <div class="mb-1">
+                                {% comment %} <div class="mb-1">
                                     {% translate 'Base event*:' %}
                                 </div>
-                                <div>
+                                <div> {% endcomment %}
                                     {{ change_formular_new.base_event | as_crispy_field }}
-                                </div>
+                                {% comment %} </div> {% endcomment %}
 
-                                <div class="mb-1">
+                                {% comment %} <div class="mb-1">
                                     {% translate 'Date*:' %}
                                 </div>
-                                <div>
+                                <div> {% endcomment %}
                                     {{ change_formular_new.date | as_crispy_field }}
-                                </div>
+                                {% comment %} </div> {% endcomment %}
 
-                                <div class="mb-1">
+                                {% comment %} <div class="mb-1">
                                     {% translate 'Lead inquiry start*:' %}
                                 </div>
-                                <div>
+                                <div> {% endcomment %}
                                     {{ change_formular_new.lead_inquiry_start | as_crispy_field }}
-                                </div>
+                                {% comment %} </div> {% endcomment %}
 
-                                <div class="mb-1">
+                                {% comment %} <div class="mb-1">
                                     {% translate 'Lead start*:' %}
                                 </div>
-                                <div>
+                                <div> {% endcomment %}
                                     {{ change_formular_new.lead_start | as_crispy_field }}
-                                </div>
+                                {% comment %} </div> {% endcomment %}
 
                                 <div class="mb-1">
-                                    {% translate 'Teachers*:' %}
+                                    {% translate 'Teachers*' %}
                                 </div>
                                 <div>
                                     {{ change_formular_new.teacher | as_crispy_field }}

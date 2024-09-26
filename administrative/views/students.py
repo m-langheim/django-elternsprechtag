@@ -55,32 +55,6 @@ class StudentListView(SingleTableView):
     template_name = "administrative/student/student_list_view.html"
 
 
-# @method_decorator(login_staff, name="dispatch")
-# class ParentTableView(View):
-#     def get(self, request):
-#         parents = CustomUser.objects.filter(role=0)
-#         parents_table = ParentsTable(parents)
-
-#         return render(
-#             request,
-#             "administrative/users/parents/parents_overview.html",
-#             {"parents_table": parents_table},
-#         )
-
-
-# @method_decorator(login_staff, name="dispatch")
-# class TeacherTableView(View):
-#     def get(self, request):
-#         teachers = CustomUser.objects.filter(role=1)
-#         teachers_table = TeachersTable(teachers)
-
-#         return render(
-#             request,
-#             "administrative/users/teachers/teachers_overview.html",
-#             {"teachers_table": teachers_table},
-#         )
-
-
 @method_decorator(login_staff, name="dispatch")
 class StudentImportStart(View):
     def get(self, request, *args, **kwargs):
