@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 01:51+0200\n"
+"POT-Creation-Date: 2024-09-26 02:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,59 +18,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: administrative/forms.py:45 administrative/forms.py:283
+#: administrative/forms.py:41
+msgid "CSV-File"
+msgstr "CSV-Datei"
+
+#: administrative/forms.py:42
+msgid "Teacher-Email"
+msgstr "E-Mail der Lehrkraft"
+
+#: administrative/forms.py:46 administrative/forms.py:284
 #: administrative/tables.py:186 administrative/tables.py:223
 #: administrative/tables.py:248 authentication/models.py:18
 #: authentication/models.py:57 authentication/models.py:81
 msgid "First name"
 msgstr "Vorname"
 
-#: administrative/forms.py:46 administrative/forms.py:284
+#: administrative/forms.py:47 administrative/forms.py:285
 #: administrative/tables.py:191 administrative/tables.py:228
 #: administrative/tables.py:253 authentication/models.py:19
 #: authentication/models.py:58 authentication/models.py:83
 msgid "Last name"
 msgstr "Nachname"
 
-#: administrative/forms.py:47 authentication/models.py:20
+#: administrative/forms.py:48 authentication/models.py:20
 #: authentication/models.py:60
 msgid "Child emails"
 msgstr "Email des Kindes"
 
-#: administrative/forms.py:48 authentication/models.py:21
+#: administrative/forms.py:49 authentication/models.py:21
 #: authentication/models.py:63
 msgid "Name of class"
 msgstr "Klasse"
 
-#: administrative/forms.py:121 administrative/forms.py:197
-#: administrative/forms.py:296
+#: administrative/forms.py:122 administrative/forms.py:198
+#: administrative/forms.py:297
 msgid "User is active"
 msgstr "User ist aktiv"
 
-#: administrative/forms.py:122 administrative/forms.py:199
-#: administrative/forms.py:298
+#: administrative/forms.py:123 administrative/forms.py:200
+#: administrative/forms.py:299
 msgid "Specific permissions"
 msgstr "Spezifische Berechtigungen"
 
-#: administrative/forms.py:180 administrative/forms.py:282
+#: administrative/forms.py:181 administrative/forms.py:283
 #: authentication/models.py:79
 msgid "Email"
 msgstr "E-Mail"
 
-#: administrative/forms.py:183 administrative/tables.py:207
+#: administrative/forms.py:184 administrative/tables.py:207
 #: authentication/models.py:135
 msgid "Acronym"
 msgstr "Kürzel"
 
-#: administrative/forms.py:185 authentication/models.py:141
+#: administrative/forms.py:186 authentication/models.py:141
 msgid "Profile image"
 msgstr "Profilbild"
 
-#: administrative/forms.py:198 administrative/forms.py:297
+#: administrative/forms.py:199 administrative/forms.py:298
 msgid "User is staff"
 msgstr "User ist ein Mitarbeiter"
 
-#: administrative/forms.py:240
+#: administrative/forms.py:241
 msgid "Another teacher has the same acronym. Please choose a different one."
 msgstr ""
 "Ein anderer Lehrer hat das gleiche Kürzel. Bitte wählen Sie ein anderes."
@@ -251,6 +259,7 @@ msgstr "Persönliche Berechtigungen"
 #: administrative/templates/administrative/users/others/others_edit.html:54
 #: administrative/templates/administrative/users/parents/parent_edit.html:55
 #: administrative/templates/administrative/users/teachers/teacher_edit.html:58
+#: administrative/templates/administrative/users/teachers/teacher_import.html:18
 #: dashboard/templates/dashboard/events/view.html:151
 #: profile_settings/templates/profile_settings/change_password.html:19
 #: profile_settings/templates/profile_settings/my_profile.html:39
@@ -320,13 +329,22 @@ msgstr "Lehrkraft bearbeiten"
 msgid "Edit the teacher"
 msgstr "Lehrkraft bearbeiten"
 
-#: administrative/templates/administrative/users/teachers/teachers_overview.html:11
-msgid "All teacher accounts are listed here."
-msgstr "Hier werden alle Lehrkräfte aufgeführt."
-
+#: administrative/templates/administrative/users/teachers/teacher_import.html:7
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:15
 msgid "Add teachers"
 msgstr "Lehrkraft hinzufügen"
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:8
+msgid "Fill at least one field to add new teachers."
+msgstr "Fülle mindestens ein Feld aus, um neue Lehrkräfte hinzuzufügen."
+
+#: administrative/templates/administrative/users/teachers/teacher_import.html:22
+msgid "Upload"
+msgstr "Hochladen"
+
+#: administrative/templates/administrative/users/teachers/teachers_overview.html:11
+msgid "All teacher accounts are listed here."
+msgstr "Hier werden alle Lehrkräfte aufgeführt."
 
 #: administrative/views/users.py:94 administrative/views/users.py:107
 msgid "The parent could not be found."
@@ -1524,6 +1542,9 @@ msgstr "Sie haben bereits eine Anfrage bekommen!"
 #: teacher/templates/teacher/studentList.html:61
 msgid "You already have an appointment with the parents of this child!"
 msgstr "Sie haben bereits ein Termin mit diesem Kind!"
+
+#~ msgid "Add teacher"
+#~ msgstr "Lehrkraft hinzufügen"
 
 #~ msgid "Nobody can currently request this appointment.."
 #~ msgstr "Niemand kann diesen Termin aktuell anfragen."

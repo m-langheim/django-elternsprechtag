@@ -27,6 +27,7 @@ from crispy_forms.helper import FormHelper
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 
 from .forms_helpers import get_students_choices_for_event
 from .tasks import *
@@ -37,8 +38,8 @@ class CsvImportForm(forms.Form):
 
 
 class TeacherImportForm(forms.Form):
-    csv_file = forms.FileField(required=False)
-    teacher_email = forms.EmailField(required=False)
+    csv_file = forms.FileField(required=False, label=_("CSV-File"))
+    teacher_email = forms.EmailField(required=False, label=_("Teacher-Email"))
 
 
 class AdminStudentEditForm(forms.Form):
