@@ -129,6 +129,10 @@ DBBACKUP_CLEANUP_KEEP_MEDIA = 30
 
 
 CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",
+    },
     "select2": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",

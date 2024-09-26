@@ -101,10 +101,14 @@ CELERY_BEAT_SCHEDULE = {
 
 
 CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "elternsprechtag-default",
+    },
     "select2": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         "LOCATION": "elternsprechtag-select2",
-    }
+    },
 }
 
 # Tell select2 which cache configuration to use:
