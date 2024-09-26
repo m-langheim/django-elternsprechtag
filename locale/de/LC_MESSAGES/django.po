@@ -138,6 +138,19 @@ msgstr "Schüler*innen"
 msgid "Tags"
 msgstr "Tags"
 
+#: administrative/tables.py:324 authentication/models.py:77
+#: dashboard/models.py:468 teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr "Lehrkraft"
+
+#: administrative/tables.py:329
+msgid "Start"
+msgstr "Start"
+
+#: administrative/tables.py:334
+msgid "Base event"
+msgstr "Elternsprechtag"
+
 #: administrative/templates/administrative/administrative_base.html:50
 #: administrative/templates/administrative/administrative_base.html:68
 #: administrative/templates/administrative/administrative_base.html:109
@@ -159,6 +172,8 @@ msgstr "User"
 #: administrative/templates/administrative/administrative_base.html:56
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:121
+#: administrative/templates/administrative/time_slots/events_table.html:6
+#: administrative/templates/administrative/time_slots/time_slots_base.html:11
 #: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
@@ -504,6 +519,27 @@ msgstr "Hochladen"
 #: administrative/templates/administrative/student/student_list_view.html:11
 msgid "All students are listed here."
 msgstr "Hier werden alle Schüler*innen aufgeführt."
+
+#: administrative/templates/administrative/time_slots/events_table.html:18
+#: administrative/templates/administrative/time_slots/events_table.html:48
+msgid "Filter"
+msgstr "Filter"
+
+#: administrative/templates/administrative/time_slots/events_table.html:26
+msgid "Status"
+msgstr "Status"
+
+#: administrative/templates/administrative/time_slots/events_table.html:35
+msgid "Lead status"
+msgstr "Anfragestatus"
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:12
+msgid "All appointments are listed here."
+msgstr "Hier werden alle Termine aufgeführt."
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:16
+msgid "Create"
+msgstr "Erstellen"
 
 #: administrative/templates/administrative/users/others/others_edit.html:5
 msgid "Edit user"

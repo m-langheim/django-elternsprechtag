@@ -34,14 +34,13 @@
 <script>
     var first = document.getElementById("first_name_id");
     var last = document.getElementById("last_name_id");
+    var acronym = document.getElementById("acronym_id");
     first.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
     first.children[0].classList += " hovereffect";
     last.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
     last.children[0].classList += " hovereffect";
-
-    var els = document.querySelectorAll('a[href="?sort=teacherextradata.acronym"]');
-    els[0].removeAttribute("href");
-    els[0].classList += " black";
+    acronym.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    acronym.children[0].classList += " hovereffect";
 </script>
 <style>
     .hovereffect {
@@ -50,13 +49,6 @@
     }
     .hovereffect:hover {
         color: #dc3545;
-    }
-    .black {
-        color: black;
-        text-decoration: none;
-    }
-    .black:hover {
-        color: black;
     }
 </style>
 {% endblock %}

@@ -137,6 +137,19 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+#: administrative/tables.py:324 authentication/models.py:77
+#: dashboard/models.py:468 teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr ""
+
+#: administrative/tables.py:329
+msgid "Start"
+msgstr ""
+
+#: administrative/tables.py:334
+msgid "Base event"
+msgstr ""
+
 #: administrative/templates/administrative/administrative_base.html:50
 #: administrative/templates/administrative/administrative_base.html:68
 #: administrative/templates/administrative/administrative_base.html:109
@@ -158,6 +171,8 @@ msgstr ""
 #: administrative/templates/administrative/administrative_base.html:56
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:121
+#: administrative/templates/administrative/time_slots/events_table.html:6
+#: administrative/templates/administrative/time_slots/time_slots_base.html:11
 #: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
@@ -494,6 +509,27 @@ msgstr ""
 
 #: administrative/templates/administrative/student/student_list_view.html:11
 msgid "All students are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/events_table.html:18
+#: administrative/templates/administrative/time_slots/events_table.html:48
+msgid "Filter"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/events_table.html:26
+msgid "Status"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/events_table.html:35
+msgid "Lead status"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:12
+msgid "All appointments are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:16
+msgid "Create"
 msgstr ""
 
 #: administrative/templates/administrative/users/others/others_edit.html:5
