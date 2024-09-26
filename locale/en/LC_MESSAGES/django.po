@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 14:58+0200\n"
+"POT-Creation-Date: 2024-09-26 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr ""
 
 #: administrative/forms.py:46 administrative/forms.py:284
 #: administrative/tables.py:39 administrative/tables.py:211
-#: administrative/tables.py:248 administrative/tables.py:273
+#: administrative/tables.py:244 administrative/tables.py:275
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:81
 msgid "First name"
@@ -36,7 +36,7 @@ msgstr ""
 
 #: administrative/forms.py:47 administrative/forms.py:285
 #: administrative/tables.py:44 administrative/tables.py:216
-#: administrative/tables.py:253 administrative/tables.py:278
+#: administrative/tables.py:249 administrative/tables.py:280
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:83
 msgid "Last name"
@@ -67,7 +67,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: administrative/forms.py:184 administrative/tables.py:232
+#: administrative/forms.py:184 administrative/tables.py:254
 #: authentication/models.py:135
 msgid "Acronym"
 msgstr ""
@@ -125,13 +125,26 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: administrative/tables.py:235 authentication/models.py:125
+#: administrative/tables.py:232 authentication/models.py:125
 #: authentication/models.py:136
 #: profile_settings/templates/profile_settings/profile_layout.html:32
 #: profile_settings/templates/profile_settings/profile_layout.html:46
 #: profile_settings/templates/profile_settings/profile_layout.html:83
 #: profile_settings/templates/profile_settings/teacher_change_tags.html:5
 msgid "Tags"
+msgstr ""
+
+#: administrative/tables.py:324 authentication/models.py:77
+#: dashboard/models.py:468 teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr ""
+
+#: administrative/tables.py:329
+msgid "Start"
+msgstr ""
+
+#: administrative/tables.py:334
+msgid "Base event"
 msgstr ""
 
 #: administrative/templates/administrative/administrative_base.html:50
@@ -155,6 +168,8 @@ msgstr ""
 #: administrative/templates/administrative/administrative_base.html:56
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:121
+#: administrative/templates/administrative/time_slots/events_table.html:6
+#: administrative/templates/administrative/time_slots/time_slots_base.html:11
 #: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
@@ -499,6 +514,27 @@ msgstr ""
 msgid "All students are listed here."
 msgstr ""
 
+#: administrative/templates/administrative/time_slots/events_table.html:18
+#: administrative/templates/administrative/time_slots/events_table.html:48
+msgid "Filter"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/events_table.html:26
+msgid "Status"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/events_table.html:35
+msgid "Lead status"
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:12
+msgid "All appointments are listed here."
+msgstr ""
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:16
+msgid "Create"
+msgstr ""
+
 #: administrative/templates/administrative/users/others/others_edit.html:5
 msgid "Edit user"
 msgstr ""
@@ -636,11 +672,6 @@ msgstr ""
 
 #: authentication/models.py:71
 msgid "Can apply changes to the students"
-msgstr ""
-
-#: authentication/models.py:77 dashboard/models.py:468
-#: teacher/templates/teacher/event/detailEvent.html:32
-msgid "Teacher"
 msgstr ""
 
 #: authentication/models.py:86

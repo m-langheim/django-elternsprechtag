@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-26 14:58+0200\n"
+"POT-Creation-Date: 2024-09-26 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr "E-Mail der Lehrkraft"
 
 #: administrative/forms.py:46 administrative/forms.py:284
 #: administrative/tables.py:39 administrative/tables.py:211
-#: administrative/tables.py:248 administrative/tables.py:273
+#: administrative/tables.py:244 administrative/tables.py:275
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:81
 msgid "First name"
@@ -36,7 +36,7 @@ msgstr "Vorname"
 
 #: administrative/forms.py:47 administrative/forms.py:285
 #: administrative/tables.py:44 administrative/tables.py:216
-#: administrative/tables.py:253 administrative/tables.py:278
+#: administrative/tables.py:249 administrative/tables.py:280
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:83
 msgid "Last name"
@@ -67,7 +67,7 @@ msgstr "Spezifische Berechtigungen"
 msgid "Email"
 msgstr "E-Mail"
 
-#: administrative/forms.py:184 administrative/tables.py:232
+#: administrative/forms.py:184 administrative/tables.py:254
 #: authentication/models.py:135
 msgid "Acronym"
 msgstr "Kürzel"
@@ -98,8 +98,7 @@ msgstr "Kennwort bestätigen"
 
 #: administrative/forms.py:454
 msgid "This email is already taken. Please provide a different one."
-msgstr ""
-"Diese E-Mail ist bereits vergeben. Bitte geben Sie eine andere an."
+msgstr "Diese E-Mail ist bereits vergeben. Bitte geben Sie eine andere an."
 
 #: administrative/tables.py:50
 msgid "Child email"
@@ -127,7 +126,7 @@ msgstr "E-Mail der Eltern"
 msgid "Students"
 msgstr "Schüler*innen"
 
-#: administrative/tables.py:235 authentication/models.py:125
+#: administrative/tables.py:232 authentication/models.py:125
 #: authentication/models.py:136
 #: profile_settings/templates/profile_settings/profile_layout.html:32
 #: profile_settings/templates/profile_settings/profile_layout.html:46
@@ -135,6 +134,19 @@ msgstr "Schüler*innen"
 #: profile_settings/templates/profile_settings/teacher_change_tags.html:5
 msgid "Tags"
 msgstr "Tags"
+
+#: administrative/tables.py:324 authentication/models.py:77
+#: dashboard/models.py:468 teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr "Lehrkraft"
+
+#: administrative/tables.py:329
+msgid "Start"
+msgstr "Start"
+
+#: administrative/tables.py:334
+msgid "Base event"
+msgstr "Elternsprechtag"
 
 #: administrative/templates/administrative/administrative_base.html:50
 #: administrative/templates/administrative/administrative_base.html:68
@@ -157,6 +169,8 @@ msgstr "User"
 #: administrative/templates/administrative/administrative_base.html:56
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:121
+#: administrative/templates/administrative/time_slots/events_table.html:6
+#: administrative/templates/administrative/time_slots/time_slots_base.html:11
 #: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
@@ -261,7 +275,8 @@ msgstr "Account auswählen"
 
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:11
 msgid "Select the parent to add the student to."
-msgstr "Wählen Sie das Elternteil aus, dem die Schüler*in hinzugefügt werden soll."
+msgstr ""
+"Wählen Sie das Elternteil aus, dem die Schüler*in hinzugefügt werden soll."
 
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:17
 #: administrative/templates/administrative/student/manual_parent_registration_create.html:17
@@ -481,7 +496,9 @@ msgstr "Offene Änderungen"
 msgid ""
 "There are several changes to the student database that are not confirmed "
 "yet. Please continue with the changes."
-msgstr "Es gibt einige Änderungen in der Schülerdatenbank, die noch nicht bestätigt sind. Bitte fahren Sie mit den Änderungen fort."
+msgstr ""
+"Es gibt einige Änderungen in der Schülerdatenbank, die noch nicht bestätigt "
+"sind. Bitte fahren Sie mit den Änderungen fort."
 
 #: administrative/templates/administrative/student/student_import_fileupload.html:16
 #: dashboard/templates/dashboard/public_dashboard.html:178
@@ -505,6 +522,27 @@ msgstr "Hochladen"
 #: administrative/templates/administrative/student/student_list_view.html:11
 msgid "All students are listed here."
 msgstr "Hier werden alle Schüler*innen aufgeführt."
+
+#: administrative/templates/administrative/time_slots/events_table.html:18
+#: administrative/templates/administrative/time_slots/events_table.html:48
+msgid "Filter"
+msgstr "Filter"
+
+#: administrative/templates/administrative/time_slots/events_table.html:26
+msgid "Status"
+msgstr "Status"
+
+#: administrative/templates/administrative/time_slots/events_table.html:35
+msgid "Lead status"
+msgstr "Anfragestatus"
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:12
+msgid "All appointments are listed here."
+msgstr "Hier werden alle Termine aufgeführt."
+
+#: administrative/templates/administrative/time_slots/time_slots_base.html:16
+msgid "Create"
+msgstr "Erstellen"
 
 #: administrative/templates/administrative/users/others/others_edit.html:5
 msgid "Edit user"
@@ -646,11 +684,6 @@ msgstr "Eltern des Kindes haben sich registriert."
 #: authentication/models.py:71
 msgid "Can apply changes to the students"
 msgstr "Kann Änderungen an Schüler*innen vornehmen"
-
-#: authentication/models.py:77 dashboard/models.py:468
-#: teacher/templates/teacher/event/detailEvent.html:32
-msgid "Teacher"
-msgstr "Lehrkraft"
 
 #: authentication/models.py:86
 msgid "Role"

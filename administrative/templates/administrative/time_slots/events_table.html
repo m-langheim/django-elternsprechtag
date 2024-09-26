@@ -1,31 +1,75 @@
 {% extends 'administrative/time_slots/time_slots_base.html' %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {% translate 'Appointments' %} {% endblock title %}
 
 {% block time_slot_content %}
-<div class="h-auto d-grid gap-3">
-    {% comment %} <div class="container row"> 
-        <ul class="nav nav-pills">
-    <li class="nav-item">
-      <a class="nav-link active" href="{% url 'administrative_event_list_view' %}">Events</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'administrative_event_formular_view' %}">Change Formulars</a>
-    </li>
-  </ul> {% endcomment %}
-    
-    <div class="container">
+{% if filter %}
+<form action="" method="get" class="form form-inline">
+    <div class="grid gap-3 d-flex">
+        <div class="flex-grow-1">
+            {{filter.form.teacher | as_crispy_field}}
+        </div>
+        <div class="">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefilter"
+                aria-expanded="false" aria-controls="collapseExample">
+                <i class="fa-solid fa-filter"></i> {% translate 'Filter' %}
+            </button>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="collapse" id="collapsefilter">
+            <div class="card card-body">
+                <div class="h5">
+                    {% translate 'Status' %}
+                </div>
+                <div>
+                    {{filter.form.status | as_crispy_field}}
+                </div>
+                <div class="dropdown-divider">
 
-      {% if filter %}
-    <form action="" method="get" class="form form-inline">
-        {{filter.form.teacher | as_crispy_field}}
-        {{filter.form.status | as_crispy_field}}
-        {{filter.form.lead_status | as_crispy_field}}
-        <input type="submit" class="btn btn-outline-danger" value="Filter" />
-    </form>
+                </div>
+                <div class="h5">
+                    {% translate 'Lead status' %}
+                </div>
+                <div>
+                    {{filter.form.lead_status | as_crispy_field}}
+                </div>
+                <div class="dropdown-divider">
+                    
+                </div>
+                <div class="row">
+                    <div class="col d-flex">
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-outline-danger mt-2" type="submit">
+                            {% translate 'Filter' %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 {% endif %}
 {% render_table table %}
-
-</div>
-</div>
+<style>
+    a {
+        color: black;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #dc3545;
+    }
+</style>
+<script>
+    var teacher = document.getElementById("teacher_id");
+    var start = document.getElementById("start_id");
+    var base = document.getElementById("base_id");
+    teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    start.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    base.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+</script>
 {% endblock %}

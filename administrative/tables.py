@@ -229,9 +229,6 @@ class ParentsTable(tables.Table):
 class TeachersTable(tables.Table):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_columns['teacherextradata.acronym'] = tables.Column(orderable=False, verbose_name=_("Acronym"))
-        # verbose_name = _("Acronym")
-        # self.base_columns['teacherextradata.acronym'].orderable = False
         self.base_columns['teacherextradata.tags'].verbose_name = _("Tags")
 
     class Meta:
@@ -239,7 +236,6 @@ class TeachersTable(tables.Table):
         fields = (
             "first_name",
             "last_name",
-            "teacherextradata.acronym",
             "teacherextradata.tags",
         )
         attrs = {"class": "table"}
@@ -252,6 +248,12 @@ class TeachersTable(tables.Table):
     last_name = tables.Column(
         verbose_name = _("Last name"),
         attrs={"th": {"id": "last_name_id"}},
+    )
+
+    teacherextradata_acronym = tables.Column(
+        verbose_name = _("Acronym"),
+        accessor='teacherextradata.acronym',
+        attrs={"th": {"id": "acronym_id"}},
     )
 
     edit = tables.LinkColumn(
@@ -288,45 +290,51 @@ class OthersTable(tables.Table):
         attrs={"td": {"align": "right"}},
     )
 
-
 class EventExtraInformationColumn(tables.Column):
     def render(self, value):
         event = Event.objects.get(pk=value)
 
         column_text = ""
 
-        if not event.lead_status == 0:
-            match event.status:
-                case 1:
-                    column_text += "<i class='fa-solid fa-circle-xmark'></i>"
-                case 2:
-                    column_text += "<i class='fa-solid fa-file-contract'></i>"
-            match event.lead_status:
-                case 1:
-                    column_text += "<i class='fa-solid fa-notes-medical'></i>"
-                case 2:
-                    column_text += "<i class='fa-solid fa-code-pull-request'></i>"
-        else:
-            column_text += "<i class='fa-solid fa-lock text-danger'></i>"
+        if event.lead_status == 0 and event.status == 0:
+            column_text += "<i class='fa-solid fa-lock text-secondary'></i>"
+        elif event.lead_status == 1 and event.status == 0:
+            column_text += "<i class='fa-solid fa-crown text-warning'></i>"
+            
         return format_html(column_text)
 
+# class FormularActionsColumn(tables.Column):
+#     def render(self, value):
+#         # formular = EventChangeFormula.objects.get(pk=value)
 
-class FormularActionsColumn(tables.Column):
-    def render(self, value):
-        # formular = EventChangeFormula.objects.get(pk=value)
-
-        return format_html(
-            render_to_string(
-                "administrative/tables/event_list_actions_column.html",
-                {"event_id": value},
-            )
-        )
+#         return format_html(
+#             render_to_string(
+#                 "administrative/tables/event_list_actions_column.html",
+#                 {"event_id": value},
+#             )
+#         )
 
 
 class Eventstable(tables.Table):
     class Meta:
         model = Event
-        fields = ("teacher", "start", "day_group.base_event")
+        fields = ("teacher", "start",)
+
+    teacher = tables.Column(
+        verbose_name = _("Teacher"),
+        attrs={"th": {"id": "teacher_id"}},
+    )
+
+    start = tables.Column(
+        verbose_name = _("Start"),
+        attrs={"th": {"id": "start_id"}},
+    )
+
+    day_group_base_event = tables.Column(
+        verbose_name = _("Base event"),
+        accessor='day_group.base_event',
+        attrs={"th": {"id": "base_id"}},
+    )
 
     # block = tables.LinkColumn(
     #     "administrative_event_block_view",
@@ -342,11 +350,20 @@ class Eventstable(tables.Table):
     #     text="View",
     #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
     # )
-    actions = FormularActionsColumn(
-        accessor="id", orderable=False, verbose_name="Actions"
+    info = EventExtraInformationColumn(
+        accessor="pk",
+        orderable=False,
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
     )
-    info = EventExtraInformationColumn(accessor="pk", orderable=False)
-
+    edit = tables.LinkColumn(
+        'administrative_event_detail_view',
+        args=[Accessor("id")],
+        orderable=False,
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )
 
 class BackupActionsColumn(tables.Column):
     def render(self, value):
