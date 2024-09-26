@@ -8,15 +8,14 @@
 {% block control_content %}
 <div class="row">
     <div class="col-8">
-        <p class="h1">{% translate 'Appointments' %}</p>
-        <p class="text-secondary">{% translate 'All appointments are listed here.' %}</p>
+        <p class="h1">{% block header %}{% endblock header %}</p>
+        <p class="text-secondary">{% block underline %}{% endblock underline %}</p>
     </div>
     <div class="col-4 position-relative"><a
-            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="modal"
+            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y me-2" data-bs-toggle="modal"
             data-bs-target="#formularModal">{% translate 'Create' %}</a>
     </div>
 </div>
-
 {% block time_slot_content %}
 {% endblock time_slot_content %}
 

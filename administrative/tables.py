@@ -171,12 +171,31 @@ class EventFormularActionTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
-            "type",
             "teacher",
             "date",
             "start_time",
             "end_time",
         )
+
+    teacher = tables.Column(
+        verbose_name = _("Teacher"),
+        attrs={"th": {"id": "teacher_id1"}},
+    )
+
+    date = tables.Column(
+        verbose_name = _("Date"),
+        attrs={"th": {"id": "date_id1"}},
+    )
+
+    start_time = tables.Column(
+        verbose_name = _("Start"),
+        attrs={"th": {"id": "start_time_id1"}},
+    )
+
+    end_time = tables.Column(
+        verbose_name = _("End"),
+        attrs={"th": {"id": "end_time_id1"}},
+    )
 
     # approve = tables.LinkColumn(
     #     "administrative_event_formular_approve_view",
@@ -193,25 +212,41 @@ class EventFormularActionTable(tables.Table):
     #     attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
     # )
 
-    actions = FormularActionsColumn(accessor="pk", orderable=False)
+    actions = FormularActionsColumn(
+        accessor="pk",
+        orderable=False,
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )
 
 
 class EventFormularUpcommingTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
-            "type",
             "teacher",
             "date",
         )
+
+    teacher = tables.Column(
+        verbose_name = _("Teacher"),
+        attrs={"th": {"id": "teacher_id2"}},
+    )
+
+    date = tables.Column(
+        verbose_name = _("Date"),
+        attrs={"th": {"id": "date_id2"}},
+    )
+    
 
     # administrative_event_formular_edit_view
     edit = tables.LinkColumn(
         "administrative_event_formular_edit_view",
         args=[Accessor("pk")],
         orderable=False,
-        text="Edit",
-        attrs={"a": {"class": "btn btn-outline-danger mt-2"}},
+        verbose_name="",
+        text=format_html("<i class='fa-solid fa-pen-to-square text-secondary fs-5'></i>"),
+        attrs={"td": {"align": "right"}},
     )
 
 
@@ -219,13 +254,27 @@ class EventFormularOldTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
-            "type",
             "teacher",
             "date",
             "status",
         )
 
-    result = tables.BooleanColumn(null=True)
+    teacher = tables.Column(
+        verbose_name = _("Teacher"),
+        attrs={"th": {"id": "teacher_id3"}},
+    )
+
+    date = tables.Column(
+        verbose_name = _("Date"),
+        attrs={"th": {"id": "date_id3"}},
+    )
+
+    status = tables.Column(
+        verbose_name = _("Status"),
+        attrs={"th": {"id": "status_id3"}},
+    )
+
+    # result = tables.BooleanColumn(null=True)
 
 
 class ParentsTable(tables.Table):

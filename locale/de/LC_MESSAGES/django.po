@@ -115,7 +115,32 @@ msgstr "Klasse"
 msgid "Parent"
 msgstr "Eltern"
 
-#: administrative/tables.py:234
+#: administrative/tables.py:181 administrative/tables.py:232
+#: administrative/tables.py:263 administrative/tables.py:411
+#: authentication/models.py:77 dashboard/models.py:474
+#: teacher/templates/teacher/event/detailEvent.html:32
+msgid "Teacher"
+msgstr "Lehrkraft"
+
+#: administrative/tables.py:186 administrative/tables.py:237
+#: administrative/tables.py:268 dashboard/models.py:476
+msgid "Date"
+msgstr "Datum"
+
+#: administrative/tables.py:191 administrative/tables.py:416
+msgid "Start"
+msgstr "Start"
+
+#: administrative/tables.py:196
+msgid "End"
+msgstr "Ende"
+
+#: administrative/tables.py:273
+#: administrative/templates/administrative/time_slots/events_table.html:29
+msgid "Status"
+msgstr "Status"
+
+#: administrative/tables.py:283
 #: administrative/templates/administrative/administrative_base.html:54
 #: administrative/templates/administrative/administrative_base.html:75
 #: administrative/templates/administrative/administrative_base.html:117
@@ -129,7 +154,7 @@ msgstr "Eltern"
 msgid "Students"
 msgstr "Schüler*innen"
 
-#: administrative/tables.py:269 authentication/models.py:125
+#: administrative/tables.py:318 authentication/models.py:125
 #: authentication/models.py:136
 #: profile_settings/templates/profile_settings/profile_layout.html:32
 #: profile_settings/templates/profile_settings/profile_layout.html:46
@@ -173,7 +198,7 @@ msgstr "User"
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:121
 #: administrative/templates/administrative/time_slots/events_table.html:6
-#: administrative/templates/administrative/time_slots/time_slots_base.html:11
+#: administrative/templates/administrative/time_slots/events_table.html:9
 #: dashboard/templates/dashboard/inquiry.html:194
 #: dashboard/templates/dashboard/inquiry_answered.html:92
 #: dashboard/templates/dashboard/public_dashboard.html:16
@@ -186,6 +211,8 @@ msgstr "Termine"
 #: administrative/templates/administrative/administrative_base.html:58
 #: administrative/templates/administrative/administrative_base.html:84
 #: administrative/templates/administrative/administrative_base.html:129
+#: administrative/templates/administrative/time_slots/overview.html:6
+#: administrative/templates/administrative/time_slots/overview.html:9
 msgid "Formulars"
 msgstr "Änderungsanträge"
 
@@ -210,6 +237,7 @@ msgstr "Termine"
 #: administrative/templates/administrative/administrative_base.html:98
 #: administrative/templates/administrative/administrative_base.html:147
 #: administrative/templates/administrative/student/student_detail_view.html:153
+#: administrative/templates/administrative/time_slots/overview.html:73
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
 #: dashboard/templates/dashboard/announcements/announcements_list.html:77
 #: dashboard/templates/dashboard/events/book.html:105
@@ -520,22 +548,55 @@ msgstr "Hochladen"
 msgid "All students are listed here."
 msgstr "Hier werden alle Schüler*innen aufgeführt."
 
-#: administrative/templates/administrative/time_slots/events_table.html:18
-#: administrative/templates/administrative/time_slots/events_table.html:48
+#: administrative/templates/administrative/time_slots/events_table.html:7
+msgid "All appointments are listed here."
+msgstr "Hier werden alle Termine aufgeführt."
+
+#: administrative/templates/administrative/time_slots/events_table.html:21
+#: administrative/templates/administrative/time_slots/events_table.html:51
 msgid "Filter"
 msgstr "Filter"
 
-#: administrative/templates/administrative/time_slots/events_table.html:26
-msgid "Status"
-msgstr "Status"
-
-#: administrative/templates/administrative/time_slots/events_table.html:35
+#: administrative/templates/administrative/time_slots/events_table.html:38
 msgid "Lead status"
 msgstr "Anfragestatus"
 
-#: administrative/templates/administrative/time_slots/time_slots_base.html:12
-msgid "All appointments are listed here."
-msgstr "Hier werden alle Termine aufgeführt."
+#: administrative/templates/administrative/time_slots/overview.html:7
+msgid "All formulars are listed here."
+msgstr "Hier werden alle Formulare aufgeführt."
+
+#: administrative/templates/administrative/time_slots/overview.html:14
+msgid "Submitted formulars"
+msgstr "Eingereichte Formulare"
+
+#: administrative/templates/administrative/time_slots/overview.html:15
+msgid "The formulars below are awaiting your confirmation."
+msgstr "Die nachstehenden Formulare warten auf Ihre Bestätigung."
+
+#: administrative/templates/administrative/time_slots/overview.html:30
+msgid "There are currently no open formulars."
+msgstr "Das Elternteil konnte nicht gefunden werden."
+
+#: administrative/templates/administrative/time_slots/overview.html:35
+msgid "Unprocessed formulars"
+msgstr "Unbearbeitete Formulare"
+
+#: administrative/templates/administrative/time_slots/overview.html:36
+msgid "The times you have requested appear here."
+msgstr "Die von Ihnen angeforderten Zeiten erscheinen hier."
+
+#: administrative/templates/administrative/time_slots/overview.html:47
+#: administrative/templates/administrative/time_slots/overview.html:67
+msgid "No times are requested."
+msgstr "Es werden keine Zeiten angefordert."
+
+#: administrative/templates/administrative/time_slots/overview.html:52
+msgid "Processed formulars"
+msgstr "Bearbeitete Formulare"
+
+#: administrative/templates/administrative/time_slots/overview.html:53
+msgid "The formulars below are processed."
+msgstr "Die nachstehenden Formulare wurden bearbeitet."
 
 #: administrative/templates/administrative/time_slots/time_slots_base.html:16
 msgid "Create"
@@ -1005,10 +1066,6 @@ msgstr ""
 #: dashboard/models.py:461
 msgid "Submit own time periods."
 msgstr "Eigene Zeiträume abschicken."
-
-#: dashboard/models.py:476
-msgid "Date"
-msgstr "Datum"
 
 #: dashboard/models.py:477
 msgid "Start time"
@@ -1820,15 +1877,3 @@ msgstr "Sie haben bereits eine Anfrage bekommen!"
 #: teacher/templates/teacher/studentList.html:61
 msgid "You already have an appointment with the parents of this child!"
 msgstr "Sie haben bereits ein Termin mit diesem Kind!"
-
-#~ msgid "Parent Email"
-#~ msgstr "E-Mail der Eltern"
-
-#~ msgid "The child does not have a registered parent yet!"
-#~ msgstr "Das Kind hat bisher kein registriertes Elternteil!"
-
-#~ msgid "Add teacher"
-#~ msgstr "Lehrkraft hinzufügen"
-
-#~ msgid "Nobody can currently request this appointment.."
-#~ msgstr "Niemand kann diesen Termin aktuell anfragen."
