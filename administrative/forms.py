@@ -420,28 +420,30 @@ class EventAddStudentForm(forms.ModelForm):
 
 class ControlParentCreationForm(forms.Form):
     student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=48)
-    last_name = forms.CharField(max_length=48)
+    email = forms.EmailField(required=True, label="")
+    first_name = forms.CharField(max_length=48, label="")
+    last_name = forms.CharField(max_length=48, label="")
 
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Password",
+                "placeholder": _("Password"),
                 "autocomplete": "off",
             }
         ),
-        validators=[validate_password],
+        # validators=[validate_password],
+        label="",
     )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Confirrm password",
+                "placeholder": _("Confirm password"),
                 "autocomplete": "off",
             }
         ),
+        label="",
     )
 
     def clean_email(self):
@@ -449,28 +451,42 @@ class ControlParentCreationForm(forms.Form):
 
         if CustomUser.objects.filter(email=email).exists():
             raise ValidationError(
-                "This email is already taken. Please provide a different one."
+                _("This email is already taken. Please provide a different one.")
             )
 
         return email
 
-    def clean(self):
+    # def clean(self):
+    #     password = self.cleaned_data["password"]
+    #     confirm_password = self.cleaned_data["confirm_password"]
+
+    #     validate_password(password, user=None, password_validators=None)
+
+    #     if password != confirm_password:
+            # self.add_error(
+            #     "password", _("The password and the confirm password must be equal.")
+            # )
+            # self.add_error(
+            #     "confirm_password",
+            #     _("The password and the confirm password must be equal."),
+            # )
+            # raise ValidationError(":..")
+        
+    def clean_confirm_password(self):
         password = self.cleaned_data["password"]
         confirm_password = self.cleaned_data["confirm_password"]
 
         if password != confirm_password:
-            self.add_error(
-                "password", "The password and the confirm password must be equal."
+            raise forms.ValidationError(
+                "The passwords do not match", code="passwords_wrong"
             )
-            self.add_error(
-                "confirm_password",
-                "The password and the confirm password must be equal.",
-            )
-
+        validate_password(password, user=None, password_validators=None)
+        
+        
 
 class ControlParentAddStudent(forms.Form):
-    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True)
-    parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)))
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), disabled=True, label="")
+    parent = forms.ModelChoiceField(queryset=CustomUser.objects.filter(Q(role=0)), label="")
 
 
 class EditStudentChangesForm(forms.ModelForm):

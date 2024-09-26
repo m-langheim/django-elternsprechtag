@@ -1,0 +1,103 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {% translate 'Manual registration' %} {% endblock title %}
+
+{% block control_content %}
+
+<ul class="list-group list-group-flush">
+    <p class="h1">{% translate 'Register parent' %}</p>
+    <p class="text-secondary">{% translate 'Create a parent account to add the student to.' %}</p>
+    <li class="list-group-item">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col text-start">
+                    <div>
+                        <strong>{% translate 'Student:' %} </strong> {{ student.first_name }} {{ student.last_name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    <form method="POST">
+        {% csrf_token %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item pb-5">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col text-start">
+
+                            <div class="mb-2 mt-2">
+                                <strong>{% translate 'First name*:' %}</strong>
+                            </div>
+                            <div>
+                                {{ form.first_name | as_crispy_field }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>{% translate 'Last name*:' %}</strong>
+                            </div>
+                            <div>
+                                {{ form.last_name | as_crispy_field }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>{% translate 'Email*:' %}</strong>
+                            </div>
+                            <div>
+                                {{ form.email | as_crispy_field }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>{% translate 'Password*:' %}</strong>
+                            </div>
+                            <div>
+                                {{ form.password | as_crispy_field }}
+                            </div>
+                            <div class="text-start text-secondary mb-2" style="font-size: .875em;">
+                                {{ validators }}
+                            </div>
+                            <div class="mb-2">
+                                <strong>{% translate 'Confirm password*:' %}</strong>
+                            </div>
+                            <div>
+                                {{ form.confirm_password }}
+                            </div>
+                            {% if form.confirm_password.errors %}
+                            {% with form.confirm_password.errors.as_data.0.code as code %}
+                            {% if code == 'passwords_wrong' %}
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter two identical passwords</div>
+                            {% elif code == 'password_too_short' %}
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password longer than 8 chars</div>
+                            {% elif code == 'password_too_common' %}
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a more unusual password</div>
+                            {% elif code == 'password_entirely_numeric' %}
+                            <div class="position-absolute text-danger text-start"><i class="fa-solid fa-caret-right"></i> Please enter a password consisting not only of numbers</div>
+                            {% endif %}
+                            {% endwith %}
+                            {% endif %}
+            
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row gy-1">
+                        <div class="col-12 col-md-6">
+                            <a type="button" class="btn btn-outline-secondary col-12 col-lg-3 mt-3"
+                                href="{% url 'student_details_view' pk=student.pk %}">{% translate 'Cancel' %}</a>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-outline-danger col-12 col-lg-3">
+                                {% translate 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </form>
+</ul>
+
+
+
+
+{% endblock %}

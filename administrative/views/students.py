@@ -450,8 +450,8 @@ class ManualParentRegistration(View):
             form = ControlParentCreationForm(initial={"student": student})
             return render(
                 request,
-                "administrative/student/manual_parent_registration.html",
-                {"form": form, "student": student},
+                "administrative/student/manual_parent_registration_create.html",
+                {"form": form, "student": student, "validators": password_validators_help_text_html},
             )
 
     def post(self, request, pk):
@@ -488,8 +488,8 @@ class ManualParentRegistration(View):
 
             return render(
                 request,
-                "administrative/student/manual_parent_registration.html",
-                {"form": form, "student": student},
+                "administrative/student/manual_parent_registration_create.html",
+                {"form": form, "student": student, "validators": password_validators_help_text_html},
             )
 
 
@@ -503,7 +503,7 @@ class ManualParentAddStudent(View):
             form = ControlParentAddStudent(initial={"student": student})
             return render(
                 request,
-                "administrative/student/manual_parent_registration.html",
+                "administrative/student/manual_parent_registration_add.html",
                 {"form": form, "student": student},
             )
 
@@ -536,6 +536,6 @@ class ManualParentAddStudent(View):
 
             return render(
                 request,
-                "administrative/student/manual_parent_registration.html",
+                "administrative/student/manual_parent_registration_add.html",
                 {"form": form, "student": student},
             )
