@@ -4,6 +4,10 @@
 
 {% block title %} {% translate 'Edit Teacher' %} {% endblock title %}
 
+{% block extra_head %}
+{{ form.media.css }}
+{% endblock extra_head %}
+
 {% block control_content %}
 
 {% if not teacher.is_active %}
@@ -40,6 +44,8 @@
         {{ form.is_staff|as_crispy_field }}
         {{ form.is_active|as_crispy_field }}
 
+        {{ form.media.js }}
+
         <label for="password_reset" tabindex="0" style="cursor: pointer">
             <i class="fa-solid fa-paper-plane text-primary"></i> {% translate 'Reset password' %}
         </label>
@@ -55,7 +61,7 @@
     </div>
     <div class="row">
         <div class="col d-flex">
-            <a class="btn btn-outline-secondary mt-2" href="{% url 'student_list_view' %}">{% translate 'Cancel' %}</a>
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'teachers_table' %}">{% translate 'Cancel' %}</a>
         </div>
         <div class="col d-flex justify-content-end">
             <button type="submit" class="btn btn-outline-danger mt-2">

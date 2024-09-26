@@ -1,6 +1,6 @@
 import django_tables2 as tables
 from django_tables2.utils import Accessor
-from authentication.models import Student, StudentChange, CustomUser
+from authentication.models import Student, StudentChange, CustomUser, Tag
 from dashboard.models import Event, EventChangeFormula
 from django.utils.html import format_html
 from django.template.loader import render_to_string
@@ -243,7 +243,6 @@ class EventFormularUpcommingTable(tables.Table):
         # attrs={"th": {"id": "date_id2"}},
         orderable=False,
     )
-    
 
     # administrative_event_formular_edit_view
     edit = tables.LinkColumn(
@@ -251,7 +250,9 @@ class EventFormularUpcommingTable(tables.Table):
         args=[Accessor("pk")],
         orderable=False,
         verbose_name="",
-        text=format_html("<i class='fa-solid fa-pen-to-square text-secondary fs-5'></i>"),
+        text=format_html(
+            "<i class='fa-solid fa-pen-to-square text-secondary fs-5'></i>"
+        ),
         attrs={"td": {"align": "right"}},
     )
 
@@ -316,22 +317,33 @@ class ParentsTable(tables.Table):
     )
 
 
+class TeacherTagColumn(tables.Column):
+    def render(self, value):
+        column_html = ""
+        for index, tag in enumerate(value):
+            if index < 4:
+                column_html += f'<span class="badge bg-light rounded-pill me-1 mt-1" style="border: 1px solid { tag.color }; color: { tag.color }">{ tag.name }</span>'
+            if index == 4:
+                column_html += "..."
+        return format_html(column_html)
+
+
 class TeachersTable(tables.Table):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_columns["teacherextradata.acronym"] = tables.Column(
-            orderable=False, verbose_name=_("Acronym")
-        )
+        # self.base_columns["teacherextradata.acronym"] = tables.Column(
+        #     orderable=False, verbose_name=_("Acronym")
+        # )
         # verbose_name = _("Acronym")
         # self.base_columns['teacherextradata.acronym'].orderable = False
-        self.base_columns["teacherextradata.tags"].verbose_name = _("Tags")
+        # self.base_columns["teacherextradata.tags"].verbose_name = _("Tags")
 
     class Meta:
         model = CustomUser
         fields = (
             "first_name",
             "last_name",
-            "teacherextradata.tags",
+            # "teacherextradata.tags",
         )
         attrs = {"class": "table"}
 
@@ -346,9 +358,13 @@ class TeachersTable(tables.Table):
     )
 
     teacherextradata_acronym = tables.Column(
-        verbose_name = _("Acronym"),
-        accessor='teacherextradata.acronym',
+        verbose_name=_("Acronym"),
+        accessor="teacherextradata.acronym",
         attrs={"th": {"id": "acronym_id"}},
+    )
+
+    teacherextradata_tags = TeacherTagColumn(
+        orderable=False, verbose_name=_("Tags"), accessor="teacherextradata.tags.all"
     )
 
     edit = tables.LinkColumn(
@@ -386,6 +402,7 @@ class OthersTable(tables.Table):
         attrs={"td": {"align": "right"}},
     )
 
+
 class EventExtraInformationColumn(tables.Column):
     def render(self, value):
         event = Event.objects.get(pk=value)
@@ -396,8 +413,9 @@ class EventExtraInformationColumn(tables.Column):
             column_text += "<i class='fa-solid fa-lock text-secondary'></i>"
         elif event.lead_status == 1 and event.status == 0:
             column_text += "<i class='fa-solid fa-crown text-warning'></i>"
-            
+
         return format_html(column_text)
+
 
 # class FormularActionsColumn(tables.Column):
 #     def render(self, value):
@@ -414,21 +432,24 @@ class EventExtraInformationColumn(tables.Column):
 class Eventstable(tables.Table):
     class Meta:
         model = Event
-        fields = ("teacher", "start",)
+        fields = (
+            "teacher",
+            "start",
+        )
 
     teacher = tables.Column(
-        verbose_name = _("Teacher"),
+        verbose_name=_("Teacher"),
         attrs={"th": {"id": "teacher_id"}},
     )
 
     start = tables.Column(
-        verbose_name = _("Start"),
+        verbose_name=_("Start"),
         attrs={"th": {"id": "start_id"}},
     )
 
     day_group_base_event = tables.Column(
-        verbose_name = _("Base event"),
-        accessor='day_group.base_event',
+        verbose_name=_("Base event"),
+        accessor="day_group.base_event",
         attrs={"th": {"id": "base_id"}},
     )
 
@@ -453,13 +474,14 @@ class Eventstable(tables.Table):
         attrs={"td": {"align": "right"}},
     )
     edit = tables.LinkColumn(
-        'administrative_event_detail_view',
+        "administrative_event_detail_view",
         args=[Accessor("id")],
         orderable=False,
         text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
         verbose_name="",
         attrs={"td": {"align": "right"}},
     )
+
 
 class BackupActionsColumn(tables.Column):
     def render(self, value):
@@ -486,3 +508,31 @@ class BackupTable(tables.Table):
     actions = BackupActionsColumn(
         accessor="pk", orderable=False, verbose_name="Actions"
     )
+
+
+class TagActionsColumn(tables.Column):
+    def render(self, value):
+        tag = Tag.objects.get(pk=value)
+
+        return format_html(
+            render_to_string(
+                "administrative/tables/tags_table_three_dot_menu.html",
+                {"tag": tag},
+            )
+        )
+
+
+class TagColorColumn(tables.Column):
+    def render(self, value):
+        return format_html(
+            f'<span class="badge bg-light rounded-pill me-1 mt-1" style="border: 1px solid { value }; color: { value }">{ value }</span>'
+        )
+
+
+class TagsTable(tables.Table):
+    class Meta:
+        model = Tag
+        fields = ("name", "synonyms", "color")
+
+    color = TagColorColumn(orderable=False, accessor="color")
+    actions = TagActionsColumn(accessor="pk", orderable=False)

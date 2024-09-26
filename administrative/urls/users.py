@@ -31,6 +31,21 @@ urlpatterns = [
         name="teachers_import",
     ),
     path(
+        "teachers/tags/",
+        TagsListView.as_view(),
+        name="teachers_tags",
+    ),
+    path(
+        "teachers/tags/<pk>/edit/",
+        TagEditView.as_view(),
+        name="teachers_edit_tag",
+    ),
+    path(
+        "teachers/tags/create/",
+        TagCreateView.as_view(),
+        name="teachers_create_tag",
+    ),
+    path(
         "teachers/<pk>/edit/",
         TeacherEditView.as_view(),
         name="teachers_edit_view",

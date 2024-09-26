@@ -374,14 +374,14 @@ class Event(models.Model):  # Termin
                     return False, self.PersonalEventStatusChoices.OCCUPIED
             case self.StatusChoices.UNOCCUPIED:
                 match self.lead_status:
-                    case self.LeadStatusChoices.NOBODY:
+                    case LeadStatusChoices.NOBODY:
                         return False, self.PersonalEventStatusChoices.BLOCKED
-                    case self.LeadStatusChoices.CONDITION:
+                    case LeadStatusChoices.CONDITION:
                         if parent.has_perm("dashboard.condition_prebook_event"):
                             return True, self.PersonalEventStatusChoices.EVENT_BOOKABLE
                         else:
                             return False, self.PersonalEventStatusChoices.BLOCKED
-                    case self.LeadStatusChoices.INQUIRY:
+                    case LeadStatusChoices.INQUIRY:
                         if Inquiry.objects.filter(
                             Q(respondent=parent),
                             Q(processed=False),
@@ -390,7 +390,7 @@ class Event(models.Model):  # Termin
                             return True, self.PersonalEventStatusChoices.EVENT_BOOKABLE
                         else:
                             return False, self.PersonalEventStatusChoices.BLOCKED
-                    case self.LeadStatusChoices.ALL:
+                    case LeadStatusChoices.ALL:
                         min_event_seperation = (
                             SiteSettings.objects.first().min_event_seperation
                         )

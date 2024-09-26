@@ -7,12 +7,20 @@
 {% block control_content %}
 <div class="row">
     <div class="col-8">
-        <p class="h1">{% translate 'User' %}</p>
+        <p class="h1">{% translate 'Teachers' %}</p>
         <p class="text-muted">{% translate 'All teacher accounts are listed here.' %}</p>
     </div>
-    <div class="col-4 position-relative"><a
-            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
-            href="{% url 'teachers_import' %}">{% translate 'Add teachers' %}</a></div>
+    <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
+        <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" href="{% url 'teachers_import' %}">{% translate 'Add teachers' %}</a>
+          <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" href="{% url 'teachers_tags' %}">{% translate 'Tags' %}</a>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a
+            class="btn btn-outline-danger position-absolute top-0 end-0 translate-top-y"
+            href="{% url 'teachers_import' %}">{% translate 'Add teachers' %}</a>
+            <a
+            class="btn btn-outline-secondary position-absolute top-100 end-0 translate-bottom-y"
+            href="{% url 'teachers_tags' %}">{% translate 'Tags' %}</a>
+        </div> {% endcomment %}
 </div>
 <ul class="nav nav-pills mb-3">
     <li class="nav-item">
