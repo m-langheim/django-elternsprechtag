@@ -86,7 +86,7 @@ class EventAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    ("day_group", "teacher_event_group"),
+                    ("base_event", "day_group", "teacher_event_group"),
                     (
                         "start",
                         "end",

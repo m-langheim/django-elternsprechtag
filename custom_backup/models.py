@@ -23,7 +23,7 @@ class Backup(models.Model):
     backup_type = models.CharField(
         max_length=1, choices=BackupTypeChoices, default=BackupTypeChoices.AUTOMATIC
     )
-    backup_file = models.FilePathField(path=settings.BACKUP_ROOT)
+    backup_file = models.FilePathField()
     backup_directories = models.TextField(null=True, blank=True)
     size_bytes = models.BigIntegerField(null=True, blank=True)
     keep_backup = models.BooleanField(default=True)

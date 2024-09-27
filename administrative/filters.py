@@ -1,5 +1,5 @@
 import django_filters
-from dashboard.models import Event, LeadStatusChoices
+from dashboard.models import Event, LeadStatusChoices, BaseEventGroup
 from authentication.models import CustomUser
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Submit
@@ -13,11 +13,7 @@ class EventFilter(django_filters.FilterSet):
 
     class Meta:
         model = Event
-        fields = [
-            "teacher",
-            "status",
-            "lead_status",
-        ]
+        fields = ["teacher", "status", "lead_status", "base_event"]
 
     teacher = django_filters.ModelChoiceFilter(
         queryset=CustomUser.objects.filter(role=1),
@@ -28,6 +24,8 @@ class EventFilter(django_filters.FilterSet):
             }
         ),
     )
+
+    base_event = django_filters.ModelChoiceFilter(queryset=BaseEventGroup.objects.all())
 
     status = django_filters.MultipleChoiceFilter(
         choices=Event.StatusChoices,

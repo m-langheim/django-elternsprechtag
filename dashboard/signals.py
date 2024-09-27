@@ -232,16 +232,20 @@ def updateBaseEventValidUntil(
     sender, instance: DayEventGroup, created, *args, **kwargs
 ):
     if created:
-        if (
-            not DayEventGroup.objects.filter(
-                Q(date__gte=instance.date), Q(base_event=instance.base_event)
-            )
-            .exclude(pk=instance.pk)
-            .exists()
-            and instance.base_event.valid_until.date() < instance.date
-        ):
-            instance.base_event.valid_until = instance.date + timezone.timedelta(days=7)
-            instance.base_event.save()
+        # if (
+        #     not DayEventGroup.objects.filter(
+        #         Q(date__gte=instance.date), Q(base_event=instance.base_event)
+        #     )
+        #     .exclude(pk=instance.pk)
+        #     .exists()
+        #     and instance.base_event.valid_until < instance.date
+        # ):
+        #     instance.base_event.valid_until = instance.date + timezone.timedelta(days=7)
+        #     instance.base_event.save()
+        newest = DayEventGroup.objects.all().order_by("date").last()
+        print(newest)
+        instance.base_event.valid_until = newest.date + timezone.timedelta(days=7)
+        instance.base_event.save()
 
 
 @receiver(pre_save, sender=BaseEventGroup)

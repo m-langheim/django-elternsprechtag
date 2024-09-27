@@ -146,9 +146,9 @@ class EventAddNewDateForm(forms.Form):
                 "lead_inquiry_start",
                 _("This field must be set if you want to create a new base event."),
             )
-
-        if lead_start >= date:
-            self.add_error("lead_start", _("The lead must start before the event."))
+        elif not base_event:
+            if lead_start >= date:
+                self.add_error("lead_start", _("The lead must start before the event."))
 
         return lead_start
 
@@ -163,17 +163,17 @@ class EventAddNewDateForm(forms.Form):
                 "lead_inquiry_start",
                 _("This field must be set if you want to create a new base event."),
             )
+        elif not base_event:
+            if lead_inquiry_start >= date:
+                self.add_error(
+                    "lead_inquiry_start", _("The lead must start before the event.")
+                )
 
-        if lead_inquiry_start >= date:
-            self.add_error(
-                "lead_inquiry_start", _("The lead must start before the event.")
-            )
-
-        if lead_inquiry_start > lead_start:
-            self.add_error(
-                "lead_inquiry_start",
-                _("The lead inquiry must start before the main lead."),
-            )
+            if lead_inquiry_start > lead_start:
+                self.add_error(
+                    "lead_inquiry_start",
+                    _("The lead inquiry must start before the main lead."),
+                )
         return lead_inquiry_start
 
 
