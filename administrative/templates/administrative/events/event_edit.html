@@ -1,66 +1,114 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% block control_content %}
 
-<div class="card card-body p-4">
-    <div class="container">
-        <p class="h1">Termin am {{event.start|date}}</p>
-        <p class="text-muted">Hier sind einige Informationen zu dem Lernenden gegeben.</p>
+{% block extra_head %}
+{% if choices|length > 0 %}
+{{ add_student_form.media.css }}
+{% endif %}
+{% endblock extra_head %}
+
+{% block control_content %}
+<p class="h1">{% blocktrans with start=event.start|date %}Edit an event on the {{start}} {% endblocktrans %}</p>
+
+<div class="row gx-3 gy-3">
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'General event data' %}</p>
+
+        <div class="row gx-1">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Event group:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.day_group.base_event }} 
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Teacher:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.teacher.first_name }} 
+                {{ event.teacher.last_name }}</p>
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Date:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.start|date }}</p>
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Time:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.start|time }} - {{ event.end|time }}</p>
+            {% if event.room %}
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Room:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.room }}</p>
+            {% endif %}
+        </div>
+
     </div>
-    <div class="card card-body p-4">
-        <ul class="list-group list-group-flush">
-            <div class="row align-items-center">
-                <div class="col text-start">
-                    <div>
-                        <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} 
-                        {{ event.teacher.last_name }}
-                    </div>
-                    <div>
-                        <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
-                    </div>
-                    <div>
-                        <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
-                    </div>
-                    <div>
-                        {% if event.room %}
-                        <strong>{% translate 'Room:' %} </strong>{{ event.room }}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </ul>
-    </div>
-    <div class="container">
-        <form method="POST">
-            {{ form | crispy }}
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'Bookin information' %}</p>
+
+        <div class="row">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Booking state:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.get_status_display }}</p>
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Parent:' %}</p>
+            {% if event.parent %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.parent.first_name }} 
+                {{ event.parent.last_name }}</p>
+            {% else %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+            {% endif %}
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Student:' %}</p>
+            {% if event.student.all|length > 0 %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">
+                {% for student in event.student.all %}
+                {{student.first_name}} {{student.last_name}}
+                {% if student != event.student.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            {% else %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+            {% endif %}
+            {% if event.room %}
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Room:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.room }}</p>
+            {% endif %}
+            
+            <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
             {% csrf_token %}
     
-            <div class="row">
-                <div class="col d-flex">
-                    <a class="btn btn-outline-secondary mt-2" href="{% url 'administrative_event_list_view' %}">Abbrechen</a>
-                </div>
-                <div class="col d-flex justify-content-end">
-                    <button class="btn btn-outline-danger mt-2" type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
-        </form>
-        <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
-            {% csrf_token %}
-    
-            <div class="row">
-                <button class="btn btn-outline-danger mt-2" type="submit">
-                    Clear
+            <div class="row ps-3 pe-3 gx-3">
+                <button class="btn btn-outline-secondary mt-2 col-6" type="submit">
+                    {% translate 'Clear event' %}
                 </button>
                 {% if choices|length > 0 %}
-                <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add student</a>
+                <a class="btn btn-outline-danger mt-2 col-6" data-bs-toggle="modal" data-bs-target="#addStudentModal">{% translate 'Add student' %}</a>
                 {% endif %}
             </div>
         </form>
+        </div>
+        
+    </div>
+    <div class="card card-body p-3 mb-3 col-12">
+        <p class="h4 text-secondary">{% translate 'Lead' %}</p>
+        <div class="row">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+        </div>
+            <form method="POST">
+                {{ form | crispy }}
+                {% csrf_token %}
+        
+                <div class="row">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-outline-danger mt-2" type="submit">
+                            {%translate 'Save' %}
+                        </button>
+                    </div>
+                </div>
+            </form>
     </div>
 </div>
+<div class="col d-flex">
+    <a class="btn btn-outline-secondary mt-2" href="{% url 'administrative_event_list_view' %}">{% translate 'Back' %}</a>
+</div>
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>
 
 {% if choices|length > 0 %}
 <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
@@ -74,7 +122,8 @@
           <div class="modal-body">
               <p>Here you can upload previously downloaded backup files.</p>
               {% csrf_token %}
-          {{ add_student_form | crispy }}
+          {{ add_student_form.add_student | as_crispy_field }}
+          {{ add_student_form.media.js }}
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary"

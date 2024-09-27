@@ -55,6 +55,7 @@ class StudentSelect2WidgetMixin(object):
 
 
 class StudentWidget(s2forms.ModelSelect2Widget):
+    model = Student
     search_fields = [
         "first_name__icontains",
         "last_name__icontains",
@@ -63,6 +64,7 @@ class StudentWidget(s2forms.ModelSelect2Widget):
 
 
 class PermissionWidget(s2forms.ModelSelect2MultipleWidget):
+    model = Permission
     search_fields = [
         "codename__icontains",
         "name__icontains",
@@ -70,6 +72,7 @@ class PermissionWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class MultiStudentWidget(StudentSelect2WidgetMixin, s2forms.ModelSelect2MultipleWidget):
+    model = Student
     search_fields = [
         "first_name__icontains",
         "last_name__icontains",
@@ -484,7 +487,11 @@ class SettingsEditForm(forms.ModelForm):
 class EventEditForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ("teacher_event_group", "day_group", "teacher", "start", "end")
+        fields = [
+            "lead_status",
+            "lead_manual_override",
+            "disable_automatic_changes",
+        ]
 
     def save(self, commit=True):
         instance: Event = self.instance
@@ -504,7 +511,14 @@ class EventAddStudentForm(forms.ModelForm):
         fields = []
 
     add_student = forms.ModelChoiceField(
-        queryset=Student.objects.all(), required=False, widget=StudentWidget
+        queryset=Student.objects.all(),
+        required=False,
+        widget=StudentWidget(
+            attrs={
+                "data-dropdown-parent": "#addStudentModal",
+                "data-placeholder": "Select an option",
+            }
+        ),
     )
 
     def __init__(self, *args, **kwargs):
@@ -514,7 +528,6 @@ class EventAddStudentForm(forms.ModelForm):
             choices = get_students_choices_for_event(event=self.instance)
 
             if choices.__len__() == 0:
-                print("Test")
                 self.fields["add_student"].widget = self.fields[
                     "add_student"
                 ].hidden_widget()
