@@ -77,7 +77,7 @@ authentication views.py 477
 
 <!-- Neue TODOS bis zur nächsten Version -->
 
-- Base Events Listen bei Event Erstellung
+
 
 <!-- Davon behoben -->
 
@@ -92,6 +92,7 @@ authentication views.py 477
 - Berechtigungen (geht in Admin)
 - alle Upcoming User auf einmal Mail schicken (geht in Admin)
 - Dropdown mit select
+- Base Events Listen bei Event Erstellung
 
 <!-- Behoben -->
 

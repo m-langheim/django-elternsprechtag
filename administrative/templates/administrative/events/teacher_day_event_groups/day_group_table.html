@@ -1,14 +1,14 @@
-{% extends 'administrative/administrative_base.html' %}
+{% extends 'administrative/time_slots/time_slots_base.html' %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block header %} {% translate 'Appointments' %} {% endblock header %}
-{% block underline %} {% translate 'All appointments are listed here.' %} {% endblock underline %}
+{% block header %} {% translate 'Teacher day event groups' %} {% endblock header %}
+{% block underline %} {% translate 'All groups of events per teacher per date are listed here.' %} {% endblock underline %}
 
-{% block title %} {% translate 'Appointments' %} {% endblock title %}
+{% block title %} {% translate 'Teacher groups' %} {% endblock title %}
 
-{% block control_content %}
+{% block time_slot_content %}
 {% if filter  %}
 <form action="" method="get" class="form form-inline">
     <div class="grid gap-3 d-flex">

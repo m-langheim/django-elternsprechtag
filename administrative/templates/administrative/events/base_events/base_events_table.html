@@ -1,19 +1,22 @@
-{% extends 'administrative/administrative_base.html' %}
+{% extends 'administrative/time_slots/time_slots_base.html' %}
 {% load render_table from django_tables2 %}
 {% load i18n %}
 
 {% block title %} {% translate 'Base events' %} {% endblock title %}
 
-{% block control_content %}
-<div class="row">
+{% block header %} {% translate 'Base events' %} {% endblock header %}
+{% block underline %} {% translate 'Here you can find all base events that were created.' %} {% endblock underline %}
+
+{% block time_slot_content %}
+{% comment %} <div class="row">
     <div class="col-8">
         <p class="h1">{% translate 'Base events' %}</p>
         <p class="text-muted">{% translate 'Here you can find all base events that were created.' %}</p>
     </div>
-    {% comment %} <div class="col-4 position-relative"><a
+    <div class="col-4 position-relative"><a
             class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
-            href="{% url 'teachers_create_tag' %}">{% translate 'Add' %}</a></div> {% endcomment %}
-</div>
+            href="{% url 'teachers_create_tag' %}">{% translate 'Add' %}</a></div>
+</div> {% endcomment %}
 {% render_table table %}
 <script>
     var first = document.getElementById("first_name_id");

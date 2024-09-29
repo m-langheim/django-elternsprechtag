@@ -31,6 +31,7 @@ from ..tasks import *
 from ..utils import *
 from ..tables import *
 from ..filters import *
+from ..helpers import *
 from ..forms_helpers import get_students_choices_for_event
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
@@ -79,14 +80,6 @@ class AdministrativeFormulaApprovalView(View):
         formular_form = EventChangeFormularForm()
 
         dates = DayEventGroup.objects.filter(date__gte=timezone.now()).order_by("date")
-        date_context = []
-        for date in dates:
-            date_context.append(
-                {
-                    "date": date.date,
-                    "id": force_str(urlsafe_base64_encode(force_bytes(date.id))),
-                }
-            )
 
         return render(
             request,
@@ -104,7 +97,7 @@ class AdministrativeFormulaApprovalView(View):
                 ).count(),
                 "change_formular": formular_form,
                 "change_formular_new": EventAddNewDateForm(),
-                "dates": date_context,
+                "structure": get_event_creation_modal_context(),
             },
         )
 
@@ -152,17 +145,8 @@ class EventsListView(SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        dates = DayEventGroup.objects.filter(date__gte=timezone.now()).order_by("date")
-        date_context = []
-        for date in dates:
-            date_context.append(
-                {
-                    "date": date.date,
-                    "id": force_str(urlsafe_base64_encode(force_bytes(date.id))),
-                }
-            )
         context["change_formular"] = EventChangeFormularForm()
-        context["dates"] = date_context
+        context["structure"] = get_event_creation_modal_context()
         context["change_formular_new"] = EventAddNewDateForm()
         return context
 
@@ -454,6 +438,13 @@ class BaseEventsTableView(SingleTableView):
     model = BaseEventGroup
     paginate_by = 50
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["change_formular"] = EventChangeFormularForm()
+        context["change_formular_new"] = EventAddNewDateForm()
+        context["structure"] = get_event_creation_modal_context()
+        return context
+
 
 class BaseEventDetailView(View):
     def get(self, request, pk):
@@ -604,10 +595,17 @@ class TeacherDayEventGroupView(SingleTableMixin, FilterView):
             day_group__in=DayEventGroup.objects.filter(base_event=self.base_event)
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["change_formular"] = EventChangeFormularForm()
+        context["change_formular_new"] = EventAddNewDateForm()
+        context["structure"] = get_event_creation_modal_context()
+        return context
+
     def get(self, request, base_event_pk, *args, **kwargs):
         self.base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
         self.get_queryset()
-        return super().get(request, *args, **kwargs)
+        return super().get(self, request, *args, **kwargs)
 
 
 class TeacherDayGroupDetailView(View):
