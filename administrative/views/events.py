@@ -431,7 +431,7 @@ class EventChangeFormularDisapproveView(View):
 
             return redirect("administrative_event_formular_view")
 
-
+@method_decorator(login_staff, name="dispatch")
 class BaseEventsTableView(SingleTableView):
     table_class = BaseEventsTable
     template_name = "administrative/events/base_events/base_events_table.html"
@@ -445,7 +445,7 @@ class BaseEventsTableView(SingleTableView):
         context["structure"] = get_event_creation_modal_context()
         return context
 
-
+@method_decorator(login_staff, name="dispatch")
 class BaseEventDetailView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -500,7 +500,7 @@ class BaseEventDetailView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class BaseEventEditLeadStatusView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -539,7 +539,7 @@ class BaseEventEditLeadStatusView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class BaseEventEditLeadDateView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -578,7 +578,7 @@ class BaseEventEditLeadDateView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class TeacherDayEventGroupView(SingleTableMixin, FilterView):
     table_class = TeacherDayGroupTable
     template_name = (
@@ -607,7 +607,7 @@ class TeacherDayEventGroupView(SingleTableMixin, FilterView):
         self.get_queryset()
         return super().get(self, request, *args, **kwargs)
 
-
+@method_decorator(login_staff, name="dispatch")
 class TeacherDayGroupDetailView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
@@ -672,7 +672,7 @@ class TeacherDayGroupDetailView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class TeacherDayGroupEditLeadStatusView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
@@ -723,7 +723,7 @@ class TeacherDayGroupEditLeadStatusView(View):
             },
         )
 
-
+@method_decorator(login_staff, name="dispatch")
 class TeacherDayGroupEditLeadDateView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)

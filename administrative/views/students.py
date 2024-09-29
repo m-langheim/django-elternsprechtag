@@ -541,7 +541,7 @@ class ManualParentAddStudent(View):
                 {"form": form, "student": student},
             )
 
-
+@method_decorator(login_staff, name="dispatch")
 class UpcommingUserBatchSendView(View):
     def get(self, request):
         form = UpcommingUserBatchSendForm()

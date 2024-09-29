@@ -333,6 +333,7 @@ class ResetPasswordWithLink(View):
                 return redirect("others_edit_view", user.pk)
 
 
+@method_decorator(login_staff, name="dispatch")
 class TagsListView(SingleTableView):
     model = Tag
     table_class = TagsTable
@@ -340,6 +341,7 @@ class TagsListView(SingleTableView):
     template_name = "administrative/users/teachers/tags/tags_list.html"
 
 
+@method_decorator(login_staff, name="dispatch")
 class TagEditView(View):
     def get(self, request, pk):
         tag = get_object_or_404(Tag, pk=pk)
@@ -368,6 +370,7 @@ class TagEditView(View):
         )
 
 
+@method_decorator(login_staff, name="dispatch")
 class TagCreateView(View):
     def get(self, request):
 
