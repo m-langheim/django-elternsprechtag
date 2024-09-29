@@ -10,6 +10,35 @@
 {% endblock extra_head %}
 
 {% block control_content %}
+
+{% if unapproved_changes %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Outstanding changes' %}</h5>
+            <div class="card-text">{% translate 'There are several changes to the student database that are not confirmed yet. Please continue with the changes.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if unsend_up_users %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Parent registration links missing' %}</h5>
+            <div class="card-text">{% translate 'There are several students without a registered parent where the parent registration link was not send yet neither. Please send the links to proceed with the parent registration.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_upcomming_user_batch_send' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-8">
         <p class="h1">{% translate 'Students' %}</p>

@@ -68,4 +68,9 @@ urlpatterns = [
         StudentImportApproveAndApplyWithOperation.as_view(),
         name="student_import_apply_with_operation",
     ),
+    path(
+        "upcomming_user/batch_send/",
+        UpcommingUserBatchSendView.as_view(),
+        name="student_upcomming_user_batch_send",
+    ),
 ]

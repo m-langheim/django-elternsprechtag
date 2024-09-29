@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.db.models import Q
 from authentication.utils import register_new_teacher
 from dashboard.models import Event, BaseEventGroup, TeacherEventGroup, DayEventGroup
+from authentication.models import Upcomming_User
+from .utils import student_send_registration_mail
 
 
 @shared_task(bind=True)
@@ -195,3 +197,22 @@ def proccess_teacher_file_import(self, csv_file, *args, **kwargs):
         progress_recorder.set_progress(index, length)
 
     return "All teachers imported"
+
+
+@shared_task(bind=True)
+def batch_send_upcomming_user_registration_link(self, exclude_pks, resend=False):
+    if resend:
+        up_users = Upcomming_User.objects.all()
+    else:
+        up_users = Upcomming_User.objects.filter(email_send=False)
+    student_list = Student.objects.filter(
+        pk__in=list(up_users.values_list("student", flat=True))
+    ).exclude(pk__in=list(exclude_pks))
+
+    progress_recorder = ProgressRecorder(self)
+
+    for index, student in enumerate(student_list):
+        student_send_registration_mail(student)
+        progress_recorder.set_progress(
+            index, student_list.count(), description="Sending upcomming user mails"
+        )

@@ -23,6 +23,7 @@ from authentication.models import (
     TeacherExtraData,
     Tag,
     generate_new_color,
+    Upcomming_User,
 )
 from django.utils import timezone
 from django.db.models import Q
@@ -790,3 +791,21 @@ class TeacherDayGroupEditLeadDateForm(forms.ModelForm):
                 _("The lead inquiry must start before the main lead."),
             )
         return lead_inquiry_start
+
+
+class UpcommingUserBatchSendForm(forms.Form):
+    exclude_students = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.filter(
+            pk__in=list(Upcomming_User.objects.all().values_list("student", flat=True))
+        ),
+        widget=MultiStudentWidget(
+            queryset=Student.objects.filter(
+                pk__in=list(
+                    Upcomming_User.objects.all().values_list("student", flat=True)
+                )
+            )
+        ),
+        required=False,
+    )
+
+    resend = forms.BooleanField(initial=False, required=False)
