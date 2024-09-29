@@ -17,7 +17,13 @@ from dashboard.models import (
     TeacherEventGroup,
     BaseEventGroup,
 )
-from authentication.models import CustomUser, Tag, Student, TeacherExtraData
+from authentication.models import (
+    CustomUser,
+    Student,
+    TeacherExtraData,
+    Tag,
+    generate_new_color,
+)
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib.auth.models import Permission
@@ -673,4 +679,101 @@ class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ["name", "synonyms", "color"]
-        widgets = {"color": ColorWidget}
+        # widgets = {"color": ColorWidget}
+
+
+class BaseEventEditLeadStatusForm(forms.ModelForm):
+    class Meta:
+        model = BaseEventGroup
+        fields = ["lead_status", "disable_automatic_changes", "force", "manual_apply"]
+
+    manual_apply = forms.BooleanField(
+        initial=True, widget=forms.HiddenInput, required=False
+    )
+
+    def clean_manual_apply(self):
+        return True
+
+
+class BaseEventEditLeadDateForm(forms.ModelForm):
+    class Meta:
+        model = BaseEventGroup
+        fields = ["lead_start", "lead_inquiry_start", "force", "manual_apply"]
+
+    manual_apply = forms.BooleanField(
+        initial=True, widget=forms.HiddenInput, required=False
+    )
+
+    def clean_manual_apply(self):
+        return True
+
+    def clean_lead_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+
+        if (
+            lead_start
+            > self.instance.dayeventgroup_set.all().order_by("date").first().date
+        ):
+            self.add_error(
+                "lead_start",
+                _("The lead must start before the event."),
+            )
+        return lead_start
+
+    def clean_lead_inquiry_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+        lead_inquiry_start = self.cleaned_data["lead_inquiry_start"]
+
+        if lead_inquiry_start > lead_start:
+            self.add_error(
+                "lead_inquiry_start",
+                _("The lead inquiry must start before the main lead."),
+            )
+        return lead_inquiry_start
+
+
+class TeacherDayGroupEditLeadStatusForm(forms.ModelForm):
+    class Meta:
+        model = TeacherEventGroup
+        fields = ["lead_status", "disable_automatic_changes", "force", "manual_apply"]
+
+    manual_apply = forms.BooleanField(
+        initial=True, widget=forms.HiddenInput, required=False
+    )
+
+    def clean_manual_apply(self):
+        return True
+
+
+class TeacherDayGroupEditLeadDateForm(forms.ModelForm):
+    class Meta:
+        model = TeacherEventGroup
+        fields = ["lead_start", "lead_inquiry_start", "force", "manual_apply"]
+
+    manual_apply = forms.BooleanField(
+        initial=True, widget=forms.HiddenInput, required=False
+    )
+
+    def clean_manual_apply(self):
+        return True
+
+    def clean_lead_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+
+        if lead_start > self.instance.day_group.date:
+            self.add_error(
+                "lead_start",
+                _("The lead must start before the event."),
+            )
+        return lead_start
+
+    def clean_lead_inquiry_start(self):
+        lead_start = self.cleaned_data["lead_start"]
+        lead_inquiry_start = self.cleaned_data["lead_inquiry_start"]
+
+        if lead_inquiry_start > lead_start:
+            self.add_error(
+                "lead_inquiry_start",
+                _("The lead inquiry must start before the main lead."),
+            )
+        return lead_inquiry_start

@@ -39,6 +39,7 @@
 {% url 'administrative_settings' as settings_view %}
 {% url 'administrative_backup' as backup_view %}
 {% url 'administrative_event_formular_view' as formular_view %}
+{% url 'base_events_table' as base_event_view %}
 
 <div class="row gx-3 gy-3">
     <!-- Small screen -->
@@ -56,6 +57,8 @@
                 {% translate 'Appointments' %}
                 {% elif formular_view in request.get_full_path %}
                 {% translate 'Formulars' %}
+                {% elif base_event_view in request.get_full_path %}
+                {% translate 'Base event' %}
                 {% elif backup_view in request.get_full_path %}
                 {% translate 'Backup' %}
                 {% elif settings_view in request.get_full_path %}
@@ -80,6 +83,9 @@
                         <!-- <li>
                             <a class="dropdown-item" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                         </li> -->
+                        <li>
+                            <a class="dropdown-item" href="{% url 'base_events_table' %}">{% translate 'Base event' %}</a>
+                        </li>
                         <li>
                             <a class="dropdown-item" href="{% url 'administrative_event_formular_view' %}">{% translate 'Formulars' %}</a>
                         </li>
@@ -124,6 +130,10 @@
                         <!-- <li>
                             <a class="nav-link" style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_list_view' %}">{% translate 'Events' %}</a>
                         </li> -->
+                        <li>
+                            <a class="nav-link {% if base_event_view in request.get_full_path %} border-danger text-danger {% endif %}"
+                            style="border-radius: 0.5rem; color: black;" href="{% url 'base_events_table' %}">{% translate 'Base events' %}</a>
+                        </li>
                         <li>
                             <a class="nav-link {% if formular_view in request.get_full_path %} border-danger text-danger {% endif %}"
                             style="border-radius: 0.5rem; color: black;" href="{% url 'administrative_event_formular_view' %}">{% translate 'Formulars' %}</a>

@@ -1,7 +1,13 @@
 import django_tables2 as tables
 from django_tables2.utils import Accessor
 from authentication.models import Student, StudentChange, CustomUser, Tag
-from dashboard.models import Event, EventChangeFormula
+from dashboard.models import (
+    Event,
+    EventChangeFormula,
+    BaseEventGroup,
+    DayEventGroup,
+    TeacherEventGroup,
+)
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from custom_backup.models import *
@@ -178,25 +184,25 @@ class EventFormularActionTable(tables.Table):
         )
 
     teacher = tables.Column(
-        verbose_name = _("Teacher"),
+        verbose_name=_("Teacher"),
         # attrs={"th": {"id": "teacher_id1"}},
         orderable=False,
     )
 
     date = tables.Column(
-        verbose_name = _("Date"),
+        verbose_name=_("Date"),
         # attrs={"th": {"id": "date_id1"}},
         orderable=False,
     )
 
     start_time = tables.Column(
-        verbose_name = _("Start"),
+        verbose_name=_("Start"),
         # attrs={"th": {"id": "start_time_id1"}},
         orderable=False,
     )
 
     end_time = tables.Column(
-        verbose_name = _("End"),
+        verbose_name=_("End"),
         # attrs={"th": {"id": "end_time_id1"}},
         orderable=False,
     )
@@ -233,13 +239,13 @@ class EventFormularUpcommingTable(tables.Table):
         )
 
     teacher = tables.Column(
-        verbose_name = _("Teacher"),
+        verbose_name=_("Teacher"),
         # attrs={"th": {"id": "teacher_id2"}},
         orderable=False,
     )
 
     date = tables.Column(
-        verbose_name = _("Date"),
+        verbose_name=_("Date"),
         # attrs={"th": {"id": "date_id2"}},
         orderable=False,
     )
@@ -267,19 +273,19 @@ class EventFormularOldTable(tables.Table):
         )
 
     teacher = tables.Column(
-        verbose_name = _("Teacher"),
+        verbose_name=_("Teacher"),
         # attrs={"th": {"id": "teacher_id3"}},
         orderable=False,
     )
 
     date = tables.Column(
-        verbose_name = _("Date"),
+        verbose_name=_("Date"),
         # attrs={"th": {"id": "date_id3"}},
         orderable=False,
     )
 
     status = tables.Column(
-        verbose_name = _("Status"),
+        verbose_name=_("Status"),
         # attrs={"th": {"id": "status_id3"}},
         orderable=False,
     )
@@ -447,8 +453,10 @@ class Eventstable(tables.Table):
         attrs={"th": {"id": "start_id"}},
     )
 
-    day_group_base_event = tables.Column(
+    base_event = tables.LinkColumn(
         verbose_name=_("Base event"),
+        viewname="base_event_edit",
+        args=[A("day_group.base_event.pk")],
         accessor="day_group.base_event",
         attrs={"th": {"id": "base_id"}},
     )
@@ -536,3 +544,67 @@ class TagsTable(tables.Table):
 
     color = TagColorColumn(orderable=False, accessor="color")
     actions = TagActionsColumn(accessor="pk", orderable=False)
+
+
+class DayEventGroupColumn(tables.Column):
+    def render(self, value: DayEventGroup):
+        days = value.all().order_by("date")
+        column_text = ""
+        for day in days[:2]:
+            column_text += str(day.date)
+        return format_html(column_text)
+
+
+class EventsBookedPercentColumn(tables.Column):
+    def render(self, value):
+        total = value.all().count()
+
+        free = value.filter(status=0).count()
+        requested = value.filter(status=2).count()
+        occupied = value.filter(status=1).count()
+
+        return format_html(
+            f'<div class="progress"> <div class="progress-bar bg-success" role="progressbar" style="width: {(free/total)*100}%" aria-valuenow="{free}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-warning" role="progressbar" style="width: {(requested/total)*100}%" aria-valuenow="{requested}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-danger" role="progressbar" style="width: {(occupied/total)*100}%" aria-valuenow="{occupied}" aria-valuemin="0" aria-valuemax="{total}"></div> </div>'
+        )
+
+
+class BaseEventsTable(tables.Table):
+    class Meta:
+        model = BaseEventGroup
+        fields = ["valid_until"]
+
+    dayeventgroup = DayEventGroupColumn(
+        accessor="dayeventgroup_set.all", orderable=False
+    )
+
+    events_percent = EventsBookedPercentColumn(
+        accessor="event_set.all", orderable=False
+    )
+
+    edit = tables.LinkColumn(
+        "base_event_edit",
+        args=[Accessor("pk")],
+        orderable=False,
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )
+
+
+class TeacherDayGroupTable(tables.Table):
+    class Meta:
+        model = TeacherEventGroup
+        fields = ["teacher", "day_group.date", "room"]
+
+    events_percent = EventsBookedPercentColumn(
+        accessor="event_set.all", orderable=False
+    )
+
+    edit = tables.LinkColumn(
+        "teacher_day_event_group_detail",
+        args=[Accessor("day_group.base_event.pk"), Accessor("pk")],
+        orderable=False,
+        text=format_html("<i class='fa-solid fa-pen text-secondary'></i>"),
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )

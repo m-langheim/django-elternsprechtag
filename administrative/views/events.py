@@ -38,7 +38,14 @@ from general_tasks.tasks import async_send_mail
 
 from django.contrib.admin.views.decorators import staff_member_required
 
-from dashboard.models import Event, EventChangeFormula, Announcements, Inquiry
+from dashboard.models import (
+    Event,
+    EventChangeFormula,
+    Announcements,
+    Inquiry,
+    DayEventGroup,
+    TeacherEventGroup,
+)
 from dashboard.tasks import async_create_events_special, apply_event_change_formular
 
 from dashboard.utils import check_inquiry_reopen
@@ -439,3 +446,328 @@ class EventChangeFormularDisapproveView(View):
             messages.success(request, "Die Termine werden nun erstellt.")
 
             return redirect("administrative_event_formular_view")
+
+
+class BaseEventsTableView(SingleTableView):
+    table_class = BaseEventsTable
+    template_name = "administrative/events/base_events/base_events_table.html"
+    model = BaseEventGroup
+    paginate_by = 50
+
+
+class BaseEventDetailView(View):
+    def get(self, request, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=pk)
+
+        teacher_day_table = TeacherDayGroupTable(
+            TeacherEventGroup.objects.filter(
+                day_group__in=DayEventGroup.objects.filter(base_event=base_event)
+            )[:5],
+            orderable=False,
+        )
+
+        events = Event.objects.filter(base_event=base_event)
+
+        booking_statistics = {
+            "labels": Event.StatusChoices.labels,
+            "data": [
+                events.filter(status=Event.StatusChoices.UNOCCUPIED).count(),
+                events.filter(status=Event.StatusChoices.OCCUPIED).count(),
+                events.filter(status=Event.StatusChoices.INQUIRY).count(),
+            ],
+        }
+
+        availability_statistics = {
+            "labels": [
+                "No parents",
+                "Parents with medical condition",
+                "Parents with inquiry",
+                "All parents",
+            ],
+            "data": [
+                events.filter(lead_status=LeadStatusChoices.NOBODY).count(),
+                events.filter(lead_status=LeadStatusChoices.CONDITION).count(),
+                events.filter(lead_status=LeadStatusChoices.INQUIRY).count(),
+                events.filter(lead_status=LeadStatusChoices.ALL).count(),
+            ],
+        }
+
+        lead_status_form = BaseEventEditLeadStatusForm(instance=base_event)
+
+        lead_date_form = BaseEventEditLeadDateForm(instance=base_event)
+
+        return render(
+            request,
+            "administrative/events/base_events/edit_base_event.html",
+            {
+                "base_event": base_event,
+                "teacher_day_table": teacher_day_table,
+                "booking_statistics": booking_statistics,
+                "lead_status_form": lead_status_form,
+                "lead_date_form": lead_date_form,
+                "availability_statistics": availability_statistics,
+            },
+        )
+
+
+class BaseEventEditLeadStatusView(View):
+    def get(self, request, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=pk)
+
+        lead_status_form = BaseEventEditLeadStatusForm(instance=base_event)
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_status_form,
+                "title": _("Edit lead status"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+    def post(self, request, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=pk)
+
+        lead_status_form = BaseEventEditLeadStatusForm(
+            instance=base_event, data=request.POST
+        )
+
+        if lead_status_form.is_valid():
+            lead_status_form.save()
+            messages.success(request, "The lead status was successfully changed.")
+            return redirect("..")
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_status_form,
+                "title": _("Edit lead status"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+
+class BaseEventEditLeadDateView(View):
+    def get(self, request, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=pk)
+
+        lead_dates_form = BaseEventEditLeadDateForm(instance=base_event)
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_dates_form,
+                "title": _("Edit lead dates"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+    def post(self, request, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=pk)
+
+        lead_dates_form = BaseEventEditLeadDateForm(
+            instance=base_event, data=request.POST
+        )
+
+        if lead_dates_form.is_valid():
+            lead_dates_form.save()
+            messages.success(request, "The lead dates were successfully changed.")
+            return redirect("..")
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_dates_form,
+                "title": _("Edit lead dates"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+
+class TeacherDayEventGroupView(SingleTableMixin, FilterView):
+    table_class = TeacherDayGroupTable
+    template_name = (
+        "administrative/events/teacher_day_event_groups/day_group_table.html"
+    )
+    model = TeacherEventGroup
+    filterset_class = TeacherEventGroupFilter
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        return TeacherEventGroup.objects.filter(
+            day_group__in=DayEventGroup.objects.filter(base_event=self.base_event)
+        )
+
+    def get(self, request, base_event_pk, *args, **kwargs):
+        self.base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        self.get_queryset()
+        return super().get(request, *args, **kwargs)
+
+
+class TeacherDayGroupDetailView(View):
+    def get(self, request, base_event_pk, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        teacher_event_group = get_object_or_404(
+            TeacherEventGroup,
+            pk=pk,
+            day_group__in=DayEventGroup.objects.filter(base_event=base_event),
+        )
+
+        teacher_events_table = Eventstable(
+            Event.objects.filter(teacher_event_group=teacher_event_group)[:5],
+            orderable=False,
+        )
+
+        events = Event.objects.filter(teacher_event_group=teacher_event_group)
+
+        booking_statistics = {
+            "labels": Event.StatusChoices.labels,
+            "data": [
+                events.filter(status=Event.StatusChoices.UNOCCUPIED).count(),
+                events.filter(status=Event.StatusChoices.OCCUPIED).count(),
+                events.filter(status=Event.StatusChoices.INQUIRY).count(),
+            ],
+        }
+
+        availability_statistics = {
+            "labels": [
+                "No parents",
+                "Parents with medical condition",
+                "Parents with inquiry",
+                "All parents",
+            ],
+            "data": [
+                events.filter(lead_status=LeadStatusChoices.NOBODY).count(),
+                events.filter(lead_status=LeadStatusChoices.CONDITION).count(),
+                events.filter(lead_status=LeadStatusChoices.INQUIRY).count(),
+                events.filter(lead_status=LeadStatusChoices.ALL).count(),
+            ],
+        }
+
+        lead_status_form = TeacherDayGroupEditLeadStatusForm(
+            instance=teacher_event_group
+        )
+
+        lead_date_form = TeacherDayGroupEditLeadDateForm(instance=teacher_event_group)
+
+        return render(
+            request,
+            "administrative/events/teacher_day_event_groups/edit_day_group.html",
+            {
+                "teacher_event_group": teacher_event_group,
+                "base_event": base_event,
+                "teacher_events_table": teacher_events_table,
+                "booking_statistics": booking_statistics,
+                "lead_status_form": lead_status_form,
+                "lead_date_form": lead_date_form,
+                "availability_statistics": availability_statistics,
+                "back_url": request.GET.get(
+                    "back_url",
+                    reverse("teacher_day_event_group_table", args=[base_event.pk]),
+                ),
+            },
+        )
+
+
+class TeacherDayGroupEditLeadStatusView(View):
+    def get(self, request, base_event_pk, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        teacher_event_group = get_object_or_404(
+            TeacherEventGroup,
+            pk=pk,
+            day_group__in=DayEventGroup.objects.filter(base_event=base_event),
+        )
+
+        lead_status_form = TeacherDayGroupEditLeadStatusForm(
+            instance=teacher_event_group
+        )
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_status_form,
+                "title": _("Edit lead status"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+    def post(self, request, base_event_pk, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        teacher_event_group = get_object_or_404(
+            TeacherEventGroup,
+            pk=pk,
+            day_group__in=DayEventGroup.objects.filter(base_event=base_event),
+        )
+
+        lead_status_form = TeacherDayGroupEditLeadStatusForm(
+            instance=teacher_event_group, data=request.POST
+        )
+
+        if lead_status_form.is_valid():
+            lead_status_form.save()
+            messages.success(request, "The lead status was successfully changed.")
+            return redirect("..")
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_status_form,
+                "title": _("Edit lead status"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+
+class TeacherDayGroupEditLeadDateView(View):
+    def get(self, request, base_event_pk, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        teacher_event_group = get_object_or_404(
+            TeacherEventGroup,
+            pk=pk,
+            day_group__in=DayEventGroup.objects.filter(base_event=base_event),
+        )
+
+        lead_dates_form = TeacherDayGroupEditLeadDateForm(instance=teacher_event_group)
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_dates_form,
+                "title": _("Edit lead dates"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )
+
+    def post(self, request, base_event_pk, pk):
+        base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
+        teacher_event_group = get_object_or_404(
+            TeacherEventGroup,
+            pk=pk,
+            day_group__in=DayEventGroup.objects.filter(base_event=base_event),
+        )
+
+        lead_dates_form = TeacherDayGroupEditLeadDateForm(instance=teacher_event_group)
+
+        if lead_dates_form.is_valid():
+            lead_dates_form.save()
+            messages.success(request, "The lead dates were successfully changed.")
+            return redirect("..")
+
+        return render(
+            request,
+            "administrative/administrative_form_fallback.html",
+            {
+                "form": lead_dates_form,
+                "title": _("Edit lead dates"),
+                "back_url": reverse("base_event_edit", args=[base_event.pk]),
+            },
+        )

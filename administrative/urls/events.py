@@ -60,4 +60,38 @@ urlpatterns = [
         EventAddStudentView.as_view(),
         name="administrative_event_add_student_view",
     ),
+    path("base_event/", BaseEventsTableView.as_view(), name="base_events_table"),
+    path(
+        "base_event/<pk>/edit/", BaseEventDetailView.as_view(), name="base_event_edit"
+    ),
+    path(
+        "base_event/<pk>/edit/lead_status/",
+        BaseEventEditLeadStatusView.as_view(),
+        name="base_event_edit_lead_status",
+    ),
+    path(
+        "base_event/<pk>/edit/lead_dates/",
+        BaseEventEditLeadDateView.as_view(),
+        name="base_event_edit_lead_dates",
+    ),
+    path(
+        "base_event/<base_event_pk>/teacher_day_groups/",
+        TeacherDayEventGroupView.as_view(),
+        name="teacher_day_event_group_table",
+    ),
+    path(
+        "base_event/<base_event_pk>/teacher_day_groups/<pk>/",
+        TeacherDayGroupDetailView.as_view(),
+        name="teacher_day_event_group_detail",
+    ),
+    path(
+        "base_event/<base_event_pk>/teacher_day_groups/<pk>/lead_status/",
+        TeacherDayGroupEditLeadStatusView.as_view(),
+        name="teacher_day_event_group_edit_lead_status",
+    ),
+    path(
+        "base_event/<base_event_pk>/teacher_day_groups/<pk>/lead_dates/",
+        TeacherDayGroupEditLeadDateView.as_view(),
+        name="teacher_day_event_group_edit_lead_dates",
+    ),
 ]

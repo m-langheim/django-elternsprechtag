@@ -1,4 +1,4 @@
-{% extends 'administrative/time_slots/time_slots_base.html' %}
+{% extends 'administrative/administrative_base.html' %}
 {% load render_table from django_tables2 %}
 {% load crispy_forms_tags %}
 {% load i18n %}
@@ -8,8 +8,8 @@
 
 {% block title %} {% translate 'Appointments' %} {% endblock title %}
 
-{% block time_slot_content %}
-{% if filter %}
+{% block control_content %}
+{% if filter  %}
 <form action="" method="get" class="form form-inline">
     <div class="grid gap-3 d-flex">
         <div class="flex-grow-1">
@@ -25,15 +25,15 @@
     <div class="row mb-2">
         <div class="collapse" id="collapsefilter">
             <div class="card card-body">
-                <div class="h5">
+                {% comment %} <div class="h5">
                     {% translate 'Status' %}
                 </div>
                 <div>
                     {{filter.form.status | as_crispy_field}}
                 </div>
-                <div class="dropdown-divider">
+                <div class="dropdown-divider"> {% endcomment %}
 
-                </div>
+                {% comment %} </div> {% endcomment %}
                 <div class="h5">
                     {% translate 'Lead status' %}
                 </div>
@@ -45,15 +45,6 @@
                 </div>
                 <div class="h5">
                     {% translate 'Base event' %}
-                </div>
-                <div>
-                    {{filter.form.base_event | as_crispy_field}}
-                </div>
-                <div class="dropdown-divider">
-
-                </div>
-                <div class="h5">
-                    {% translate 'Day group' %}
                 </div>
                 <div>
                     {{filter.form.day_group | as_crispy_field}}
