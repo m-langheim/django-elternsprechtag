@@ -111,10 +111,7 @@ class CustomUser(
 
 
 def generate_new_color():
-    while True:
-        color = "#" + "".join([random.choice("ABCDEF0123456789") for i in range(6)])
-        if not Tag.objects.filter(color=color):
-            break
+    color = "#" + "".join([random.choice("ABCDEF0123456789") for i in range(6)])
 
     return color
 
