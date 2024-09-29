@@ -54,6 +54,17 @@ class StudentListView(SingleTableView):
     paginate_by = 75
     template_name = "administrative/student/student_list_view.html"
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["student_search"] = StudentDirectSelectForm()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("student", None):
+            print(request.GET.get("student", None))
+            return redirect("student_details_view", pk=request.GET.get("student", None))
+        return super().get(request, *args, **kwargs)
+
 
 @method_decorator(login_staff, name="dispatch")
 class StudentImportStart(View):

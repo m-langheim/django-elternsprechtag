@@ -8,12 +8,17 @@
 
 {% block title %} {% translate 'Appointments' %} {% endblock title %}
 
+{% block extra_head %}
+{{ filter.form.media.css }}
+{% endblock extra_head %}
+
 {% block time_slot_content %}
 {% if filter %}
 <form action="" method="get" class="form form-inline">
     <div class="grid gap-3 d-flex">
         <div class="flex-grow-1">
             {{filter.form.teacher | as_crispy_field}}
+            {{ filter.form.media.js }}
         </div>
         <div class="">
             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefilter"

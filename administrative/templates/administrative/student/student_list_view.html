@@ -1,8 +1,13 @@
 {% extends 'administrative/administrative_base.html' %}
 {% load render_table from django_tables2 %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %} {% translate 'Students' %} {% endblock title %}
+
+{% block extra_head %}
+{{ student_search.media.css }}
+{% endblock extra_head %}
 
 {% block control_content %}
 <div class="row">
@@ -14,6 +19,10 @@
             class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
             href="{% url 'student_import_filepload' %}">{% translate 'Add students' %}</a></div>
 </div>
+<form>
+{{student_search|crispy}}
+{{ student_search.media.js }}
+</form>
 {% render_table table %}
 <script>
     var first = document.getElementById("first_name_id");

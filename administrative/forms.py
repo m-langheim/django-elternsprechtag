@@ -86,6 +86,19 @@ class MultiStudentWidget(StudentSelect2WidgetMixin, s2forms.ModelSelect2Multiple
     ]
 
 
+class StudentDirectSelectForm(forms.Form):
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all(),
+        widget=StudentWidget(
+            attrs={
+                "onchange": "this.form.submit()",
+                "data-placeholder": "Search for a student",
+            }
+        ),
+        label="",
+    )
+
+
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField(label=_("CSV-File"))
 

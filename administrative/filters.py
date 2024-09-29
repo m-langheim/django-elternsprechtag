@@ -4,9 +4,21 @@ from authentication.models import CustomUser
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Submit
 from dashboard.models import BaseEventGroup, Event, TeacherEventGroup, DayEventGroup
+from authentication.models import Student
 from django.utils import timezone
 from django import forms
 from custom_backup.models import *
+
+from django_select2 import forms as s2forms
+
+
+class TeacherWidget(s2forms.ModelSelect2Widget):
+    model = CustomUser
+    search_fields = [
+        "first_name__icontains",
+        "last_name__icontains",
+        "email__icontains",
+    ]
 
 
 class EventFilter(django_filters.FilterSet):
@@ -18,7 +30,7 @@ class EventFilter(django_filters.FilterSet):
     teacher = django_filters.ModelChoiceFilter(
         queryset=CustomUser.objects.filter(role=1),
         label="",
-        widget=forms.Select(
+        widget=TeacherWidget(
             attrs={
                 "onchange": "this.form.submit()",
             }
@@ -88,3 +100,9 @@ class BackupFilter(django_filters.FilterSet):
     class Meta:
         model = Backup
         fields = ["backup_type"]
+
+
+class StudentFilter(django_filters.FilterSet):
+    class Meta:
+        model = Student
+        fields = ["class_name"]
