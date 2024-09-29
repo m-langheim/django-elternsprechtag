@@ -795,17 +795,21 @@ class TeacherDayGroupEditLeadDateForm(forms.ModelForm):
 
 class UpcommingUserBatchSendForm(forms.Form):
     exclude_students = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.filter(
-            pk__in=list(Upcomming_User.objects.all().values_list("student", flat=True))
-        ),
-        widget=MultiStudentWidget(
-            queryset=Student.objects.filter(
-                pk__in=list(
-                    Upcomming_User.objects.all().values_list("student", flat=True)
-                )
-            )
-        ),
+        queryset=Student.objects.all(),
+        widget=MultiStudentWidget(),
         required=False,
     )
 
     resend = forms.BooleanField(initial=False, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+        self.fields["exclude_students"].choices = [
+            [student.pk, f"{student.first_name} {student.last_name}"]
+            for student in Student.objects.filter(
+                pk__in=list(
+                    Upcomming_User.objects.all().values_list("student", flat=True)
+                )
+            )
+        ]
