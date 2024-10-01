@@ -192,6 +192,19 @@
             {% endif %}
 
             <div class="container mt-2">
+                {% if page_under_construction %}
+            <div class="card border-danger mb-3">
+                <div class="card-body row">
+                    <div class="col col-12 col-md-12">
+                        <h5 class="card-title">{% translate 'Page under construction' %}</h5>
+                        <div class="card-text">{% translate 'You are probably using a prerelease where some features are not fully finished yet. This is one of the pages changes are taking place on. Use everythin you can use and please provide us with feedback.' %}</div>
+                    </div>
+                    {% comment %} <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+                        <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+            {% endif %}
                 {% block content %}{% endblock %}
             </div>
         </div>
