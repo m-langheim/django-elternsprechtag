@@ -1,0 +1,264 @@
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% if unapproved_changes %}
+<a href="{% url 'student_import_listchanges' %}">View</a>
+{% endif %}
+
+<p class="h1">{{base_event}}</p>
+
+<div class="row gx-3 gy-3">
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <div class="progress-stacked">
+            <div class="progress" role="progressbar" aria-label="Students with parent" aria-valuenow="{{ students.with_parent }}" aria-valuemin="0" aria-valuemax="{{students.total}}" style="width: {{students.with_parent_percent}}%">
+              <div class="progress-bar bg-success"></div>
+            </div>
+            <div class="progress" role="progressbar" aria-label="Students without parent" aria-valuenow="{{ students.without_parent }}" aria-valuemin="0" aria-valuemax="{{students.total}}" style="width: {{students.without_parent_percent}}%">
+              <div class="progress-bar bg-danger"></div>
+            </div>
+          </div>
+    </div>
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'General event data' %}</p>
+
+        <div class="row gx-1 gy-1">
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Total:' %}</p>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ students.total }} 
+            <div class="col-4 col-lg-4">
+            <a class="mb-1 btn btn-outline-danger d-flex justify-content-center" href="{%url 'student_list_view' %}">{% translate 'View' %}</a>
+            </div>
+            <p class="mb-1 col-4 col-lg-4">{% translate 'With parent:' %}</p>
+            {% comment %} <p class="mb-1 col-8 col-lg-8">{{ students.with_parent }}</p> {% endcomment %}
+            
+            <div class="mb-1 col-8 col-lg-8">
+                <span class="fs-sm me-2">{{ students.with_parent }} of {{ students.total }}</span>
+                <div class="progress d-inline-flex" style="width: 160px">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ students.with_parent_percent }}%"></div>  
+                </div>
+            </div>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Without parent:' %}</p>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ students.without_parent }}</p>
+            {% if students.without_parent > 0 %}
+            <a class="mb-1 btn btn-outline-danger col-4 col-lg-4" href="{% url 'student_upcomming_user_batch_send' %}?resend=true">{% translate 'Change' %}</a>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'Bookin information' %}</p>
+
+        <div class="row">
+            <div id="container" style="width: 100%;">
+                <canvas id="booking-chart"></canvas>
+            </div>
+            <script>
+        
+            var event_chart_config = {
+                type: 'pie',
+                data: {
+                datasets: [{
+                    data: {{ booking_statistics.data|safe }},
+                    backgroundColor: [
+                    '#198754', '#DC4C64', '#E4A11B', 
+                    ],
+                    label: 'Booking information'
+                }],
+                labels: {{ booking_statistics.labels|safe }}
+                },
+                options: {
+                responsive: true
+                }
+            };
+        
+            window.onload = function() {
+                var ctx = document.getElementById('booking-chart').getContext('2d');
+                window.myPie = new Chart(ctx, event_chart_config);
+            };
+        
+            </script> 
+            {% comment %} <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Booking state:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.get_status_display }}</p>
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Parent:' %}</p>
+            {% if event.parent %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.parent.first_name }} 
+                {{ event.parent.last_name }}</p>
+            {% else %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+            {% endif %}
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Student:' %}</p>
+            {% if event.student.all|length > 0 %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">
+                {% for student in event.student.all %}
+                {{student.first_name}} {{student.last_name}}
+                {% if student != event.student.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            {% else %}
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+            {% endif %}
+            {% if event.room %}
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Room:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.room }}</p>
+            {% endif %}
+             {% endcomment %}
+            {% comment %} <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
+            {% csrf_token %}
+    
+            <div class="row ps-3 pe-3 gx-3">
+                <button class="btn btn-outline-secondary mt-2 col-6" type="submit">
+                    {% translate 'Clear event' %}
+                </button>
+                {% if choices|length > 0 %}
+                <a class="btn btn-outline-danger mt-2 col-6" data-bs-toggle="modal" data-bs-target="#addStudentModal">{% translate 'Add student' %}</a>
+                {% endif %}
+            </div>
+        </form> {% endcomment %}
+        </div>
+        
+    </div>
+    <div class="card card-body p-3 mb-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'Availability information' %}</p>
+        <div id="container" style="width: 100%;">
+            <canvas id="availability-chart"></canvas>
+        </div>
+        <script>
+    
+        var availability_chart_config = {
+            type: 'pie',
+            data: {
+            datasets: [{
+                data: {{ availability_statistics.data|safe }},
+                backgroundColor: [
+                '#198754', '#DC4C64', '#E4A11B', '#007bff', 
+                ],
+                label: 'Availability information'
+            }],
+            labels: {{ availability_statistics.labels|safe }}
+            },
+            options: {
+            responsive: true
+            }
+        };
+
+        var event_chart_config = {
+            type: 'pie',
+            data: {
+            datasets: [{
+                data: {{ booking_statistics.data|safe }},
+                backgroundColor: [
+                '#198754', '#DC4C64', '#E4A11B', 
+                ],
+                label: 'Booking information'
+            }],
+            labels: {{ booking_statistics.labels|safe }}
+            },
+            options: {
+            responsive: true
+            }
+        };
+    
+        {% comment %} window.onload = function() {
+            var ctx = document.getElementById('booking-chart').getContext('2d');
+            window.myPie = new Chart(ctx, event_chart_config);
+        }; {% endcomment %}
+    
+        window.onload = function() {
+            var ctx = document.getElementById('availability-chart').getContext('2d');
+            window.myPie = new Chart(ctx, availability_chart_config);
+            var ctx = document.getElementById('booking-chart').getContext('2d');
+            window.myPie = new Chart(ctx, event_chart_config);
+        };
+    
+        </script> 
+        {% comment %} <div class="row">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+        </div>
+            <form method="POST">
+                {{ form | crispy }}
+                {% csrf_token %}
+        
+                <div class="row">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-outline-danger mt-2" type="submit">
+                            {%translate 'Save' %}
+                        </button>
+                    </div>
+                </div>
+            </form> {% endcomment %}
+    </div>
+    <div class="card card-body p-3 mb-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'Quick actions' %}</p>
+        <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_event_list_view' %}?base_event={{base_event.pk}}">Show all events</a>
+        <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadStatusModal">{% translate 'Edit lead status' %}</a>
+        <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadDateModal">{% translate 'Edit lead dates' %}</a>
+        {% comment %} <div class="row">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+        </div>
+            <form method="POST">
+                {{ form | crispy }}
+                {% csrf_token %}
+        
+                <div class="row">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-outline-danger mt-2" type="submit">
+                            {%translate 'Save' %}
+                        </button>
+                    </div>
+                </div>
+            </form> {% endcomment %}
+    </div>
+    <div class="card card-body p-3 mb-3 col-12">
+        <p class="h4 text-secondary">{% translate 'Current base events' %}</p>
+        {% render_table events.base_events_table %}
+        <div class="col d-flex justify-content-end">
+            <a class="btn btn-outline-danger mt-2" href="{% url 'base_events_table' %}">{% translate 'Show all' %}</a>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>
+
+<!-- <div class="card card-body p-4"> -->
+    <div id="container" style="width: 100%;">
+        <canvas id="event-chart"></canvas>
+      </div>
+    
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+      <script>
+    
+        var event_chart_config = {
+          type: 'pie',
+          data: {
+            datasets: [{
+              data: {{ data|safe }},
+              backgroundColor: [
+                '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+              ],
+              label: 'Population'
+            }],
+            labels: {{ labels|safe }}
+          },
+          options: {
+            responsive: true
+          }
+        };
+    
+        window.onload = function() {
+          var ctx = document.getElementById('event-chart').getContext('2d');
+          window.myPie = new Chart(ctx, event_chart_config);
+        };
+    
+      </script> 
+<!-- </div> -->

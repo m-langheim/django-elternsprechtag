@@ -62,8 +62,42 @@ class AdministrativeDashboard(View):
             "Beschränkt auf Anfragen",
             "Offen",
         ]
+        context = {
+            "students": {
+                "total": Student.objects.all().count(),
+                "with_parent": Student.objects.filter(customuser__isnull=False).count(),
+                "with_parent_percent": (
+                    Student.objects.filter(customuser__isnull=False).count()
+                    / Student.objects.all().count()
+                )
+                * 100,
+                "without_parent": Student.objects.filter(
+                    customuser__isnull=True
+                ).count(),
+                "without_parent_percent": (
+                    Student.objects.filter(customuser__isnull=True).count()
+                    / Student.objects.all().count()
+                )
+                * 100,
+            },
+            "events": {
+                "total": Event.objects.all().count(),
+                "upcomming": Event.objects.filter(start__gte=timezone.now()).count(),
+                "base_events": BaseEventGroup.objects.filter(
+                    valid_until__gte=timezone.now()
+                ),
+                "base_events_table": BaseEventsTable(
+                    BaseEventGroup.objects.filter(valid_until__gte=timezone.now())[:5],
+                    orderable=False,
+                ),
+            },
+            "labels": labels,
+            "data": data,
+            "page_under_construction": True,
+        }
+        print(context)
         return render(
             request,
-            "administrative/administrative_dashboard.html",
-            {"labels": labels, "data": data},
+            "administrative/dashboard/administrative_dashboard.html",
+            context,
         )

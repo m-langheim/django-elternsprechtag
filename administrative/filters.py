@@ -84,7 +84,9 @@ class TeacherEventGroupFilter(django_filters.FilterSet):
     )
 
     def __init__(self, data=None, queryset=None, *, request=None, prefix=None):
-        super().__init__(data, queryset, request=request, prefix=prefix)
+        super(TeacherEventGroupFilter, self).__init__(
+            data, queryset, request=request, prefix=prefix
+        )
 
         self.filters["day_group"].queryset = DayEventGroup.objects.filter(
             pk__in=list(queryset.all().values_list("day_group", flat=True))
