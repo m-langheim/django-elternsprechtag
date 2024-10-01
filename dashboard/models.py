@@ -219,30 +219,6 @@ class Event(models.Model):  # Termin
 
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
-
-    # class LeadStatusChoices(models.IntegerChoices):
-    #     NOBODY = 0, _("Nobody can currently request this appointment.")
-    #     CONDITION = 1, _(
-    #         "Only parents with special authorisations can currently request this appointment."
-    #     )
-    #     INQUIRY = 2, _(
-    #         "Only parents who have received a request from the teacher can currently request this appointment."
-    #     )
-    #     ALL = 3, _("All parents can request this appointment at the moment.")
-
-    # LEAD_STATUS_CHOICES = (
-    #     (0, "Nobody can currently request this appointment."),
-    #     (
-    #         1,
-    #         "Only parents with special authorisations can currently request this appointment.",
-    #     ),
-    #     (
-    #         2,
-    #         "Only parents who have received a request from the teacher can currently request this appointment.",
-    #     ),
-    #     (3, "All parents can request this appointment at the moment."),
-    # )
-
     lead_status = models.IntegerField(choices=LeadStatusChoices, default=1)
 
     lead_status_last_change = models.DateTimeField(default=timezone.now)
@@ -255,12 +231,6 @@ class Event(models.Model):  # Termin
         UNOCCUPIED = 0, _("Unoccupied")
         OCCUPIED = 1, _("Occupied")
         INQUIRY = 2, _("Inquiry pending")
-
-    # STATUS_CHOICES = (
-    #     (0, _("Unoccupied")),
-    #     (1, _("Occupied")),
-    #     (2, _("Inquiry pending")),
-    # )
 
     status = models.IntegerField(choices=StatusChoices, default=0)
 
@@ -308,30 +278,35 @@ class Event(models.Model):  # Termin
 
         return False
 
-    def update_event_lead_status(self):
-        if (
-            self.check_time_lead_active
-            and self.lead_start > self.lead_status_last_change.date()
-            and not self.lead_manual_override
-        ):
-            self.lead_status = 3
-            self.save()
-        elif (
-            self.check_time_lead_inquiry_active
-            and self.lead_inquiry_start > self.lead_status_last_change.date()
-            and not self.lead_manual_override
-        ):
-            self.lead_status = 2
-            self.save()
-        elif (
-            timezone.now().date() <= self.lead_inquiry_start
-            and not self.lead_manual_override
-        ):
-            self.lead_status = 1
-            self.save()
+    def update_event_lead_status(self, automatic=True):
+        if automatic and self.disable_automatic_changes:
+            pass
         else:
-            self.lead_status = 0
-            self.save()
+            if (
+                self.check_time_lead_active
+                and self.teacher_event_group.lead_start
+                > self.lead_status_last_change.date()
+                and not self.lead_manual_override
+            ):
+                self.lead_status = LeadStatusChoices.ALL
+                self.save()
+            elif (
+                self.check_time_lead_inquiry_active
+                and self.teacher_event_group.lead_inquiry_start
+                > self.lead_status_last_change.date()
+                and not self.lead_manual_override
+            ):
+                self.lead_status = LeadStatusChoices.INQUIRY
+                self.save()
+            elif (
+                timezone.now().date() <= self.teacher_event_group.lead_inquiry_start
+                and not self.lead_manual_override
+            ):
+                self.lead_status = LeadStatusChoices.CONDITION
+                self.save()
+            else:
+                self.lead_status = LeadStatusChoices.NOBODY
+                self.save()
 
     def check_parent_can_book_event(self, parent: CustomUser) -> bool:
         """This function is designed to check if a specified parent user account is allowed to book the specific event.
@@ -346,16 +321,16 @@ class Event(models.Model):  # Termin
             raise ValueError(
                 _("This user is not a parent.")
             )  # The specified user is not a parent.
-        if self.lead_status == 3:
+        if self.lead_status == LeadStatusChoices.ALL:
             return True
         elif (
-            self.lead_status == 2
+            self.lead_status == LeadStatusChoices.INQUIRY
             and Inquiry.objects.filter(
                 Q(requester=self.teacher), Q(respondent=parent), Q(processed=False)
             ).exists()
         ):
             return True
-        elif self.lead_status == 1 and parent.has_perm(
+        elif self.lead_status == LeadStatusChoices.CONDITION and parent.has_perm(
             "dashboard.condition_prebook_event"
         ):
             return True

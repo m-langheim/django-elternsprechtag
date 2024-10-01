@@ -94,11 +94,19 @@ def initiateEventPDFs():  # Mit diesem Task wird damit begonnen an alle Nutzer, 
 
 @shared_task
 def look_for_open_inquiries():
+    logger.info("Starting to send mails to parents with open booking inquries.")
     inquiries = Inquiry.objects.filter(
-        Q(processed=False), Q(type=0)
+        Q(processed=False),
+        Q(type=0),
+        Q(
+            base_event__in=BaseEventGroup.objects.filter(
+                valid_until__gte=timezone.now()
+            )
+        ),
     )  # Hier werden alle nicht bearbeiteten Anfragen von Lehrern an Eltern geöffnet
 
     respondents_list = []
+    mails_send = 0
 
     for inquiry in inquiries:
         if inquiry.respondent.id not in respondents_list:
@@ -129,14 +137,20 @@ def look_for_open_inquiries():
                 )
             ]
 
-            async_send_mail.delay(
-                "Offene Anfragen",
-                render_to_string(
-                    "general_tasks/email_unproccessedInquiries_reminder.html",
-                    {"user": respondent, "res_inquiries": res_inquiries},
-                ),
-                respondent.email,
-            )
+            if res_inquiries.count() > 0:
+                async_send_mail.delay(
+                    "Offene Anfragen",
+                    render_to_string(
+                        "general_tasks/email_unproccessedInquiries_reminder.html",
+                        {"user": respondent, "res_inquiries": res_inquiries},
+                    ),
+                    respondent.email,
+                )
+                mails_send += 1
+    logger.info(
+        "Finished sending mails to parents with open inquries. Send %s mails to parents.",
+        mails_send,
+    )
 
 
 @shared_task
@@ -210,11 +224,15 @@ def dayly_cleanup_task():
 
 @shared_task(bind=True)
 def update_event_lead_status(self, *args, **kwargs):
+    logger.info("Starting to update the lead status for all events.")
     events = Event.objects.filter(
         Q(disable_automatic_changes=False),
-        Q(start__lte=timezone.now()),
+        Q(start__gte=timezone.now()),
         Q(lead_manual_override=False),
     )
 
+    num_updates = 0
     for event in events:
         event.update_event_lead_status()
+        num_updates += 1
+    logger.info("Updateted the lead status on %s events", num_updates)

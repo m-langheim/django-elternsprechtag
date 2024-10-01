@@ -70,13 +70,6 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 RUN_CELERY_THREAD = False
 
-# CELERY_BEAT_SCHEDULE = {
-#     'db_backup_task': {
-#         'task': 'general_tasks.tasks.run_dbbackup',
-#         'schedule': crontab(minute=0, hour=1)
-#     }
-# }
-# Backup settings
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
 
