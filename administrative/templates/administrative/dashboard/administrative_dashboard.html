@@ -3,10 +3,6 @@
 {% block control_content %}
 {% load i18n %}
 
-{% if unapproved_changes %}
-<a href="{% url 'student_import_listchanges' %}">View</a>
-{% endif %}
-
 <div class="row">
     <div class="col-8">
         <p class="h1">{% translate 'Dashboard' %}</p>

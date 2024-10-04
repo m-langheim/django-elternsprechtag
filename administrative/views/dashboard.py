@@ -31,6 +31,7 @@ from ..tasks import *
 from ..utils import *
 from ..tables import *
 from ..filters import *
+from ..helpers import *
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
 from general_tasks.tasks import async_send_mail
@@ -62,6 +63,25 @@ class AdministrativeDashboard(View):
             "Beschränkt auf Anfragen",
             "Offen",
         ]
+        base_events_str = ""
+        for index, base in enumerate(
+            BaseEventGroup.objects.filter(valid_until__gte=timezone.now())
+        ):
+
+            base_events_str += str(base)
+            if (
+                index + 2
+                < BaseEventGroup.objects.filter(valid_until__gte=timezone.now()).count()
+            ):
+                base_events_str += str(", ")
+            elif (
+                index + 2
+                == BaseEventGroup.objects.filter(
+                    valid_until__gte=timezone.now()
+                ).count()
+            ):
+                base_events_str += " und "
+
         context = {
             "students": {
                 "total": Student.objects.all().count(),
@@ -79,6 +99,12 @@ class AdministrativeDashboard(View):
                     / Student.objects.all().count()
                 )
                 * 100,
+                "unapproved_changes": StudentChange.objects.filter(
+                    approved=False
+                ).exists(),
+                "unsend_up_users": Upcomming_User.objects.filter(
+                    email_send=False
+                ).exists(),
             },
             "events": {
                 "total": Event.objects.all().count(),
@@ -86,16 +112,19 @@ class AdministrativeDashboard(View):
                 "base_events": BaseEventGroup.objects.filter(
                     valid_until__gte=timezone.now()
                 ),
+                "base_events_str": base_events_str,
                 "base_events_table": BaseEventsTable(
                     BaseEventGroup.objects.filter(valid_until__gte=timezone.now())[:5],
                     orderable=False,
                 ),
+                "change_formular": EventChangeFormularForm(),
+                "structure": get_event_creation_modal_context(),
+                "change_formular_new": EventAddNewDateForm(),
             },
             "labels": labels,
             "data": data,
-            "page_under_construction": True,
+            # "page_under_construction": True,
         }
-        print(context)
         return render(
             request,
             "administrative/dashboard/administrative_dashboard.html",

@@ -67,7 +67,6 @@ class StudentListView(SingleTableView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("student", None):
-            print(request.GET.get("student", None))
             return redirect("student_details_view", pk=request.GET.get("student", None))
         return super().get(request, *args, **kwargs)
 
