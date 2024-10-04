@@ -48,6 +48,7 @@ login_staff = [login_required, staff_member_required]
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_sitesettings"), name="dispatch")
 class SettingsView(View):
     def get(self, request, *args, **kwargs):
         instance = SiteSettings.objects.all().first()

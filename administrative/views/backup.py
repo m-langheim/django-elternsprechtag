@@ -52,6 +52,7 @@ login_staff = [login_required, staff_member_required]
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("custom_backup.can_view_backup"), name="dispatch")
 class BackupOverviewView(View):
     def get(self, request):
         backups = Backup.objects.all().order_by("-created_at")[:5]
@@ -70,6 +71,7 @@ class BackupOverviewView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("custom_backup.can_view_backup"), name="dispatch")
 class BackupListView(SingleTableMixin, FilterView):
     template_name = "administrative/backup_template/backup_list.html"
     table_class = BackupTable

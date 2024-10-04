@@ -137,6 +137,7 @@ class EditTimeSlotView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_event"), name="dispatch")
 class EventsListView(SingleTableMixin, FilterView):
     table_class = Eventstable
     template_name = "administrative/time_slots/events_table.html"
@@ -155,6 +156,7 @@ class EventsListView(SingleTableMixin, FilterView):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_event"), name="dispatch")
 class EventDetailView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
@@ -201,6 +203,7 @@ class EventDetailView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_event"), name="dispatch")
 class EventAddStudentView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
@@ -229,6 +232,7 @@ class EventAddStudentView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_event"), name="dispatch")
 class EventClearView(View):
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
@@ -262,6 +266,7 @@ class EventClearView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_event"), name="dispatch")
 class EventBlockView(View):
     def get(self, request, event_id):
         try:
@@ -277,6 +282,7 @@ class EventBlockView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.add_event"), name="dispatch")
 class EventChangeFormularAddView(View):
     def get(self, request, event_group_id):
         day_group = get_object_or_404(
@@ -321,6 +327,7 @@ class EventChangeFormularAddView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.add_event"), name="dispatch")
 class EventAddNewDateAndFormularsView(View):
     def get(self, request):
         form = EventAddNewDateForm()
@@ -372,6 +379,7 @@ class EventAddNewDateAndFormularsView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.approve_disapprove"), name="dispatch")
 class EventChangeFormularApproveView(View):
     def get(self, request, formular_id):
         try:
@@ -407,6 +415,7 @@ class EventChangeFormularApproveView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.approve_disapprove"), name="dispatch")
 class EventChangeFormularDisapproveView(View):
     def get(self, request, formular_id):
         try:
@@ -431,7 +440,9 @@ class EventChangeFormularDisapproveView(View):
 
             return redirect("administrative_event_formular_view")
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_baseevent"), name="dispatch")
 class BaseEventsTableView(SingleTableView):
     table_class = BaseEventsTable
     template_name = "administrative/events/base_events/base_events_table.html"
@@ -445,7 +456,9 @@ class BaseEventsTableView(SingleTableView):
         context["structure"] = get_event_creation_modal_context()
         return context
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_baseevent"), name="dispatch")
 class BaseEventDetailView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -500,7 +513,9 @@ class BaseEventDetailView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_baseevent"), name="dispatch")
 class BaseEventEditLeadStatusView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -539,7 +554,9 @@ class BaseEventEditLeadStatusView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_baseevent"), name="dispatch")
 class BaseEventEditLeadDateView(View):
     def get(self, request, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=pk)
@@ -578,7 +595,9 @@ class BaseEventEditLeadDateView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_teachereventgroup"), name="dispatch")
 class TeacherDayEventGroupView(SingleTableMixin, FilterView):
     table_class = TeacherDayGroupTable
     template_name = (
@@ -607,7 +626,9 @@ class TeacherDayEventGroupView(SingleTableMixin, FilterView):
         self.get_queryset()
         return super().get(self, request, *args, **kwargs)
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.view_teachereventgroup"), name="dispatch")
 class TeacherDayGroupDetailView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
@@ -672,7 +693,9 @@ class TeacherDayGroupDetailView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_teachereventgroup"), name="dispatch")
 class TeacherDayGroupEditLeadStatusView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)
@@ -723,7 +746,9 @@ class TeacherDayGroupEditLeadStatusView(View):
             },
         )
 
+
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("dashboard.change_teachereventgroup"), name="dispatch")
 class TeacherDayGroupEditLeadDateView(View):
     def get(self, request, base_event_pk, pk):
         base_event = get_object_or_404(BaseEventGroup, pk=base_event_pk)

@@ -47,6 +47,7 @@ login_staff = [login_required, staff_member_required]
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.view_customuser"), name="dispatch")
 class ParentTableView(View):
     def get(self, request):
         parents = CustomUser.objects.filter(role=0)
@@ -60,6 +61,7 @@ class ParentTableView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.view_customuser"), name="dispatch")
 class TeacherTableView(View):
     def get(self, request):
         teachers = CustomUser.objects.filter(role=1)
@@ -73,6 +75,7 @@ class TeacherTableView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.view_customuser"), name="dispatch")
 class OthersTableView(View):
     def get(self, request):
         others = CustomUser.objects.filter(role=2)
@@ -86,6 +89,7 @@ class OthersTableView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.change_customuser"), name="dispatch")
 class ParentEditView(View):
     def get(self, request, parent_id):
         try:
@@ -132,6 +136,7 @@ class ParentEditView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.change_customuser"), name="dispatch")
 class TeacherEditView(View):
     def get(self, request, pk):
         try:
@@ -193,6 +198,7 @@ class TeacherEditView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.add_customuser"), name="dispatch")
 class TeacherImportView(View):
     def get(self, request):
         bulk_form = TeacherImportForm()
@@ -241,6 +247,7 @@ class TeacherImportView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.change_customuser"), name="dispatch")
 class OthersEditView(View):
     def get(self, request, pk):
         user = get_object_or_404(CustomUser, pk=pk, role=2)
@@ -268,6 +275,7 @@ class OthersEditView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("customuser.change_customuser"), name="dispatch")
 class ResetPasswordWithLink(View):
     def post(self, request, pk):
         user = get_object_or_404(CustomUser, pk=pk)
@@ -334,6 +342,7 @@ class ResetPasswordWithLink(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("tag.view_tag"), name="dispatch")
 class TagsListView(SingleTableView):
     model = Tag
     table_class = TagsTable
@@ -342,6 +351,7 @@ class TagsListView(SingleTableView):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("tag.change_tag"), name="dispatch")
 class TagEditView(View):
     def get(self, request, pk):
         tag = get_object_or_404(Tag, pk=pk)
@@ -371,6 +381,7 @@ class TagEditView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("tag.add_tag"), name="dispatch")
 class TagCreateView(View):
     def get(self, request):
 

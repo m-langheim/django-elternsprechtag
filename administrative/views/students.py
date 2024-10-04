@@ -48,6 +48,7 @@ login_staff = [login_required, staff_member_required]
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.view_student"), name="dispatch")
 class StudentListView(SingleTableView):
     model = Student
     table_class = StudentTable
@@ -72,6 +73,7 @@ class StudentListView(SingleTableView):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportStart(View):
     def get(self, request, *args, **kwargs):
         csv_import = CsvImportForm()
@@ -106,6 +108,7 @@ class StudentImportStart(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportListChanges(View):
     def get(self, request, *args, **kwargs):
         if not StudentChange.objects.filter(approved=False).exists():
@@ -143,6 +146,7 @@ class StudentImportListChanges(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportCancel(View):
     def get(self, request):
         latest_changes = StudentChange.objects.filter(
@@ -155,6 +159,7 @@ class StudentImportCancel(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportApproveAndApplyAll(View):
     def get(self, request):
         changes = StudentChange.objects.filter(approved=False)
@@ -171,6 +176,7 @@ class StudentImportApproveAndApplyAll(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportApproveAndApplyWithOperation(View):
     def get(self, request, operation):
         changes = StudentChange.objects.filter(
@@ -192,6 +198,7 @@ class StudentImportApproveAndApplyWithOperation(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportApproveAndApply(View):
     def get(self, request, pk):
         try:
@@ -214,6 +221,7 @@ class StudentImportApproveAndApply(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentImportRemoveEntry(View):
     def get(self, request, pk):
         change = get_object_or_404(StudentChange, approved=False, pk=pk)
@@ -226,6 +234,7 @@ class StudentImportRemoveEntry(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.add_student"), name="dispatch")
 class StudentChangeEditView(View):
     def get(self, request, pk):
         change = get_object_or_404(StudentChange, approved=False, pk=pk)
@@ -254,6 +263,7 @@ class StudentChangeEditView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.change_student"), name="dispatch")
 class StudentEdit(View):
     def get(self, request, pk):
         try:
@@ -313,6 +323,7 @@ class StudentEdit(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.view_student"), name="dispatch")
 class StudentDetailView(View):
     def get(self, request, pk):
         try:
@@ -350,6 +361,7 @@ class StudentDetailView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.change_student"), name="dispatch")
 class UpcommingUserSendRegistrationMail(View):
     def get(self, request, pk):
         try:
@@ -419,6 +431,7 @@ class UpcommingUserSendRegistrationMail(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.change_student"), name="dispatch")
 class ResetStudentParentRelationshipView(View):
     def get(self, request, pk):
         try:
@@ -431,6 +444,7 @@ class ResetStudentParentRelationshipView(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.change_student"), name="dispatch")
 class ManualParentRegistration(View):
     def get(self, request, pk):
         try:
@@ -493,6 +507,7 @@ class ManualParentRegistration(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.change_student"), name="dispatch")
 class ManualParentAddStudent(View):
     def get(self, request, pk):
         try:
@@ -542,6 +557,7 @@ class ManualParentAddStudent(View):
 
 
 @method_decorator(login_staff, name="dispatch")
+@method_decorator(permission_required("student.send_up_user_batch"), name="dispatch")
 class UpcommingUserBatchSendView(View):
     def get(self, request):
         form = UpcommingUserBatchSendForm(data=request.GET)

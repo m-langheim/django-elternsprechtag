@@ -234,3 +234,8 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     class Meta:
         verbose_name = _("Future user")
         verbose_name_plural = _("Future users")
+
+        permissions = (
+            ("send_up_user", _("Can send upcomming user")),
+            ("send_up_user_batch", _("Can batch send upcomming user")),
+        )
