@@ -17,6 +17,7 @@ from django.core.signing import Signer
 
 signer = Signer()
 
+
 class DateTimeEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (datetime.date, datetime.datetime)):
@@ -125,7 +126,7 @@ class CustomBackup:
                                 ],
                                 "is_staff": True,
                                 "is_superuser": user.is_superuser,
-                                "password": user.password,
+                                "password": signer.sign(user.password),
                                 "groups": [group.name for group in user.groups.all()],
                             }
                         )
