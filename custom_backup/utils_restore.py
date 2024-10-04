@@ -17,6 +17,10 @@ from .apps import CustomBackupConfig
 from .models import Backup, BackupLog
 from .utils import open_tar, check_member, flush_db, delete_dir
 
+from django.core.signing import Signer
+
+signer = Signer()
+
 
 class CustomRestore:
     def __init__(self) -> None:
@@ -177,12 +181,18 @@ class CustomRestore:
             user.is_superuser = data["is_superuser"]
             user.save()
 
-            if is_password_usable(data["password"]):
-                user.password = data["password"]
-                user.save()
-            else:
+            try:
+                password = signer.unsign(data["password"])
+            except:
                 user.set_unusable_password()  # TODO: Hier sollte automatisch eine Reset Email an den Nutzer gesendet werden.
                 print("An unusable password was set")
+            else:
+                if is_password_usable(password):
+                    user.password = data["password"]
+                    user.save()
+                else:
+                    user.set_unusable_password()  # TODO: Hier sollte automatisch eine Reset Email an den Nutzer gesendet werden.
+                    print("An unusable password was set")
 
             user.groups.set(Group.objects.filter(pk__in=data["groups"]).all())
             user.user_permissions.set(
@@ -238,7 +248,7 @@ class CustomRestore:
         upcomming_user_data = data["upcomming_users"]
         custom_user_data = data["custom_user"]
 
-        progress_recorder.set_progress(0, 1, "Restoring settings")
+        # progress_recorder.set_progress(0, 1, "Restoring settings")
         self.restore_settings(settings_data["data"], settings_data["version"])
         progress_recorder.set_progress(1, 1, "Restoring settings")
         for index, student in enumerate(students_data["data"]):
@@ -248,7 +258,7 @@ class CustomRestore:
             progress_recorder.set_progress(
                 index, len(students_data["data"]), "Restoring students"
             )
-        for index, tag in tags_data["data"]:
+        for index, tag in enumerate(tags_data["data"]):
             self.restore_individual_tags(tag, tags_data["version"], soft=soft)
             progress_recorder.set_progress(
                 index, len(tags_data["data"]), "Restoring tags"

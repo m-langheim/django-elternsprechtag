@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_validation_hash(json_data: json, created_at: timezone.datetime):
-    return hashlib.sha1(
+    return hashlib.sha512(
         str(json_data + created_at.isoformat() + settings.SECRET_KEY).encode("utf-8")
     ).hexdigest()
 

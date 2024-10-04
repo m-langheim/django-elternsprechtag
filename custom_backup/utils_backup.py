@@ -13,7 +13,9 @@ from .exceptions import MigrationNotFound, CreateException
 import socket
 from .models import Backup
 from .helpers import *
+from django.core.signing import Signer
 
+signer = Signer()
 
 class DateTimeEncoder(JSONEncoder):
     def default(self, obj):
@@ -102,7 +104,7 @@ class CustomBackup:
                             ],
                             "is_staff": False,
                             "is_superuser": user.is_superuser,
-                            "password": user.password,
+                            "password": signer.sign(user.password),
                             "groups": [group.name for group in user.groups.all()],
                         }
                     )
@@ -143,7 +145,7 @@ class CustomBackup:
                                 ],
                                 "is_staff": True,
                                 "is_superuser": user.is_superuser,
-                                "password": user.password,
+                                "password": signer.sign(user.password),
                                 "groups": [group.name for group in user.groups.all()],
                             }
                         )
@@ -161,7 +163,7 @@ class CustomBackup:
                             ],
                             "is_staff": user.is_staff,
                             "is_superuser": user.is_superuser,
-                            "password": user.password,
+                            "password": signer.sign(user.password),
                             "groups": [group.name for group in user.groups.all()],
                         }
                     )
