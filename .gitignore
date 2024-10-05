@@ -135,3 +135,7 @@ media/teacher_pics/*
 emails
 
 *.dump
+
+temp/
+
+backup/

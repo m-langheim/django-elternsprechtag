@@ -1,0 +1,80 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block control_content %}
+<div class="card card-body p-4">
+  <div class="row p-1">
+    <div class="col col-8">
+        <p class="h1">{% translate 'Backup/Restore' %}</p>
+        <p class="text-muted">{% translate 'All booked appointments are listed here.' %}</p>
+    </div>
+    <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
+        <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload backup</a>
+          <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#backupModal">Create backup</a>
+    </div>
+</div>
+  <div class="container">
+    {% render_table backup_table %}
+    <div class="row">
+      {% comment %} <div class="col d-flex">
+          <a class="btn btn-outline-secondary mt-2" href="{% url 'student_details_view' pk=student.pk %}">Abbrechen</a>
+      </div> {% endcomment %}
+      <div class="col d-flex justify-content-end">
+        <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_backup_list' %}">
+            Show all backups
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload backup</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'upload_backup' %}" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+            <p>Here you can upload previously downloaded backup files.</p>
+            {% csrf_token %}
+        {{ upload_form | crispy }}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">Abbrechen</button>
+                <button class="btn btn-outline-danger" type="submit">Upload</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="backupModal" tabindex="-1" aria-labelledby="backupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="backupModalLabel">Upload backup</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'administrative_backup_create' %}" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+            <p>Here you can upload previously downloaded backup files.</p>
+            {% csrf_token %}
+        {{ create_backup_form | crispy }}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">Abbrechen</button>
+                <button class="btn btn-outline-danger" type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

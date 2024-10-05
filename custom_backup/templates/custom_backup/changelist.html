@@ -1,0 +1,54 @@
+{% extends 'admin/change_list.html' %}
+{% block object-tools %}
+    {% if perms.custom_backup.can_add_backup %}
+        <ul class="object-tools">
+            <li>
+                <a href="{% url 'create_backup' %}" class="addlink"
+                   style="background-color: green;">
+                    Create Backup
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'upload_backup' %}" class="addlink"
+                   style="background-color: grey;">
+                    Upload Backup
+                </a>
+            </li>
+
+            {% comment %} <li>
+                <a href="{% url 'synchronize-backups' %}">
+                    Synchronize Backups
+                </a>
+            </li> {% endcomment %}
+        </ul>
+        <br/>
+    {% endif %}
+
+    {% comment %} <p>System Migrations: <strong>{{ system_migrations_migrated }}</strong></p>
+    <p>System Migration files: <strong>{{ system_migration_files_found }}</strong></p>
+    <p>Inogre backup consistency: {% if ignore_consistency %}
+        <img src="/static/admin/img/icon-yes.svg" alt="True">{% else %}
+        <img src="/static/admin/img/icon-no.svg" alt="False">{% endif %}</p> {% endcomment %}
+
+    <p>Backup Directories({{ backup_dirs|length }}):</p> {% if backup_dirs %}
+    <details>
+        <summary>Expand</summary>
+        <ol>
+            {% for each in backup_dirs %}
+                <li><strong>{{ each }}</strong></li>
+            {% endfor %}
+        </ol>
+    </details>
+{% endif %}
+    <br>
+    <hr>
+    {% comment %} <p>Current system version: <strong>{{ backup_system_version }}</strong></p> {% endcomment %}
+    <p>custom-backup version: <strong>{{ custom_backup_version }}</strong></p>
+    {{ block.super }}
+    <hr>
+
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}

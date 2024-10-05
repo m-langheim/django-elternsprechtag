@@ -1,0 +1,30 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %} {% translate 'Import teachers' %} {% endblock title %}
+
+{% block control_content %}
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Add teachers' %}</p>
+        <p class="text-muted">{% translate 'Fill at least one field to add new teachers.' %}</p>
+    </div>
+</div>
+
+<form action="." method="POST" enctype="multipart/form-data">
+    {{ form | crispy }}
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'teachers_table' %}">{% translate 'Cancel' %}</a>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                {% translate 'Upload' %}
+            </button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

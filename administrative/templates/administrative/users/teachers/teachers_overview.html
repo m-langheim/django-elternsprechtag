@@ -1,0 +1,62 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block title %} {% translate 'Teachers' %} {% endblock title %}
+
+{% block control_content %}
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Teachers' %}</p>
+        <p class="text-muted">{% translate 'All teacher accounts are listed here.' %}</p>
+    </div>
+    <div class="col col-4 d-grid gap-2 justify-content-md-end h-50">
+        <a class="btn btn-outline-danger p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" href="{% url 'teachers_import' %}">{% translate 'Add teachers' %}</a>
+          <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center" href="{% url 'teachers_tags' %}">{% translate 'Tags' %}</a>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a
+            class="btn btn-outline-danger position-absolute top-0 end-0 translate-top-y"
+            href="{% url 'teachers_import' %}">{% translate 'Add teachers' %}</a>
+            <a
+            class="btn btn-outline-secondary position-absolute top-100 end-0 translate-bottom-y"
+            href="{% url 'teachers_tags' %}">{% translate 'Tags' %}</a>
+        </div> {% endcomment %}
+</div>
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-light" href="{% url 'parents_table' %}" type="button"
+            aria-selected="true">{% translate 'Parents' %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-danger" href="{% url 'teachers_table' %}" type="button"
+            aria-selected="true">{% translate 'Teachers' %}</a>
+
+    </li>
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-light" href="{% url 'others_table' %}" type="button"
+            aria-selected="true">{% translate 'Others' %}</a>
+    </li>
+</ul>
+
+{% render_table teachers_table %}
+<script>
+    var first = document.getElementById("first_name_id");
+    var last = document.getElementById("last_name_id");
+    var acronym = document.getElementById("acronym_id");
+    first.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    first.children[0].classList += " hovereffect";
+    last.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    last.children[0].classList += " hovereffect";
+    acronym.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    acronym.children[0].classList += " hovereffect";
+</script>
+<style>
+    .hovereffect {
+        color: black;
+        text-decoration: none;
+    }
+    .hovereffect:hover {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

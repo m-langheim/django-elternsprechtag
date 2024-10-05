@@ -1,7 +1,10 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Error' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_error_lead_not_started' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_error_lead_not_started' %} {% endblock %}
 
 {% block content %}
-<h1>You aren´t authorized to book an event yet</h1>
+<h1>{% translate 'You may not request this appointment yet.' %}</h1>
 {% endblock content %}

@@ -41,6 +41,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_tables2",
+    "django_select2",
+    "django_filters",
+    "celery",
+    "celery_progress",
+    "django_celery_beat",
     "crispy_forms",
     "dbbackup",
     "crispy_bootstrap5",
@@ -49,9 +55,11 @@ INSTALLED_APPS = [
     "dashboard",
     "teacher",
     "profile_settings",
-    "django_celery_beat",
     "general_tasks",
     "colorfield",
+    "administrative",
+    "custom_backup",
+    "rules.apps.AutodiscoverRulesConfig",
 ]
 
 MIDDLEWARE = [
@@ -65,6 +73,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "elternsprechtag.urls"
+
+AUTHENTICATION_BACKENDS = (
+    "rules.permissions.ObjectPermissionBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 TEMPLATES = [
     {
@@ -184,3 +197,12 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
 # CELERY_RESULT_BACKEND = 'django-db'
+
+# TABLES2 Configuration
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
+
+
+BACKUP_ROOT = os.path.join(BASE_DIR, "backup")
+BACKUP_DIRS = [MEDIA_ROOT]
+BACKUP_ASYNC = True
+BACKUP_ROTATION = 14

@@ -1,0 +1,89 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %} {% translate 'Students' %} {% endblock title %}
+
+{% block extra_head %}
+{{ student_search.media.css }}
+{% endblock extra_head %}
+
+{% block control_content %}
+
+{% if unapproved_changes %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Outstanding changes' %}</h5>
+            <div class="card-text">{% translate 'There are several changes to the student database that are not confirmed yet. Please continue with the changes.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if unsend_up_users %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Parent registration links missing' %}</h5>
+            <div class="card-text">{% translate 'There are several students without a registered parent where the parent registration link was not send yet neither. Please send the links to proceed with the parent registration.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_upcomming_user_batch_send' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Students' %}</p>
+        <p class="text-secondary">{% translate 'All students are listed here.' %}</p>
+    </div>
+    <div class="col-4 position-relative"><a
+            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
+            href="{% url 'student_import_filepload' %}">{% translate 'Add students' %}</a></div>
+</div>
+<form>
+{{student_search|crispy}}
+{{ student_search.media.js }}
+</form>
+{% render_table table %}
+<script>
+    var first = document.getElementById("first_name_id");
+    var last = document.getElementById("last_name_id");
+    var class_n = document.getElementById("class_name_id");
+    var parent = document.getElementById("parent_id");
+    first.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    first.children[0].classList += " hovereffect";
+    last.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    last.children[0].classList += " hovereffect";
+    class_n.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    class_n.children[0].classList += " hovereffect";
+    parent.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    parent.children[0].classList += " hovereffect";
+</script>
+<style>
+    .hovereffect {
+        color: black;
+        text-decoration: none;
+    }
+
+    .hovereffect:hover {
+        color: #dc3545;
+    }
+
+    .black {
+        color: black;
+        text-decoration: none;
+    }
+
+    .black:hover {
+        color: black;
+    }
+</style>
+{% endblock %}

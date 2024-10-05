@@ -62,6 +62,7 @@ EMAIL_COMPLETE = "test@example.com"
 # Celery Settings
 # CELERY_BROKER_URL = "sqla+sqlite:///" + os.path.join(BASE_DIR, 'db.sqlite3')
 CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 CELERY_TIMEZONE = "Europe/Berlin"
 
 # CELERY BEAT
@@ -69,13 +70,6 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 RUN_CELERY_THREAD = False
 
-# CELERY_BEAT_SCHEDULE = {
-#     'db_backup_task': {
-#         'task': 'general_tasks.tasks.run_dbbackup',
-#         'schedule': crontab(minute=0, hour=1)
-#     }
-# }
-# Backup settings
 DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
 DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
 
@@ -88,4 +82,27 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.look_for_open_inquiries",
         "schedule": crontab(minute="*/1"),
     },
+    "dayly_cleanup_task": {
+        "task": "general_tasks.tasks.dayly_cleanup_task",
+        "schedule": crontab(minute="*/1"),
+    },
+    "update_lead_task": {
+        "task": "general_tasks.tasks.update_event_lead_status",
+        "schedule": crontab(minute="*/1"),
+    },
 }
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "elternsprechtag-default",
+    },
+    "select2": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "elternsprechtag-select2",
+    },
+}
+
+# Tell select2 which cache configuration to use:
+SELECT2_CACHE_BACKEND = "select2"

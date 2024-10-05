@@ -1,7 +1,10 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Error' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_error_inquiry_occupied' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_error_inquiry_occupied' %} {% endblock %}
 
 {% block content %}
-<h1>You already assigned an event to this inquiry</h1>
+<h1>{% translate 'You have already made an appointment for this request..' %}</h1>
 {% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% block control_content %}
+
+{% if unapproved_changes %}
+<a href="{% url 'student_import_listchanges' %}">View</a>
+{% endif %}
+
+<div class="card card-body p-4">
+    <form method="POST">
+        {{ form | crispy }}
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col d-flex">
+                <a class="btn btn-outline-secondary mt-2" href="#">Abbrechen</a>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button class="btn btn-outline-danger mt-2" type="submit">
+                    Save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

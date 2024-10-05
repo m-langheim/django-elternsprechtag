@@ -88,6 +88,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.look_for_open_inquiries",
         "schedule": crontab(minute=0, hour=6, day_of_week=1),
     },
+    "dayly_cleanup_task": {
+        "task": "general_tasks.tasks.dayly_cleanup_task",
+        "schedule": crontab(minute=0, hour=2),
+    },
+    "update_lead_task": {
+        "task": "general_tasks.tasks.update_event_lead_status",
+        "schedule": crontab(minute=30, hour=1),
+    },
 }
 
 # RUN_CELERY_THREAD = False
@@ -118,3 +126,17 @@ else:
 DBBACKUP_SERVER_EMAIL = os.environ.get("EMAIL_COMPLETE")
 DBBACKUP_CLEANUP_KEEP = 30
 DBBACKUP_CLEANUP_KEEP_MEDIA = 30
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",
+    },
+    "select2": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",
+    }
+}
+
+SELECT2_CACHE_BACKEND = "select2"

@@ -1,0 +1,49 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% block control_content %}
+{% load i18n %}
+
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Dashboard' %}</p>
+        <p class="text-muted">{% translate 'General information about the system can be found here.' %}</p>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y">Hinzufügen</a></div> {% endcomment %}
+</div>
+
+<ul class="nav nav-pills mb-3" id="pills-base-tab" role="tablist">
+    <style>
+        .active {
+            border-color: #dc3545 !important;
+        }
+    </style>
+
+    <li class="nav-item" role="presentation">
+        <button
+            class="nav-link bg-white text-danger border border-white active"
+            id="pills-dashboard-base-students-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard-base-students"
+            type="button" role="tab" aria-controls="pills-dashboard-base-students" aria-selected="true">
+            {% translate 'Students' %}</button>
+
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <button
+            class="nav-link bg-white text-danger border border-white"
+            id="pills-dashboard-base-events-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard-base-events"
+            type="button" role="tab" aria-controls="pills-dashboard-base-events" aria-selected="true">
+            {% translate 'Events' %}</button>
+
+    </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-dashboard-base-students" role="tabpanel" aria-labelledby="pills-dashboard-base-students-tab" tabindex="0">
+        {% include "administrative/dashboard/administrative_dashboard_students.html" %}
+    </div>
+    <div class="tab-pane fade" id="pills-dashboard-base-events" role="tabpanel" aria-labelledby="pills-dashboard-base-events-tab" tabindex="0">
+        {% include "administrative/dashboard/administrative_dashboard_events.html" %}
+    </div>
+  </div>
+
+{% endblock %}

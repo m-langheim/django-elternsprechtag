@@ -24,13 +24,62 @@ class Student(models.Model):  # Schüler
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def parent(self):
+        try:
+            parent = CustomUser.objects.get(students=self)
+        except CustomUser.DoesNotExist:
+            return None
+        else:
+            return parent
+
     class Meta:
         verbose_name = _("Student")
         verbose_name_plural = _("Students")
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle außer Schüler)
-    CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
+class StudentChange(models.Model):
+    CHOICES_OPERATION = (
+        (0, "no changes"),
+        (1, "Create new Student"),
+        (2, "Field Changes"),
+        (3, "Delete Student"),
+    )
+
+    operation = models.IntegerField(choices=CHOICES_OPERATION, default=0, blank=False)
+    student = models.ForeignKey(
+        Student,
+        verbose_name=_("Student"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    shield_id = models.CharField(max_length=38, null=True, blank=True)
+    first_name = models.CharField(_("First name"), max_length=48, null=True, blank=True)
+    last_name = models.CharField(_("Last name"), max_length=48, null=True, blank=True)
+    child_email = models.EmailField(
+        _("Child emails"), max_length=200, null=True, blank=True
+    )
+    class_name = models.CharField(
+        _("Name of class"), max_length=4, null=True, blank=True
+    )
+    approved = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now)
+    applied = models.BooleanField(default=False)
+    applied_time = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        permissions = [("apply_changes", _("Can apply changes to the students"))]
+
+
+class CustomUser(
+    AbstractBaseUser, PermissionsMixin
+):  # Erwachsene (also alle außer Schüler)
+    class UserRoleChoices(models.IntegerChoices):
+        PARENT = 0, _("Parent")
+        TEACHER = 1, _("Teacher")
+        OTHER = 2, _("Others")
+
+    # CHOCES_ROLES = ((0, _("Parent")), (1, _("Teacher")), (2, _("Others")))
 
     email = models.EmailField(_("Email"), unique=True)
     first_name = models.CharField(
@@ -39,7 +88,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
     last_name = models.CharField(_("Last name"), max_length=48, default="", blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    role = models.IntegerField(_("Role"), choices=CHOCES_ROLES, default=2)
+    role = models.IntegerField(
+        _("Role"), choices=UserRoleChoices, default=UserRoleChoices.OTHER
+    )
     date_joined = models.DateTimeField(
         verbose_name=_("Date joined"), default=timezone.now
     )
@@ -60,10 +111,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):  # Erwachsene (also alle a
 
 
 def generate_new_color():
-    while True:
-        color = "#" + "".join([random.choice("ABCDEF0123456789") for i in range(6)])
-        if not Tag.objects.filter(color=color):
-            break
+    color = "#" + "".join([random.choice("ABCDEF0123456789") for i in range(6)])
 
     return color
 
@@ -186,3 +234,8 @@ class Upcomming_User(models.Model):  # Alle Schüler, die noch keine Eltern habe
     class Meta:
         verbose_name = _("Future user")
         verbose_name_plural = _("Future users")
+
+        permissions = (
+            ("send_up_user", _("Can send upcomming user")),
+            ("send_up_user_batch", _("Can batch send upcomming user")),
+        )

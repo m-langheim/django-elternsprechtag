@@ -1,0 +1,36 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %} {{title}} {% endblock title %}
+
+{% block extra_head %}
+{% if form.media.css %}
+{{ form.media.css }}
+{% endif %}
+{% endblock extra_head %}
+
+{% block control_content %}
+<p class="h1">{{title}}</p>
+{% comment %} <p class="text-secondary">{% translate 'Create new formulars for a date.' %}</p> {% endcomment %}
+
+<form method="POST">
+    {{ form | crispy }}
+    {% if form.media.js %}
+    {{ form.media.js }}
+    {% endif %}
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col d-flex">
+            <a class="btn btn-outline-secondary mt-2" href="{{back_url}}">
+                {% translate 'Cancel' %}</a>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">
+                {% translate 'Save' %}
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}

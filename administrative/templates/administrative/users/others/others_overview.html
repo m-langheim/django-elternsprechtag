@@ -1,0 +1,49 @@
+{% extends 'administrative/administrative_base.html' %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block title %} {% translate 'Others' %} {% endblock title %}
+
+{% block control_content %}
+<div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'User' %}</p>
+        <p class="text-muted">{% translate 'All other users are listed here.' %}</p>
+    </div>
+    {% comment %} <div class="col-4 position-relative"><a
+            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
+            href="{% url 'teachers_import' %}">Lehrer hinzufügen</a></div> {% endcomment %}
+</div>
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-light" href="{% url 'parents_table' %}" type="button"
+            aria-selected="true">{% translate 'Parents' %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-light" href="{% url 'teachers_table' %}" type="button"
+            aria-selected="true">{% translate 'Teachers' %}</a>
+
+    </li>
+    <li class="nav-item">
+        <a class="nav-link bg-white text-danger border border-danger" href="{% url 'others_table' %}" type="button"
+            aria-selected="true">{% translate 'Others' %}</a>
+    </li>
+</ul>
+<style>
+    a {
+        color: black;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #dc3545;
+    }
+</style>
+{% render_table others_table %}
+<script>
+    var first = document.getElementById("first_name_id");
+    var last = document.getElementById("last_name_id");
+    first.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    last.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+</script>
+{% endblock %}

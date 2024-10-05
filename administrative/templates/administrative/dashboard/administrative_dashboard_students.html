@@ -1,0 +1,122 @@
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% if students.unapproved_changes %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Outstanding changes' %}</h5>
+            <div class="card-text">{% translate 'There are several changes to the student database that are not confirmed yet. Please continue with the changes.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if students.unsend_up_users %}
+<div class="card border-danger mb-3">
+    <div class="card-body row">
+        <div class="col col-12 col-md-8">
+            <h5 class="card-title">{% translate 'Parent registration links missing' %}</h5>
+            <div class="card-text">{% translate 'There are several students without a registered parent where the parent registration link was not send yet neither. Please send the links to proceed with the parent registration.' %}</div>
+        </div>
+        <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+            <a type="button" class="btn btn-outline-danger" href="{% url 'student_upcomming_user_batch_send' %}">{% translate 'View' %}</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row gx-3 gy-3">
+    <div class="card card-body p-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'General student data' %}</p>
+
+        <div class="row gx-1 gy-1">
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Total:' %}</p>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ students.total }} </p>
+            <div class="col-4 col-lg-4">
+            <a class="mb-1 btn btn-outline-danger d-flex justify-content-center" href="{%url 'student_list_view' %}">{% translate 'View' %}</a>
+            </div>
+            <p class="mb-1 col-4 col-lg-4">{% translate 'With parent:' %}</p>
+            {% comment %} <p class="mb-1 col-8 col-lg-8">{{ students.with_parent }}</p> {% endcomment %}
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ students.with_parent }} of {{ students.total }} </p>
+            <div class="mb-1 col-4 col-lg-4 progress d-inline-flex">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ students.with_parent_percent }}%"></div>  
+            </div>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Without parent:' %}</p>
+            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ students.without_parent }}</p>
+            {% if students.without_parent > 0 %}
+            <a class="mb-1 btn btn-outline-danger col-4 col-lg-4" href="{% url 'student_upcomming_user_batch_send' %}?resend=true">{% translate 'Change' %}</a>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="card card-body p-3 mb-3 col-12 col-lg-6">
+        <p class="h4 text-secondary">{% translate 'Quick actions' %}</p>
+        <a class="btn btn-outline-danger mt-2" href="{% url 'student_import_filepload' %}">{% translate 'Import students' %}</a>
+        <a class="btn btn-outline-danger mt-2" href="{% url 'student_import_listchanges' %}">{% translate 'Send parent registration links' %}</a>
+        {% comment %} <div class="row">
+            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
+            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+        </div>
+            <form method="POST">
+                {{ form | crispy }}
+                {% csrf_token %}
+        
+                <div class="row">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-outline-danger mt-2" type="submit">
+                            {%translate 'Save' %}
+                        </button>
+                    </div>
+                </div>
+            </form> {% endcomment %}
+    </div>
+</div>
+
+
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>
+
+{% comment %} <!-- <div class="card card-body p-4"> -->
+    <div id="container" style="width: 100%;">
+        <canvas id="event-chart"></canvas>
+      </div>
+    
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+      <script>
+    
+        var event_chart_config = {
+          type: 'pie',
+          data: {
+            datasets: [{
+              data: {{ data|safe }},
+              backgroundColor: [
+                '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+              ],
+              label: 'Population'
+            }],
+            labels: {{ labels|safe }}
+          },
+          options: {
+            responsive: true
+          }
+        };
+    
+        window.onload = function() {
+          var ctx = document.getElementById('event-chart').getContext('2d');
+          window.myPie = new Chart(ctx, event_chart_config);
+        };
+    
+      </script> 
+<!-- </div> --> {% endcomment %}

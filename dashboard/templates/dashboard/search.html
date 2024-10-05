@@ -1,6 +1,9 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
+{% block title %} {% translate 'Search' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_parent_search' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_parent_search' %} {% endblock %}
 
 {% block content %}
 
@@ -10,9 +13,9 @@
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     {% if request_search %}
-                    <h2>Suchergebnisse für: "{{ request_search }}"</h2>
+                    <h2>{% translate 'Search results for:' %} "{{ request_search }}"</h2>
                     {% else %}
-                    <h2>Alle Lehrkräfte</h2>
+                    <h2>{% translate 'All teachers' %}</h2>
                     {% endif %}
 
                     {% if teachers %}
@@ -26,7 +29,7 @@
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                         <a type="button" class="btn btn-outline-danger" href="{{ teacher.url }}">
-                                            Termin buchen
+                                            {% translate 'Book an appointment' %}
                                         </a>
                                     </div>
                                 </div>
@@ -39,7 +42,7 @@
                         <li class="list-group-item">
                             <div class="row align-items-center">
                                 <div class="col-12 col-sm-6 col-md-8 text-start">
-                                    Keine Suchergebnisse gefunden!
+                                    {% translate 'No results found!' %}
                                 </div>
                             </div>
                         </li>
@@ -101,5 +104,25 @@
     </ul>
 </nav>
 {% endif %}
+
+<!-- Change the color of the paginator -->
+<style>
+  .pagination .page-link {
+    background-color: #f8f9fa; /* Hintergrundfarbe der Links */
+    color: #dc3545; /* Textfarbe der Links */
+    border: 1px solid #dee2e6; /* Rahmenfarbe der Links */
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #dc3545; /* Hintergrundfarbe des aktiven Elements */
+    color: #ffffff; /* Textfarbe des aktiven Elements */
+    border: 1px solid #dc3545; /* Rahmenfarbe des aktiven Elements */
+  }
+
+  .pagination .page-link:hover {
+    background-color: #e9ecef; /* Hintergrundfarbe bei Hover */
+    color: #dc3545; /* Textfarbe bei Hover */
+  }
+</style>
 
 {% endblock content %}

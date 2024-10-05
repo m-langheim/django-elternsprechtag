@@ -10,7 +10,14 @@ from django.contrib.auth.models import Group
 from django.template.loader import render_to_string
 
 from .tasks import async_send_mail
-from .models import Upcomming_User, Student, CustomUser, TeacherExtraData, Tag
+from .models import (
+    Upcomming_User,
+    Student,
+    CustomUser,
+    TeacherExtraData,
+    Tag,
+    StudentChange,
+)
 from .forms import (
     CustomUserCreationForm,
     CustomUserChangeForm,
@@ -28,6 +35,8 @@ from .utils import register_new_teacher
 import datetime
 
 from django.db.models import Q
+
+from administrative.tasks import apply_student_changes
 
 # Register your models here.
 
@@ -136,6 +145,23 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ("name", "synonyms")
 
 
+class StudentChangeAdmin(admin.ModelAdmin):
+    list_display = ("operation", "student", "approved", "created")
+    list_filter = ("operation", "approved", "applied")
+
+    @admin.action(description="Approve the selected changes")
+    def approvePendingChanges(self, request, queryset):
+        pending_changes = queryset.filter(approved=False)
+
+        for change in pending_changes:
+            change.approved = True
+            change.save()
+
+        apply_student_changes.delay()
+
+    actions = [approvePendingChanges]
+
+
 class UpcommingsUserAdmin(admin.ModelAdmin):
     @admin.action(description="Send registration email for selected users")
     def sendRegistrationMails(self, request, queryset):
@@ -179,12 +205,12 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             #     up_user.student.child_email,
             #     email_html_body=email_html_body,
             # )
-            
+
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 up_user.student.child_email,
-            ) #! Hier wird keine HTML versandt
+            )  #! Hier wird keine HTML versandt
 
             up_user.email_send = True
             up_user.save()
@@ -247,13 +273,13 @@ class UpcommingsUserAdmin(admin.ModelAdmin):
             #     email_str_body,
             #     new_up_user.student.child_email,
             #     email_html_body=email_html_body,
-            # ) 
-            
+            # )
+
             async_send_mail.delay(
                 email_subject,
                 email_str_body,
                 new_up_user.student.child_email,
-            ) #! Hier wird keine HTML versandt
+            )  #! Hier wird keine HTML versandt
 
             new_up_user.email_send = True
             new_up_user.save()
@@ -306,6 +332,7 @@ admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Upcomming_User, UpcommingsUserAdmin)
 admin.site.register(TeacherExtraData, TeacherExtraDataAdmin)
+admin.site.register(StudentChange, StudentChangeAdmin)
 
 # CSV Import
 

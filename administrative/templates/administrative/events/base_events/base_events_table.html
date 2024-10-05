@@ -1,0 +1,41 @@
+{% extends 'administrative/time_slots/time_slots_base.html' %}
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block title %} {% translate 'Base events' %} {% endblock title %}
+
+{% block header %} {% translate 'Base events' %} {% endblock header %}
+{% block underline %} {% translate 'Here you can find all base events that were created.' %} {% endblock underline %}
+
+{% block time_slot_content %}
+{% comment %} <div class="row">
+    <div class="col-8">
+        <p class="h1">{% translate 'Base events' %}</p>
+        <p class="text-muted">{% translate 'Here you can find all base events that were created.' %}</p>
+    </div>
+    <div class="col-4 position-relative"><a
+            class="btn btn-outline-danger position-absolute top-50 end-0 translate-middle-y"
+            href="{% url 'teachers_create_tag' %}">{% translate 'Add' %}</a></div>
+</div> {% endcomment %}
+{% render_table table %}
+<script>
+    var first = document.getElementById("first_name_id");
+    var last = document.getElementById("last_name_id");
+    var acronym = document.getElementById("acronym_id");
+    first.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    first.children[0].classList += " hovereffect";
+    last.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    last.children[0].classList += " hovereffect";
+    acronym.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+    acronym.children[0].classList += " hovereffect";
+</script>
+<style>
+    .hovereffect {
+        color: black;
+        text-decoration: none;
+    }
+    .hovereffect:hover {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

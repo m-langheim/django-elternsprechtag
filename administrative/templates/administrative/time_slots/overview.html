@@ -1,0 +1,87 @@
+{% extends 'administrative/time_slots/time_slots_base.html' %}
+{% load render_table from django_tables2 %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block header %} {% translate 'Formulars' %} {% endblock header %}
+{% block underline %} {% translate 'All formulars are listed here.' %} {% endblock underline %}
+
+{% block title %} {% translate 'Formulars' %} {% endblock title %}
+
+{% block time_slot_content %}
+
+<div class="card card-body p-3 mb-3">
+	<p class="h1">{% translate 'Submitted formulars' %}</p>
+	<p class="text-secondary">{% translate 'The formulars below are awaiting your confirmation.' %}</p>
+
+	{% if action_table_entries > 0 %}
+	{% render_table action_table %}
+	<!-- <script>
+		var teacher = document.getElementById("teacher_id1");
+		var date = document.getElementById("date_id1");
+		var start_time = document.getElementById("start_time_id1");
+		var end_time = document.getElementById("end_time_id1");
+		teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+		date.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+		start_time.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+		end_time.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+	</script> -->
+	{% else %}
+	{% translate 'There are currently no open formulars.' %}
+	{% endif %}
+</div>
+
+<div class="card card-body p-3 mb-3">
+	<p class="h1">{% translate 'Unprocessed formulars' %}</p>
+	<p class="text-secondary">{% translate 'The times you have requested appear here.' %}</p>
+
+	{% if upcomming_table_entries > 0 %}
+	{% render_table upcomming_table %}
+	<!-- <script>
+		var teacher = document.getElementById("teacher_id2");
+		var date = document.getElementById("date_id2");
+		teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+		date.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+	</script> -->
+	{% else %}
+	{% translate 'No times are requested.' %}
+	{% endif %}
+</div>
+
+<div class="card card-body p-3 mb-3">
+	<p class="h1">{% translate 'Processed formulars' %}</p>
+	<p class="text-secondary">{% translate 'The formulars below are processed.' %}</p>
+
+	{% if closed_table_entries > 0 %}
+	{% render_table approved_formulars_table %}
+	<!-- <script>
+		var teacher = document.getElementById("teacher_id3");
+		var date = document.getElementById("date_id3");
+		teacher.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+		date.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+
+		// var status = document.getElementById("status_id3"); seperat does not work at all idk why
+		document.getElementById("status_id3").children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`;
+	</script> -->
+	{% else %}
+	{% translate 'No times are requested.' %}
+	{% endif %}
+</div>
+
+<div class="row mt-2">
+	<div class="col d-flex">
+		<a class="btn btn-outline-secondary" href="{% url 'home' %}">{% translate 'Back' %}</a>
+	</div>
+</div>
+
+<style>
+	a {
+		color: black;
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: #dc3545;
+	}
+</style>
+{% endblock %}

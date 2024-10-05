@@ -1,68 +1,112 @@
 {% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %} {% translate 'Appointment view' %} {% endblock title %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block help_url_smallscreen %} {% url 'wiki_book' %} {% endblock %}
+{% block help_url_bigscreen %} {% url 'wiki_book' %} {% endblock %}
 
 {% block content %}
-
-<div class="container p-2 pt-4">
+{% if follow_up_event %}
+<div class="card border-danger mb-3">
+	<div class="card-body row">
+		<div class="col col-12 col-md-8">
+			<h5 class="card-title">{% translate 'Followup event' %}</h5>
+			<div class="card-text">
+                {% blocktranslate with seperation=min_seperation %}This event is a follow up event to another event you have booked. We recommend that you keep at least a seperation of {{seperation}} minutes between two events.{% endblocktranslate %}</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+<div class="container pt-4">
     <div class="row">
-        <div class="column">
+        <div class="column p-0">
             <div class="card" style="border-radius: 10px;">
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <h2>Termin</h2>
+                        <h1>{% translate 'Appointment' %}</h1>
+                        <p class="text-secondary">{% translate 'Detailed view of the appointment' %}</p>
                         <li class="list-group-item">
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col text-start">
                                         <div>
-                                            Lehrer: {{ event.teacher.first_name }} {{ event.teacher.last_name }}
+                                            <strong>{% translate 'Teacher:' %} </strong>{{ event.teacher.first_name }} {{ event.teacher.last_name }}
                                         </div>
                                         <div>
-                                            Uhrzeit: {{ event.start|time }} Uhr
+                                            <strong>{% translate 'Date:' %} </strong>{{ event.start|date }}
+                                        </div>
+                                        <div>
+                                            <strong>{% translate 'Time:' %} </strong>{{ event.start|time }} Uhr
                                         </div>
                                         <div>
                                             {% if event.room %}
-                                            Raum: {{ event.room }}
+                                            <strong>{% translate 'Room:' %} </strong>{{ event.room }}
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
-                        <form method="post">
+                        <form method="post" action="{{request.get_full_path}}">
                             {% csrf_token %}
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <div class="container">
                                         <div class="row align-items-center">
                                             <div class="col text-start">
+                                                
                                                 <div class="mb-2">
-                                                    Schüler für das Gespräch wählen:
+                                                    <strong>{% translate 'Select students for the appointment:' %}</strong>
                                                 </div>
+
+                                                {% if inquiry %}
+                                                {% for student in inquiry.students.all %}
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input is-invalid" checked="True" disabled="True">
+                                                        <label class="form-check-label">{{student.first_name}} {{ student.last_name }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                                {% endif %}
+                                                
                                                 <div>
-                                                    {% load crispy_forms_tags %}
-                                                    {{ book_form|crispy }}
+
+                                                    {% csrf_token %}
+
+                                                    {{ book_form.necessary_student|as_crispy_field }}
+                                                    {{ book_form.student|as_crispy_field }}
+
+                                                    <script>
+                                                        var student = document.getElementById("div_id_student");
+                                                        student.classList = "mb-2";
+                                                        var necessary_student = document.getElementById("div_id_necessary_student");
+                                                        necessary_student.classList = "mb-0";
+
+                                                        var inputs = necessary_student.children[0].children[0].querySelectorAll("input");
+                                                        inputs.forEach(input => {
+                                                            input.classList += " is-invalid"
+                                                        });
+                                                    </script>
+
+                                                    {% if book_form.errors %}
+                                                    <div class="mt-2 mb-2 text-danger">
+                                                        <i class="fa-solid fa-caret-right"></i> {% if book_form.necessary_student.errors %} {% translate 'Select at least one of the marked students.' %} {% else %} {% translate 'Select at least one student.' %} {% endif %}</div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
-                                <li class="list-group-item">
+                                <li class="list-group-item mt-2">
                                     <div class="container">
                                         <div class="row gy-1">
                                             <div class="col-12 col-md-6">
                                                 <a type="button" class="btn btn-outline-secondary col-12 col-lg-3"
-                                                    href="{{ back_url }}">Zurück</a>
+                                                    href="{{ back_url }}">{% translate 'Back' %}</a>
                                             </div>
                                             <div class="col-12 col-md-6 d-flex justify-content-end">
-                                                {% if event.start in booked_times %}
                                                     <button type="submit"
-                                                        class="btn btn-outline-secondary col-12 col-lg-3 disabled">Zeitkonflikt</button>
-                                                {% else %}
-                                                    <button type="submit"
-                                                            class="btn btn-outline-danger col-12 col-lg-3">Buchen</button>
-                                                {% endif %}
+                                                            class="btn btn-outline-danger col-12 col-lg-3">{% translate 'Request' %}</button>
                                             </div>
                                         </div>
                                     </div>
