@@ -278,34 +278,26 @@ class Event(models.Model):  # Termin
 
         return False
 
-    def update_event_lead_status(self, automatic=True):
-        if automatic and self.disable_automatic_changes:
+    def update_event_lead_status(self, automatic=True, force=False):
+        if automatic and self.disable_automatic_changes and not force:
             pass
         else:
-            if (
-                self.check_time_lead_active
-                and self.teacher_event_group.lead_start
-                > self.lead_status_last_change.date()
-                and not self.lead_manual_override
-            ):
-                self.lead_status = LeadStatusChoices.ALL
-                self.save()
-            elif (
-                self.check_time_lead_inquiry_active
-                and self.teacher_event_group.lead_inquiry_start
-                > self.lead_status_last_change.date()
-                and not self.lead_manual_override
-            ):
-                self.lead_status = LeadStatusChoices.INQUIRY
-                self.save()
-            elif (
-                timezone.now().date() <= self.teacher_event_group.lead_inquiry_start
-                and not self.lead_manual_override
-            ):
-                self.lead_status = LeadStatusChoices.CONDITION
-                self.save()
-            else:
+            if timezone.now() >= self.end:
                 self.lead_status = LeadStatusChoices.NOBODY
+                self.lead_manual_override = True
+                self.disable_automatic_changes = True
+                self.save()
+            elif (
+                self.teacher_event_group.lead_status_last_change
+                >= self.lead_status_last_change
+                and (
+                    not self.lead_manual_override
+                    or (self.lead_manual_override and force)
+                )
+            ):
+                self.lead_status = self.teacher_event_group.lead_status
+                self.lead_status_last_change = timezone.now()
+
                 self.save()
 
     def check_parent_can_book_event(self, parent: CustomUser) -> bool:
@@ -445,8 +437,20 @@ class EventChangeFormula(models.Model):
     Dieses Model dient dazu, jedem Lehrer die Möglichkeit zu geben, seine Zeiten für den Elternsprtechtag selber einzurrichten. In Zukunft können hier auch Anträge auf die Blockierung einzelner Termine eingereicht werden.
     """
 
-    TYPE_CHOICES = ((0, _("Submit own time periods.")),)  # Submit of personal timeslots
-    type = models.IntegerField(choices=TYPE_CHOICES, default=0)
+    class FormularTypeChoices(models.IntegerChoices):
+        TIME_PERIODS = (0, _("Time period"))
+        BREAKS = (1, _("Break request"))
+        ILLNESS = (2, _("Sick leave"))
+
+    # TYPE_CHOICES = ((0, _("Submit own time periods.")),)  # Submit of personal timeslots
+    type = models.IntegerField(choices=FormularTypeChoices, default=0)
+    parent_formular = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="childformular",
+    )
     day_group = models.ForeignKey(
         DayEventGroup, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -463,6 +467,7 @@ class EventChangeFormula(models.Model):
     date = models.DateField(blank=False, default=timezone.now, verbose_name=_("Date"))
     start_time = models.TimeField(blank=True, null=True, verbose_name=_("Start time"))
     end_time = models.TimeField(blank=True, null=True, verbose_name=_("End time"))
+
     no_events = models.BooleanField(default=False, verbose_name=_("No events"))
 
     class FormularStatusChoices(models.IntegerChoices):

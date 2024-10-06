@@ -21,6 +21,11 @@ urlpatterns = [
         DeleteInquiryView.as_view(),
         name="teaher_delete_inquiry",
     ),
+    path(
+        "event/<event_id>/cancel/",
+        EventCancellationView.as_view(),
+        name="teacher_cancel_event_view",
+    ),
     path("event/<event>/confirm", confirm_event, name="teacher_confirm_event"),
     path("event/<event_id>", EventDetailView.as_view(), name="teacher_event_view"),
     path(
@@ -29,10 +34,25 @@ urlpatterns = [
         name="teacher_mark_announcement_read",
     ),
     path("export/", create_event_PDF, name="create_events_pdf"),
-    path("personal/events/", viewMyEvents, name="teacher_personal_events"),
+    path("events/", viewMyEvents, name="teacher_personal_events"),
     path(
-        "personal/events/<form_id>/edit/",
+        "events/formulars/<form_id>/edit/",
         EditMyEventsDetail.as_view(),
         name="teacher_personal_events_edit",
+    ),
+    path(
+        "events/break_formulars/<group_pk>/create/",
+        EventBreakRequestView.as_view(),
+        name="teacher_personal_day_group_add_break_request",
+    ),
+    path(
+        "events/break_formulars/event/<event_pk>/create/",
+        EventBreakForEventRequestView.as_view(),
+        name="teacher_personal_event_add_break_request",
+    ),
+    path(
+        "event/<event_pk>/reset_lead_status/",
+        EventResetLeadStatusToOriginalView.as_view(),
+        name="teacher_personal_reset_event_lead_status",
     ),
 ]

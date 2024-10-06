@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 23:15+0200\n"
+"POT-Creation-Date: 2024-10-06 17:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,13 +147,13 @@ msgstr ""
 
 #: administrative/tables.py:187 administrative/tables.py:242
 #: administrative/tables.py:276 administrative/tables.py:447
-#: authentication/models.py:79 dashboard/models.py:461
+#: authentication/models.py:79 dashboard/models.py:473
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
 msgstr ""
 
 #: administrative/tables.py:193 administrative/tables.py:248
-#: administrative/tables.py:282 dashboard/models.py:463
+#: administrative/tables.py:282 dashboard/models.py:475
 msgid "Date"
 msgstr ""
 
@@ -519,8 +519,8 @@ msgstr ""
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:189
 #: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:21
 #: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:189
-#: administrative/views/events.py:515 administrative/views/events.py:537
-#: administrative/views/events.py:694 administrative/views/events.py:721
+#: administrative/views/events.py:530 administrative/views/events.py:552
+#: administrative/views/events.py:717 administrative/views/events.py:744
 msgid "Edit lead status"
 msgstr ""
 
@@ -567,8 +567,8 @@ msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:190
 #: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:190
-#: administrative/views/events.py:554 administrative/views/events.py:576
-#: administrative/views/events.py:743 administrative/views/events.py:768
+#: administrative/views/events.py:571 administrative/views/events.py:593
+#: administrative/views/events.py:768 administrative/views/events.py:793
 msgid "Edit lead dates"
 msgstr ""
 
@@ -1033,11 +1033,11 @@ msgstr ""
 msgid "All teacher accounts are listed here."
 msgstr ""
 
-#: administrative/views/students.py:554 administrative/views/students.py:610
+#: administrative/views/students.py:570 administrative/views/students.py:626
 msgid "Batch send upcomming user"
 msgstr ""
 
-#: administrative/views/users.py:95 administrative/views/users.py:110
+#: administrative/views/users.py:99 administrative/views/users.py:114
 msgid "The parent could not be found."
 msgstr ""
 
@@ -1154,6 +1154,14 @@ msgstr ""
 msgid "Future users"
 msgstr ""
 
+#: authentication/models.py:239
+msgid "Can send upcomming user"
+msgstr ""
+
+#: authentication/models.py:240
+msgid "Can batch send upcomming user"
+msgstr ""
+
 #: authentication/templates/authentication/login.html:4
 msgid "Login"
 msgstr ""
@@ -1235,7 +1243,7 @@ msgstr ""
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:280 teacher/forms.py:26 teacher/forms.py:51
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
 
@@ -1280,12 +1288,12 @@ msgid "All parents can request this appointment at the moment."
 msgstr ""
 
 #: dashboard/models.py:35 dashboard/models.py:105 dashboard/models.py:155
-#: dashboard/models.py:610
+#: dashboard/models.py:622
 msgid "Set a date from which all parents can request appointments."
 msgstr ""
 
 #: dashboard/models.py:43 dashboard/models.py:111 dashboard/models.py:160
-#: dashboard/models.py:614
+#: dashboard/models.py:626
 msgid "Determine when teachers' enquiries can be answered."
 msgstr ""
 
@@ -1380,71 +1388,79 @@ msgid ""
 "medical condition."
 msgstr ""
 
-#: dashboard/models.py:448
-msgid "Submit own time periods."
+#: dashboard/models.py:449
+msgid "Time period"
 msgstr ""
 
-#: dashboard/models.py:464
+#: dashboard/models.py:450 teacher/templates/teacher/event/myEvents.html:127
+msgid "Break request"
+msgstr ""
+
+#: dashboard/models.py:451
+msgid "Sick leave"
+msgstr ""
+
+#: dashboard/models.py:476
 msgid "Start time"
 msgstr ""
 
-#: dashboard/models.py:465
+#: dashboard/models.py:477
 msgid "End time"
 msgstr ""
 
-#: dashboard/models.py:466
+#: dashboard/models.py:478
 msgid "No events"
 msgstr ""
 
-#: dashboard/models.py:469
+#: dashboard/models.py:481
 msgid "Wait for processing"
 msgstr ""
 
-#: dashboard/models.py:470
+#: dashboard/models.py:482
 msgid "Wait for confirmation"
 msgstr ""
 
-#: dashboard/models.py:471
+#: dashboard/models.py:483
 msgid "Approved"
 msgstr ""
 
-#: dashboard/models.py:472
+#: dashboard/models.py:484
 msgid "Declined"
 msgstr ""
 
-#: dashboard/models.py:485
+#: dashboard/models.py:497
 msgid "Event creation formula"
 msgstr ""
 
-#: dashboard/models.py:486
+#: dashboard/models.py:498
 msgid "Event creation formulas"
 msgstr ""
 
-#: dashboard/models.py:491
+#: dashboard/models.py:503
 msgid "Can accept or reject submitted time periods for other users."
 msgstr ""
 
-#: dashboard/models.py:500
+#: dashboard/models.py:512
 msgid "Inquiry to book an appointment (teacher->parents)"
 msgstr ""
 
-#: dashboard/models.py:502
+#: dashboard/models.py:514
 msgid "Request for confirmation of an appointment (parent->teacher)"
 msgstr ""
 
-#: dashboard/models.py:533
+#: dashboard/models.py:545
 msgid "No response"
 msgstr ""
 
-#: dashboard/models.py:534
+#: dashboard/models.py:546
 msgid "Inquiry accepted"
 msgstr ""
 
-#: dashboard/models.py:535
+#: dashboard/models.py:547
 msgid "Inquiry declined"
 msgstr ""
 
-#: dashboard/models.py:549 dashboard/templates/dashboard/inquiry.html:3
+#: dashboard/models.py:561 dashboard/templates/dashboard/inquiry.html:3
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
@@ -1455,27 +1471,27 @@ msgstr ""
 msgid "Inquiry"
 msgstr ""
 
-#: dashboard/models.py:550
+#: dashboard/models.py:562
 msgid "Inquries"
 msgstr ""
 
-#: dashboard/models.py:555
+#: dashboard/models.py:567
 msgid "New booking inquiry"
 msgstr ""
 
-#: dashboard/models.py:556
+#: dashboard/models.py:568
 msgid "Appointment cancellation"
 msgstr ""
 
-#: dashboard/models.py:557
+#: dashboard/models.py:569
 msgid "System notification"
 msgstr ""
 
-#: dashboard/models.py:580
+#: dashboard/models.py:592
 msgid "Notification"
 msgstr ""
 
-#: dashboard/models.py:581
+#: dashboard/models.py:593
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
 #: dashboard/templates/dashboard/base.html:81
@@ -1485,19 +1501,19 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: dashboard/models.py:619
+#: dashboard/models.py:631
 msgid ""
 "Here you define the general length of an appointment. It applies to all "
 "appointments created with this function."
 msgstr ""
 
-#: dashboard/models.py:625
+#: dashboard/models.py:637
 msgid ""
 "Here you can set the interval between two appointments. You should allow "
 "some time to change rooms etc."
 msgstr ""
 
-#: dashboard/models.py:650 dashboard/models.py:651
+#: dashboard/models.py:662 dashboard/models.py:663
 msgid "SiteSettings"
 msgstr ""
 
@@ -1991,11 +2007,11 @@ msgstr ""
 msgid "The password has been changed successfully."
 msgstr ""
 
-#: teacher/forms.py:60
+#: teacher/forms.py:72
 msgid "Explanation why you dismiss the event:"
 msgstr ""
 
-#: teacher/forms.py:64
+#: teacher/forms.py:76
 msgid "Parent should book a different event."
 msgstr ""
 
@@ -2104,6 +2120,10 @@ msgstr ""
 
 #: teacher/templates/teacher/event/detailEvent.html:172
 msgid "at"
+msgstr ""
+
+#: teacher/templates/teacher/event/myEvents.html:120
+msgid "Options"
 msgstr ""
 
 #: teacher/templates/teacher/inquiry/createInquiry.html:23

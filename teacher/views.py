@@ -1,6 +1,15 @@
 from django.shortcuts import render, redirect
 from authentication.models import CustomUser
-from dashboard.models import Inquiry, Student, Event, Announcements, EventChangeFormula
+from dashboard.models import (
+    Inquiry,
+    Student,
+    Event,
+    Announcements,
+    EventChangeFormula,
+    LeadStatusChoices,
+    TeacherEventGroup,
+    DayEventGroup,
+)
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -11,6 +20,9 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required, upcomming_base_event_required
 from .forms import *
+from django.shortcuts import get_object_or_404
+
+from .tables import *
 
 from general_tasks.utils import EventPDFExport
 
@@ -617,6 +629,111 @@ class EventDetailView(View):
             )
 
 
+class EventCancellationView(View):
+    def get(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        form = cancelEventForm()
+
+        return render(
+            request,
+            "teacher/teacher_form_fallback.html",
+            {
+                "form": form,
+                "title": "Cancel event",
+                "back_url": reverse("teacher_personal_events"),
+            },
+        )
+
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        form = cancelEventForm(request.POST)
+
+        if form.is_valid():
+            message = form.cleaned_data["message"]
+            book_other = form.cleaned_data["book_other_event"]
+
+            parent = event.parent
+            teacher = event.teacher
+
+            if book_other:
+                teacher_id = urlsafe_base64_encode(force_bytes(event.teacher.id))
+                Announcements.objects.create(
+                    announcement_type=1,
+                    user=parent,
+                    message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s \nUnter dem angegebenen Link buchen Sie bitte einen neuen Termin"
+                    % (
+                        teacher.first_name,
+                        teacher.last_name,
+                        message,
+                    ),
+                    action_name="Termine ansehen",
+                    action_link=reverse("event_teacher_list", args=[teacher_id]),
+                )
+            else:
+                Announcements.objects.create(
+                    announcement_type=1,
+                    user=parent,
+                    message="%s %s hat Ihren Termin abgesagt und folgende Nachricht für Sie hinterlassen: %s"
+                    % (
+                        teacher.first_name,
+                        teacher.last_name,
+                        message,
+                    ),
+                )
+
+            # Hier wird die vom Elternteil möglicherweise gestellte anfrage als bearbeitet angezeigt
+            try:
+                inquiry = Inquiry.objects.get(
+                    Q(type=1),
+                    Q(requester=parent),
+                    Q(respondent=teacher),
+                    Q(event=event),
+                    Q(processed=False),
+                )
+            except Inquiry.DoesNotExist:
+                pass
+            except Inquiry.MultipleObjectsReturned:
+                inquiries = inquiry = Inquiry.objects.filter(
+                    Q(type=1),
+                    Q(requester=parent),
+                    Q(respondent=teacher),
+                    Q(event=event),
+                    Q(processed=False),
+                )
+                for inquiry in inquiries:
+                    inquiry.processed = True
+                    inquiry.respondent_reaction = 2
+                    inquiry.save()
+
+                logger = logging.getLogger(__name__)
+                logger.warn("Es waren mehrere unbeantwortete Inquiries verfügbar.")
+            else:
+                inquiry.processed = True
+                inquiry.respondent_reaction = 2
+                inquiry.save()
+
+            check_inquiry_reopen(parent, teacher)
+            event.parent = None
+            event.status = 0
+            event.occupied = False
+            event.student.clear()
+            event.save()
+
+            messages.success(request, "The event was successfully canceled.")
+
+            return redirect("teacher_personal_events")
+
+        return render(
+            request,
+            "teacher/teacher_form_fallback.html",
+            {
+                "form": form,
+                "title": "Cancel event",
+                "back_url": reverse("teacher_personal_events"),
+            },
+        )
+
+
 @login_required
 @teacher_required
 def viewMyEvents(request):
@@ -631,7 +748,7 @@ def viewMyEvents(request):
         custom_event_change_formulas.append(
             {
                 "change_form": form,
-                "no_events_form": EventChangeFormulaForm(
+                "no_events_form": EventChangeFormulaPeriodForm(
                     instance=form, initial={"no_events": True}
                 ),
                 "link": reverse(
@@ -645,7 +762,7 @@ def viewMyEvents(request):
         Q(teacher=request.user),
         Q(date__gte=timezone.datetime.now()),
         Q(status=2) | Q(status=3),
-    )
+    )[:10]
 
     teacher = request.user
 
@@ -662,22 +779,140 @@ def viewMyEvents(request):
             dates.append(datetime_object.astimezone(pytz.UTC))
 
     events_dt_dict = {}
+    events_table_dict = {}
     for date in dates:
-        events_dt_dict[str(date.date())] = Event.objects.filter(
-            Q(teacher=teacher),
-            Q(
-                start__gte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                )
+        events_dt_dict[str(date.date())] = {
+            "events": Event.objects.filter(
+                Q(teacher=teacher),
+                Q(
+                    start__gte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                    )
+                ),
+                Q(
+                    start__lte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                    )
+                ),
+            ).order_by("start"),
+            "table": PersonalEventsTable(
+                data=Event.objects.filter(
+                    Q(teacher=teacher),
+                    Q(
+                        start__gte=timezone.datetime.combine(
+                            date.date(),
+                            timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                        )
+                    ),
+                    Q(
+                        start__lte=timezone.datetime.combine(
+                            date.date(),
+                            timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                        )
+                    ),
+                ),
+                order_by="start",
             ),
-            Q(
-                start__lte=timezone.datetime.combine(
-                    date.date(),
-                    timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+            "free_events": Event.objects.filter(
+                Q(teacher=teacher),
+                Q(
+                    start__gte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                    )
+                ),
+                Q(
+                    start__lte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                    )
+                ),
+                ~Q(status=Event.StatusChoices.OCCUPIED),
+            ).count(),
+            "occupied_events": Event.objects.filter(
+                Q(teacher=teacher),
+                Q(
+                    start__gte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                    )
+                ),
+                Q(
+                    start__lte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                    )
+                ),
+                Q(status=Event.StatusChoices.OCCUPIED),
+                ~Q(lead_status=LeadStatusChoices.NOBODY),
+            ).count(),
+            "occupied_percent": int(
+                (
+                    Event.objects.filter(
+                        Q(teacher=teacher),
+                        Q(
+                            start__gte=timezone.datetime.combine(
+                                date.date(),
+                                timezone.datetime.strptime(
+                                    "00:00:00", "%H:%M:%S"
+                                ).time(),
+                            )
+                        ),
+                        Q(
+                            start__lte=timezone.datetime.combine(
+                                date.date(),
+                                timezone.datetime.strptime(
+                                    "23:59:59", "%H:%M:%S"
+                                ).time(),
+                            )
+                        ),
+                        Q(status=Event.StatusChoices.OCCUPIED),
+                        ~Q(lead_status=LeadStatusChoices.NOBODY),
+                    ).count()
+                    / Event.objects.filter(
+                        Q(teacher=teacher),
+                        Q(
+                            start__gte=timezone.datetime.combine(
+                                date.date(),
+                                timezone.datetime.strptime(
+                                    "00:00:00", "%H:%M:%S"
+                                ).time(),
+                            )
+                        ),
+                        Q(
+                            start__lte=timezone.datetime.combine(
+                                date.date(),
+                                timezone.datetime.strptime(
+                                    "23:59:59", "%H:%M:%S"
+                                ).time(),
+                            )
+                        ),
+                        ~Q(lead_status=LeadStatusChoices.NOBODY),
+                    ).count()
                 )
+                * 100
             ),
-        ).order_by("start")
+        }
+        events_table_dict[str(date.date())] = PersonalEventsTable(
+            data=Event.objects.filter(
+                Q(teacher=teacher),
+                Q(
+                    start__gte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                    )
+                ),
+                Q(
+                    start__lte=timezone.datetime.combine(
+                        date.date(),
+                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                    )
+                ),
+            ),
+            order_by="start",
+        )
 
     return render(
         request,
@@ -688,6 +923,9 @@ def viewMyEvents(request):
             "events": events,
             "events_dt": events_dt,
             "events_dt_dict": events_dt_dict,
+            "events_table_dict": events_table_dict,
+            "break_form": BreakFormularCreationForm(),
+            "page_under_construction": True,
         },
     )
 
@@ -695,14 +933,20 @@ def viewMyEvents(request):
 @method_decorator(teacher_decorators, name="dispatch")
 class EditMyEventsDetail(View):
     def get(self, request, form_id):
-        try:
-            event_change_formula = EventChangeFormula.objects.get(
-                id=force_str(urlsafe_base64_decode(form_id))
-            )
-        except EventChangeFormula.DoesNotExist:
-            raise Http404("The formula ould not be found.")
+        event_change_formula = get_object_or_404(
+            EventChangeFormula, id=force_str(urlsafe_base64_decode(form_id))
+        )
 
-        form = EventChangeFormulaForm(instance=event_change_formula)
+        match event_change_formula.type:
+            case EventChangeFormula.FormularTypeChoices.TIME_PERIODS:
+                form = EventChangeFormulaPeriodForm(instance=event_change_formula)
+            case EventChangeFormula.FormularTypeChoices.ILLNESS:
+                form = EventChangeFormulaPeriodForm(instance=event_change_formula)
+            case EventChangeFormula.FormularTypeChoices.BREAKS:
+                form = EventChangeFormulaBreakForm(instance=event_change_formula)
+            case _:
+                print("Wrong type")
+        print(form)
 
         return render(
             request,
@@ -718,11 +962,24 @@ class EditMyEventsDetail(View):
         except EventChangeFormula.DoesNotExist:
             raise Http404("The formula ould not be found.")
 
-        form = EventChangeFormulaForm(request.POST, instance=event_change_formula)
+        match event_change_formula.type:
+            case EventChangeFormula.FormularTypeChoices.TIME_PERIODS:
+                form = EventChangeFormulaPeriodForm(
+                    request.POST, instance=event_change_formula
+                )
+            case EventChangeFormula.FormularTypeChoices.ILLNESS:
+                form = EventChangeFormulaPeriodForm(
+                    request.POST, instance=event_change_formula
+                )
+            case EventChangeFormula.FormularTypeChoices.BREAKS:
+                form = EventChangeFormulaBreakForm(
+                    request.POST, instance=event_change_formula
+                )
+        # form = EventChangeFormulaPeriodForm(request.POST, instance=event_change_formula)
 
         if form.is_valid():
             form.save()
-            if form.cleaned_data["no_events"]:
+            if form.cleaned_data.get("no_events", False):
                 messages.success(
                     request,
                     "Sie haben erfolgreich angefragt, dass Sie am {} keine Termine haben.".format(
@@ -769,3 +1026,150 @@ class EditMyEventsDetail(View):
 #                     )
 #                 ),
 #             ).order_by("start")
+
+
+class EventBreakRequestView(View):
+    def get(self, request, group_pk):
+        form = BreakFormularCreationForm()
+
+        return render(
+            request,
+            "teacher/event/events_add_break_formular.html",
+            {"form": form, "page_under_construction": True},
+        )
+
+    def post(self, request, group_pk):
+        teacher_group = get_object_or_404(
+            TeacherEventGroup, teacher=request.user, pk=group_pk
+        )
+
+        form = BreakFormularCreationForm(data=request.POST)
+
+        if form.is_valid():
+            start_time = form.cleaned_data["start_time"]
+            end_time = form.cleaned_data["end_time"]
+
+            start_datetime = timezone.datetime.combine(
+                date=teacher_group.day_group.date, time=start_time
+            )
+            end_datetime = timezone.datetime.combine(
+                date=teacher_group.day_group.date, time=end_time
+            )
+
+            print(
+                type(start_time),
+                start_time,
+                timezone.datetime.combine(
+                    date=teacher_group.day_group.date, time=start_time
+                ),
+            )
+
+            events = Event.objects.filter(
+                teacher_event_group=teacher_group,
+                start__gte=start_datetime,
+                end__lte=end_datetime,
+            )
+
+            for event in events:
+                if not event.status == Event.StatusChoices.UNOCCUPIED:
+                    messages.error(
+                        request,
+                        "This event is already occupied. If you want to set your break to this event anyways please get in touch with the system operators.",
+                    )
+                    return redirect("teacher_personal_events")
+                elif (
+                    event.lead_status == LeadStatusChoices.NOBODY
+                    and event.lead_manual_override == True
+                ):
+                    messages.info(
+                        request,
+                        "It is already impossible for anyone to book this event at any time. No further action is required.",
+                    )
+                    return redirect("teacher_personal_events")
+
+            formular = EventChangeFormula.objects.create(
+                type=EventChangeFormula.FormularTypeChoices.BREAKS,
+                day_group=teacher_group.day_group,
+                teacher_event_group=teacher_group,
+                teacher=request.user,
+                date=teacher_group.day_group.date,
+                start_time=start_time,
+                end_time=end_time,
+                status=EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION,
+            )
+            formular.save()
+
+            messages.success(
+                request,
+                "The break request was successfully created. Please wait until an authorized person approves your request.",
+            )
+
+            return redirect("teacher_personal_events")
+        return render(
+            request,
+            "teacher/event/events_add_break_formular.html",
+            {"form": form, "page_under_construction": True},
+        )
+
+
+class EventBreakForEventRequestView(View):
+    def get(self, request, event_pk):
+        event = get_object_or_404(Event, teacher=request.user, pk=event_pk)
+
+        if not event.status == Event.StatusChoices.UNOCCUPIED:
+            messages.error(
+                request,
+                "This event is already occupied. If you want to set your break to this event anyways please get in touch with the system operators.",
+            )
+        elif (
+            event.lead_status == LeadStatusChoices.NOBODY
+            and event.lead_manual_override == True
+        ):
+            messages.info(
+                request,
+                "It is already impossible for anyone to book this event at any time. No further action is required.",
+            )
+        else:
+            print()
+            formular = EventChangeFormula.objects.create(
+                type=EventChangeFormula.FormularTypeChoices.BREAKS,
+                day_group=event.day_group,
+                teacher_event_group=event.teacher_event_group,
+                teacher=request.user,
+                date=event.day_group.date,
+                start_time=event.start.astimezone(),
+                end_time=event.end.astimezone(),
+                status=EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION,
+            )
+            formular.save()
+
+            messages.success(
+                request,
+                "The break request was successfully created. Please wait until an authorized person approves your request.",
+            )
+
+        return redirect("teacher_personal_events")
+
+
+class EventResetLeadStatusToOriginalView(View):
+    def get(self, request, event_pk):
+        event = get_object_or_404(Event, pk=event_pk, teacher=request.user)
+        teacher_group = event.teacher_event_group
+
+        if event.lead_status >= teacher_group.lead_status:
+            messages.error(
+                request, "You are not allowed to change the lead status of this object."
+            )
+
+            return redirect("teacher_personal_events")
+
+        event.lead_manual_override = teacher_group.lead_manual_override
+        event.disable_automatic_changes = teacher_group.disable_automatic_changes
+        event.lead_status = teacher_group.lead_status
+        event.save()
+
+        messages.success(
+            request, "The lead status was successfully reset to its original state."
+        )
+
+        return redirect("teacher_personal_events")

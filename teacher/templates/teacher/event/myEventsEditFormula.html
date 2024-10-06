@@ -1,60 +1,50 @@
-{% extends "dashboard/base.html" %}
+{% extends 'dashboard/base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %} Dashboard - Lehrer {% endblock title %}
+{% block title %}
+  Dashboard - Lehrer
+{% endblock %}
 
 {% block content %}
-<div class="row gx-3 gy-3">
+  <div class="row gx-3 gy-3">
     <div class="col-12">
-        <div class="card card-body p-4">
-            <p class="h1">Elternsprechtagszeitraum für den {{formula.date}}</p>
-            <p class="text-secondary">Bitte geben Sie hier Ihren persönlichen Zeitraum für den Elternsprechtag am
-                {{formula.date }} an.</p>
+      <div class="card card-body p-4">
+        <p class="h1">{{ formula.get_type_display }} für den {{ formula.date }}</p>
+        <p class="text-secondary">Bitte geben Sie hier Ihren persönlichen {{ formula.get_type_display }} für den Elternsprechtag am
+          {{ formula.date }} an.</p>
 
-            <form method="post">
-                {% csrf_token %}
+        <form method="post">
+          {% csrf_token %}
 
-                <div class="row">
-                    <p class="col" style="font-weight: bold;">
-                        Startzeitpunkt:
-                    </p>
-                    <p class="col">
-                        {{ form.start_time | as_crispy_field }}
-                    </p>
-                </div>
-                <div class="row pb-0">
-                    <p class="col" style="font-weight: bold;">
-                        Endzeitpunkt:
-                    </p>
-                    <p class="col">
-                        {{ form.end_time | as_crispy_field }}
-                    </p>
-                </div>
-                <div class="row pt-0">
-                    <p class="col" style="font-weight: bold;">
-                        {{ form.no_events | as_crispy_field }}
-                    </p>
-                </div>
+          <div class="row">
+            <p class="col" style="font-weight: bold;">Startzeitpunkt:</p>
+            <p class="col">{{ form.start_time|as_crispy_field }}</p>
+          </div>
+          <div class="row pb-0">
+            <p class="col" style="font-weight: bold;">Endzeitpunkt:</p>
+            <p class="col">{{ form.end_time|as_crispy_field }}</p>
+          </div>
+          {% if form.no_events %}
+            <div class="row pt-0">
+              <p class="col" style="font-weight: bold;">{{ form.no_events|as_crispy_field }}</p>
+            </div>
+          {% endif %}
 
-                <div class="d-grid d-md-none gap-2">
-                    <input type="submit" class="btn btn-outline-danger col-12" value="Anfragen" />
-                    <a type="button" class="btn btn-outline-secondary col-12"
-                        href="{% url 'teacher_personal_events' %}">Zurück</a>
-                </div>
+          <div class="d-grid d-md-none gap-2">
+            <input type="submit" class="btn btn-outline-danger col-12" value="Anfragen" />
+            <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'teacher_personal_events' %}">Zurück</a>
+          </div>
 
-                <div class="d-none d-md-flex row">
-                    <div class="d-none d-md-flex col">
-                        <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2"
-                            href="{% url 'teacher_personal_events' %}">Zurück</a>
-                    </div>
-                    <div class="d-none d-md-flex col-6 justify-content-end">
-                        <input type="submit" class="btn btn-outline-danger col-12 col-md-3 mb-2 mt-2 me-2" value="Anfragen" />
-                    </div>
-                </div>
-            </form>
-        </div>
+          <div class="d-none d-md-flex row">
+            <div class="d-none d-md-flex col">
+              <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2" href="{% url 'teacher_personal_events' %}">Zurück</a>
+            </div>
+            <div class="d-none d-md-flex col-6 justify-content-end">
+              <input type="submit" class="btn btn-outline-danger col-12 col-md-3 mb-2 mt-2 me-2" value="Anfragen" />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
-
-
-{% endblock content %}
+  </div>
+{% endblock %}

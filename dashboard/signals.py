@@ -8,6 +8,7 @@ from .models import (
     DayEventGroup,
     TeacherEventGroup,
     BaseEventGroup,
+    LeadStatusChoices,
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -206,12 +207,61 @@ def openNewEventChangeFormulaOnDisapprove(sender, instance, *args, **kwargs):
         current = instance
         previouse = EventChangeFormula.objects.get(id=instance.id)
 
-        if previouse.status == 1 and current.status == 3 and current.type == 0:
+        if (
+            previouse.status
+            == EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION
+            and current.status == EventChangeFormula.FormularStatusChoices.DECLINED
+            and current.type == EventChangeFormula.FormularTypeChoices.TIME_PERIODS
+        ):
             EventChangeFormula.objects.create(
                 teacher=instance.teacher,
                 date=instance.date,
                 teacher_event_group=instance.teacher_event_group,
                 day_group=instance.day_group,
+            )
+
+            previouse.childformular.all().update(
+                status=EventChangeFormula.FormularStatusChoices.DECLINED
+            )
+
+
+@receiver(pre_save, sender=EventChangeFormula)
+def apply_break_formulars(sender, instance, *args, **kwargs):
+    if instance.id is None:
+        pass
+    else:
+        current = instance
+        previouse = EventChangeFormula.objects.get(id=instance.id)
+
+        if (
+            previouse.status
+            == EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION
+            and current.status == EventChangeFormula.FormularStatusChoices.APPROVED
+            and current.type == EventChangeFormula.FormularTypeChoices.BREAKS
+        ):
+            events = Event.objects.filter(
+                Q(teacher_event_group=previouse.teacher_event_group),
+                Q(
+                    start__gte=timezone.datetime.combine(
+                        previouse.date, previouse.start_time
+                    )
+                ),
+                Q(
+                    end__lte=timezone.datetime.combine(
+                        previouse.date, previouse.end_time
+                    )
+                ),
+            )
+
+            print(events)
+
+            print(
+                events.update(
+                    lead_status=LeadStatusChoices.NOBODY,
+                    lead_manual_override=True,
+                    disable_automatic_changes=True,
+                    lead_status_last_change=timezone.now(),
+                )
             )
 
 
@@ -260,22 +310,23 @@ def updateLeadDatesBaseEvent(sender, instance, *args, **kwargs):
 
         if not current.force:
             day_event_groups = day_event_groups.exclude(Q(lead_manual_override=True))
-        else:
+        elif current.force and not current.manual_apply:
             current.force = False
             current.save()
-
         if current.manual_apply:
             for day_event_group in day_event_groups:
                 day_event_group.lead_start = instance.lead_start
                 day_event_group.lead_inquiry_start = instance.lead_inquiry_start
                 day_event_group.lead_status = current.lead_status
                 day_event_group.manual_apply = True
+                day_event_group.force = current.force
                 day_event_group.disable_automatic_changes = (
                     current.disable_automatic_changes
                 )
                 day_event_group.save()
 
             current.manual_apply = False
+            current.force = False
             current.save()
 
 
@@ -292,7 +343,7 @@ def updateLeadDatesDayEventGroups(sender, instance, *args, **kwargs):
             teacher_event_groups = teacher_event_groups.exclude(
                 Q(lead_manual_override=True)
             )
-        else:
+        elif current.force and not current.manual_apply:
             current.force = False
             current.save()
 
@@ -305,10 +356,12 @@ def updateLeadDatesDayEventGroups(sender, instance, *args, **kwargs):
                 teacher_event_group.disable_automatic_changes = (
                     current.disable_automatic_changes
                 )
+                teacher_event_group.force = current.force
                 teacher_event_group.lead_manual_override = False
                 teacher_event_group.save()
 
             current.manual_apply = False
+            current.force = False
             current.save()
 
 
@@ -323,7 +376,7 @@ def updateLeadStatusPerEvent(sender, instance, *args, **kwargs):
         events = Event.objects.filter(Q(teacher_event_group=previouse))
         if not current.force:
             events = events.exclude(Q(lead_manual_override=True))
-        else:
+        elif current.force and not current.manual_apply:
             current.force = False
             current.save()
 
@@ -335,4 +388,5 @@ def updateLeadStatusPerEvent(sender, instance, *args, **kwargs):
             )
 
             current.manual_apply = False
+            current.force = False
             current.save()
