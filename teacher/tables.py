@@ -43,7 +43,15 @@ class PersonalEventsTable(tables.Table):
         model = Event
         fields = ["start", "end", "parent"]
 
-    start = tables.TimeColumn()
-    end = tables.TimeColumn()
+    start = tables.TimeColumn(
+        verbose_name=_("Start"), orderable=True, attrs={"th": {"id": "start_id"}}
+    )
+    end = tables.TimeColumn(verbose_name=_("End"), orderable=False)
+    parent = tables.Column(orderable=False)
     status = EventStatusColumn(accessor="pk", orderable=False)
-    actions = EventActionsColumn(accessor="pk", orderable=False, verbose_name="")
+    actions = EventActionsColumn(
+        accessor="pk",
+        orderable=False,
+        verbose_name="",
+        attrs={"td": {"align": "right"}},
+    )

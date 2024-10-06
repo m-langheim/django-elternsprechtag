@@ -128,8 +128,10 @@
                           {% translate 'Break request' %}
                         </div>
                         <div class="row">
-                          <div class="col col-10">Here you can enter you own break request, which can be approved by the operators.</div>
-                          <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#breakModel{{ key }}">Break request</a>
+                          <div class="col col-10">
+                            {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+                          </div>
+                          <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#breakModel{{ key }}">{% translate 'Break request' %}</a>
                         </div>
                         {% comment %} <div>{{ filter.form.status|as_crispy_field }}</div> {% endcomment %}
                         {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
@@ -186,6 +188,30 @@
                     {% endfor %}
                   </ul> {% endcomment %}
                   {% render_table events.table %}
+                  <style>
+                    .hovereffect {
+                      color: black;
+                      text-decoration: none;
+                    }
+                    
+                    .hovereffect:hover {
+                      color: #dc3545;
+                    }
+                    
+                    .black {
+                      color: black;
+                      text-decoration: none;
+                    }
+                    
+                    .black:hover {
+                      color: black;
+                    }
+                  </style>
+                  <script>
+                    var start = document.getElementById('start_id')
+                    start.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`
+                    start.children[0].classList += ' hovereffect'
+                  </script>
                 </div>
               {% endfor %}
             </div>
@@ -198,12 +224,12 @@
         <div class="ps-4 pe-4 pb-4 pt-4">
           <div class="d-flex d-md-none row">
             <div class="d-flex d-md-none">
-              <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'home' %}">Zurück</a>
+              <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'home' %}">{% translate 'Back' %}</a>
             </div>
           </div>
           <div class="d-none d-md-flex row">
             <div class="d-none d-md-flex col-6">
-              <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2" href="{% url 'home' %}">Zurück</a>
+              <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2" href="{% url 'home' %}">{% translate 'Back' %}</a>
             </div>
           </div>
         </div>
@@ -216,18 +242,20 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="breakModel{{ key }}Label">Upload backup</h5>
+              <h5 class="modal-title" id="breakModel{{ key }}Label">{% translate 'Break request' %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'teacher_personal_day_group_add_break_request' group_pk=events.events.first.day_group.pk %}" method="POST" enctype="multipart/form-data">
               <div class="modal-body">
-                <p>Here you can upload previously downloaded backup files.</p>
+                <p>
+                  {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+                </p>
                 {% csrf_token %}
                 {{ break_form|crispy }}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <button class="btn btn-outline-danger" type="submit">Create</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+                <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
               </div>
             </form>
           </div>

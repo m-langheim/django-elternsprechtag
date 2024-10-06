@@ -227,5 +227,5 @@ class EventChangeFormulaBreakForm(forms.ModelForm):
 
 
 class BreakFormularCreationForm(forms.Form):
-    start_time = forms.TimeField()
-    end_time = forms.TimeField()
+    start_time = forms.TimeField(label=_("Start time"))
+    end_time = forms.TimeField(label=_("End time"))
