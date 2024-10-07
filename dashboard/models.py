@@ -438,12 +438,14 @@ class EventChangeFormula(models.Model):
     """
 
     class FormularTypeChoices(models.IntegerChoices):
-        TIME_PERIODS = (0, _("Time period"))
-        BREAKS = (1, _("Break request"))
-        ILLNESS = (2, _("Sick leave"))
+        TIME_PERIODS = 0, _("Time period")
+        BREAKS = 1, _("Break request")
+        ILLNESS = 2, _("Sick leave")
 
     # TYPE_CHOICES = ((0, _("Submit own time periods.")),)  # Submit of personal timeslots
-    type = models.IntegerField(choices=FormularTypeChoices, default=0)
+    type = models.IntegerField(
+        choices=FormularTypeChoices, default=FormularTypeChoices.TIME_PERIODS
+    )
     parent_formular = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
