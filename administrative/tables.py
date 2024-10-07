@@ -563,8 +563,17 @@ class EventsBookedPercentColumn(tables.Column):
         requested = value.filter(status=2).count()
         occupied = value.filter(status=1).count()
 
+        if total == 0:
+            free_percent = 0
+            requested_percent = 0
+            occupied_percent = 0
+        else:
+            free_percent = int((free / total) * 100)
+            requested_percent = int((requested / total) * 100)
+            occupied_percent = int((occupied / total) * 100)
+
         return format_html(
-            f'<div class="progress"> <div class="progress-bar bg-success" role="progressbar" style="width: {(free/total)*100}%" aria-valuenow="{free}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-warning" role="progressbar" style="width: {(requested/total)*100}%" aria-valuenow="{requested}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-danger" role="progressbar" style="width: {(occupied/total)*100}%" aria-valuenow="{occupied}" aria-valuemin="0" aria-valuemax="{total}"></div> </div>'
+            f'<div class="progress"> <div class="progress-bar bg-success" role="progressbar" style="width: {free_percent}%" aria-valuenow="{free}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-warning" role="progressbar" style="width: {requested_percent}%" aria-valuenow="{requested}" aria-valuemin="0" aria-valuemax="{total}"></div> <div class="progress-bar bg-danger" role="progressbar" style="width: {occupied_percent}%" aria-valuenow="{occupied}" aria-valuemin="0" aria-valuemax="{total}"></div> </div>'
         )
 
 
