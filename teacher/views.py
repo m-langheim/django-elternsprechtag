@@ -955,7 +955,7 @@ def viewMyEvents(request):
             "events_dt_dict": events_dt_dict,
             "events_table_dict": events_table_dict,
             "break_form": BreakFormularCreationForm(),
-            "sick_leave_form": SichLeaveForm(teacher=request.user),
+            "sick_leave_form": SickLeaveForm(teacher=request.user),
             "statistics": {
                 "total": Event.objects.filter(
                     Q(teacher=teacher), Q(start__gte=timezone.now())
@@ -1241,7 +1241,7 @@ class EventResetLeadStatusToOriginalView(View):
 
 class EventSickLeaveRequestView(View):
     def get(self, request):
-        form = SichLeaveForm(teacher=request.user)
+        form = SickLeaveForm(teacher=request.user)
 
         return render(
             request,
@@ -1255,7 +1255,7 @@ class EventSickLeaveRequestView(View):
         )
 
     def post(self, request):
-        form = SichLeaveForm(data=request.POST, teacher=request.user)
+        form = SickLeaveForm(data=request.POST, teacher=request.user)
         if form.is_valid():
             form.save()
             return redirect("teacher_personal_events")
