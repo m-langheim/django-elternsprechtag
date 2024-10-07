@@ -53,7 +53,9 @@ def async_create_events_special(teachers: list, date: str, start_t: str, end_t: 
 @shared_task
 def apply_event_change_formular(formular_id: int):
     try:
-        formular = EventChangeFormula.objects.get(id=formular_id)
+        formular = EventChangeFormula.objects.get(
+            id=formular_id, type=EventChangeFormula.FormularTypeChoices.TIME_PERIODS
+        )
     except:
         pass
     else:
@@ -77,4 +79,4 @@ def apply_event_change_formular(formular_id: int):
 @shared_task
 def all_events_update_event_lead_status():
     for event in Event.objects.all():
-        event.update_event_lead_status()
+        event.update_event_lead_status(automatic=True)
