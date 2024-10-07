@@ -21,6 +21,7 @@ from django.utils.decorators import method_decorator
 from .decorators import teacher_required, upcomming_base_event_required
 from .forms import *
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 
 from .tables import *
 
@@ -761,8 +762,8 @@ def viewMyEvents(request):
     closed_formulars = EventChangeFormula.objects.filter(
         Q(teacher=request.user),
         Q(date__gte=timezone.datetime.now()),
-        Q(status=2) | Q(status=3),
-    )[:10]
+        Q(status=2) | Q(status=3) | Q(status=4),
+    ).order_by("created_at")
 
     teacher = request.user
 
@@ -925,6 +926,39 @@ def viewMyEvents(request):
             "events_dt_dict": events_dt_dict,
             "events_table_dict": events_table_dict,
             "break_form": BreakFormularCreationForm(),
+            "sick_leave_form": SichLeaveForm(teacher=request.user),
+            "statistics": {
+                "total": Event.objects.filter(
+                    Q(teacher=teacher), Q(start__gte=timezone.now())
+                ),
+                "free_events": Event.objects.filter(
+                    Q(teacher=teacher),
+                    Q(start__gte=timezone.now()),
+                    ~Q(status=Event.StatusChoices.OCCUPIED),
+                ).count(),
+                "occupied_events": Event.objects.filter(
+                    Q(teacher=teacher),
+                    Q(start__gte=timezone.now()),
+                    Q(status=Event.StatusChoices.OCCUPIED),
+                    ~Q(lead_status=LeadStatusChoices.NOBODY),
+                ).count(),
+                "occupied_percent": int(
+                    (
+                        Event.objects.filter(
+                            Q(teacher=teacher),
+                            Q(start__gte=timezone.now()),
+                            Q(status=Event.StatusChoices.OCCUPIED),
+                            ~Q(lead_status=LeadStatusChoices.NOBODY),
+                        ).count()
+                        / Event.objects.filter(
+                            Q(teacher=teacher),
+                            Q(start__gte=timezone.now()),
+                            ~Q(lead_status=LeadStatusChoices.NOBODY),
+                        ).count()
+                    )
+                    * 100
+                ),
+            },
             "page_under_construction": True,
         },
     )
@@ -1029,63 +1063,79 @@ class EditMyEventsDetail(View):
 
 
 class EventBreakRequestView(View):
-    def get(self, request, group_pk):
+    def get(self, request):
         form = BreakFormularCreationForm()
 
-        return render(
-            request,
-            "teacher/event/events_add_break_formular.html",
-            {"form": form, "page_under_construction": True},
+        return (
+            render(
+                request,
+                "teacher/teacher_form_fallback.html",
+                {
+                    "form": form,
+                    "page_under_construction": True,
+                    "title": _("Break period request"),
+                    "back_url": reverse("teacher_personal_events"),
+                },
+            ),
         )
 
-    def post(self, request, group_pk):
-        teacher_group = get_object_or_404(
-            TeacherEventGroup, teacher=request.user, pk=group_pk
-        )
+    def post(self, request):
 
         form = BreakFormularCreationForm(data=request.POST)
 
         if form.is_valid():
+            day_group = form.cleaned_data["day_group"]
             start_time = form.cleaned_data["start_time"]
             end_time = form.cleaned_data["end_time"]
+            try:
+                teacher_group = TeacherEventGroup.objects.get(
+                    Q(teacher=request.user), Q(day_group=day_group)
+                )
+            except TeacherEventGroup.MultipleObjectsReturned:
+                raise ValueError("Only one teachergroup should exist per date.")
 
             start_datetime = timezone.datetime.combine(
-                date=teacher_group.day_group.date, time=start_time
+                date=day_group.date, time=start_time
             )
-            end_datetime = timezone.datetime.combine(
-                date=teacher_group.day_group.date, time=end_time
-            )
-
-            print(
-                type(start_time),
-                start_time,
-                timezone.datetime.combine(
-                    date=teacher_group.day_group.date, time=start_time
-                ),
-            )
+            end_datetime = timezone.datetime.combine(date=day_group.date, time=end_time)
 
             events = Event.objects.filter(
-                teacher_event_group=teacher_group,
-                start__gte=start_datetime,
-                end__lte=end_datetime,
+                Q(teacher_event_group=teacher_group),
+                Q(start__gte=start_datetime),
+                Q(end__lte=end_datetime),
             )
 
-            for event in events:
-                if not event.status == Event.StatusChoices.UNOCCUPIED:
-                    messages.error(
-                        request,
-                        "This event is already occupied. If you want to set your break to this event anyways please get in touch with the system operators.",
-                    )
-                    return redirect("teacher_personal_events")
-                elif (
-                    event.lead_status == LeadStatusChoices.NOBODY
-                    and event.lead_manual_override == True
-                ):
-                    messages.info(
-                        request,
-                        "It is already impossible for anyone to book this event at any time. No further action is required.",
-                    )
-                    return redirect("teacher_personal_events")
+            if not Event.StatusChoices.UNOCCUPIED in events.values_list(
+                "status", flat=True
+            ):
+                messages.error(
+                    request,
+                    _(
+                        "All events are already occupied. If you want to set your break to this period anyways please get in touch with the system operators."
+                    ),
+                )
+                return redirect("teacher_personal_events")
+
+            if not events.exclude(
+                Q(lead_status=LeadStatusChoices.NOBODY), Q(lead_manual_override=True)
+            ).exists():
+                messages.warning(
+                    request,
+                    "There are no events changes can be applied to. Abbort formular creation.",
+                )
+                return redirect("teacher_personal_events")
+
+            if Event.StatusChoices.INQUIRY in events.values_list(
+                "status", flat=True
+            ) or Event.StatusChoices.OCCUPIED in events.values_list(
+                "status", flat=True
+            ):
+                messages.info(
+                    request,
+                    _(
+                        "The break request can not be applied to all events within the requested time period because some of the events are occupied."
+                    ),
+                )
 
             formular = EventChangeFormula.objects.create(
                 type=EventChangeFormula.FormularTypeChoices.BREAKS,
@@ -1107,7 +1157,7 @@ class EventBreakRequestView(View):
             return redirect("teacher_personal_events")
         return render(
             request,
-            "teacher/event/events_add_break_formular.html",
+            "teacher/teacher_form_fallback.html",
             {"form": form, "page_under_construction": True},
         )
 
@@ -1172,4 +1222,54 @@ class EventResetLeadStatusToOriginalView(View):
             request, "The lead status was successfully reset to its original state."
         )
 
+        return redirect("teacher_personal_events")
+
+
+class EventSickLeaveRequestView(View):
+    def get(self, request):
+        form = SichLeaveForm(teacher=request.user)
+
+        return render(
+            request,
+            "teacher/teacher_form_fallback.html",
+            {
+                "form": form,
+                "page_under_construction": True,
+                "title": _("Sick leave request"),
+                "back_url": reverse("teacher_personal_events"),
+            },
+        )
+
+    def post(self, request):
+        form = SichLeaveForm(data=request.POST, teacher=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("teacher_personal_events")
+        return render(
+            request,
+            "teacher/teacher_form_fallback.html",
+            {
+                "form": form,
+                "page_under_construction": True,
+                "title": _("Sick leave request"),
+                "back_url": reverse("teacher_personal_events"),
+            },
+        )
+
+
+class DeleteEventFormularView(View):
+    def get(self, request, pk):
+        formular = get_object_or_404(EventChangeFormula, pk=pk)
+
+        if formular.type == EventChangeFormula.FormularTypeChoices.TIME_PERIODS:
+            messages.error(request, "You can´t remove this formular.")
+
+            return redirect("teacher_personal_events")
+
+        print(formular)
+
+        formular.status = EventChangeFormula.FormularStatusChoices.REMOVED
+        formular.save()
+
+        messages.success(request, "Formular was successfully removed.")
         return redirect("teacher_personal_events")

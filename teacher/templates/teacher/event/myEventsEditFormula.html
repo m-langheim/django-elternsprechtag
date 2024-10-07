@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block title %}
   Dashboard - Lehrer
@@ -40,6 +41,9 @@
               <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2" href="{% url 'teacher_personal_events' %}">Zurück</a>
             </div>
             <div class="d-none d-md-flex col-6 justify-content-end">
+              {% if formula.status == 1 and formula.type != 0 %}
+                <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 mb-2 me-2" href="{% url 'teacher_personal_formulars_delete' pk=formula.pk %}">{% translate 'Delete' %}</a>
+              {% endif %}
               <input type="submit" class="btn btn-outline-danger col-12 col-md-3 mb-2 mt-2 me-2" value="Anfragen" />
             </div>
           </div>

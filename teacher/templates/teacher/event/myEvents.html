@@ -64,17 +64,19 @@
                 <li class="list-group-item">
                   <div class="row gy-1 align-items-center">
                     {% if formula.no_events %}
-                      <div class="col-12 col-md-7 col-xl-9 text-start">Angefragt: Keine Termine am {{ formula.date }}</div>
+                      <div class="col-12 col-md-7 col-xl-9 text-start">{{ formula.get_type_display }}: Keine Termine am {{ formula.date }}</div>
                     {% else %}
-                      <div class="col-12 col-md-7 col-xl-9 text-start">Angefragt: {{ formula.get_type_display }} für den {{ formula.date }}
+                      <div class="col-12 col-md-7 col-xl-9 text-start">{{ formula.get_type_display }} für den {{ formula.date }}
                         ({{ formula.start_time }} Uhr - {{ formula.end_time }} Uhr)</div>
                     {% endif %}
                     <div class="col-12 col-md-5 col-xl-3">
                       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         {% if formula.status == 2 %}
                           <div class="btn btn-outline-success col-12 col-md-6">Bestätigt</div>
-                        {% else %}
+                        {% elif formula.status == 3 %}
                           <div class="btn btn-outline-dark col-12 col-md-6">Abgelehnt</div>
+                        {% else %}
+                          <div class="btn btn-outline-dark col-12 col-md-6">Entfernt</div>
                         {% endif %}
                       </div>
                     </div>
@@ -92,6 +94,47 @@
         <div class="pt-4 ps-4 pe-4">
           <p class="h1">Ihre Termine</p>
           {% if events|length > 0 %}
+            <div class="grid gap-3 d-flex">
+              <div class="flex-grow-1">
+                <div class="progress bg-success" role="progressbar" aria-label="Occupied events" aria-valuenow="{{ statistics.occupied_events }}" aria-valuemin="0" aria-valuemax="{{ statistics.events|length }}" style="height: 37.6px;">
+                  <div class="progress-bar bg-danger" style="width: {{ statistics.occupied_percent }}%"></div>
+                </div>
+              </div>
+              <div class="">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOptions" aria-expanded="false" aria-controls="collapseOptions"><i class="fa-solid fa-filter"></i> {% translate 'Options' %}</button>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="collapse" id="collapseOptions">
+                <div class="card card-body">
+                  <div class="row">
+                    <div class="col col-10">
+                      <div class="h5">
+                        {% translate 'Break request' %}
+                      </div>
+                      <div class="">
+                        {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+                      </div>
+                    </div>
+                    <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#breakModal">{% translate 'Request' %}</a>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <div class="row">
+                    <div class="col col-10">
+                      <div class="h5">
+                        {% translate 'Sick leave' %}
+                      </div>
+                      <div class="">
+                        {% translate 'If you are ill you can request sick leave here. The event cancelation will be done automatically.' %}
+                      </div>
+                    </div>
+                    <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#sickModal">{% translate 'Request' %}</a>
+                  </div>
+                </div>
+                {% comment %} <div>{{ filter.form.status|as_crispy_field }}</div> {% endcomment %}
+                {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+              </div>
+            </div>
             <!-- Liste an möglichen Tabs -->
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
               <style>
@@ -111,33 +154,6 @@
             <div class="tab-content" id="pills-tabContent">
               {% for key, events in events_dt_dict.items %}
                 <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{% endif %}" id="pills-{{ key }}" role="tabpanel" aria-labelledby="pills-{{ key }}-tab" tabindex="0">
-                  <div class="grid gap-3 d-flex">
-                    <div class="flex-grow-1">
-                      <div class="progress bg-success" role="progressbar" aria-label="Occupied events" aria-valuenow="{{ events.occupied_events }}" aria-valuemin="0" aria-valuemax="{{ events.events|length }}" style="height: 37.6px;">
-                        <div class="progress-bar bg-danger" style="width: {{ events.occupied_percent }}%"></div>
-                      </div>
-                    </div>
-                    <div class="">
-                      <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefilter" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-filter"></i> {% translate 'Options' %}</button>
-                    </div>
-                  </div>
-                  <div class="row mb-2">
-                    <div class="collapse" id="collapsefilter">
-                      <div class="card card-body">
-                        <div class="h5">
-                          {% translate 'Break request' %}
-                        </div>
-                        <div class="row">
-                          <div class="col col-10">
-                            {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
-                          </div>
-                          <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#breakModel{{ key }}">{% translate 'Break request' %}</a>
-                        </div>
-                        {% comment %} <div>{{ filter.form.status|as_crispy_field }}</div> {% endcomment %}
-                        {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
-                      </div>
-                    </div>
-                  </div>
                   {% comment %} <ul class="list-group list-group-flush">
                     {% for event in events.events %}
                       <li class="list-group-item">
@@ -236,31 +252,52 @@
       </div>
     </div>
   </div>
-  {% for key, events in events_dt_dict.items %}
-    {% if events|length > 0 %}
-      <div class="modal fade" id="breakModel{{ key }}" tabindex="-1" aria-labelledby="breakModel{{ key }}Label" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="breakModel{{ key }}Label">{% translate 'Break request' %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{% url 'teacher_personal_day_group_add_break_request' group_pk=events.events.first.day_group.pk %}" method="POST" enctype="multipart/form-data">
-              <div class="modal-body">
-                <p>
-                  {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
-                </p>
-                {% csrf_token %}
-                {{ break_form|crispy }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-                <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
-              </div>
-            </form>
-          </div>
+
+  <div class="modal fade" id="breakModal" tabindex="-1" aria-labelledby="breakModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="breakModalLabel">{% translate 'Break request' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <form action="{% url 'teacher_personal_day_group_add_break_request' %}" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            <p>
+              {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+            </p>
+            {% csrf_token %}
+            {{ break_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
+          </div>
+        </form>
       </div>
-    {% endif %}
-  {% endfor %}
+    </div>
+  </div>
+
+  <div class="modal fade" id="sickModal" tabindex="-1" aria-labelledby="sickModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sickModalLabel">{% translate 'Sick leave request' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'teacher_request_sick_leave' %}" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            <p>
+              {% translate 'If you are ill you can request sick leave here. The event cancelation will be done automatically.' %}
+            </p>
+            {% csrf_token %}
+            {{ sick_leave_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

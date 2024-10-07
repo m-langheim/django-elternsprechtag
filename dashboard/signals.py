@@ -251,17 +251,14 @@ def apply_break_formulars(sender, instance, *args, **kwargs):
                         previouse.date, previouse.end_time
                     )
                 ),
+                Q(status=Event.StatusChoices.UNOCCUPIED),
             )
 
-            print(events)
-
-            print(
-                events.update(
-                    lead_status=LeadStatusChoices.NOBODY,
-                    lead_manual_override=True,
-                    disable_automatic_changes=True,
-                    lead_status_last_change=timezone.now(),
-                )
+            events.update(
+                lead_status=LeadStatusChoices.NOBODY,
+                lead_manual_override=True,
+                disable_automatic_changes=True,
+                lead_status_last_change=timezone.now(),
             )
 
 

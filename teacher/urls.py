@@ -41,9 +41,19 @@ urlpatterns = [
         name="teacher_personal_events_edit",
     ),
     path(
-        "events/break_formulars/<group_pk>/create/",
+        "events/formulars/<pk>/delete/",
+        DeleteEventFormularView.as_view(),
+        name="teacher_personal_formulars_delete",
+    ),
+    path(
+        "events/break_formulars/create/",
         EventBreakRequestView.as_view(),
         name="teacher_personal_day_group_add_break_request",
+    ),
+    path(
+        "events/sick_leave/request/",
+        EventSickLeaveRequestView.as_view(),
+        name="teacher_request_sick_leave",
     ),
     path(
         "events/break_formulars/event/<event_pk>/create/",

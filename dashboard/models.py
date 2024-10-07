@@ -475,6 +475,7 @@ class EventChangeFormula(models.Model):
         PENDING_CONFIRMATION = 1, _("Wait for confirmation")
         APPROVED = 2, _("Approved")
         DECLINED = 3, _("Declined")
+        REMOVED = 4, _("Removed")
 
     # CHOICES_STATUS = (
     #     (0, _("Wait for processing")),  # Waiting to be filled
@@ -485,6 +486,8 @@ class EventChangeFormula(models.Model):
     status = models.IntegerField(
         choices=FormularStatusChoices, default=FormularStatusChoices.PENDING_PROCESSING
     )
+
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
 
     class Meta:
         verbose_name = _("Event creation formula")

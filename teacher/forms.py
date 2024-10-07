@@ -1,7 +1,14 @@
 from dataclasses import field
 from django import forms
 from django.db.models import Q
-from dashboard.models import Student, Event, EventChangeFormula, BaseEventGroup
+from dashboard.models import (
+    Student,
+    Event,
+    EventChangeFormula,
+    BaseEventGroup,
+    DayEventGroup,
+    TeacherEventGroup,
+)
 from authentication.models import CustomUser, Tag, TeacherExtraData
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -227,5 +234,86 @@ class EventChangeFormulaBreakForm(forms.ModelForm):
 
 
 class BreakFormularCreationForm(forms.Form):
+    day_group = forms.ModelChoiceField(
+        queryset=DayEventGroup.objects.filter(date__gte=timezone.now()),
+        initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
+        label=_("Day group"),
+        help_text=_(
+            "Please choose for which date you want to create the break request."
+        ),
+    )
     start_time = forms.TimeField(label=_("Start time"))
     end_time = forms.TimeField(label=_("End time"))
+
+
+class SichLeaveForm(forms.ModelForm):
+    class Meta:
+        model = EventChangeFormula
+        fields = ["day_group", "start_time", "end_time", "no_events"]
+
+    day_group = forms.ModelChoiceField(
+        queryset=DayEventGroup.objects.filter(date__gte=timezone.now()),
+        initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
+        label=_("Day group"),
+        help_text=_(
+            "Please choose for which date you want to create the break request."
+        ),
+    )
+
+    def __init__(self, teacher, *args, **kwargs):
+        super(SichLeaveForm, self).__init__(*args, **kwargs)
+
+        self.teacher = teacher
+
+    def clean_no_events(self):
+        no_events = self.cleaned_data.get("no_events", False)
+
+        if not no_events:
+            if not self.cleaned_data["start_time"]:
+                self.add_error(
+                    "start_time",
+                    "If you do not request sick leave for all events, you have to specify a start time.",
+                )
+            if not self.cleaned_data["end_time"]:
+                self.add_error(
+                    "end_time",
+                    "If you do not request sick leave for all events, you have to specify a start time.",
+                )
+        else:
+            if self.cleaned_data["start_time"]:
+                self.add_error(
+                    "start_time",
+                    "When you request sick leave only the whole day or a specific time period can be requested. Not both at the same time.",
+                )
+            if self.cleaned_data["end_time"]:
+                self.add_error(
+                    "end_time",
+                    "When you request sick leave only the whole day or a specific time period can be requested. Not both at the same time.",
+                )
+            # if self.cleaned_data["start_time"] or self.cleaned_data["end_time"]:
+            #     self.add_error(
+            #         "no_events",
+            #         "When you request sick leave only the whole day or a specific time period can be requested. Not both at the same time.",
+            #     )
+
+        return no_events
+
+    def save(self, commit=True):
+        instance = self.instance
+        day_group = self.cleaned_data["day_group"]
+
+        instance.teacher = self.teacher
+        instance.type = EventChangeFormula.FormularTypeChoices.ILLNESS
+        instance.day_group = day_group
+        instance.teacher_event_group = TeacherEventGroup.objects.get(
+            Q(day_group=day_group), Q(teacher=self.teacher)
+        )
+        instance.date = day_group.date
+        instance.start_time = self.cleaned_data["start_time"]
+        instance.end_time = self.cleaned_data["end_time"]
+        instance.no_events = self.cleaned_data["no_events"]
+
+        instance.status = EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION
+
+        if commit:
+            instance.save()
