@@ -82,27 +82,34 @@ class AdministrativeDashboard(View):
             ):
                 base_events_str += " und "
 
+        if not Student.objects.all().exists():
+            with_parent_percent = 0
+            without_parent_percent = 0
+        else:
+            with_parent_percent = int(
+                (
+                    Student.objects.filter(customuser__isnull=False).count()
+                    / Student.objects.all().count()
+                )
+                * 100
+            )
+            without_parent_percent = int(
+                (
+                    Student.objects.filter(customuser__isnull=True).count()
+                    / Student.objects.all().count()
+                )
+                * 100
+            )
+
         context = {
             "students": {
                 "total": Student.objects.all().count(),
                 "with_parent": Student.objects.filter(customuser__isnull=False).count(),
-                "with_parent_percent": int(
-                    (
-                        Student.objects.filter(customuser__isnull=False).count()
-                        / Student.objects.all().count()
-                    )
-                    * 100
-                ),
+                "with_parent_percent": with_parent_percent,
                 "without_parent": Student.objects.filter(
                     customuser__isnull=True
                 ).count(),
-                "without_parent_percent": int(
-                    (
-                        Student.objects.filter(customuser__isnull=True).count()
-                        / Student.objects.all().count()
-                    )
-                    * 100
-                ),
+                "without_parent_percent": without_parent_percent,
                 "unapproved_changes": StudentChange.objects.filter(
                     approved=False
                 ).exists(),
