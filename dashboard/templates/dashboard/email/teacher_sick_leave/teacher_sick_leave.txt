@@ -1,0 +1,13 @@
+Hallo {{ parent.first_name }} {{ parent.last_name }}, 
+
+Sie hatten einen Termin bei {{ teacher.first_name }} {{ teacher.last_name }} gebucht. Leider ist diese Lehrkraft kutzfristig erkrankt und kann die Termine am {{ events.first.start|date }} daher nicht wahrnehmen.
+
+Betroffen davon sind bei Ihnen folgende Termine:
+{% for event in events %}
+{{ event.start|time}}-{{event.end|time}} - {% for student in event.student.all %}{{ student.first_name }} {{ student.last_name }}{% if student != event.student.last %}, {% endif %}{% endfor %}
+{% endfor %}
+
+Wir möchten uns für die Unannehmlichkeiten entschuldigen und hoffen für Sie auf einen erfolgreichen Elternsprechtag.
+
+Mit freundlichen Grüßen
+Ihr Elternsprechtag-Team

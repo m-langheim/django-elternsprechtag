@@ -816,85 +816,85 @@ def viewMyEvents(request):
                 ),
                 order_by="start",
             ),
-            "free_events": Event.objects.filter(
-                Q(teacher=teacher),
-                Q(
-                    start__gte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(
-                    start__lte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                    )
-                ),
-                ~Q(status=Event.StatusChoices.OCCUPIED),
-            ).count(),
-            "occupied_events": Event.objects.filter(
-                Q(teacher=teacher),
-                Q(
-                    start__gte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(
-                    start__lte=timezone.datetime.combine(
-                        date.date(),
-                        timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
-                    )
-                ),
-                Q(status=Event.StatusChoices.OCCUPIED),
-                ~Q(lead_status=LeadStatusChoices.NOBODY),
-            ).count(),
-            "occupied_percent": int(
-                (
-                    Event.objects.filter(
-                        Q(teacher=teacher),
-                        Q(
-                            start__gte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime(
-                                    "00:00:00", "%H:%M:%S"
-                                ).time(),
-                            )
-                        ),
-                        Q(
-                            start__lte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime(
-                                    "23:59:59", "%H:%M:%S"
-                                ).time(),
-                            )
-                        ),
-                        Q(status=Event.StatusChoices.OCCUPIED),
-                        ~Q(lead_status=LeadStatusChoices.NOBODY),
-                    ).count()
-                    / Event.objects.filter(
-                        Q(teacher=teacher),
-                        Q(
-                            start__gte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime(
-                                    "00:00:00", "%H:%M:%S"
-                                ).time(),
-                            )
-                        ),
-                        Q(
-                            start__lte=timezone.datetime.combine(
-                                date.date(),
-                                timezone.datetime.strptime(
-                                    "23:59:59", "%H:%M:%S"
-                                ).time(),
-                            )
-                        ),
-                        ~Q(lead_status=LeadStatusChoices.NOBODY),
-                    ).count()
-                )
-                * 100
-            ),
+            # "free_events": Event.objects.filter(
+            #     Q(teacher=teacher),
+            #     Q(
+            #         start__gte=timezone.datetime.combine(
+            #             date.date(),
+            #             timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+            #         )
+            #     ),
+            #     Q(
+            #         start__lte=timezone.datetime.combine(
+            #             date.date(),
+            #             timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+            #         )
+            #     ),
+            #     ~Q(status=Event.StatusChoices.OCCUPIED),
+            # ).count(),
+            # "occupied_events": Event.objects.filter(
+            #     Q(teacher=teacher),
+            #     Q(
+            #         start__gte=timezone.datetime.combine(
+            #             date.date(),
+            #             timezone.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+            #         )
+            #     ),
+            #     Q(
+            #         start__lte=timezone.datetime.combine(
+            #             date.date(),
+            #             timezone.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+            #         )
+            #     ),
+            #     Q(status=Event.StatusChoices.OCCUPIED),
+            #     ~Q(lead_status=LeadStatusChoices.NOBODY),
+            # ).count(),
+            # "occupied_percent": int(
+            #     (
+            #         Event.objects.filter(
+            #             Q(teacher=teacher),
+            #             Q(
+            #                 start__gte=timezone.datetime.combine(
+            #                     date.date(),
+            #                     timezone.datetime.strptime(
+            #                         "00:00:00", "%H:%M:%S"
+            #                     ).time(),
+            #                 )
+            #             ),
+            #             Q(
+            #                 start__lte=timezone.datetime.combine(
+            #                     date.date(),
+            #                     timezone.datetime.strptime(
+            #                         "23:59:59", "%H:%M:%S"
+            #                     ).time(),
+            #                 )
+            #             ),
+            #             Q(status=Event.StatusChoices.OCCUPIED),
+            #             ~Q(lead_status=LeadStatusChoices.NOBODY),
+            #         ).count()
+            #         / Event.objects.filter(
+            #             Q(teacher=teacher),
+            #             Q(
+            #                 start__gte=timezone.datetime.combine(
+            #                     date.date(),
+            #                     timezone.datetime.strptime(
+            #                         "00:00:00", "%H:%M:%S"
+            #                     ).time(),
+            #                 )
+            #             ),
+            #             Q(
+            #                 start__lte=timezone.datetime.combine(
+            #                     date.date(),
+            #                     timezone.datetime.strptime(
+            #                         "23:59:59", "%H:%M:%S"
+            #                     ).time(),
+            #                 )
+            #             ),
+            #             ~Q(lead_status=LeadStatusChoices.NOBODY),
+            #         ).count()
+            #     )
+            #     * 100
+            # ),
         }
         events_table_dict[str(date.date())] = PersonalEventsTable(
             data=Event.objects.filter(
@@ -914,6 +914,30 @@ def viewMyEvents(request):
             ),
             order_by="start",
         )
+
+    if Event.objects.filter(
+        Q(teacher=teacher),
+        Q(start__gte=timezone.now()),
+        ~Q(lead_status=LeadStatusChoices.NOBODY),
+    ).exists():
+        occupied_percent = int(
+            (
+                Event.objects.filter(
+                    Q(teacher=teacher),
+                    Q(start__gte=timezone.now()),
+                    Q(status=Event.StatusChoices.OCCUPIED),
+                    ~Q(lead_status=LeadStatusChoices.NOBODY),
+                ).count()
+                / Event.objects.filter(
+                    Q(teacher=teacher),
+                    Q(start__gte=timezone.now()),
+                    ~Q(lead_status=LeadStatusChoices.NOBODY),
+                ).count()
+            )
+            * 100
+        )
+    else:
+        occupied_percent = 0
 
     return render(
         request,
@@ -942,22 +966,7 @@ def viewMyEvents(request):
                     Q(status=Event.StatusChoices.OCCUPIED),
                     ~Q(lead_status=LeadStatusChoices.NOBODY),
                 ).count(),
-                "occupied_percent": int(
-                    (
-                        Event.objects.filter(
-                            Q(teacher=teacher),
-                            Q(start__gte=timezone.now()),
-                            Q(status=Event.StatusChoices.OCCUPIED),
-                            ~Q(lead_status=LeadStatusChoices.NOBODY),
-                        ).count()
-                        / Event.objects.filter(
-                            Q(teacher=teacher),
-                            Q(start__gte=timezone.now()),
-                            ~Q(lead_status=LeadStatusChoices.NOBODY),
-                        ).count()
-                    )
-                    * 100
-                ),
+                "occupied_percent": occupied_percent,
             },
             "page_under_construction": True,
         },
