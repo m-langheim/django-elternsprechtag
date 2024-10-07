@@ -177,6 +177,7 @@ class EventFormularActionTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
+            "type",
             "teacher",
             "date",
             "start_time",
@@ -234,6 +235,7 @@ class EventFormularUpcommingTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
+            "type",
             "teacher",
             "date",
         )
@@ -267,6 +269,7 @@ class EventFormularOldTable(tables.Table):
     class Meta:
         model = EventChangeFormula
         fields = (
+            "type",
             "teacher",
             "date",
             "status",

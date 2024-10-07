@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="btn-group dropstart">
+  <button type="button" class="btn hidden-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v fa-lg"></i></button>
+  <ul class="dropdown-menu">
+    {% if event.status != 0 %}
+      <li>
+        <a class="dropdown-item" href="{% url 'teacher_event_view' event_id=event.id %}"><i class="fa-solid fa-eye me-1"></i>View</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'teacher_cancel_event_view' event_id=event.id %}"><i class="fa-solid fa-xmark me-1"></i>Cancel</a>
+      </li>
+    {% endif %}
+    {% if event.status == 2 %}
+      <li>
+        <a class="dropdown-item" href="{% url 'teacher_confirm_event' event=event.id %}">Confirm event</a>
+      </li>
+    {% endif %}
+    {% if event.lead_status != 0 and event.status == 0 %}
+      <li>
+        <a class="dropdown-item" href="{% url 'teacher_personal_event_add_break_request' event_pk=event.pk %}"><i class="fa-solid fa-pause me-1"></i>Request as break</a>
+      </li>
+    {% endif %}
+
+    {% if event.lead_status < event.teacher_event_group.lead_status %}
+      {% if event.status != 0 or event.status == 2 or event.lead_status != 0 and event.status == 0 %}
+        <li>
+          <hr class="dropdown-divider" />
+        </li>
+      {% endif %}
+      <li>
+        <a class="dropdown-item" href="{% url 'teacher_personal_reset_event_lead_status' event_pk=event.pk %}"><i class="fa-solid fa-arrows-spin me-1"></i>{% translate 'Reset' %}</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
