@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 23:15+0200\n"
+"POT-Creation-Date: 2024-10-07 00:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,16 +27,16 @@ msgid "Teacher-Email"
 msgstr ""
 
 #: administrative/forms.py:113 administrative/forms.py:437
-#: administrative/tables.py:75 administrative/tables.py:307
-#: administrative/tables.py:357 administrative/tables.py:393
+#: administrative/tables.py:75 administrative/tables.py:310
+#: administrative/tables.py:360 administrative/tables.py:396
 #: authentication/models.py:18 authentication/models.py:57
 #: authentication/models.py:86
 msgid "First name"
 msgstr ""
 
 #: administrative/forms.py:114 administrative/forms.py:438
-#: administrative/tables.py:80 administrative/tables.py:312
-#: administrative/tables.py:362 administrative/tables.py:398
+#: administrative/tables.py:80 administrative/tables.py:315
+#: administrative/tables.py:365 administrative/tables.py:401
 #: authentication/models.py:19 authentication/models.py:58
 #: authentication/models.py:88
 msgid "Last name"
@@ -74,12 +74,13 @@ msgstr ""
 msgid "The lead inquiry must start before the main lead."
 msgstr ""
 
-#: administrative/forms.py:211 administrative/tables.py:199
-#: administrative/tables.py:452
+#: administrative/forms.py:211 administrative/tables.py:200
+#: administrative/tables.py:455 teacher/tables.py:47
 msgid "Start"
 msgstr ""
 
-#: administrative/forms.py:215 administrative/tables.py:205
+#: administrative/forms.py:215 administrative/tables.py:206
+#: teacher/tables.py:49
 msgid "End"
 msgstr ""
 
@@ -98,7 +99,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: administrative/forms.py:329 administrative/tables.py:367
+#: administrative/forms.py:329 administrative/tables.py:370
 #: authentication/models.py:139
 msgid "Acronym"
 msgstr ""
@@ -145,24 +146,24 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
-#: administrative/tables.py:187 administrative/tables.py:242
-#: administrative/tables.py:276 administrative/tables.py:447
-#: authentication/models.py:79 dashboard/models.py:461
+#: administrative/tables.py:188 administrative/tables.py:244
+#: administrative/tables.py:279 administrative/tables.py:450
+#: authentication/models.py:79 dashboard/models.py:465
 #: teacher/templates/teacher/event/detailEvent.html:32
 msgid "Teacher"
 msgstr ""
 
-#: administrative/tables.py:193 administrative/tables.py:248
-#: administrative/tables.py:282 dashboard/models.py:463
+#: administrative/tables.py:194 administrative/tables.py:250
+#: administrative/tables.py:285 dashboard/models.py:467
 msgid "Date"
 msgstr ""
 
-#: administrative/tables.py:288
+#: administrative/tables.py:291
 #: administrative/templates/administrative/time_slots/events_table.html:34
 msgid "Status"
 msgstr ""
 
-#: administrative/tables.py:299
+#: administrative/tables.py:302
 #: administrative/templates/administrative/administrative_base.html:55
 #: administrative/templates/administrative/administrative_base.html:78
 #: administrative/templates/administrative/administrative_base.html:123
@@ -177,7 +178,7 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: administrative/tables.py:373
+#: administrative/tables.py:376
 #: administrative/templates/administrative/users/teachers/tags/tags_list.html:5
 #: administrative/templates/administrative/users/teachers/tags/tags_list.html:10
 #: administrative/templates/administrative/users/teachers/teachers_overview.html:15
@@ -189,7 +190,7 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: administrative/tables.py:457
+#: administrative/tables.py:460
 #: administrative/templates/administrative/administrative_base.html:61
 #: administrative/templates/administrative/administrative_base.html:87
 #: administrative/templates/administrative/events/teacher_day_event_groups/day_group_table.html:49
@@ -251,7 +252,7 @@ msgstr ""
 #: administrative/templates/administrative/administrative_base.html:84
 #: administrative/templates/administrative/administrative_base.html:131
 #: administrative/templates/administrative/dashboard/administrative_dashboard.html:36
-#: dashboard/models.py:420
+#: dashboard/models.py:412
 msgid "Events"
 msgstr ""
 
@@ -259,7 +260,7 @@ msgstr ""
 #: administrative/templates/administrative/administrative_base.html:157
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:217
 #: administrative/templates/administrative/events/event_edit.html:100
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:217
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:245
 #: administrative/templates/administrative/student/student_detail_view.html:153
 #: administrative/templates/administrative/time_slots/overview.html:73
 #: dashboard/templates/dashboard/announcements/announcements_list.html:67
@@ -273,6 +274,8 @@ msgstr ""
 #: profile_settings/templates/profile_settings/profile_layout.html:103
 #: teacher/templates/teacher/event/detailEvent.html:96
 #: teacher/templates/teacher/event/detailEvent.html:102
+#: teacher/templates/teacher/event/myEvents.html:230
+#: teacher/templates/teacher/event/myEvents.html:235
 #: teacher/templates/teacher/inquiry/createInquiry.html:33
 #: teacher/templates/teacher/inquiry/createInquiry.html:40
 #: teacher/templates/teacher/inquiry/createInquiry.html:105
@@ -290,13 +293,13 @@ msgid "Base events"
 msgstr ""
 
 #: administrative/templates/administrative/administrative_form_fallback.html:28
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:261
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:318
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:376
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:246
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:307
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:369
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:247
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:271
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:247
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:271
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:272
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:294
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:47
 #: administrative/templates/administrative/student/manual_parent_registration_create.html:87
 #: administrative/templates/administrative/student/student_detail_view.html:171
@@ -320,6 +323,8 @@ msgstr ""
 #: teacher/templates/teacher/dashboard.html:328
 #: teacher/templates/teacher/event/detailEvent.html:147
 #: teacher/templates/teacher/event/detailEvent.html:178
+#: teacher/templates/teacher/event/myEvents.html:260
+#: teacher/templates/teacher/teacher_form_fallback.html:21
 msgid "Cancel"
 msgstr ""
 
@@ -327,8 +332,8 @@ msgstr ""
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:248
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:272
 #: administrative/templates/administrative/events/event_edit.html:92
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:248
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:272
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:273
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:295
 #: administrative/templates/administrative/student/manual_parent_registration_add.html:51
 #: administrative/templates/administrative/student/manual_parent_registration_create.html:91
 #: administrative/templates/administrative/student/student_edit.html:25
@@ -344,6 +349,7 @@ msgstr ""
 #: profile_settings/templates/profile_settings/change_password.html:23
 #: profile_settings/templates/profile_settings/teacher_change_tags.html:72
 #: teacher/templates/teacher/inquiry/viewInquiry.html:72
+#: teacher/templates/teacher/teacher_form_fallback.html:24
 msgid "Save"
 msgstr ""
 
@@ -365,7 +371,7 @@ msgstr ""
 msgid "No base events"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:10
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:11
 msgid ""
 "Currently no base events with events in the future are definded. Base events "
 "must be present for any action. To resolve this issue, please create a new "
@@ -373,29 +379,29 @@ msgid ""
 msgstr ""
 
 #: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:15
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:131
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:141
 #: administrative/templates/administrative/time_slots/time_slots_base.html:16
 msgid "Create"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:25
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:26
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:15
 #: administrative/templates/administrative/events/event_edit.html:16
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:15
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:18
 msgid "General event data"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:28
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:31
 #: administrative/templates/administrative/dashboard/administrative_dashboard_students.html:37
 msgid "Total:"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:31
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:35
 #: administrative/templates/administrative/dashboard/administrative_dashboard_students.html:12
 #: administrative/templates/administrative/dashboard/administrative_dashboard_students.html:26
 #: administrative/templates/administrative/dashboard/administrative_dashboard_students.html:40
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:33
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:33
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:49
 #: administrative/templates/administrative/student/student_import_fileupload.html:18
 #: administrative/templates/administrative/student/student_list_view.html:22
 #: administrative/templates/administrative/student/student_list_view.html:36
@@ -403,52 +409,52 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:33
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:38
 msgid "Upcomming:"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:35
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:42
 msgid "Base events:"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:127
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:138
 #: administrative/templates/administrative/dashboard/administrative_dashboard_students.html:58
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:187
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:187
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:214
 msgid "Quick actions"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:151
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:162
 msgid "Current base events"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:154
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:166
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:212
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:212
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:240
 msgid "Show all"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:175
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:185
 #: administrative/templates/administrative/time_slots/time_slots_base.html:26
 msgid "Add Fomular"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:253
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:241
 #: administrative/templates/administrative/time_slots/time_slots_base.html:104
 msgid "Select teachers so they can submit their times using the form:"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:262
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:319
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:377
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:247
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:308
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:370
 #: administrative/templates/administrative/time_slots/time_slots_base.html:113
 #: administrative/templates/administrative/time_slots/time_slots_base.html:170
 #: administrative/templates/administrative/time_slots/time_slots_base.html:228
 msgid "Add"
 msgstr ""
 
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:310
-#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:368
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:302
+#: administrative/templates/administrative/dashboard/administrative_dashboard_events.html:364
 #: administrative/templates/administrative/time_slots/time_slots_base.html:161
 #: administrative/templates/administrative/time_slots/time_slots_base.html:219
 msgid "Teachers*"
@@ -511,64 +517,64 @@ msgid "Here you can find all base events that were created."
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:18
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:18
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:23
 msgid "Lead status:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:21
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:189
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:21
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:189
-#: administrative/views/events.py:515 administrative/views/events.py:537
-#: administrative/views/events.py:694 administrative/views/events.py:721
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:27
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:217
+#: administrative/views/events.py:530 administrative/views/events.py:552
+#: administrative/views/events.py:717 administrative/views/events.py:744
 msgid "Edit lead status"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:23
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:23
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:30
 msgid "Lead last changed:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:25
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:25
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:34
 msgid "Lead inquiry start:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:27
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:27
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:38
 msgid "Lead start:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:29
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:29
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:42
 msgid "Automatic change:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:31
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:31
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:46
 msgid "Number of events:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:34
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:34
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:51
 msgid "Number of inquiries:"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:40
 #: administrative/templates/administrative/events/event_edit.html:36
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:40
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:58
 msgid "Bookin information"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:114
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:114
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:139
 msgid "Availability information"
 msgstr ""
 
 #: administrative/templates/administrative/events/base_events/edit_base_event.html:190
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:190
-#: administrative/views/events.py:554 administrative/views/events.py:576
-#: administrative/views/events.py:743 administrative/views/events.py:768
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:218
+#: administrative/views/events.py:571 administrative/views/events.py:593
+#: administrative/views/events.py:768 administrative/views/events.py:793
 msgid "Edit lead dates"
 msgstr ""
 
@@ -674,7 +680,7 @@ msgstr ""
 msgid "Lead status"
 msgstr ""
 
-#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:11
+#: administrative/templates/administrative/events/teacher_day_event_groups/edit_day_group.html:12
 #, python-format
 msgid "Events from %(teacher)s at %(date)s"
 msgstr ""
@@ -783,6 +789,7 @@ msgid "Name:"
 msgstr ""
 
 #: administrative/templates/administrative/student/student_detail_view.html:107
+#: teacher/templates/teacher/tables/event_actions_column.html:32
 msgid "Reset"
 msgstr ""
 
@@ -1033,11 +1040,11 @@ msgstr ""
 msgid "All teacher accounts are listed here."
 msgstr ""
 
-#: administrative/views/students.py:554 administrative/views/students.py:610
+#: administrative/views/students.py:570 administrative/views/students.py:626
 msgid "Batch send upcomming user"
 msgstr ""
 
-#: administrative/views/users.py:95 administrative/views/users.py:110
+#: administrative/views/users.py:99 administrative/views/users.py:114
 msgid "The parent could not be found."
 msgstr ""
 
@@ -1154,6 +1161,14 @@ msgstr ""
 msgid "Future users"
 msgstr ""
 
+#: authentication/models.py:239
+msgid "Can send upcomming user"
+msgstr ""
+
+#: authentication/models.py:240
+msgid "Can batch send upcomming user"
+msgstr ""
+
 #: authentication/templates/authentication/login.html:4
 msgid "Login"
 msgstr ""
@@ -1235,7 +1250,7 @@ msgstr ""
 msgid "At least one student must be selected."
 msgstr ""
 
-#: dashboard/forms.py:280 teacher/forms.py:23 teacher/forms.py:40
+#: dashboard/forms.py:280 teacher/forms.py:28 teacher/forms.py:53
 msgid "The text must not be longer than 4000 characters."
 msgstr ""
 
@@ -1280,12 +1295,12 @@ msgid "All parents can request this appointment at the moment."
 msgstr ""
 
 #: dashboard/models.py:35 dashboard/models.py:105 dashboard/models.py:155
-#: dashboard/models.py:610
+#: dashboard/models.py:615
 msgid "Set a date from which all parents can request appointments."
 msgstr ""
 
 #: dashboard/models.py:43 dashboard/models.py:111 dashboard/models.py:160
-#: dashboard/models.py:614
+#: dashboard/models.py:619
 msgid "Determine when teachers' enquiries can be answered."
 msgstr ""
 
@@ -1338,113 +1353,123 @@ msgstr ""
 msgid "Followup event"
 msgstr ""
 
-#: dashboard/models.py:322
+#: dashboard/models.py:314
 msgid "This user is not a parent."
 msgstr ""
 
-#: dashboard/models.py:407
+#: dashboard/models.py:399
 msgid "Appointment from "
 msgstr ""
 
-#: dashboard/models.py:409
+#: dashboard/models.py:401
 msgid " on "
 msgstr ""
 
-#: dashboard/models.py:411
+#: dashboard/models.py:403
 msgid " from "
 msgstr ""
 
-#: dashboard/models.py:413
+#: dashboard/models.py:405
 msgid " to "
 msgstr ""
 
-#: dashboard/models.py:419
+#: dashboard/models.py:411
 msgid "Event"
 msgstr ""
 
-#: dashboard/models.py:425
+#: dashboard/models.py:417
 msgid ""
 "The user is allowed to book an event. Without this permission the user will "
 "be completely blocked from booking."
 msgstr ""
 
-#: dashboard/models.py:431
+#: dashboard/models.py:423
 msgid ""
 "The user is allowed to book an event before the official booking period "
 "because he has an e.g. medical condition."
 msgstr ""
 
-#: dashboard/models.py:437
+#: dashboard/models.py:429
 msgid ""
 "The user is allowed to book a double event with all teachers because of an "
 "medical condition."
 msgstr ""
 
-#: dashboard/models.py:448
-msgid "Submit own time periods."
+#: dashboard/models.py:441
+msgid "Time period"
 msgstr ""
 
-#: dashboard/models.py:464
+#: dashboard/models.py:442 teacher/templates/teacher/event/myEvents.html:128
+#: teacher/templates/teacher/event/myEvents.html:134
+#: teacher/templates/teacher/event/myEvents.html:248
+msgid "Break request"
+msgstr ""
+
+#: dashboard/models.py:443
+msgid "Sick leave"
+msgstr ""
+
+#: dashboard/models.py:468 teacher/forms.py:230
 msgid "Start time"
 msgstr ""
 
-#: dashboard/models.py:465
+#: dashboard/models.py:469 teacher/forms.py:231
 msgid "End time"
 msgstr ""
 
-#: dashboard/models.py:466
+#: dashboard/models.py:471
 msgid "No events"
 msgstr ""
 
-#: dashboard/models.py:469
+#: dashboard/models.py:474
 msgid "Wait for processing"
 msgstr ""
 
-#: dashboard/models.py:470
+#: dashboard/models.py:475
 msgid "Wait for confirmation"
 msgstr ""
 
-#: dashboard/models.py:471
+#: dashboard/models.py:476
 msgid "Approved"
 msgstr ""
 
-#: dashboard/models.py:472
+#: dashboard/models.py:477
 msgid "Declined"
 msgstr ""
 
-#: dashboard/models.py:485
+#: dashboard/models.py:490
 msgid "Event creation formula"
 msgstr ""
 
-#: dashboard/models.py:486
+#: dashboard/models.py:491
 msgid "Event creation formulas"
 msgstr ""
 
-#: dashboard/models.py:491
+#: dashboard/models.py:496
 msgid "Can accept or reject submitted time periods for other users."
 msgstr ""
 
-#: dashboard/models.py:500
+#: dashboard/models.py:505
 msgid "Inquiry to book an appointment (teacher->parents)"
 msgstr ""
 
-#: dashboard/models.py:502
+#: dashboard/models.py:507
 msgid "Request for confirmation of an appointment (parent->teacher)"
 msgstr ""
 
-#: dashboard/models.py:533
+#: dashboard/models.py:538
 msgid "No response"
 msgstr ""
 
-#: dashboard/models.py:534
+#: dashboard/models.py:539
 msgid "Inquiry accepted"
 msgstr ""
 
-#: dashboard/models.py:535
+#: dashboard/models.py:540
 msgid "Inquiry declined"
 msgstr ""
 
-#: dashboard/models.py:549 dashboard/templates/dashboard/inquiry.html:3
+#: dashboard/models.py:554 dashboard/templates/dashboard/inquiry.html:3
 #: dashboard/templates/dashboard/inquiry.html:12
 #: dashboard/templates/dashboard/inquiry_answered.html:3
 #: dashboard/templates/dashboard/inquiry_answered.html:12
@@ -1455,27 +1480,27 @@ msgstr ""
 msgid "Inquiry"
 msgstr ""
 
-#: dashboard/models.py:550
+#: dashboard/models.py:555
 msgid "Inquries"
 msgstr ""
 
-#: dashboard/models.py:555
+#: dashboard/models.py:560
 msgid "New booking inquiry"
 msgstr ""
 
-#: dashboard/models.py:556
+#: dashboard/models.py:561
 msgid "Appointment cancellation"
 msgstr ""
 
-#: dashboard/models.py:557
+#: dashboard/models.py:562
 msgid "System notification"
 msgstr ""
 
-#: dashboard/models.py:580
+#: dashboard/models.py:585
 msgid "Notification"
 msgstr ""
 
-#: dashboard/models.py:581
+#: dashboard/models.py:586
 #: dashboard/templates/dashboard/announcements/announcements_list.html:3
 #: dashboard/templates/dashboard/announcements/announcements_list.html:10
 #: dashboard/templates/dashboard/base.html:81
@@ -1485,19 +1510,19 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: dashboard/models.py:619
+#: dashboard/models.py:624
 msgid ""
 "Here you define the general length of an appointment. It applies to all "
 "appointments created with this function."
 msgstr ""
 
-#: dashboard/models.py:625
+#: dashboard/models.py:630
 msgid ""
 "Here you can set the interval between two appointments. You should allow "
 "some time to change rooms etc."
 msgstr ""
 
-#: dashboard/models.py:650 dashboard/models.py:651
+#: dashboard/models.py:655 dashboard/models.py:656
 msgid "SiteSettings"
 msgstr ""
 
@@ -1660,6 +1685,7 @@ msgstr ""
 #: dashboard/templates/dashboard/events/book.html:109
 #: dashboard/templates/dashboard/events/teacher.html:183
 #: dashboard/templates/dashboard/inquiry.html:161
+#: teacher/templates/teacher/event/myEvents.html:261
 msgid "Request"
 msgstr ""
 
@@ -1991,11 +2017,11 @@ msgstr ""
 msgid "The password has been changed successfully."
 msgstr ""
 
-#: teacher/forms.py:60
+#: teacher/forms.py:74
 msgid "Explanation why you dismiss the event:"
 msgstr ""
 
-#: teacher/forms.py:64
+#: teacher/forms.py:78
 msgid "Parent should book a different event."
 msgstr ""
 
@@ -2104,6 +2130,17 @@ msgstr ""
 
 #: teacher/templates/teacher/event/detailEvent.html:172
 msgid "at"
+msgstr ""
+
+#: teacher/templates/teacher/event/myEvents.html:121
+msgid "Options"
+msgstr ""
+
+#: teacher/templates/teacher/event/myEvents.html:132
+#: teacher/templates/teacher/event/myEvents.html:254
+msgid ""
+"Here you can enter you own break request, which can be approved by the "
+"operators."
 msgstr ""
 
 #: teacher/templates/teacher/inquiry/createInquiry.html:23

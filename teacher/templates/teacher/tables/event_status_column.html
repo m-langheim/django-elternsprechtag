@@ -1,0 +1,26 @@
+{% if event.occupied %}
+  {% if event.status == 2 %}
+    <style>
+      .specify_color_orange {
+        border-color: #ff8c00 !important;
+        color: #ff8c00 !important;
+      }
+      
+      .specify_color_orange:hover {
+        background-color: #ff8c00 !important;
+        color: white !important;
+      }
+    </style>
+    <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange" href="{% url 'teacher_event_view' event.id %}">{% comment %}Hier könnte man das Event vielleicht in Zukunft auch direkt bestätigen{% endcomment %}Angefragt</a>
+  {% else %}
+    <a type="button" class="btn btn-outline-danger col-12 col-md-6" href="{% url 'teacher_event_view' event.id %}">Belegt</a>
+  {% endif %}
+{% else %}
+  {% if event.lead_status == 0 %}
+    <div type="button" class="btn btn-outline-dark col-12 col-md-6">Blockiert</div>
+  {% elif event.lead_status == 1 %}
+    <div type="button" class="btn btn-outline-dark col-12 col-md-6">Eingeschränkt</div>
+  {% else %}
+    <div type="button" class="btn btn-outline-success col-12 col-md-6">Frei</div>
+  {% endif %}
+{% endif %}

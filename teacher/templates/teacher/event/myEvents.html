@@ -1,259 +1,326 @@
-{% extends "dashboard/base.html" %}
+{% extends 'dashboard/base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
 
-{% block title %} Dashboard - Lehrer {% endblock title %} 
+{% block title %}
+  Dashboard - Lehrer
+{% endblock %}
 
 {% block content %}
-<div class="row gx-3 gy-3">
-	<div class="col-12">
-		<div class="card card-body p-0">
-			<div class="p-4">
-				<p class="h1">Ihre gewünschten Elternsprechtagszeiten</p>
-				<p class="text-secondary">
-					Hier müssen Sie Ihre Elternsprechtagszeiten für die gegebenen Tage
-					angeben. Berücksichtigen Sie hierbei gegebenenfalls das
-					Teilzeitkonzept. Nach Angabe werden die Zeiten durch die Organisatoren
-					geprüft und erscheinen unter dem Punkt vereinbarte
-					Elternsprechtagszeiten.
-				</p>
+  <div class="row gx-3 gy-3">
+    <div class="col-12">
+      <div class="card card-body p-0">
+        <div class="p-4">
+          <p class="h1">Ihre gewünschten Elternsprechtagszeiten</p>
+          <p class="text-secondary">Hier müssen Sie Ihre Elternsprechtagszeiten für die gegebenen Tage angeben. Berücksichtigen Sie hierbei gegebenenfalls das Teilzeitkonzept. Nach Angabe werden die Zeiten durch die Organisatoren geprüft und erscheinen unter dem Punkt vereinbarte Elternsprechtagszeiten.</p>
 
-				{% if open_formulas|length > 0 %}
-				<ul class="list-group list-group-flush">
-					{% for formula in open_formulas %}
-					<li class="list-group-item">
-						<div class="row gy-1 align-items-center">
-							<!-- <div class="row align-items-center"> -->
-							{% if formula.change_form.status == 0 %}
-								<div class="col-12 col-md-7 col-xl-9 text-start">
-									Zeitraum für den {{ formula.change_form.date }}
-								</div>
-								{% else %}
-								<div class="col-12 col-md-7 col-xl-9 text-start">
-									Angefragt: Zeitraum für den {{ formula.change_form.date }}
-								</div>
-								{% endif %}
-							<div class="col-12 col-md-5 col-xl-3">
-								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-									{% if formula.change_form.status == 0 %}
-									<form class="col col-12 col-md-6" method="post" action="{{ formula.link }}">
-										{% csrf_token %}
-										
-										<div class="d-none">{{formula.no_events_form.as_p}}</div>
-									
-										<input
-										type="submit"
-										class="btn btn-outline-secondary col-12"
-										value="Keine Termine"
-									/>
-								</form>
-									
-									<a
-										type="button"
-										class="btn btn-outline-danger col-12 col-md-6"
-										href="{{ formula.link }}"
-									>
-										Angeben
-									</a>
-									{% else %}
-									<a
-										type="button"
-										class="btn btn-outline-secondary col-12 col-md-6"
-										href="{{ formula.link }}"
-									>
-										Ausstehend
-									</a>
-									{% endif %}
-								</div>
-							</div>
-						</div>
-					</li>
-					{% endfor %}
-				</ul>
-				{% else %} Aktuell gibt es keine unbestimmten Elternsprechtagszeiten {% endif %}
-			</div>
+          {% if open_formulas|length > 0 %}
+            <ul class="list-group list-group-flush">
+              {% for formula in open_formulas %}
+                <li class="list-group-item">
+                  <div class="row gy-1 align-items-center">
+                    <!-- <div class="row align-items-center"> -->
+                    {% if formula.change_form.status == 0 %}
+                      <div class="col-12 col-md-7 col-xl-9 text-start">{{ formula.change_form.get_type_display }} für den {{ formula.change_form.date }}</div>
+                    {% else %}
+                      <div class="col-12 col-md-7 col-xl-9 text-start">Angefragt: {{ formula.change_form.get_type_display }} für den {{ formula.change_form.date }}</div>
+                    {% endif %}
+                    <div class="col-12 col-md-5 col-xl-3">
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        {% if formula.change_form.status == 0 %}
+                          <form class="col col-12 col-md-6" method="post" action="{{ formula.link }}">
+                            {% csrf_token %}
 
-			<div class="border-top"></div>
+                            <div class="d-none">{{ formula.no_events_form.as_p }}</div>
 
-			<div class="p-4">
-				<p class="h1">Vereinbarte Elternsprechtagszeiten</p>
-				<p class="text-secondary">
-					Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status
-					"Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.
-				</p>
+                            <input type="submit" class="btn btn-outline-secondary col-12" value="Keine Termine" />
+                          </form>
 
-				{% if closed_formulas|length > 0 %}
-				<ul class="list-group list-group-flush">
-					{% for formula in closed_formulas %}
-					<li class="list-group-item">
-						<div class="row gy-1 align-items-center">
-							{% if formula.no_events %}
-							<div class="col-12 col-md-7 col-xl-9 text-start">
-								Angefragt: Keine Termine am {{ formula.date }}
-							</div>
-							{% else %}
-							<div class="col-12 col-md-7 col-xl-9 text-start">
-								Angefragt: Zeitraum für den {{ formula.date }} 
-								({{ formula.start_time }} Uhr - {{formula.end_time}} Uhr)
-							</div>
-							{% endif %}
-							<div class="col-12 col-md-5 col-xl-3">
-								<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-									{% if formula.status == 2 %}
-									<div class="btn btn-outline-success col-12 col-md-6">
-										Bestätigt
-									</div>
-									{% else %}
-									<div class="btn btn-outline-dark col-12 col-md-6">
-										Abgelehnt
-									</div>
-									{% endif %}
-								</div>
-							</div>
-						</div>
-					</li>
-					{% endfor %}
-				</ul>
-				{% else %} Bisher wurden keine Elternsprechtagszeiten angefragt {% endif %}
-			</div>
+                          <a type="button" class="btn btn-outline-danger col-12 col-md-6" href="{{ formula.link }}">Angeben</a>
+                        {% else %}
+                          <a type="button" class="btn btn-outline-secondary col-12 col-md-6" href="{{ formula.link }}">Ausstehend</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            Aktuell gibt es keine unbestimmten Elternsprechtagszeiten
+          {% endif %}
+        </div>
 
-			<div class="border-top"></div>
+        <div class="border-top"></div>
 
-			<div class="pt-4 ps-4 pe-4">
-				<p class="h1">Ihre Termine</p>
-				{% if events|length > 0 %}
-				<!-- Liste an möglichen Tabs -->
-				<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-					<style>
-						.active {
-							border-color: red !important;
-						}
+        <div class="p-4">
+          <p class="h1">Vereinbarte Elternsprechtagszeiten</p>
+          <p class="text-secondary">Hier erscheinen die von Ihnen angefragten Zeiten. Sollte der Status "Abgelehnt" sein, halten Sie bitte Rücksprache mit den Organisatoren.</p>
 
-						/* change this color */
-					</style>
-					{%for key, events in events_dt_dict.items %}
-					<li class="nav-item" role="presentation">
-						<button
-							class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {%endif%}"
-							id="pills-{{key}}-tab"
-							data-bs-toggle="pill"
-							data-bs-target="#pills-{{key}}"
-							type="button"
-							role="tab"
-							aria-controls="pills-{{key}}"
-							aria-selected="true"
-						>
-							{{events.first.start|date}}
-						</button>
-					</li>
-					{%endfor%}
-				</ul>
+          {% if closed_formulas|length > 0 %}
+            <ul class="list-group list-group-flush">
+              {% for formula in closed_formulas %}
+                <li class="list-group-item">
+                  <div class="row gy-1 align-items-center">
+                    {% if formula.no_events %}
+                      <div class="col-12 col-md-7 col-xl-9 text-start">{{ formula.get_type_display }}: Keine Termine am {{ formula.date }}</div>
+                    {% else %}
+                      <div class="col-12 col-md-7 col-xl-9 text-start">{{ formula.get_type_display }} für den {{ formula.date }}
+                        ({{ formula.start_time }} Uhr - {{ formula.end_time }} Uhr)</div>
+                    {% endif %}
+                    <div class="col-12 col-md-5 col-xl-3">
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        {% if formula.status == 2 %}
+                          <div class="btn btn-outline-success col-12 col-md-6">Bestätigt</div>
+                        {% elif formula.status == 3 %}
+                          <div class="btn btn-outline-dark col-12 col-md-6">Abgelehnt</div>
+                        {% else %}
+                          <div class="btn btn-outline-dark col-12 col-md-6">Entfernt</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            Bisher wurden keine Elternsprechtagszeiten angefragt
+          {% endif %}
+        </div>
 
-				<div class="tab-content" id="pills-tabContent">
-					{%for key, events in events_dt_dict.items %}
-					<div
-						class="tab-pane fade {% if forloop.counter0 == 0 %}show active{%endif%}"
-						id="pills-{{key}}"
-						role="tabpanel"
-						aria-labelledby="pills-{{key}}-tab"
-						tabindex="0"
-					>
-						<ul class="list-group list-group-flush">
-							{% for event in events %}
-							<li class="list-group-item">
-								<div class="row gy-1 align-items-center">
-									<!-- <div class="row align-items-center"> -->
-									<div class="col-12 col-md-7 col-xl-9 text-start">
-										{% if event.occupied %} 
-										{{ event.start|time }} - {{ event.end|time }} | 
-										{% for student in event.student.all %}
-										{{student.first_name}} {{student.last_name}} 
-										{% if student != event.student.last %}, {% endif %} 
-										{% endfor %} 
-										{% else %}
-										{{ event.start|time }} - {{ event.end|time }}
-										{% endif %}
-									</div>
-									<div class="col-12 col-md-5 col-xl-3">
-										<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-											{% if event.occupied %} {% if event.status == 2 %}
-											<style>
-												.specify_color_orange {
-													border-color: #ff8c00 !important;
-													color: #ff8c00 !important;
-												}
+        <div class="border-top"></div>
 
-												.specify_color_orange:hover {
-													background-color: #ff8c00 !important;
-													color: white !important;
-												}
-											</style>
-											<a
-												type="button"
-												class="btn btn-outline-warning col-12 col-md-6 specify_color_orange"
-												href="{% url 'teacher_event_view' event.id %}"
-											>
-												{% comment %} Hier könnte man das Event vielleicht in
-												Zukunft auch direkt bestätigen {% endcomment %}
-												Angefragt
-											</a>
-											{% else %}
-											<a
-												type="button"
-												class="btn btn-outline-danger col-12 col-md-6"
-												href="{% url 'teacher_event_view' event.id %}"
-											>
-												Belegt
-											</a>
-											{% endif %} {% else %}
-											<div
-												type="button"
-												class="btn btn-outline-success col-12 col-md-6"
-											>
-												Frei
-											</div>
-											{% endif %}
-										</div>
-									</div>
-									<!-- </div> -->
-								</div>
-							</li>
-							{% endfor %}
-						</ul>
-					</div>
-					{%endfor%}
-				</div>
-				{% else %}
+        <div class="pt-4 ps-4 pe-4">
+          <p class="h1">Ihre Termine</p>
+          {% if events|length > 0 %}
+            <div class="grid gap-3 d-flex">
+              <div class="flex-grow-1">
+                <div class="progress bg-success" role="progressbar" aria-label="Occupied events" aria-valuenow="{{ statistics.occupied_events }}" aria-valuemin="0" aria-valuemax="{{ statistics.events|length }}" style="height: 37.6px;">
+                  <div class="progress-bar bg-danger" style="width: {{ statistics.occupied_percent }}%"></div>
+                </div>
+              </div>
+              <div class="">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOptions" aria-expanded="false" aria-controls="collapseOptions"><i class="fa-solid fa-filter"></i> {% translate 'Options' %}</button>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="collapse" id="collapseOptions">
+                <div class="card card-body">
+                  <div class="row">
+                    <div class="col col-10">
+                      <div class="h5">
+                        {% translate 'Break request' %}
+                      </div>
+                      <div class="">
+                        {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+                      </div>
+                    </div>
+                    <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#breakModal">{% translate 'Request' %}</a>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <div class="row">
+                    <div class="col col-10">
+                      <div class="h5">
+                        {% translate 'Sick leave' %}
+                      </div>
+                      <div class="">
+                        {% translate 'If you are ill you can request sick leave here. The event cancelation will be done automatically.' %}
+                      </div>
+                    </div>
+                    <a class="btn btn-outline-secondary p-2 ps-3 pe-3 mt-2 d-flex align-items-center justify-content-center col-2" data-bs-toggle="modal" data-bs-target="#sickModal">{% translate 'Request' %}</a>
+                  </div>
+                </div>
+                {% comment %} <div>{{ filter.form.status|as_crispy_field }}</div> {% endcomment %}
+                {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+              </div>
+            </div>
+            <!-- Liste an möglichen Tabs -->
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <style>
+                .active {
+                  border-color: red !important;
+                }
+                
+                /* change this color */
+              </style>
+              {% for key, events in events_dt_dict.items %}
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link bg-white text-danger border border-light {% if forloop.counter0 == 0 %}active {% endif %}" id="pills-{{ key }}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{ key }}" type="button" role="tab" aria-controls="pills-{{ key }}" aria-selected="true">{{ events.events.first.start|date }}</button>
+                </li>
+              {% endfor %}
+            </ul>
 
-				<!-- Für den Lehrer wurden noch keine Events gebucht -->
-					<p class="text-muted">
-						Es gibt bei Ihnen bisher keine offenen Termine
-					</p>
-				{% endif %}
-			</div>
+            <div class="tab-content" id="pills-tabContent">
+              {% for key, events in events_dt_dict.items %}
+                <div class="tab-pane fade {% if forloop.counter0 == 0 %}show active{% endif %}" id="pills-{{ key }}" role="tabpanel" aria-labelledby="pills-{{ key }}-tab" tabindex="0">
+                  {% comment %} <ul class="list-group list-group-flush">
+                    {% for event in events.events %}
+                      <li class="list-group-item">
+                        <div class="row gy-1 align-items-center">
+                          <div class="col-12 col-md-7 col-xl-9 text-start">
+                            {% if event.occupied %}
+                              {{ event.start|time }} - {{ event.end|time }} |{% for student in event.student.all %}
+                                {{ student.first_name }} {{ student.last_name }}
+                                {% if student != event.student.last %}, {% endif %}
+                              {% endfor %}
+                            {% else %}
+                              {{ event.start|time }} - {{ event.end|time }}
+                            {% endif %}
+                          </div>
+                          <div class="col-12 col-md-5 col-xl-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                              {% if event.occupied %}
+                                {% if event.status == 2 %}
+                                  <style>
+                                    .specify_color_orange {
+                                      border-color: #ff8c00 !important;
+                                      color: #ff8c00 !important;
+                                    }
+                                    
+                                    .specify_color_orange:hover {
+                                      background-color: #ff8c00 !important;
+                                      color: white !important;
+                                    }
+                                  </style>
+                                  <a type="button" class="btn btn-outline-warning col-12 col-md-6 specify_color_orange" href="{% url 'teacher_event_view' event.id %}">Hier könnte man das Event vielleicht in Zukunft auch direkt bestätigen Angefragt</a>
+                                {% else %}
+                                  <a type="button" class="btn btn-outline-danger col-12 col-md-6" href="{% url 'teacher_event_view' event.id %}">Belegt</a>
+                                {% endif %}
+                              {% else %}
+                                {% if event.lead_status == 0 %}
+                                  <div type="button" class="btn btn-outline-dark col-12 col-md-6">Blockiert</div>
+                                {% elif event.lead_status == 1 %}
+                                  <div type="button" class="btn btn-outline-dark col-12 col-md-6">Eingeschränkt</div>
+                                {% else %}
+                                  <div type="button" class="btn btn-outline-success col-12 col-md-6">Frei</div>
+                                {% endif %}
+                              {% endif %}
+                            </div>
+                          </div>
+                          <!-- </div> -->
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul> {% endcomment %}
+                  {% if events.sick_leave|length > 0 %}
+                    {% for sick in events.sick_leave %}
+                      <div class="card border-danger mb-3">
+                        <div class="card-body row">
+                          <div class="col col-12 col-md-12">
+                            <h5 class="card-title">{% translate 'Sick leave' %}</h5>
+                            {% if sick.no_events %}
+                              <div class="card-text">
+                                {% translate 'You are on sick leave for this date. All of your events have been canceled and no one is able to book new events at this date.' %}
+                              </div>
+                            {% else %}
+                              <div class="card-text">
+                                {% blocktranslate with start=sick.start_time end=sick.end_time %}You are on a partial sick leave between {{ start|time }} and {{ end|time }} on this date. During this period, al events have been canceled and no one is able to book new events in the period.{% endblocktranslate %}
+                              </div>
+                            {% endif %}
+                          </div>
+                          {% comment %} <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+                            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+                          </div> {% endcomment %}
+                        </div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                  {% render_table events.table %}
+                  <style>
+                    .hovereffect {
+                      color: black;
+                      text-decoration: none;
+                    }
+                    
+                    .hovereffect:hover {
+                      color: #dc3545;
+                    }
+                    
+                    .black {
+                      color: black;
+                      text-decoration: none;
+                    }
+                    
+                    .black:hover {
+                      color: black;
+                    }
+                  </style>
+                  <script>
+                    var start = document.getElementById('start_id')
+                    start.children[0].innerHTML += ` <i class="fa-solid fa-sort"></i>`
+                    start.children[0].classList += ' hovereffect'
+                  </script>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <!-- Für den Lehrer wurden noch keine Events gebucht -->
+            <p class="text-muted">Es gibt bei Ihnen bisher keine offenen Termine</p>
+          {% endif %}
+        </div>
 
-			<div class="ps-4 pe-4 pb-4 pt-4">
-				<div class="d-flex d-md-none row">
-					<div class="d-flex d-md-none">
-						<a
-							type="button"
-							class="btn btn-outline-secondary col-12"
-							href="{% url 'home' %}"
-							>Zurück</a
-						>
-					</div>
-				</div>
-				<div class="d-none d-md-flex row">
-					<div class="d-none d-md-flex col-6">
-						<a
-							type="button"
-							class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2"
-							href="{% url 'home' %}"
-							>Zurück</a
-						>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-{% endblock content %}
+        <div class="ps-4 pe-4 pb-4 pt-4">
+          <div class="d-flex d-md-none row">
+            <div class="d-flex d-md-none">
+              <a type="button" class="btn btn-outline-secondary col-12" href="{% url 'home' %}">{% translate 'Back' %}</a>
+            </div>
+          </div>
+          <div class="d-none d-md-flex row">
+            <div class="d-none d-md-flex col-6">
+              <a type="button" class="btn btn-outline-secondary col-12 col-md-3 mt-2 me-2 mb-2" href="{% url 'home' %}">{% translate 'Back' %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="breakModal" tabindex="-1" aria-labelledby="breakModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="breakModalLabel">{% translate 'Break request' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'teacher_personal_day_group_add_break_request' %}" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            <p>
+              {% translate 'Here you can enter you own break request, which can be approved by the operators.' %}
+            </p>
+            {% csrf_token %}
+            {{ break_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sickModal" tabindex="-1" aria-labelledby="sickModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sickModalLabel">{% translate 'Sick leave request' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'teacher_request_sick_leave' %}" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            <p>
+              {% translate 'If you are ill you can request sick leave here. The event cancelation will be done automatically.' %}
+            </p>
+            {% csrf_token %}
+            {{ sick_leave_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button class="btn btn-outline-danger" type="submit">{% translate 'Request' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

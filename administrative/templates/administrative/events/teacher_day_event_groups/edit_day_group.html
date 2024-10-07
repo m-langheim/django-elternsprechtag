@@ -4,46 +4,65 @@
 {% load i18n %}
 
 {% block extra_head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-{% endblock extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock %}
 
 {% block control_content %}
-<p class="h1">{% blocktranslate with teacher=teacher_event_group.teacher date=teacher_event_group.day_group.date %}Events from {{ teacher }} at {{ date }}{% endblocktranslate %}</p>
+  <p class="h1">
+    {% blocktranslate with teacher=teacher_event_group.teacher date=teacher_event_group.day_group.date %}Events from {{ teacher }} at {{ date }}{% endblocktranslate %}
+  </p>
 
-<div class="row gx-3 gy-3">
+  <div class="row gx-3 gy-3">
     <div class="card card-body p-3 col-12 col-lg-6">
-        <p class="h4 text-secondary">{% translate 'General event data' %}</p>
+      <p class="h4 text-secondary">
+        {% translate 'General event data' %}
+      </p>
 
-        <div class="row gx-1 gy-1">
-            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Lead status:' %}</p>
-            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ base_event.lead_status }} 
-            <div class="col-4 col-lg-4">
-            <a class="mb-1 btn btn-outline-danger d-flex justify-content-center" data-bs-toggle="modal" data-bs-target="#editLeadStatusModal">{% translate 'Edit lead status' %}</a>
-            </div>
-            <p class="mb-1 col-4 col-lg-4">{% translate 'Lead last changed:' %}</p>
-            <p class="mb-1 col-8 col-lg-8">{{ base_event.lead_status_last_change }}</p>
-            <p class="mb-1 col-4 col-lg-4">{% translate 'Lead inquiry start:' %}</p>
-            <p class="mb-1 col-8 col-lg-8">{{ base_event.lead_inquiry_start|date }}</p>
-            <p class="mb-1 col-4 col-lg-4">{% translate 'Lead start:' %}</p>
-            <p class="mb-1 col-8 col-lg-8">{{ base_event.lead_start|date }}</p>
-            <p class="mb-1 col-4 col-lg-4">{% translate 'Automatic change:' %}</p>
-            <p class="mb-1 col-8 col-lg-8">{{ base_event.disable_automatic_changes }}</p>
-            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{% translate 'Number of events:' %}</p>
-            <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ teacher_event_group.event_set.all|length }}</p>
-            <a class="mb-1 btn btn-outline-danger col-4 col-lg-4" href="{% url 'administrative_event_list_view' %}?teacher={{teacher_event_group.teacher.pk}}&base_event={{base_event.pk}}&day_group={{teacher_event_group.day_group.pk}}">{% translate 'View' %}</a>
-            <p class="mb-1 col-4 col-lg-4">{% translate 'Number of inquiries:' %}</p>
-            <p class="mb-1 col-8 col-lg-8">{{ base_event.inquiry_set.all|length }}</p>
+      <div class="row gx-1 gy-1">
+        <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">
+          {% translate 'Lead status:' %}
+        </p>
+        <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ teacher_event_group.get_lead_status_display }}</p>
+        <div class="col-4 col-lg-4">
+          <a class="mb-1 btn btn-outline-danger d-flex justify-content-center" data-bs-toggle="modal" data-bs-target="#editLeadStatusModal">{% translate 'Edit lead status' %}</a>
         </div>
-
+        <p class="mb-1 col-4 col-lg-4">
+          {% translate 'Lead last changed:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8">{{ teacher_event_group.lead_status_last_change }}</p>
+        <p class="mb-1 col-4 col-lg-4">
+          {% translate 'Lead inquiry start:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8">{{ teacher_event_group.lead_inquiry_start|date }}</p>
+        <p class="mb-1 col-4 col-lg-4">
+          {% translate 'Lead start:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8">{{ teacher_event_group.lead_start|date }}</p>
+        <p class="mb-1 col-4 col-lg-4">
+          {% translate 'Automatic change:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8">{{ teacher_event_group.disable_automatic_changes }}</p>
+        <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">
+          {% translate 'Number of events:' %}
+        </p>
+        <p class="mb-1 col-4 col-lg-4 align-items-center d-flex">{{ teacher_event_group.event_set.all|length }}</p>
+        <a class="mb-1 btn btn-outline-danger col-4 col-lg-4" href="{% url 'administrative_event_list_view' %}?teacher={{ teacher_event_group.teacher.pk }}&base_event={{ base_event.pk }}&day_group={{ teacher_event_group.day_group.pk }}">{% translate 'View' %}</a>
+        <p class="mb-1 col-4 col-lg-4">
+          {% translate 'Number of inquiries:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8">{{ teacher_event_group.inquiry_set.all|length }}</p>
+      </div>
     </div>
     <div class="card card-body p-3 col-12 col-lg-6">
-        <p class="h4 text-secondary">{% translate 'Bookin information' %}</p>
+      <p class="h4 text-secondary">
+        {% translate 'Bookin information' %}
+      </p>
 
-        <div class="row">
-            <div id="container" style="width: 100%;">
-                <canvas id="booking-chart"></canvas>
-            </div>
-            <script>
+      <div class="row">
+        <div id="container" style="width: 100%;">
+          <canvas id="booking-chart"></canvas>
+        </div>
+        <script>
         
             var event_chart_config = {
                 type: 'pie',
@@ -67,53 +86,60 @@
                 window.myPie = new Chart(ctx, event_chart_config);
             };
         
-            </script> 
-            {% comment %} <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Booking state:' %}</p>
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.get_status_display }}</p>
-            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Parent:' %}</p>
-            {% if event.parent %}
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.parent.first_name }} 
-                {{ event.parent.last_name }}</p>
-            {% else %}
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+            </script>
+        {% comment %} <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+          {% translate 'Booking state:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.get_status_display }}</p>
+        <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+          {% translate 'Parent:' %}
+        </p>
+        {% if event.parent %}
+          <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.parent.first_name }}
+            {{ event.parent.last_name }}</p>
+        {% else %}
+          <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+        {% endif %}
+        <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+          {% translate 'Student:' %}
+        </p>
+        {% if event.student.all|length > 0 %}
+          <p class="mb-1 col-8 col-lg-8 col-xxl-9">
+            {% for student in event.student.all %}
+              {{ student.first_name }} {{ student.last_name }}
+              {% if student != event.student.last %}, {% endif %}
+            {% endfor %}
+          </p>
+        {% else %}
+          <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
+        {% endif %}
+        {% if event.room %}
+          <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+            {% translate 'Room:' %}
+          </p>
+          <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.room }}</p>
+        {% endif %}
+        {% endcomment %}
+        {% comment %} <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
+          {% csrf_token %}
+
+          <div class="row ps-3 pe-3 gx-3">
+            <button class="btn btn-outline-secondary mt-2 col-6" type="submit">{% translate 'Clear event' %}</button>
+            {% if choices|length > 0 %}
+              <a class="btn btn-outline-danger mt-2 col-6" data-bs-toggle="modal" data-bs-target="#addStudentModal">{% translate 'Add student' %}</a>
             {% endif %}
-            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Student:' %}</p>
-            {% if event.student.all|length > 0 %}
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">
-                {% for student in event.student.all %}
-                {{student.first_name}} {{student.last_name}}
-                {% if student != event.student.last %}, {% endif %}
-                {% endfor %}
-            </p>
-            {% else %}
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">-----</p>
-            {% endif %}
-            {% if event.room %}
-            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Room:' %}</p>
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.room }}</p>
-            {% endif %}
-             {% endcomment %}
-            {% comment %} <form method="POST" action="{% url 'administrative_event_clear_view' event_id=event.id %}">
-            {% csrf_token %}
-    
-            <div class="row ps-3 pe-3 gx-3">
-                <button class="btn btn-outline-secondary mt-2 col-6" type="submit">
-                    {% translate 'Clear event' %}
-                </button>
-                {% if choices|length > 0 %}
-                <a class="btn btn-outline-danger mt-2 col-6" data-bs-toggle="modal" data-bs-target="#addStudentModal">{% translate 'Add student' %}</a>
-                {% endif %}
-            </div>
+          </div>
         </form> {% endcomment %}
-        </div>
-        
+      </div>
     </div>
     <div class="card card-body p-3 mb-3 col-12 col-lg-6">
-        <p class="h4 text-secondary">{% translate 'Availability information' %}</p>
-        <div id="container" style="width: 100%;">
-            <canvas id="availability-chart"></canvas>
-        </div>
-        <script>
+      <p class="h4 text-secondary">
+        {% translate 'Availability information' %}
+      </p>
+      <div id="container" style="width: 100%;">
+        <canvas id="availability-chart"></canvas>
+      </div>
+      <script>
     
         var availability_chart_config = {
             type: 'pie',
@@ -161,60 +187,60 @@
             window.myPie = new Chart(ctx, event_chart_config);
         };
     
-        </script> 
-        {% comment %} <div class="row">
-            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+        </script>
+      {% comment %} <div class="row">
+        <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+          {% translate 'Lead status last changed:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+      </div>
+      <form method="POST">
+        {{ form|crispy }}
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">{% translate 'Save' %}</button>
+          </div>
         </div>
-            <form method="POST">
-                {{ form | crispy }}
-                {% csrf_token %}
-        
-                <div class="row">
-                    <div class="col d-flex justify-content-end">
-                        <button class="btn btn-outline-danger mt-2" type="submit">
-                            {%translate 'Save' %}
-                        </button>
-                    </div>
-                </div>
-            </form> {% endcomment %}
+      </form> {% endcomment %}
     </div>
     <div class="card card-body p-3 mb-3 col-12 col-lg-6">
-        <p class="h4 text-secondary">{% translate 'Quick actions' %}</p>
-        <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_event_list_view' %}?teacher={{teacher_event_group.teacher.pk}}&base_event={{base_event.pk}}&day_group={{teacher_event_group.day_group.pk}}">Show all events</a>
-        <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadStatusModal">{% translate 'Edit lead status' %}</a>
-        <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadDateModal">{% translate 'Edit lead dates' %}</a>
-        {% comment %} <div class="row">
-            <p class="mb-1 col-4 col-lg-4 col-xxl-3">{% translate 'Lead status last changed:' %}</p>
-            <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+      <p class="h4 text-secondary">
+        {% translate 'Quick actions' %}
+      </p>
+      <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_event_list_view' %}?teacher={{ teacher_event_group.teacher.pk }}&base_event={{ base_event.pk }}&day_group={{ teacher_event_group.day_group.pk }}">Show all events</a>
+      <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadStatusModal">{% translate 'Edit lead status' %}</a>
+      <a class="btn btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#editLeadDateModal">{% translate 'Edit lead dates' %}</a>
+      {% comment %} <div class="row">
+        <p class="mb-1 col-4 col-lg-4 col-xxl-3">
+          {% translate 'Lead status last changed:' %}
+        </p>
+        <p class="mb-1 col-8 col-lg-8 col-xxl-9">{{ event.lead_status_last_change }}</p>
+      </div>
+      <form method="POST">
+        {{ form|crispy }}
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col d-flex justify-content-end">
+            <button class="btn btn-outline-danger mt-2" type="submit">{% translate 'Save' %}</button>
+          </div>
         </div>
-            <form method="POST">
-                {{ form | crispy }}
-                {% csrf_token %}
-        
-                <div class="row">
-                    <div class="col d-flex justify-content-end">
-                        <button class="btn btn-outline-danger mt-2" type="submit">
-                            {%translate 'Save' %}
-                        </button>
-                    </div>
-                </div>
-            </form> {% endcomment %}
+      </form> {% endcomment %}
     </div>
     <div class="card card-body p-3 mb-3 col-12">
-        {% render_table teacher_events_table %}
-        <div class="col d-flex justify-content-end">
-            <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_event_list_view' %}?teacher={{teacher_event_group.teacher.pk}}&base_event={{base_event.pk}}&day_group={{teacher_event_group.day_group.pk}}">{% translate 'Show all' %}</a>
-        </div>
+      {% render_table teacher_events_table %}
+      <div class="col d-flex justify-content-end">
+        <a class="btn btn-outline-danger mt-2" href="{% url 'administrative_event_list_view' %}?teacher={{ teacher_event_group.teacher.pk }}&base_event={{ base_event.pk }}&day_group={{ teacher_event_group.day_group.pk }}">{% translate 'Show all' %}</a>
+      </div>
     </div>
-</div>
-<div class="col d-flex">
-    <a class="btn btn-outline-secondary mt-2" href="{{back_url}}">{% translate 'Back' %}</a>
-</div>
+  </div>
+  <div class="col d-flex">
+    <a class="btn btn-outline-secondary mt-2" href="{{ back_url }}">{% translate 'Back' %}</a>
+  </div>
 
-
-
-<style>
+  <style>
     .form-check-input {
         cursor: pointer;
     }
@@ -224,7 +250,7 @@
     }
 </style>
 
-<div class="modal fade" id="editLeadStatusModal" tabindex="-1" aria-labelledby="editLeadStatusModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editLeadStatusModal" tabindex="-1" aria-labelledby="editLeadStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -233,19 +259,17 @@
         </div>
         <form action="{% url 'teacher_day_event_group_edit_lead_status' base_event_pk=base_event.pk pk=teacher_event_group.pk %}" method="POST" enctype="multipart/form-data">
           <div class="modal-body">
-              <p>Edit the lead status of all events connected to the {{ base_event }}</p>
-              {% csrf_token %}
-            {{lead_status_form|crispy}}
+            <p>Edit the lead status of all events connected to the {{ base_event }} of {{ teacher_event_group.teacher }}</p>
+            {% csrf_token %}
+            {{ lead_status_form|crispy }}
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary"
-                  data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-                  <button class="btn btn-outline-danger" type="submit">{% translate 'Save' %}</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button class="btn btn-outline-danger" type="submit">{% translate 'Save' %}</button>
           </div>
         </form>
       </div>
     </div>
-  </div>
   </div>
 
   <div class="modal fade" id="editLeadDateModal" tabindex="-1" aria-labelledby="editLeadDateModalLabel" aria-hidden="true">
@@ -257,18 +281,16 @@
         </div>
         <form action="{% url 'teacher_day_event_group_edit_lead_dates' base_event_pk=base_event.pk pk=teacher_event_group.pk %}" method="POST" enctype="multipart/form-data">
           <div class="modal-body">
-              <p>Edit the lead date of all events connected to the {{ base_event }}</p>
-              {% csrf_token %}
-            {{lead_date_form|crispy}}
+            <p>Edit the lead date of all events connected to the {{ base_event }} of {{ teacher_event_group.teacher }}</p>
+            {% csrf_token %}
+            {{ lead_date_form|crispy }}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary"
-            data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
             <button class="btn btn-outline-danger" type="submit">{% translate 'Save' %}</button>
           </div>
         </form>
       </div>
     </div>
-  </div>
   </div>
 {% endblock %}
