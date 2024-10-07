@@ -816,6 +816,11 @@ def viewMyEvents(request):
                 ),
                 order_by="start",
             ),
+            "sick_leave": EventChangeFormula.objects.filter(
+                Q(type=EventChangeFormula.FormularTypeChoices.ILLNESS),
+                Q(day_group__in=DayEventGroup.objects.filter(date=date.date())),
+                Q(teacher=teacher),
+            ),
             # "free_events": Event.objects.filter(
             #     Q(teacher=teacher),
             #     Q(

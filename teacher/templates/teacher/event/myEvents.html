@@ -203,6 +203,29 @@
                       </li>
                     {% endfor %}
                   </ul> {% endcomment %}
+                  {% if events.sick_leave|length > 0 %}
+                    {% for sick in events.sick_leave %}
+                      <div class="card border-danger mb-3">
+                        <div class="card-body row">
+                          <div class="col col-12 col-md-12">
+                            <h5 class="card-title">{% translate 'Sick leave' %}</h5>
+                            {% if sick.no_events %}
+                              <div class="card-text">
+                                {% translate 'You are on sick leave for this date. All of your events have been canceled and no one is able to book new events at this date.' %}
+                              </div>
+                            {% else %}
+                              <div class="card-text">
+                                {% blocktranslate with start=sick.start_time end=sick.end_time %}You are on a partial sick leave between {{ start|time }} and {{ end|time }} on this date. During this period, al events have been canceled and no one is able to book new events in the period.{% endblocktranslate %}
+                              </div>
+                            {% endif %}
+                          </div>
+                          {% comment %} <div class="col col-12 col-md-4 d-flex justify-content-end align-items-center">
+                            <a type="button" class="btn btn-outline-danger" href="{% url 'student_import_listchanges' %}">{% translate 'View' %}</a>
+                          </div> {% endcomment %}
+                        </div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
                   {% render_table events.table %}
                   <style>
                     .hovereffect {
