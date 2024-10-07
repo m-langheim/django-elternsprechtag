@@ -14,11 +14,15 @@ from dashboard.models import (
     Announcements,
     EventChangeFormula,
     BaseEventGroup,
+    LeadStatusChoices,
+    DayEventGroup,
+    TeacherEventGroup,
 )
 from authentication.models import StudentChange
 from django.db.models import Q
 
 from .utils import EventPDFExport
+from .helpers import *
 
 from django.utils import timezone
 
@@ -177,53 +181,53 @@ def send_eventPDFs_over_email(user_id=int):
         mail.send()
 
 
-@shared_task
-def dayly_cleanup_task():
-    if SiteSettings.objects.first().delete_events:
-        past_events = Event.objects.filter(
-            end__lte=timezone.now() - SiteSettings.objects.first().keep_events
-        )
-        past_events.delete()
+# @shared_task
+# def dayly_cleanup_task():
+#     if SiteSettings.objects.first().delete_events:
+#         past_events = Event.objects.filter(
+#             end__lte=timezone.now() - SiteSettings.objects.first().keep_events
+#         )
+#         past_events.delete()
 
-    if SiteSettings.objects.first().delete_announcements:
-        past_announcements = Announcements.objects.filter(
-            created__lte=timezone.now()
-            - SiteSettings.objects.first().keep_announcements
-        )
-        past_announcements.delete()
+#     if SiteSettings.objects.first().delete_announcements:
+#         past_announcements = Announcements.objects.filter(
+#             created__lte=timezone.now()
+#             - SiteSettings.objects.first().keep_announcements
+#         )
+#         past_announcements.delete()
 
-    if SiteSettings.objects.first().delete_student_changes:
-        past_student_changes = StudentChange.objects.filter(
-            created__lte=timezone.now()
-            - SiteSettings.objects.first().keep_student_changes
-        )
-        past_student_changes.delete()
+#     if SiteSettings.objects.first().delete_student_changes:
+#         past_student_changes = StudentChange.objects.filter(
+#             created__lte=timezone.now()
+#             - SiteSettings.objects.first().keep_student_changes
+#         )
+#         past_student_changes.delete()
 
-    for obj in SiteSettings.objects.first().iquiry_bahvior:
-        inquiry_type = obj["type"]
-        inquiry_delete = obj["delete"]
-        inquiry_timedelta_days = obj["keep_for_days"]
+#     for obj in SiteSettings.objects.first().iquiry_bahvior:
+#         inquiry_type = obj["type"]
+#         inquiry_delete = obj["delete"]
+#         inquiry_timedelta_days = obj["keep_for_days"]
 
-        if inquiry_delete:
-            inquiries = Inquiry.objects.filter(
-                Q(type=inquiry_type),
-                Q(
-                    created__lte=timezone.now()
-                    - timezone.timedelta(days=inquiry_timedelta_days)
-                ),
-            )
-            inquiries.delete()
+#         if inquiry_delete:
+#             inquiries = Inquiry.objects.filter(
+#                 Q(type=inquiry_type),
+#                 Q(
+#                     created__lte=timezone.now()
+#                     - timezone.timedelta(days=inquiry_timedelta_days)
+#                 ),
+#             )
+#             inquiries.delete()
 
-    if SiteSettings.objects.first().delete_event_change_formulas:
-        past_event_change_formulas = EventChangeFormula.objects.filter(
-            date__lte=timezone.now()
-            - SiteSettings.objects.first().keep_event_change_formulas
-        )
-        past_event_change_formulas.delete()
+#     if SiteSettings.objects.first().delete_event_change_formulas:
+#         past_event_change_formulas = EventChangeFormula.objects.filter(
+#             date__lte=timezone.now()
+#             - SiteSettings.objects.first().keep_event_change_formulas
+#         )
+#         past_event_change_formulas.delete()
 
 
 @shared_task(bind=True)
-def update_event_lead_status(self, *args, **kwargs):
+def update_event_lead_status(self, automatic=False, *args, **kwargs):
     logger.info("Starting to update the lead status for all events.")
     events = Event.objects.filter(
         Q(disable_automatic_changes=False),
@@ -233,6 +237,18 @@ def update_event_lead_status(self, *args, **kwargs):
 
     num_updates = 0
     for event in events:
-        event.update_event_lead_status()
+        event.update_event_lead_status(automatic=automatic)
         num_updates += 1
     logger.info("Updateted the lead status on %s events", num_updates)
+
+
+@shared_task(bind=True)
+def update_date_lead_status(self, *args, **kwargs):
+    logger.debug("Update lead status")
+    automatically_update_base_events()
+    automatically_update_day_groups()
+    automatically_update_teacher_groups()
+
+    update_event_lead_status.delay(automatic=True)
+
+    logger.debug("Finished updating lead status")
