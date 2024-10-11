@@ -11,47 +11,63 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('dashboard', '0025_remove_eventchangeformula_processed_and_more'),
+        ("dashboard", "0025_remove_eventchangeformula_processed_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='eventchangeformula',
-            options={'verbose_name': 'Termin-Änderungsantrag', 'verbose_name_plural': 'Termin-Änderungsanträge'},
+            name="eventchangeformula",
+            options={
+                "verbose_name": "Termin-Änderungsantrag",
+                "verbose_name_plural": "Termin-Änderungsanträge",
+            },
         ),
         migrations.AlterField(
-            model_name='eventchangeformula',
-            name='date',
-            field=models.DateField(default=datetime.datetime(2023, 10, 14, 22, 29, 46, 296855, tzinfo=datetime.timezone.utc), verbose_name='Datum'),
+            model_name="eventchangeformula",
+            name="date",
+            field=models.DateField(
+                default=datetime.datetime(
+                    2023, 10, 14, 22, 29, 46, 296855, tzinfo=datetime.timezone.utc
+                ),
+                verbose_name="Datum",
+            ),
+        ),
+        # migrations.AlterField(
+        #     model_name='eventchangeformula',
+        #     name='end_time',
+        #     field=models.TimeField(blank=True, null=True, verbose_name='End Uhrzeit'),
+        # ),
+        migrations.AlterField(
+            model_name="eventchangeformula",
+            name="no_events",
+            field=models.BooleanField(default=False, verbose_name="No events"),
         ),
         migrations.AlterField(
-            model_name='eventchangeformula',
-            name='end_time',
-            field=models.TimeField(blank=True, null=True, verbose_name='End Uhrzeit'),
+            model_name="eventchangeformula",
+            name="start_time",
+            field=models.TimeField(blank=True, null=True, verbose_name="STart Uhrzeit"),
         ),
         migrations.AlterField(
-            model_name='eventchangeformula',
-            name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            model_name="eventchangeformula",
+            name="status",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Ausstehend"),
+                    (1, "Warte auf Bestätigung"),
+                    (2, "Bestätigt"),
+                    (3, "Abgelehnt"),
+                ],
+                default=0,
+            ),
         ),
         migrations.AlterField(
-            model_name='eventchangeformula',
-            name='no_events',
-            field=models.BooleanField(default=False, verbose_name='No events'),
-        ),
-        migrations.AlterField(
-            model_name='eventchangeformula',
-            name='start_time',
-            field=models.TimeField(blank=True, null=True, verbose_name='STart Uhrzeit'),
-        ),
-        migrations.AlterField(
-            model_name='eventchangeformula',
-            name='status',
-            field=models.IntegerField(choices=[(0, 'Ausstehend'), (1, 'Warte auf Bestätigung'), (2, 'Bestätigt'), (3, 'Abgelehnt')], default=0),
-        ),
-        migrations.AlterField(
-            model_name='eventchangeformula',
-            name='teacher',
-            field=models.ForeignKey(limit_choices_to={'role': 1}, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Lehrer'),
+            model_name="eventchangeformula",
+            name="teacher",
+            field=models.ForeignKey(
+                limit_choices_to={"role": 1},
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Lehrer",
+            ),
         ),
     ]
