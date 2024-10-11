@@ -1,9 +1,9 @@
-# EduConnect
+# django-elternsprechtag
 
 ## Projektübersicht
 
-**EduConnect** ist eine moderne Plattform, die Eltern ermöglicht, Termine für Elternsprechtage bei Lehrern zu buchen und Anfragen von Lehrern zur Terminbuchung zu empfangen. Durch eine intuitive Benutzeroberfläche fördert das System eine einfache und effiziente Kommunikation zwischen Eltern und Lehrern.  
-Zukünftige Funktionen von **EduConnect** werden die Erfassung von Fehlstunden sowie die Möglichkeit zur Krankschreibung oder Entschuldigung umfassen, um die schulische Verwaltung weiter zu vereinfachen. Weitere Erweiterungen sind ebenfalls geplant, um die Interaktion zwischen Lehrern, Eltern und Schülern noch umfassender zu gestalten.
+**django-elternsprechtag** ist eine moderne Plattform, die Eltern ermöglicht, Termine für Elternsprechtage bei Lehrern zu buchen und Anfragen von Lehrern zur Terminbuchung zu empfangen. Durch eine intuitive Benutzeroberfläche fördert das System eine einfache und effiziente Kommunikation zwischen Eltern und Lehrern.  
+Zukünftige Funktionen von **django-elternsprechtag** werden die Erfassung von Fehlstunden sowie die Möglichkeit zur Krankschreibung oder Entschuldigung umfassen, um die schulische Verwaltung weiter zu vereinfachen. Weitere Erweiterungen sind ebenfalls geplant, um die Interaktion zwischen Lehrern, Eltern und Schülern noch umfassender zu gestalten.
 
 ---
 
@@ -20,8 +20,8 @@ Zukünftige Funktionen von **EduConnect** werden die Erfassung von Fehlstunden s
 1. **Klonen des Projekts:**
    Klonen Sie das Repository in Ihr lokales Verzeichnis:
    ```bash
-   git clone https://github.com/USERNAME/EduConnect.git
-   cd EduConnect
+   git clone https://github.com/USERNAME/django-elternsprechtag.git
+   cd django-elternsprechtag
    ```
 
 2. **Virtuelle Umgebung erstellen und aktivieren:**
@@ -101,7 +101,7 @@ Zukünftige Funktionen von **EduConnect** werden die Erfassung von Fehlstunden s
 
 ## **Verwendung**
 
-**EduConnect** ermöglicht Eltern, Termine für Elternsprechtage bei Lehrern zu buchen und Anfragen von Lehrern zu empfangen. Hier ist ein typischer Workflow:
+**django-elternsprechtag** ermöglicht Eltern, Termine für Elternsprechtage bei Lehrern zu buchen und Anfragen von Lehrern zu empfangen. Hier ist ein typischer Workflow:
 
 1. **Anmeldung**: 
    - Eltern und Lehrer melden sich über die bereitgestellte Benutzeroberfläche an.

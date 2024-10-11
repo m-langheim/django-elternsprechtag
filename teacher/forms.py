@@ -236,7 +236,7 @@ class EventChangeFormulaBreakForm(forms.ModelForm):
 class BreakFormularCreationForm(forms.Form):
     day_group = forms.ModelChoiceField(
         queryset=DayEventGroup.objects.filter(date__gte=timezone.now()),
-        initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
+        # initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
         label=_("Day group"),
         help_text=_(
             "Please choose for which date you want to create the break request."
@@ -246,14 +246,14 @@ class BreakFormularCreationForm(forms.Form):
     end_time = forms.TimeField(label=_("End time"))
 
 
-class SichLeaveForm(forms.ModelForm):
+class SickLeaveForm(forms.ModelForm):
     class Meta:
         model = EventChangeFormula
         fields = ["day_group", "start_time", "end_time", "no_events"]
 
     day_group = forms.ModelChoiceField(
         queryset=DayEventGroup.objects.filter(date__gte=timezone.now()),
-        initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
+        # initial=DayEventGroup.objects.filter(date__gte=timezone.now()).first(),
         label=_("Day group"),
         help_text=_(
             "Please choose for which date you want to create the break request."
@@ -261,7 +261,7 @@ class SichLeaveForm(forms.ModelForm):
     )
 
     def __init__(self, teacher, *args, **kwargs):
-        super(SichLeaveForm, self).__init__(*args, **kwargs)
+        super(SickLeaveForm, self).__init__(*args, **kwargs)
 
         self.teacher = teacher
 
@@ -312,6 +312,7 @@ class SichLeaveForm(forms.ModelForm):
         instance.start_time = self.cleaned_data["start_time"]
         instance.end_time = self.cleaned_data["end_time"]
         instance.no_events = self.cleaned_data["no_events"]
+        instance.created_at = timezone.now()
 
         instance.status = EventChangeFormula.FormularStatusChoices.PENDING_CONFIRMATION
 

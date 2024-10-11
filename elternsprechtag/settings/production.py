@@ -76,10 +76,10 @@ CELERY_TIMEZONE = os.environ.get("TZ")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 CELERY_BEAT_SCHEDULE = {
-    "db_backup_task": {
-        "task": "general_tasks.tasks.run_dbbackup",
-        "schedule": crontab(minute=0, hour=1),
-    },
+    # "db_backup_task": {
+    #     "task": "general_tasks.tasks.run_dbbackup",
+    #     "schedule": crontab(minute=0, hour=1),
+    # },
     "initiateEventPDFs": {
         "task": "general_tasks.tasks.initiateEventPDFs",
         "schedule": crontab(minute=0, hour=3),
@@ -88,8 +88,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "general_tasks.tasks.look_for_open_inquiries",
         "schedule": crontab(minute=0, hour=6, day_of_week=1),
     },
-    "dayly_cleanup_task": {
-        "task": "general_tasks.tasks.dayly_cleanup_task",
+    "update_date_lead_status": {
+        "task": "general_tasks.tasks.update_date_lead_status",
         "schedule": crontab(minute=0, hour=2),
     },
     "update_lead_task": {
@@ -101,31 +101,31 @@ CELERY_BEAT_SCHEDULE = {
 # RUN_CELERY_THREAD = False
 
 # Backup configuration
-if os.environ.get("USE_FTP_BACKUP", False):
-    if (
-        not os.environ.get("FTP_USERNAME")
-        or not os.environ.get("FTP_USER_PASSWORD")
-        or not os.environ.get("FTP_SERVER")
-    ):
-        raise "Es sind nicht alle Daten angegeben um ein Backup auf einen FTP Server durchzuführen"
-    DBBACKUP_STORAGE = "storages.backends.ftp.FTPStorage"
-    DBBACKUP_STORAGE_OPTIONS = {
-        "location": "ftp://"
-        + os.environ.get("FTP_USERNAME")
-        + ":"
-        + os.environ.get("FTP_USER_PASSWORD")
-        + "@"
-        + os.environ.get("FTP_SERVER")
-        + ":"
-        + os.environ.get("FTP_PORT", 21)
-    }
-else:
-    DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
-    DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
+# if os.environ.get("USE_FTP_BACKUP", False):
+#     if (
+#         not os.environ.get("FTP_USERNAME")
+#         or not os.environ.get("FTP_USER_PASSWORD")
+#         or not os.environ.get("FTP_SERVER")
+#     ):
+#         raise "Es sind nicht alle Daten angegeben um ein Backup auf einen FTP Server durchzuführen"
+#     DBBACKUP_STORAGE = "storages.backends.ftp.FTPStorage"
+#     DBBACKUP_STORAGE_OPTIONS = {
+#         "location": "ftp://"
+#         + os.environ.get("FTP_USERNAME")
+#         + ":"
+#         + os.environ.get("FTP_USER_PASSWORD")
+#         + "@"
+#         + os.environ.get("FTP_SERVER")
+#         + ":"
+#         + os.environ.get("FTP_PORT", 21)
+#     }
+# else:
+#     DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+#     DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
 
-DBBACKUP_SERVER_EMAIL = os.environ.get("EMAIL_COMPLETE")
-DBBACKUP_CLEANUP_KEEP = 30
-DBBACKUP_CLEANUP_KEEP_MEDIA = 30
+# DBBACKUP_SERVER_EMAIL = os.environ.get("EMAIL_COMPLETE")
+# DBBACKUP_CLEANUP_KEEP = 30
+# DBBACKUP_CLEANUP_KEEP_MEDIA = 30
 
 
 CACHES = {
@@ -136,7 +136,7 @@ CACHES = {
     "select2": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://" + os.environ.get("REDIS_HOST") + ":6379",
-    }
+    },
 }
 
 SELECT2_CACHE_BACKEND = "select2"

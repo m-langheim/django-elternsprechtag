@@ -27,7 +27,7 @@ class Backup(models.Model):
     backup_directories = models.TextField(null=True, blank=True)
     size_bytes = models.BigIntegerField(null=True, blank=True)
     keep_backup = models.BooleanField(default=True)
-    validation_hash = models.CharField(max_length=512, unique=True, null=True)
+    validation_hash = models.CharField(max_length=40, unique=True, null=True)
     external = models.BooleanField(
         default=False,
         help_text="Dies ist eine Angabe darüber, ob das Backup von einem Externen Server stammt oder extern modifiziert wurde.",
