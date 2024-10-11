@@ -437,7 +437,7 @@ class EventChangeFormula(models.Model):
     Dieses Model dient dazu, jedem Lehrer die Möglichkeit zu geben, seine Zeiten für den Elternsprtechtag selber einzurrichten. In Zukunft können hier auch Anträge auf die Blockierung einzelner Termine eingereicht werden.
     """
 
-    id = models.UUIDField(unique=True, default=uuid.uuid4, primary_key=True)
+    # id = models.UUIDField(unique=True, default=uuid.uuid4, primary_key=True)
 
     class FormularTypeChoices(models.IntegerChoices):
         TIME_PERIODS = 0, _("Time period")
@@ -448,13 +448,13 @@ class EventChangeFormula(models.Model):
     type = models.IntegerField(
         choices=FormularTypeChoices, default=FormularTypeChoices.TIME_PERIODS
     )
-    parent_formular = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="childformular",
-    )
+    # parent_formular = models.ForeignKey(
+    #     "self",
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    #     blank=True,
+    #     related_name="childformular",
+    # )
     day_group = models.ForeignKey(
         DayEventGroup, on_delete=models.CASCADE, null=True, blank=True
     )
