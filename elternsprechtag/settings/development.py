@@ -70,8 +70,8 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 RUN_CELERY_THREAD = False
 
-DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
-DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
+# DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+# DBBACKUP_STORAGE_OPTIONS = {"location": os.path.join(BASE_DIR, "backup")}
 
 CELERY_BEAT_SCHEDULE = {
     "initiateEventPDFs": {

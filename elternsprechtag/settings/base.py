@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "celery_progress",
     "django_celery_beat",
     "crispy_forms",
-    "dbbackup",
+    # "dbbackup",
     "crispy_bootstrap5",
     "authentication",
     "help",
