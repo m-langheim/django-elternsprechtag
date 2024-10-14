@@ -1,10 +1,11 @@
-Guten Tag {{ user.first_name }} {{ user.last_name }},
-Sie haben einige offene Anfragen von Lehrern. Wir würden Sie bitten diese Anfragen zu erfüllen.
+Sehr geehrte/r {{ user.first_name }} {{ user.last_name }},
 
-Hier eine Liste mit Lehrern, die noch um einen Termin mit Ihnen bitten.
+Sie haben einige offene Anfragen von Lehrkräften. Wir würden Sie bitten, diese Anfragen zu erfüllen.
+
+Hier ist eine Liste mit den Lehrkräften, die noch um einen Termin mit Ihnen bitten.
 {% for inquiry in res_inquiries %}
 - {{ inquiry.requester.first_name }} {{ inquiry.requester.last_name }} bezüglich {{ inquiry.children.first }}
 {% endfor %}
 
-Mit freundlichen Grüßen
-Ihr Elternsprechtag-Team
+Viele Grüße
+Ihr Elternsprechtagsteam
