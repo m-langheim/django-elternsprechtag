@@ -1,13 +1,14 @@
-Dear teacher,
+Sehr geehrte Lehrkraft,
 
-Use the following link to activate and set up your teacher account:
+nutzen Sie den folgenden Link, um Ihr Konto für das Elternsprechtagsportal zu aktivieren und einzurichten:
 {{ url }}
 
-The activation is finished when entering your data successfully. The link will be invalid from then on.
+Sobald Sie Ihre Daten vollständig eingegeben haben, ist die Registrierung abgeschlossen. Im Anschluss ist der Einrichtungslink nicht mehr nutzbar.
 
-Yours sincerely
+Viele Grüße
 
-Elternsprechtagsteam
+Ihr Elternsprechtagsteam
 
-Need help?
-Please take a look at our Wikipedia before asking any member of staff for help: wiki.jhg-elternsprechtag.de
+Brauchen Sie Hilfe?
+Schauen Sie sich unser Wiki an, um Ihr Anliegen gegebenenfalls direkt zu lösen: wiki.jhg-elternsprechtag.de
+Sollte sich dort keine Lösung finden, wenden Sie sich an elternsprechtagsportal@jhgcloud.de
