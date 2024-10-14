@@ -1,8 +1,8 @@
-Dear {{ parent.first_name }} {{ parent.last_name }},
+Sehr geehrte/r {{ parent.first_name }} {{ parent.last_name }},
 
-You have got a new appointment request from {{ teacher.first_name }} {{ teacher.last_name }}.
+Sie haben eine Anfrage für einen Elternsprechtagstermin von {{ teacher.first_name }} {{ teacher.last_name }}.
 
-Click on the following button to take a look at this request:
+Klicken Sie auf die folgende Schaltfläche, um diese Anfrage einzusehen.
 {{ url }}
 
-Please make an appointment on this page.
+Anschließend können Sie über diese Seite einen Termin vereinbaren.
