@@ -1,13 +1,14 @@
-Dear parent,
+Sehr geehrte Eltern,
 
-Please use the following link to register your student:
+bitte nutzen Sie den folgenden Link, um Ihr Kind zu registrieren:
 {{ url }}
 
-Use the following One-Time-Password when signing up: {{ otp }}.
+Verwenden Sie für die Anmeldung das folgende Einmalpasswort: {{ otp }}.
 
-Yours sincerely
+Viele Grüße
 
-Elternsprechtagsteam
+Ihr Elternsprechtagsteam
 
-Need help?
-Please take a look at our Wikipedia before asking any member of staff for help: wiki.jhg-elternsprechtag.de
+Brauchen Sie Hilfe?
+Schauen Sie sich unser Wiki an, um Ihr Anliegen gegebenenfalls direkt zu lösen: wiki.jhg-elternsprechtag.de
+Sollte sich dort keine Lösung finden, wenden Sie sich an elternsprechtagsportal@jhgcloud.de
