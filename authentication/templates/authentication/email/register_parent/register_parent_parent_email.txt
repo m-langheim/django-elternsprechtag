@@ -1,13 +1,14 @@
-Dear parent,
+Sehr geehrte Eltern,
 
-Use the following link to activate and set up your parent account:
+nutzen Sie den folgenden Link, um Ihren Elternaccount zu aktivieren:
 {{ url }}
 
-The activation is finished when entering your data successfully. The link will be invalid from then on.
+Sobald Sie Ihre Daten vollständig eingegeben haben, ist die Registrierung abgeschlossen und der Link kann nicht mehr genutzt werden.
 
-Yours sincerely
+Viele Grüße
 
-Elternsprechtagsteam
+Ihr Elternsprechtagsteam
 
-Need help?
-Please take a look at our Wikipedia before asking any member of staff for help: wiki.jhg-elternsprechtag.de
+Brauchen Sie Hilfe?
+Schauen Sie sich unser Wiki an, um Ihr Anliegen gegebenenfalls direkt zu lösen: wiki.jhg-elternsprechtag.de
+Sollte sich dort keine Lösung finden, wenden Sie sich an elternsprechtagsportal@jhgcloud.de
