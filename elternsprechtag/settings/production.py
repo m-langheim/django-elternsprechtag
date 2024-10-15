@@ -71,6 +71,7 @@ DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_COMPLETE")
 # Celery Settings
 # CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_URL = "redis://" + os.environ.get("REDIS_HOST") + ":6379"
+CELERY_RESULT_BACKEND = "redis://" + os.environ.get("REDIS_HOST") + ":6379"
 CELERY_TIMEZONE = os.environ.get("TZ")
 # CELERY BEAT
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
